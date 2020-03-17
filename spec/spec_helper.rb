@@ -2,6 +2,11 @@
 
 require 'bundler/setup'
 require 'forest_creatures'
+require 'pry'
+
+# Autoload all files in lib.
+# I could not figure out load path :)
+Dir['lib/**/*.rb'].each { |file| require_relative("../#{file}") }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
