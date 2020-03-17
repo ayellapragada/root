@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ForestCreatures::Board do
-  it 'is all connected' do
-    expect(described_class.new.wah).to be true
+  it 'can access the board' do
+    board = ForestCreatures::Board.new
+    expect(board.wah).to be true
   end
 end

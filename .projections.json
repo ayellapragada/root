@@ -1,0 +1,4 @@
+{
+  "lib/forest_creatures/*.rb": { "alternate": "spec/forest_creatures/{}_spec.rb" },
+  "spec/forest_creatures/*_spec.rb": { "alternate": "lib/forest_creatures/{}.rb" }
+}
