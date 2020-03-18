@@ -3,8 +3,8 @@
 module ForestCreatures
   # Holds Board State and Tiles
   class Board
-    def wah
-      true
+    def self.default
+      [[]]
     end
   end
 end

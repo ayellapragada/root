@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe ForestCreatures::Board do
-  it 'can access the board' do
-    board = ForestCreatures::Board.new
-    expect(board.wah).to be true
+  describe '.default' do
+    it 'returns the default initial board state' do
+      expect(ForestCreatures::Board.default).to eq([[]])
+    end
   end
 end
