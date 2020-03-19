@@ -1,4 +1,4 @@
 {
-  "lib/forest_creatures/*.rb": { "alternate": "spec/forest_creatures/{}_spec.rb" },
-  "spec/forest_creatures/*_spec.rb": { "alternate": "lib/forest_creatures/{}.rb" }
+  "lib/holt/*.rb": { "alternate": "spec/holt/{}_spec.rb" },
+  "spec/holt/*_spec.rb": { "alternate": "lib/holt/{}.rb" }
 }

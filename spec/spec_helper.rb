@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'forest_creatures'
+require 'holt'
 require 'pry'
 
 RSpec.configure do |config|

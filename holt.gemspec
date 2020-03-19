@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'lib/forest_creatures/version'
+require_relative 'lib/holt/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'forest_creatures'
+  spec.name          = 'holt'
   spec.version       = Holt::VERSION
   spec.authors       = ['ayellapragada']
   spec.email         = ['ayellapragada@gmail.com']

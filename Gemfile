@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in forest_creatures.gemspec
+# Specify your gem's dependencies in holt.gemspec
 gemspec
 
 # dev dependencies, fix later

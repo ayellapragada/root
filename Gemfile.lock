@@ -10,7 +10,7 @@ GIT
 PATH
   remote: .
   specs:
-    forest_creatures (0.1.0)
+    holt (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -98,9 +98,9 @@ PLATFORMS
 
 DEPENDENCIES
   byebug (~> 11.0)
-  forest_creatures!
   guard (~> 2.0)
   guard-rspec (~> 4.0)
+  holt!
   pry!
   pry-byebug (~> 3.0)
   rake (~> 12.0)

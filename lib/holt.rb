@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'forest/version'
-require 'forest/game'
+require 'holt/version'
+require 'holt/game'
 
-module Forest
+module Holt
   class Error < StandardError; end
   # Your code goes here...
 end
