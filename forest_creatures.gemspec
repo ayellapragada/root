@@ -4,7 +4,7 @@ require_relative 'lib/forest_creatures/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'forest_creatures'
-  spec.version       = ForestCreatures::VERSION
+  spec.version       = Holt::VERSION
   spec.authors       = ['ayellapragada']
   spec.email         = ['ayellapragada@gmail.com']
 

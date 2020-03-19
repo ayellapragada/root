@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ForestCreatures
+module Holt
   # Handles logic for starting and handling a game
   class Game
   end

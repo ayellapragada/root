@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-RSpec.describe ForestCreatures::Game do
+RSpec.describe Holt::Game do
 end
