@@ -11,7 +11,7 @@ RSpec.describe Root::Game do
 
       expect(game.players.current_player.name).to be('Sneaky')
       expect(game.board).to be_truthy
-      expect(game.deck.count).to be(54)
+      expect(game.deck.count).to be(Root::Decks::Starter::DECK_SIZE)
     end
   end
 

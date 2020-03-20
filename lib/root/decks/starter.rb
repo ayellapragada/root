@@ -9,6 +9,8 @@ module Root
     class Starter
       include Enumerable
 
+      DECK_SIZE = 54
+
       attr_reader :deck
 
       def initialize
@@ -23,7 +25,7 @@ module Root
       # We're not currently interested in getting items done
       # Really just want to lay the foundation
       def generate_deck
-        54.times { deck << Cards::Item.new(suit: :fox) }
+        DECK_SIZE.times { deck << Cards::Item.new(suit: :fox) }
       end
 
       private
