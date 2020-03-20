@@ -68,13 +68,13 @@ module Holt
       end
 
       # Hypothetically, we could "create" links to each node as they're created,
-      # as in add adjacenties in the initialize step, but the other nodes don't
+      # as in add adjacents in the initialize step, but the other nodes don't
       # exist yet. We could lazy load a link but that raises complexity, and
       # this seems to work.
       def create_paths_for_clearings
         CLEARING_ADJACENCY_LINKS.each do |mapping|
-          mapping.each do |clearing, adjacencies|
-            adjacencies.each do |adj|
+          mapping.each do |clearing, adjacents|
+            adjacents.each do |adj|
               clearings[clearing].add_path(clearings[adj])
             end
           end
