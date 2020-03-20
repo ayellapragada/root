@@ -3,7 +3,10 @@
 require 'holt/version'
 require 'holt/game'
 
-require 'holt/boards/forest'
+require 'holt/boards/woodlands'
+
+require 'holt/grid/clearing'
+require 'holt/grid/ruin'
 
 require 'holt/players/list'
 require 'holt/players/human'
