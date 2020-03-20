@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+
+# We don't want simplecov in guard
+if ENV['COVERAGE']
+  SimpleCov.start do
+    enable_coverage :branch
+    add_filter '/spec/'
+  end
+end
+
 require 'bundler/setup'
 require 'holt'
 require 'pry'

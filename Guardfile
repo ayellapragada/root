@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A sample Guardfile
 # More info at https://github.com/guard/guard#readme
 
@@ -24,16 +26,16 @@
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
 
-
-notification :tmux,
+notification(
+  :tmux,
   display_message: true,
   timeout: 5, # in seconds
   default_message_format: '%s >> %s',
   # the first %s will show the title, the second the message
   # Alternately you can also configure *success_message_format*,
   # *pending_message_format*, *failed_message_format*
-  line_separator: ' > ', # since we are single line we need a separator
-  color_location: 'status-left-bg', # to customize which tmux element will change color
+  line_separator: ' > ', # we are single line we need a separator
+  color_location: 'status-left-bg', # which tmux element will change color
 
   # Other options:
   default_message_color: 'black',
@@ -43,9 +45,10 @@ notification :tmux,
 
   # Notify on all tmux clients
   display_on_all_clients: false
+)
 
-guard :rspec, cmd: "bundle exec rspec" do
-  require "guard/rspec/dsl"
+guard :rspec, cmd: 'bundle exec rspec' do
+  require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
 
   # Feel free to open issues for suggestions and improvements
@@ -85,6 +88,6 @@ guard :rspec, cmd: "bundle exec rspec" do
   # Turnip features and steps
   watch(%r{^spec/acceptance/(.+)\.feature$})
   watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$}) do |m|
-    Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
+    Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance'
   end
 end
