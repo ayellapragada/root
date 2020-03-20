@@ -31,6 +31,10 @@ module Root
         players.each { |player| yield player }
       end
 
+      def fetch_player(faction_symbol)
+        players.find { |player| player.faction_symbol == faction_symbol }
+      end
+
       def player_count
         players.count
       end
@@ -38,6 +42,12 @@ module Root
       def rotate_current_player
         self.current_player_index += 1
         self.current_player_index = 0 if current_player_index >= players.length
+      end
+
+      def order_by_setup_priority
+        players.sort do |a, b|
+          a&.faction&.setup_priority <=> b&.faction&.setup_priority
+        end
       end
 
       private

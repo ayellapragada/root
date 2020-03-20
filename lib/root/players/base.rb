@@ -17,7 +17,7 @@ module Root
     # Safe spot for all centralized player logic
     class Base
       def self.for(name, faction)
-        new(name: name, faction: FACTION_MAPPING[faction])
+        new(name: name, faction: FACTION_MAPPING[faction].new)
       end
 
       attr_reader :name, :hand, :faction
@@ -34,6 +34,10 @@ module Root
 
       def draw_card(deck)
         @hand << deck.draw_from_top
+      end
+
+      def faction_symbol
+        faction.faction_symbol
       end
     end
   end

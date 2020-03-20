@@ -20,7 +20,7 @@ module Root
     end
 
     def setup
-      players.each do |player|
+      players.order_by_setup_priority.each do |player|
         3.times { player.draw_card(deck) }
       end
     end
