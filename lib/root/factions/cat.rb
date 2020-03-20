@@ -11,6 +11,18 @@ module Root
       def faction_symbol
         :cats
       end
+
+      def setup(board:, player:)
+        build_keep(board, player)
+      end
+
+      def build_keep(board, player)
+        options = board.available_corners
+        choice = player.pick_option(options)
+        clearing = options[choice]
+
+        board.create_building(:keep, clearing)
+      end
     end
   end
 end

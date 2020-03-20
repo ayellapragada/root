@@ -16,6 +16,8 @@ require 'root/factions/cat'
 require 'root/factions/mouse'
 require 'root/factions/vagabond'
 
+require 'root/factions/pieces/cat/keep'
+
 require 'root/grid/clearing'
 require 'root/grid/ruin'
 

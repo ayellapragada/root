@@ -20,12 +20,13 @@ module Root
         new(name: name, faction: FACTION_MAPPING[faction].new)
       end
 
-      attr_reader :name, :hand, :faction
+      attr_reader :name, :hand, :faction, :victory_points
 
       def initialize(name:, faction:)
         @name = name
         @faction = faction
         @hand = []
+        @victory_points = 0
       end
 
       def current_hand_size
@@ -38,6 +39,10 @@ module Root
 
       def faction_symbol
         faction.faction_symbol
+      end
+
+      def setup(board)
+        faction.setup(board: board, player: self)
       end
     end
   end

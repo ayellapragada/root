@@ -46,7 +46,7 @@ module Root
 
       def order_by_setup_priority
         players.sort do |a, b|
-          a&.faction&.setup_priority <=> b&.faction&.setup_priority
+          a.faction.setup_priority <=> b.faction.setup_priority
         end
       end
 

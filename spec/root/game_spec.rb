@@ -17,10 +17,15 @@ RSpec.describe Root::Game do
 
   # OOF this gon be big.
   describe '.setup' do
-    it 'sets up the game idk bro' do
+    it 'sets up the game' do
       game = Root::Game.default_game
+      human_player = game.players.fetch_player(:mice)
+      allow(human_player).to receive(:pick_option).and_return(0)
+
       game.setup
+
       expect(game.players.all? { |p| p.current_hand_size == 3 }).to be true
+      expect(game.players.all? { |p| p.victory_points == 0 }).to be true
     end
   end
 end

@@ -9,6 +9,8 @@ module Root
       def setup_priority
         self.class::SETUP_PRIORITY
       end
+
+      def setup(board:, player:); end
     end
   end
 end
