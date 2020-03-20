@@ -18,6 +18,11 @@ module Holt
         create_ruin if ruin
       end
 
+      def inspect
+        adjacents = adjacent_clearings.map(&:priority).join(', ')
+        "Clearing ##{priority}: #{suit} | Adjacents: #{adjacents}"
+      end
+
       def ruin?
         !!ruin
       end

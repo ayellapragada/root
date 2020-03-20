@@ -4,6 +4,7 @@ require 'holt/version'
 require 'holt/game'
 
 require 'holt/boards/woodlands'
+require 'holt/boards/woodlands_generator'
 
 require 'holt/grid/clearing'
 require 'holt/grid/ruin'
