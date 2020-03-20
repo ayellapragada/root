@@ -7,6 +7,15 @@ module Holt
     class List
       attr_reader :players
 
+      def self.default_player_list
+        new(
+          Holt::Players::Human.for('Sneaky', :mice),
+          Holt::Players::Computer.for('Hal', :cats),
+          Holt::Players::Computer.for('Tron', :birds),
+          Holt::Players::Computer.for('Ultron', :vagabond)
+        )
+      end
+
       def initialize(*players)
         @players = players
         @current_player_index = 0

@@ -3,11 +3,13 @@
 require_relative '../factions/bird'
 require_relative '../factions/cat'
 require_relative '../factions/mouse'
+require_relative '../factions/vagabond'
 
 FACTION_MAPPING = {
   birds: Holt::Factions::Bird,
   cats: Holt::Factions::Cat,
-  mice: Holt::Factions::Mouse
+  mice: Holt::Factions::Mouse,
+  vagabond: Holt::Factions::Vagabond
 }.freeze
 
 module Holt

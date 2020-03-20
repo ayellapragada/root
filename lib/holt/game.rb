@@ -5,6 +5,13 @@ module Holt
   class Game
     attr_accessor :players, :board
 
+    def self.default_game
+      new(
+        players: Players::List.default_player_list,
+        board: Boards::Woodlands.new
+      )
+    end
+
     def initialize(players:, board:)
       @players = players
       @board = board

@@ -16,6 +16,7 @@ require 'holt/players/computer'
 require 'holt/factions/bird'
 require 'holt/factions/cat'
 require 'holt/factions/mouse'
+require 'holt/factions/vagabond'
 
 module Holt
   class Error < StandardError; end
