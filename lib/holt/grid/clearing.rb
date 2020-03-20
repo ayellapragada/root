@@ -8,11 +8,13 @@ module Holt
     class Clearing
       VALID_SUITS = %i[bunny mice rabbit].freeze
 
-      attr_reader :suit, :slots, :ruin
+      attr_reader :priority, :suit, :slots, :ruin, :adjacent_clearings
 
-      def initialize(suit:, slots:, ruin: false)
+      def initialize(priority:, suit:, slots:, ruin: false)
+        @priority = priority
         @suit = suit
         @slots = slots
+        @adjacent_clearings = []
         create_ruin if ruin
       end
 
@@ -22,6 +24,13 @@ module Holt
 
       def available_slots
         ruin ? (slots - 1) : slots
+      end
+
+      def add_path(other_clearing)
+        return if adjacent_clearings.include?(other_clearing)
+
+        adjacent_clearings << other_clearing
+        other_clearing.add_path(self)
       end
 
       private
