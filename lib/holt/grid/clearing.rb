@@ -18,10 +18,12 @@ module Holt
         create_ruin if ruin
       end
 
+      # :nocov:
       def inspect
         adjacents_nodes = adjacents.map(&:priority).join(', ')
         "Clearing ##{priority}: #{suit} | Adjacents: #{adjacents_nodes}"
       end
+      # :nocov:
 
       def ruin?
         !!ruin
