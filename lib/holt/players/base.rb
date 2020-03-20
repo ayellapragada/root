@@ -20,11 +20,20 @@ module Holt
         new(name: name, faction: FACTION_MAPPING[faction])
       end
 
-      attr_reader :name
+      attr_reader :name, :hand, :faction
 
       def initialize(name:, faction:)
         @name = name
         @faction = faction
+        @hand = []
+      end
+
+      def current_hand_size
+        hand.size
+      end
+
+      def draw_card(deck)
+        @hand << deck.draw_from_top
       end
     end
   end

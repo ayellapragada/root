@@ -5,6 +5,8 @@ module Holt
     # Maintains list of current players and has easy methods to access things
     # like victory points for everyone and etc.
     class List
+      include Enumerable
+
       attr_reader :players
 
       def self.default_player_list
@@ -23,6 +25,10 @@ module Holt
 
       def current_player
         players[current_player_index]
+      end
+
+      def each
+        players.each { |player| yield player }
       end
 
       def player_count
