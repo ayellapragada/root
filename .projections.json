@@ -1,4 +1,4 @@
 {
-  "lib/holt/*.rb": { "alternate": "spec/holt/{}_spec.rb" },
-  "spec/holt/*_spec.rb": { "alternate": "lib/holt/{}.rb" }
+  "lib/root/*.rb": { "alternate": "spec/root/{}_spec.rb" },
+  "spec/root/*_spec.rb": { "alternate": "lib/root/{}.rb" }
 }

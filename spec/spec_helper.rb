@@ -11,7 +11,7 @@ if ENV['COVERAGE']
 end
 
 require 'bundler/setup'
-require 'holt'
+require 'root'
 require 'pry'
 
 RSpec.configure do |config|
