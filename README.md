@@ -41,4 +41,12 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 ## Useful Links!
 [Final PnP of Root](https://drive.google.com/drive/folders/1i9-iCUDzfGMs7HjFHhahwMS6efvvfX5w) - This is the final one pre release, not 4th printing., useful to reference. Not perfect.
+
+
 [Components List](https://geekdad.com/2018/11/reaping-the-rewards-geekdad-digs-root/) - It's a review but it also has a list of components.
+
+## Ideas For Next
+
+Game -> Players + Board + Deck + Discard
+Players -> Factions -> Buildings + + Meeples + Tokens + Hand + Special Section (If Any)
+Board -> Clearings -> Buildings + Tokens + Meeples
