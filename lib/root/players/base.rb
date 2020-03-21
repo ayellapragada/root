@@ -15,26 +15,30 @@ FACTION_MAPPING = {
 module Root
   module Players
     # Safe spot for all centralized player logic
+    # This should only be responsible for getting / displaying output.
     class Base
       def self.for(name, faction)
-        new(name: name, faction: FACTION_MAPPING[faction].new)
+        new(name: name, faction: FACTION_MAPPING[faction])
       end
 
-      attr_reader :name, :hand, :faction, :victory_points
+      attr_reader :name, :faction, :display
 
       def initialize(name:, faction:)
         @name = name
-        @faction = faction
-        @hand = []
-        @victory_points = 0
+        @faction = faction.new(self)
+        @display = Display::Terminal.new
       end
 
       def current_hand_size
-        hand.size
+        faction.hand_size
       end
 
       def draw_card(deck)
-        @hand << deck.draw_from_top
+        faction.draw_card(deck)
+      end
+
+      def victory_points
+        faction.victory_points
       end
 
       def faction_symbol
