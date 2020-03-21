@@ -3,7 +3,7 @@
 require 'simplecov'
 
 # We don't want simplecov in guard
-if ENV['COVERAGE']
+unless ENV['NO_COVERAGE']
   SimpleCov.start do
     enable_coverage :branch
     add_filter '/spec/'

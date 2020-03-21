@@ -7,7 +7,7 @@ module Root
     module Cats
       # Main starting token for the cat.
       # Allows for things like Field Hospital and etc.
-      class Keep < Pieces::Token
+      class Wood < Pieces::Token
       end
     end
   end

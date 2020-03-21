@@ -8,7 +8,8 @@ module Root
     class Clearing
       VALID_SUITS = %i[bunny mice rabbit].freeze
 
-      attr_reader :priority, :suit, :slots, :ruin, :adjacents, :buildings, :tokens
+      attr_reader :priority, :suit, :slots, :ruin,
+                  :adjacents, :buildings, :tokens
 
       def initialize(priority:, suit:, slots:, ruin: false)
         @priority = priority
@@ -23,7 +24,14 @@ module Root
       # :nocov:
       def inspect
         adjacents_nodes = adjacents.map(&:priority).join(', ')
-        "Clearing ##{priority}: #{suit} | Adjacents: #{adjacents_nodes}"
+        building_types = buildings.map(&:type).join(', ')
+        token_types = tokens.map(&:type).join(', ')
+        [
+          "Clearing ##{priority}: #{suit}",
+          "Adjacents: #{adjacents_nodes}",
+          "Buildings: #{building_types}",
+          "Tokens: #{token_types}"
+        ].join(' | ')
       end
       # :nocov:
 

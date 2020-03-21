@@ -47,7 +47,7 @@ notification(
   display_on_all_clients: false
 )
 
-guard :rspec, cmd: 'bundle exec rspec' do
+guard :rspec, cmd: 'NO_COVERAGE=true bundle exec rspec' do
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
 

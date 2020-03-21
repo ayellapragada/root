@@ -17,7 +17,12 @@ require 'root/factions/bird'
 require 'root/factions/cat'
 require 'root/factions/mouse'
 require 'root/factions/vagabond'
+
 require 'root/factions/cats/keep'
+require 'root/factions/cats/recruiter'
+require 'root/factions/cats/sawmill'
+require 'root/factions/cats/workshop'
+require 'root/factions/cats/wood'
 
 require 'root/grid/clearing'
 require 'root/grid/ruin'

@@ -9,10 +9,6 @@ module Root
     # Not going to lie this might be the only one I end up creating.
     # I haven't played the expansions much so I'm not familiar with them.
     class Woodlands
-      TOKEN_MAP = {
-        keep: Root::Factions::Cats::Keep
-      }.freeze
-
       attr_accessor :clearings
 
       def initialize
@@ -28,8 +24,7 @@ module Root
       end
 
       # NEED ERROR CHECKING THERE'S NO WAY TO ALWAYS HAVE SLOTS FOR BUILDINGS
-      def place_token(type, clearing)
-        token = TOKEN_MAP[type].new
+      def place_token(token, clearing)
         clearing.place_token(token)
       end
 
