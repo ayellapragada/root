@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../grid/clearing'
-require_relative '../factions/pieces/cat/keep'
+require_relative '../factions/cats/keep'
 
 module Root
   module Boards
@@ -9,8 +9,8 @@ module Root
     # Not going to lie this might be the only one I end up creating.
     # I haven't played the expansions much so I'm not familiar with them.
     class Woodlands
-      BUILDINGS_MAP = {
-        keep: Root::Factions::Pieces::Cat::Keep
+      TOKEN_MAP = {
+        keep: Root::Factions::Cats::Keep
       }.freeze
 
       attr_accessor :clearings
@@ -28,13 +28,17 @@ module Root
       end
 
       # NEED ERROR CHECKING THERE'S NO WAY TO ALWAYS HAVE SLOTS FOR BUILDINGS
-      def create_building(type, clearing)
-        building = BUILDINGS_MAP[type].new
-        clearing.create_building(building)
+      def place_token(type, clearing)
+        token = TOKEN_MAP[type].new
+        clearing.place_token(token)
       end
 
       def keep_in_corner?
-        corners.one? { |corner| corner.buildings.any?(&:is_keep?) }
+        corners.one? do |corner|
+          corner.tokens.any? do |tokens|
+            tokens.type == :keep
+          end
+        end
       end
 
       private

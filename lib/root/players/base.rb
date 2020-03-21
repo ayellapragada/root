@@ -46,7 +46,7 @@ module Root
       end
 
       def setup(board)
-        faction.setup(board: board, player: self)
+        faction.setup(board: board)
       end
     end
   end

@@ -6,7 +6,7 @@ module Root
     class Base
       SETUP_PRIORITY = 'ZZZ'
 
-      attr_reader :hand, :victory_points
+      attr_reader :hand, :victory_points, :player
 
       def initialize(player)
         @player = player
@@ -31,7 +31,7 @@ module Root
         self.class::SETUP_PRIORITY
       end
 
-      def setup(board:, player:); end
+      def setup(board:); end
     end
   end
 end

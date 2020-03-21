@@ -17,8 +17,7 @@ require 'root/factions/bird'
 require 'root/factions/cat'
 require 'root/factions/mouse'
 require 'root/factions/vagabond'
-
-require 'root/factions/pieces/cat/keep'
+require 'root/factions/cats/keep'
 
 require 'root/grid/clearing'
 require 'root/grid/ruin'
@@ -26,6 +25,10 @@ require 'root/grid/ruin'
 require 'root/players/computer'
 require 'root/players/human'
 require 'root/players/list'
+
+require 'root/pieces/building'
+require 'root/pieces/token'
+require 'root/pieces/meeple'
 
 module Root
   class Error < StandardError; end

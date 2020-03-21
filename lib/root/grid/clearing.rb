@@ -8,7 +8,7 @@ module Root
     class Clearing
       VALID_SUITS = %i[bunny mice rabbit].freeze
 
-      attr_reader :priority, :suit, :slots, :ruin, :adjacents, :buildings
+      attr_reader :priority, :suit, :slots, :ruin, :adjacents, :buildings, :tokens
 
       def initialize(priority:, suit:, slots:, ruin: false)
         @priority = priority
@@ -16,6 +16,7 @@ module Root
         @slots = slots
         @adjacents = []
         @buildings = []
+        @tokens = []
         create_ruin if ruin
       end
 
@@ -45,8 +46,13 @@ module Root
         other_clearing.add_path(self)
       end
 
-      def create_building(building)
-        buildings << building
+      # # This needs to check for available slots
+      # def create_building(building)
+      #   buildings << building
+      # end
+
+      def place_token(token)
+        tokens << token
       end
 
       private

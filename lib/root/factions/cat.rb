@@ -12,7 +12,7 @@ module Root
         :cats
       end
 
-      def setup(board:, player:)
+      def setup(board:)
         build_keep(board, player)
       end
 
@@ -21,7 +21,7 @@ module Root
         choice = player.pick_option(options)
         clearing = options[choice]
 
-        board.create_building(:keep, clearing)
+        board.place_token(:keep, clearing)
       end
     end
   end
