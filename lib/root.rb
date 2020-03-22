@@ -36,6 +36,4 @@ require 'root/pieces/token'
 require 'root/pieces/meeple'
 
 module Root
-  class Error < StandardError; end
-  # Your code goes here...
 end

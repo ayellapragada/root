@@ -14,10 +14,22 @@ module Root
       end
 
       def handle_faction_token_setup
+        handle_meeple_setup
+        handle_building_setup
+        handle_token_setup
+      end
+
+      def handle_meeple_setup
         25.times { meeples << Pieces::Meeple.new(:cat) }
+      end
+
+      def handle_building_setup
         6.times { buildings << Cats::Recruiter.new }
         6.times { buildings << Cats::Sawmill.new }
         6.times { buildings << Cats::Workshop.new }
+      end
+
+      def handle_token_setup
         8.times { tokens << Cats::Wood.new }
         tokens << Cats::Keep.new
       end
@@ -57,15 +69,21 @@ module Root
       end
 
       def build_initial_buildings(board)
-        keep_clearing = board.clearing_with_keep
-        initial_options = [keep_clearing, *keep_clearing.adjacents]
         [sawmills.pop, recruiters.pop, workshops.pop].each do |building|
-          availble_options = initial_options.select(&:with_spaces?)
-          choice = player.pick_option(availble_options)
-          clearing = availble_options[choice]
-
-          board.create_building(building, clearing)
+          player_places_building(building, board)
         end
+      end
+
+      def player_places_building(building, board)
+        options_for_building = find_initial_options(board)
+        choice = player.pick_option(options_for_building)
+        clearing = options_for_building[choice]
+        board.create_building(building, clearing)
+      end
+
+      def find_initial_options(board)
+        keep_clearing = board.clearing_with_keep
+        [keep_clearing, *keep_clearing.adjacents].select(&:with_spaces?)
       end
 
       def place_initial_warriors(board)

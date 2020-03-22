@@ -25,7 +25,7 @@ module Root
         { name: :twelve, priority: 12, suit: :fox, slots: 2, ruin: true }
       ].freeze
 
-      CLEARING_ADJACENCY_LINKS = [
+      CLEARING_ADJACENCY_LINKS = {
         one: %i[five nine ten],
         two: %i[five six ten],
         three: %i[six seven eleven],
@@ -38,7 +38,7 @@ module Root
         ten: %i[one two twelve],
         eleven: %i[three six twelve],
         twelve: %i[four seven eight nine ten eleven]
-      ].freeze
+      }.freeze
 
       def self.generate
         new.clearings
@@ -57,13 +57,10 @@ module Root
       end
 
       def make_all_clearings
-        DEFAULT_CLEAIRNGS_MAP.each do |c|
-          clearings[c[:name]] = Grid::Clearing.new(
-            priority: c[:priority],
-            suit: c[:suit],
-            slots: c[:slots],
-            ruin: c[:ruin]
-          )
+        DEFAULT_CLEAIRNGS_MAP.each do |clearing|
+          clearing_info = clearing.reject { |c| c == :name }
+          new_clearing = Grid::Clearing.new(**clearing_info)
+          clearings[clearing[:name]] = new_clearing
         end
       end
 
@@ -72,11 +69,9 @@ module Root
       # exist yet. We could lazy load a link but that raises complexity, and
       # this seems to work.
       def create_paths_for_clearings
-        CLEARING_ADJACENCY_LINKS.each do |mapping|
-          mapping.each do |clearing, adjacents|
-            adjacents.each do |adj|
-              clearings[clearing].add_path(clearings[adj])
-            end
+        CLEARING_ADJACENCY_LINKS.each do |clearing, adjacents|
+          adjacents.each do |adj|
+            clearings[clearing].add_path(clearings[adj])
           end
         end
       end

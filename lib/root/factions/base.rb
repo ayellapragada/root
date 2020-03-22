@@ -12,7 +12,6 @@ module Root
         @player = player
         @hand = []
         @victory_points = 0
-
         set_base_pieces
         handle_faction_token_setup
       end
@@ -38,7 +37,9 @@ module Root
         self.class::SETUP_PRIORITY
       end
 
-      def setup(board:); end
+      def setup(board:)
+        # will be removed once all factions handle this on their own
+      end
     end
   end
 end

@@ -15,14 +15,19 @@ module Root
         @priority = priority
         @suit = suit
         @slots = slots
+        create_spaces_for_pieces
+        create_ruin if ruin
+      end
+
+      def create_spaces_for_pieces
         @adjacents = []
         @buildings = []
         @tokens = []
         @meeples = []
-        create_ruin if ruin
       end
 
       # :nocov:
+      # This breaks sandi_meter :sweats:
       def inspect
         adjacents_nodes = adjacents.map(&:priority).join(', ')
         building_types = buildings.map(&:type).join(', ')
@@ -34,9 +39,9 @@ module Root
           "Adjacents: #{adjacents_nodes}"
         ]
 
-        result << "Buildings: #{building_types}" unless buildings.empty?
-        result << "Tokens: #{token_types}" unless tokens.empty?
-        result << "Meeples: #{meeple_types}" unless meeples.empty?
+        result << "Buildings: #{building_types}" if buildings.any?
+        result << "Tokens: #{token_types}" if tokens.any?
+        result << "Meeples: #{meeple_types}" if meeples.any?
 
         result.join(' | ')
       end
