@@ -45,6 +45,7 @@ module Root
       def setup(board:)
         build_keep(board)
         build_initial_buildings(board)
+        place_initial_warriors(board)
       end
 
       def build_keep(board)
@@ -64,6 +65,13 @@ module Root
           clearing = availble_options[choice]
 
           board.create_building(building, clearing)
+        end
+      end
+
+      def place_initial_warriors(board)
+        clearing = board.clearing_across_from_keep
+        board.clearings_other_than(clearing).each do |cl|
+          board.place_meeple(meeples.pop, cl)
         end
       end
     end

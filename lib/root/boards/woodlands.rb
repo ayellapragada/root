@@ -11,6 +11,8 @@ module Root
     class Woodlands
       attr_accessor :clearings
 
+      DIAGANOLS = { 1 => :three, 2 => :four, 3 => :one, 4 => :two }.freeze
+
       def initialize
         @clearings = WoodlandsGenerator.generate
       end
@@ -31,6 +33,10 @@ module Root
         clearing.create_building(building)
       end
 
+      def place_meeple(meeple, clearing)
+        clearing.place_meeple(meeple)
+      end
+
       def clearing_with_keep
         corners.find do |corner|
           corner.tokens.any? do |tokens|
@@ -41,6 +47,14 @@ module Root
 
       def keep_in_corner?
         !!clearing_with_keep
+      end
+
+      def clearing_across_from_keep
+        clearings[DIAGANOLS[clearing_with_keep.priority]]
+      end
+
+      def clearings_other_than(other_clearing)
+        clearings.values.reject { |clearing| clearing == other_clearing }
       end
     end
   end
