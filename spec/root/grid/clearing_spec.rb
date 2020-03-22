@@ -50,4 +50,37 @@ RSpec.describe Root::Grid::Clearing do
       end
     end
   end
+
+  describe '.create_building' do
+    context 'when there is room' do
+      it 'creates a building' do
+        clearing = Root::Grid::Clearing.new(
+          priority: 1,
+          suit: :bunny,
+          slots: 1
+        )
+
+        building = Root::Factions::Cats::Workshop.new
+
+        clearing.create_building(building)
+        expect(clearing.includes_building?(:workshop)).to be true
+      end
+    end
+
+    context 'when there is no room' do
+      it 'does not create a building' do
+        clearing = Root::Grid::Clearing.new(
+          priority: 1,
+          suit: :bunny,
+          slots: 1,
+          ruin: true
+        )
+
+        building = Root::Factions::Cats::Workshop.new
+
+        clearing.create_building(building)
+        expect(clearing.includes_building?(:workshop)).to be false
+      end
+    end
+  end
 end

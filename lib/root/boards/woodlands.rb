@@ -23,22 +23,25 @@ module Root
         [clearings[:one], clearings[:two], clearings[:three], clearings[:four]]
       end
 
-      # NEED ERROR CHECKING THERE'S NO WAY TO ALWAYS HAVE SLOTS FOR BUILDINGS
       def place_token(token, clearing)
         clearing.place_token(token)
       end
 
-      def keep_in_corner?
-        corners.one? do |corner|
+      def create_building(building, clearing)
+        clearing.create_building(building)
+      end
+
+      def clearing_with_keep
+        corners.find do |corner|
           corner.tokens.any? do |tokens|
             tokens.type == :keep
           end
         end
       end
 
-      private
-
-      attr_reader :buildings
+      def keep_in_corner?
+        !!clearing_with_keep
+      end
     end
   end
 end

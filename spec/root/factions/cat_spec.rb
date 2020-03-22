@@ -29,5 +29,27 @@ RSpec.describe Root::Factions::Cat do
       expect(board.keep_in_corner?).to be true
       expect(faction.keep).to be_empty
     end
+
+    it 'sets a sawmill, recruiter, and workshop in adjacent clearing' do
+      board = Root::Boards::Woodlands.new
+      player = Root::Players::Human.for('Sneak', :cats)
+      faction = player.faction
+      allow(player).to receive(:pick_option).and_return(0)
+
+      player.setup(board)
+
+      clearing = board.clearing_with_keep
+      expect(clearing_has_building(clearing, :recruiter)).to be true
+      expect(clearing_has_building(clearing, :sawmill)).to be true
+      expect(clearing_has_building(clearing, :workshop)).to be true
+      expect(faction.recruiters.count).to be(5)
+      expect(faction.sawmills.count).to be(5)
+      expect(faction.workshops.count).to be(5)
+    end
+  end
+
+  def clearing_has_building(clearing, type)
+    clearing.includes_building?(type) ||
+      clearing.adjacents.one? { |adj| adj.includes_building?(type) }
   end
 end

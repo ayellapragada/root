@@ -43,15 +43,28 @@ module Root
       end
 
       def setup(board:)
-        build_keep(board, player)
+        build_keep(board)
+        build_initial_buildings(board)
       end
 
-      def build_keep(board, player)
+      def build_keep(board)
         options = board.available_corners
         choice = player.pick_option(options)
         clearing = options[choice]
 
         board.place_token(keep.pop, clearing)
+      end
+
+      def build_initial_buildings(board)
+        keep_clearing = board.clearing_with_keep
+        initial_options = [keep_clearing, *keep_clearing.adjacents]
+        [sawmills.pop, recruiters.pop, workshops.pop].each do |building|
+          availble_options = initial_options.select(&:with_spaces?)
+          choice = player.pick_option(availble_options)
+          clearing = availble_options[choice]
+
+          board.create_building(building, clearing)
+        end
       end
     end
   end

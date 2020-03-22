@@ -44,7 +44,7 @@ module Root
       end
 
       def available_slots
-        ruin ? (slots - 1) : slots
+        slots - buildings.count
       end
 
       def add_path(other_clearing)
@@ -54,13 +54,19 @@ module Root
         other_clearing.add_path(self)
       end
 
-      # # This needs to check for available slots
-      # def create_building(building)
-      #   buildings << building
-      # end
+      # This needs to check for available slots
+      def create_building(building)
+        return unless with_spaces?
+
+        buildings << building
+      end
 
       def place_token(token)
         tokens << token
+      end
+
+      def includes_building?(type)
+        buildings.any? { |building| building.type == type }
       end
 
       private
