@@ -45,13 +45,13 @@ module Root
       SUIT_COLOR = {
         fox: :firebrick,
         mouse: :sandybrown,
-        rabbit: :lemonchiffon,
+        rabbit: :gold,
       }
 
       def display
         cls = game.board.clearings
         [
-          n(0) + bf(37),
+          n(0) + bf(70),
           n(1) + bf(32) + c(cls[:five])[0],
           n(2) + bf(2) + c(cls[:one])[0] + bf(20) + c(cls[:five])[1],
           n(3) + bf(2) + c(cls[:one])[1] + hp(20) + c(cls[:five])[2],
@@ -72,18 +72,18 @@ module Root
           n(17) + bf(7) + vp + f(4) + dd + f(3) + c(cls[:twelve])[0],
           n(18) + bf(7) + vp + f(6) + dd + f + c(cls[:twelve])[1],
           n(19) + bf(7) + vp + f(8) + c(cls[:twelve])[2],
-          n(20) + bf(7) + vp + f(8) + c(cls[:twelve])[3],
-          n(21) + bf(7) + vp + f(8) + c(cls[:twelve])[4],
-          n(22) + bf(7) + vp + f(6) + du,
-          n(23) + bf(7) + vp + f(5) + du,
-          n(24) + bf(7) + vp + f(4) + du,
-          n(25) + bf(2) + c(cls[:four])[0] + f(17),
-          n(26) + bf(2) + c(cls[:four])[1] + f(7) + c(cls[:eight])[0] + f + du,
-          n(27) + bf(2) + c(cls[:four])[2] + f(7) + c(cls[:eight])[1] + du,
-          n(28) + bf(2) + c(cls[:four])[3] + hp(7) + c(cls[:eight])[2],
-          n(29) + bf(2) + c(cls[:four])[4] + bf(7) + c(cls[:eight])[3],
-          n(30) + bf(19) + c(cls[:eight])[4],
-          n(31) + bf(37),
+          n(20) + bf(7) + vp + f(8) + c(cls[:twelve])[3] + dd,
+          n(21) + bf(7) + vp + f(8) + c(cls[:twelve])[4] + f + dd,
+          n(22) + bf(7) + vp + f(6) + du + f(14) + dd,
+          n(23) + bf(7) + vp + f(5) + du + f(17) + dd + c(cls[:seven])[0],
+          n(24) + bf(7) + vp + f(4) + du + f(19) + c(cls[:seven])[1],
+          n(25) + bf(2) + c(cls[:four])[0] + f(19) + du + c(cls[:seven])[2] + dd,
+          n(26) + bf(2) + c(cls[:four])[1] + dd + f(6) + c(cls[:eight])[0] + f + du + bf + c(cls[:seven])[3] + bf(2) + dd + f(2) + c(cls[:three])[0],
+          n(27) + bf(2) + c(cls[:four])[2] + bf(2) + dd + f(4) + c(cls[:eight])[1] + du + bf(2) + c(cls[:seven])[4] + bf(4) + dd + c(cls[:three])[1],
+          n(28) + bf(2) + c(cls[:four])[3] + bf(4) + dd + f(2) + c(cls[:eight])[2] + bf(18) + c(cls[:three])[2],
+          n(29) + bf(2) + c(cls[:four])[4] + bf(6) + dd + c(cls[:eight])[3] + bf(18) + c(cls[:three])[3],
+          n(30) + bf(19) + c(cls[:eight])[4] + bf(18) + c(cls[:three])[4],
+          n(31) + bf(70),
         ].each do |line|
           puts line.join
         end
