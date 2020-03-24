@@ -51,38 +51,39 @@ module Root
       def display
         cls = game.board.clearings
         [
-          n(0) + f(37),
-          n(1) + f(32) + c(cls[:five])[0],
-          n(2) + f(2) + c(cls[:one])[0] + f(20) + c(cls[:five])[1],
-          n(3) + f(2) + c(cls[:one])[1] + hp(20) + c(cls[:five])[2],
-          n(4) + f(2) + c(cls[:one])[2] + f(20) + c(cls[:five])[3],
-          n(5) + f(2) + c(cls[:one])[3] + f(20) + c(cls[:five])[4],
-          n(6) + f(2) + c(cls[:one])[4] + dd + f(19),
-          n(7) + f(14) + dd + f(21),
-          n(8) + f(7) + vp + f(8) + dd + f(14),
-          n(9) + f(7) + vp + f(10) + dd + f(3) + c(cls[:ten])[0] + f(4),
-          n(9) + f(7) + vp + f(12) + dd + f + c(cls[:ten])[1] + f(5),
-          n(10) + f(7) + vp + f(14) + c(cls[:ten])[2] + f(5),
-          n(11) + f(7) + vp + f(14) + c(cls[:ten])[3] + f(5),
-          n(12) + f(2) + c(cls[:nine])[0] + f(10) + c(cls[:ten])[4] + f(5),
-          n(13) + f(2) + c(cls[:nine])[1] + f(11) +  du + f(24),
-          n(14) + f(2) + c(cls[:nine])[2] + f(10) + du + f(24),
-          n(15) + f(2) + c(cls[:nine])[3] + f(9) + du + f(24),
-          n(16) + f(2) + c(cls[:nine])[4] + f(8) + du + f(24),
-          n(17) + f(7) + vp + f(4) + dd + f(3) + c(cls[:twelve])[0],
-          n(18) + f(7) + vp + f(6) + dd + f(1) + c(cls[:twelve])[1],
-          n(19) + f(7) + vp + f(8) + c(cls[:twelve])[2],
-          n(20) + f(7) + vp + f(8) + c(cls[:twelve])[3],
-          n(21) + f(7) + vp + f(8) + c(cls[:twelve])[4],
-          n(22) + f(7) + vp + f(6) + du,
-          n(23) + f(7) + vp + f(5) + du,
-          n(24) + f(7) + vp + f(4) + du,
-          n(25) + f(2) + c(cls[:four])[0] + f(19),
-          n(26) + f(2) + c(cls[:four])[1] + f(19),
-          n(27) + f(2) + c(cls[:four])[2] + f(19),
-          n(28) + f(2) + c(cls[:four])[3] + f(19),
-          n(29) + f(2) + c(cls[:four])[4] + f(19),
-          n(30) + f(37),
+          n(0) + bf(37),
+          n(1) + bf(32) + c(cls[:five])[0],
+          n(2) + bf(2) + c(cls[:one])[0] + bf(20) + c(cls[:five])[1],
+          n(3) + bf(2) + c(cls[:one])[1] + hp(20) + c(cls[:five])[2],
+          n(4) + bf(2) + c(cls[:one])[2] + f(20) + c(cls[:five])[3],
+          n(5) + bf(2) + c(cls[:one])[3] + f(20) + c(cls[:five])[4],
+          n(6) + bf(2) + c(cls[:one])[4] + dd + f(19),
+          n(7) + bf(14) + dd + f(21),
+          n(8) + bf(7) + vp + f(8) + dd + f(14),
+          n(9) + bf(7) + vp + f(10) + dd + f(3) + c(cls[:ten])[0] + f(4),
+          n(9) + bf(7) + vp + f(12) + dd + f + c(cls[:ten])[1] + f(5),
+          n(10) + bf(7) + vp + f(14) + c(cls[:ten])[2] + f(5),
+          n(11) + bf(7) + vp + f(14) + c(cls[:ten])[3] + f(5),
+          n(12) + bf(2) + c(cls[:nine])[0] + f(10) + c(cls[:ten])[4] + f(5),
+          n(13) + bf(2) + c(cls[:nine])[1] + f(11) +  du + f(24),
+          n(14) + bf(2) + c(cls[:nine])[2] + f(10) + du + f(24),
+          n(15) + bf(2) + c(cls[:nine])[3] + f(9) + du + f(24),
+          n(16) + bf(2) + c(cls[:nine])[4] + f(8) + du + f(24),
+          n(17) + bf(7) + vp + f(4) + dd + f(3) + c(cls[:twelve])[0],
+          n(18) + bf(7) + vp + f(6) + dd + f + c(cls[:twelve])[1],
+          n(19) + bf(7) + vp + f(8) + c(cls[:twelve])[2],
+          n(20) + bf(7) + vp + f(8) + c(cls[:twelve])[3],
+          n(21) + bf(7) + vp + f(8) + c(cls[:twelve])[4],
+          n(22) + bf(7) + vp + f(6) + du,
+          n(23) + bf(7) + vp + f(5) + du,
+          n(24) + bf(7) + vp + f(4) + du,
+          n(25) + bf(2) + c(cls[:four])[0] + f(17),
+          n(26) + bf(2) + c(cls[:four])[1] + f(7) + c(cls[:eight])[0] + f + du,
+          n(27) + bf(2) + c(cls[:four])[2] + f(7) + c(cls[:eight])[1] + du,
+          n(28) + bf(2) + c(cls[:four])[3] + hp(7) + c(cls[:eight])[2],
+          n(29) + bf(2) + c(cls[:four])[4] + bf(7) + c(cls[:eight])[3],
+          n(30) + bf(19) + c(cls[:eight])[4],
+          n(31) + bf(37),
         ].each do |line|
           puts line.join
         end
@@ -94,7 +95,11 @@ module Root
       end
 
       def f(num = 1)
-        Array.new(num) {  Rainbow('^').darkgreen }
+        Array.new(num) {  Rainbow("\u25B4").darkgreen }
+      end
+
+      def bf(num = 1)
+        Array.new(num) {  Rainbow("\u25B4").darkolivegreen }
       end
 
       def hp(num = 1)
