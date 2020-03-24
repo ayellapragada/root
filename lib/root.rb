@@ -12,6 +12,7 @@ require 'root/cards/item'
 require 'root/decks/starter'
 
 require 'root/display/terminal'
+require 'root/display/woodlands_terminal'
 
 require 'root/factions/bird'
 require 'root/factions/cat'

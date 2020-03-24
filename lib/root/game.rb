@@ -25,5 +25,9 @@ module Root
         player.setup(board)
       end
     end
+
+    def render
+      players.each { |player| player.render_game(self) }
+    end
   end
 end

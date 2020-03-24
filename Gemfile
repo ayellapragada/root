@@ -5,10 +5,12 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in root.gemspec
 gemspec
 
+gem 'rainbow'
+
 # DEV
 gem 'byebug', '~> 11.0'
 gem 'rake', '~> 12.0'
-gem 'sandi_meter', require: :false
+gem 'sandi_meter', require: false
 
 # TEST
 gem 'guard', '~> 2.0'

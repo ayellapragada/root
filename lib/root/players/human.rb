@@ -9,6 +9,10 @@ module Root
       def pick_option(options)
         display.pick_option(options)
       end
+
+      def render_game(game)
+        display.render_game(game, self)
+      end
     end
   end
 end

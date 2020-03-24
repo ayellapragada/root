@@ -137,6 +137,7 @@ DEPENDENCIES
   guard-rspec (~> 4.0)
   pry!
   pry-byebug (~> 3.0)
+  rainbow
   rake (~> 12.0)
   root!
   rspec (~> 3.0)

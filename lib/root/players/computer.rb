@@ -11,6 +11,10 @@ module Root
         choice = options.sample
         options.find_index(choice)
       end
+
+      def render_game(*)
+        # Surprise we don't render anything for a computer :wow:
+      end
     end
   end
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative './woodlands_terminal'
+
 module Root
   # This is going to be handling input / output for different screens
   module Display
@@ -11,6 +13,14 @@ module Root
         display_pick_option_message
         display_options(options)
         ask_for_selected_option
+      end
+
+      def render_game(game, player_to_view_as)
+        # render_items
+        render_map
+        # render_clearings_in_map
+        # render_victory_points
+        # render_current_player_info
       end
 
       private
@@ -32,6 +42,9 @@ module Root
 
       def ask_for_selected_option
         gets.chomp.to_i - 1
+      end
+
+      def render_map
       end
       #:nocov:
     end
