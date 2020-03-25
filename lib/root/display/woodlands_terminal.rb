@@ -138,7 +138,7 @@ module Root
 
         # Going to do some fky instance variables thing with dot
         @buildings = cl.buildings_with_empties
-        @pieces = (cl.tokens + cl.warriors)
+        @pieces = (cl.tokens + cl.meeples)
 
         if cl.priority == 4
           [

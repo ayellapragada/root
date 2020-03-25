@@ -2,11 +2,11 @@
 
 RSpec.describe Root::Factions::Cat do
   describe '.handle_faction_token_setup' do
-    it 'gives faction 25 warriors, and then 6 buildings of each type' do
+    it 'gives faction 25 meeples, and then 6 buildings of each type' do
       player = Root::Players::Human.for('Sneak', :cats)
       faction = player.faction
 
-      expect(faction.warriors.count).to eq(25)
+      expect(faction.meeples.count).to eq(25)
 
       expect(faction.recruiters.count).to eq(6)
       expect(faction.sawmills.count).to eq(6)
@@ -57,9 +57,9 @@ RSpec.describe Root::Factions::Cat do
 
       keep_clearing = board.clearing_across_from_keep
       other_clearings = board.clearings_other_than(keep_clearing)
-      expect(clearings_have_one_cat_warriors?(other_clearings)).to be true
-      expect(faction.warriors.count).to eq(14)
-      expect(keep_clearing.warriors.count).to eq(0)
+      expect(clearings_have_one_cat_meeple?(other_clearings)).to be true
+      expect(faction.meeples.count).to eq(14)
+      expect(keep_clearing.meeples.count).to eq(0)
     end
   end
 
@@ -68,9 +68,9 @@ RSpec.describe Root::Factions::Cat do
       clearing.adjacents.one? { |adj| adj.includes_building?(type) }
   end
 
-  def clearings_have_one_cat_warriors?(clearings)
+  def clearings_have_one_cat_meeple?(clearings)
     clearings.all? do |cl|
-      cl.warriors.count == 1 && cl.warriors.first.faction == :cat
+      cl.meeples.count == 1 && cl.meeples.first.faction == :cat
     end
   end
 end

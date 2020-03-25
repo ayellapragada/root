@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './base'
-require_relative '../pieces/warrior'
+require_relative '../pieces/meeple'
 
 module Root
   module Factions
@@ -14,13 +14,13 @@ module Root
       end
 
       def handle_faction_token_setup
-        handle_warrior_setup
+        handle_meeple_setup
         handle_building_setup
         handle_token_setup
       end
 
-      def handle_warrior_setup
-        25.times { warriors << Pieces::Warrior.new(:cat) }
+      def handle_meeple_setup
+        25.times { meeples << Pieces::Meeple.new(:cat) }
       end
 
       def handle_building_setup
@@ -89,7 +89,7 @@ module Root
       def place_initial_warriors(board)
         clearing = board.clearing_across_from_keep
         board.clearings_other_than(clearing).each do |cl|
-          board.place_warrior(warriors.pop, cl)
+          board.place_meeple(meeples.pop, cl)
         end
       end
     end

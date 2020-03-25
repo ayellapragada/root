@@ -6,7 +6,7 @@ module Root
     class Base
       SETUP_PRIORITY = 'ZZZ'
 
-      attr_reader :hand, :victory_points, :player, :warriors, :buildings, :tokens
+      attr_reader :hand, :victory_points, :player, :meeples, :buildings, :tokens
 
       def initialize(player)
         @player = player
@@ -17,7 +17,7 @@ module Root
       end
 
       def set_base_pieces
-        @warriors = []
+        @meeples = []
         @buildings = []
         @tokens = []
       end

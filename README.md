@@ -48,5 +48,5 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 ## Ideas For Next
 
 Game -> Players + Board + Deck + Discard
-Players -> Factions -> Buildings + Warriors + Tokens + Hand + Special Section (If Any)
-Board -> Clearings -> Buildings + Tokens + Warriors
+Players -> Factions -> Buildings + + Meeples + Tokens + Hand + Special Section (If Any)
+Board -> Clearings -> Buildings + Tokens + Meeples

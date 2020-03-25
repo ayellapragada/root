@@ -36,7 +36,7 @@ require 'root/players/list'
 
 require 'root/pieces/building'
 require 'root/pieces/token'
-require 'root/pieces/warrior'
+require 'root/pieces/meeple'
 
 module Root
 end
