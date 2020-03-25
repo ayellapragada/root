@@ -119,15 +119,15 @@ module Root
       end
 
       def vpr(num = 1)
-        Array.new(num) {  Rainbow('|').skyblue }
+        Array.new(num) {  Rainbow('|').royalblue }
       end
 
       def ddr(num = 1)
-        Array.new(num) {  Rainbow("\\").skyblue }
+        Array.new(num) {  Rainbow("\\").royalblue }
       end
 
       def dur(num = 1)
-        Array.new(num) {  Rainbow("/").skyblue }
+        Array.new(num) {  Rainbow("/").royalblue }
       end
 
       def c(cl)
@@ -137,7 +137,7 @@ module Root
         ver = Rainbow('|').fg(co)
 
         # Going to do some fky instance variables thing with dot
-        @pieces = (cl.buildings + cl.tokens + cl.meeples)
+        @pieces = (cl.buildings_with_empties + cl.tokens + cl.meeples)
 
         if cl.priority == 4
           [
@@ -198,7 +198,7 @@ module Root
           if @pieces.empty?
             res << Rainbow("\u00B7").fg(:lightgoldenrod).faint
           else
-            pie = @pieces.pop
+            pie = @pieces.shift
             res << Rainbow(pie.display_symbol).color(pie.display_color)
           end
         end

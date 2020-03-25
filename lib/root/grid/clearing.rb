@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './ruin'
+require_relative './empty_slot'
 
 module Root
   module Grid
@@ -85,6 +86,10 @@ module Root
 
       def includes_building?(type)
         buildings.any? { |building| building.type == type }
+      end
+
+      def buildings_with_empties
+        buildings.dup.fill(EmptySlot.new, buildings.count, available_slots)
       end
 
       private

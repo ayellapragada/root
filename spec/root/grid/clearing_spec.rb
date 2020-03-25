@@ -83,4 +83,19 @@ RSpec.describe Root::Grid::Clearing do
       end
     end
   end
+
+  describe '.buildings_with_empties' do
+    it 'fills available slots with empty slots for display' do
+      clearing = Root::Grid::Clearing.new(
+        priority: 1,
+        suit: :bunny,
+        slots: 3,
+        ruin: true
+      )
+
+      expect(clearing.buildings_with_empties.map(&:type))
+        .to eq(%i[ruin emptyslot emptyslot])
+      expect(clearing.buildings.map(&:type)).to eq(%i[ruin])
+    end
+  end
 end

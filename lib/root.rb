@@ -27,6 +27,7 @@ require 'root/factions/cats/workshop'
 require 'root/factions/cats/wood'
 
 require 'root/grid/clearing'
+require 'root/grid/empty_slot'
 require 'root/grid/ruin'
 
 require 'root/players/computer'
