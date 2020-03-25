@@ -6,7 +6,7 @@ require_relative '../factions/cats/catable'
 module Root
   module Pieces
     # Handles base logic for Warrior Tokens
-    class Meeple < Base
+    class Warrior < Base
       COLOR_FACTION_MAP = {
         cat: Factions::Cats::Catable::DISPLAY_COLOR
       }.freeze

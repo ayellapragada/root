@@ -137,7 +137,7 @@ module Root
         ver = Rainbow('|').fg(co)
 
         # Going to do some fky instance variables thing with dot
-        @pieces = (cl.buildings_with_empties + cl.tokens + cl.meeples)
+        @pieces = (cl.buildings_with_empties + cl.tokens + cl.warriors)
 
         if cl.priority == 4
           [

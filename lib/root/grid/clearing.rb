@@ -10,7 +10,7 @@ module Root
       VALID_SUITS = %i[bunny mice rabbit].freeze
 
       attr_reader :priority, :suit, :slots, :ruin,
-                  :adjacents, :buildings, :tokens, :meeples
+                  :adjacents, :buildings, :tokens, :warriors
 
       def initialize(priority:, suit:, slots:, ruin: false)
         @priority = priority
@@ -24,7 +24,7 @@ module Root
         @adjacents = []
         @buildings = []
         @tokens = []
-        @meeples = []
+        @warriors = []
       end
 
       # :nocov:
@@ -34,7 +34,7 @@ module Root
         adjacents_nodes = adjacents.map(&:priority).join(', ')
         building_types = buildings.map(&:type).join(', ')
         token_types = tokens.map(&:type).join(', ')
-        meeple_types = meeples.map(&:faction).join(', ')
+        warrior_types = warriors.map(&:faction).join(', ')
 
         result = [
           "Clearing ##{priority}: #{suit}",
@@ -43,7 +43,7 @@ module Root
 
         result << "Buildings: #{building_types}" if buildings.any?
         result << "Tokens: #{token_types}" if tokens.any?
-        result << "Meeples: #{meeple_types}" if meeples.any?
+        result << "Warriors: #{warrior_types}" if warriors.any?
 
         result.join(' | ')
       end
@@ -80,8 +80,8 @@ module Root
         tokens << token
       end
 
-      def place_meeple(meeple)
-        meeples << meeple
+      def place_warrior(warrior)
+        warriors << warrior
       end
 
       def includes_building?(type)

@@ -33,8 +33,8 @@ module Root
         clearing.create_building(building)
       end
 
-      def place_meeple(meeple, clearing)
-        clearing.place_meeple(meeple)
+      def place_warrior(warrior, clearing)
+        clearing.place_warrior(warrior)
       end
 
       def clearing_with_keep
