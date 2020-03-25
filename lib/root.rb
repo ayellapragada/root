@@ -19,6 +19,7 @@ require 'root/factions/cat'
 require 'root/factions/mouse'
 require 'root/factions/vagabond'
 
+require 'root/factions/cats/catable'
 require 'root/factions/cats/keep'
 require 'root/factions/cats/recruiter'
 require 'root/factions/cats/sawmill'

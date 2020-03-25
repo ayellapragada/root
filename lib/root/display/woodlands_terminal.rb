@@ -130,15 +130,14 @@ module Root
         Array.new(num) {  Rainbow("/").skyblue }
       end
 
-      def dot(num = 1)
-        Array.new(num) { Rainbow("\u00B7").fg(:lightgoldenrod).faint }
-      end
-
       def c(cl)
         co = SUIT_COLOR[cl.suit]
         hor = Rainbow('-').fg(co)
         cor = Rainbow('+').fg(co)
         ver = Rainbow('|').fg(co)
+
+        # Going to do some fky instance variables thing with dot
+        @pieces = (cl.buildings + cl.tokens + cl.meeples)
 
         if cl.priority == 4
           [
@@ -188,7 +187,23 @@ module Root
             [ver, dot(9), ver],
             [cor, hor, hor, hor, hor, hor, hor, hor, hor, hor, cor],
           ]
+        end.tap do
+          @pieces = []
         end
+      end
+
+      def dot(num = 1)
+        res = []
+        num.times do |i|
+          if @pieces.empty?
+            res << Rainbow("\u00B7").fg(:lightgoldenrod).faint
+          else
+            pie = @pieces.pop
+            res << Rainbow(pie.display_symbol).color(pie.display_color)
+          end
+        end
+
+        res
       end
 
       attr_reader :game

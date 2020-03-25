@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
+require_relative './base'
+
 module Root
   module Pieces
     # Handles base logic for the square pieces.
-    class Building
-      def type
-        self.class.name.split('::').last.downcase.to_sym
-      end
+    class Building < Base
     end
   end
 end

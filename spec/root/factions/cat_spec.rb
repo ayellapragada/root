@@ -70,7 +70,7 @@ RSpec.describe Root::Factions::Cat do
 
   def clearings_have_one_cat_meeple?(clearings)
     clearings.all? do |cl|
-      cl.meeples.count == 1 && cl.meeples.first.type == :cat
+      cl.meeples.count == 1 && cl.meeples.first.faction == :cat
     end
   end
 end

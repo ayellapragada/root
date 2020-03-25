@@ -28,11 +28,12 @@ module Root
 
       # :nocov:
       # This breaks sandi_meter :sweats:
+      # rubocop:disable all
       def inspect
         adjacents_nodes = adjacents.map(&:priority).join(', ')
         building_types = buildings.map(&:type).join(', ')
         token_types = tokens.map(&:type).join(', ')
-        meeple_types = meeples.map(&:type).join(', ')
+        meeple_types = meeples.map(&:faction).join(', ')
 
         result = [
           "Clearing ##{priority}: #{suit}",
@@ -45,6 +46,7 @@ module Root
 
         result.join(' | ')
       end
+      # rubocop:enable all
       # :nocov:
 
       def ruin?
