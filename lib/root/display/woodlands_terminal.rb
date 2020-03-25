@@ -137,7 +137,8 @@ module Root
         ver = Rainbow('|').fg(co)
 
         # Going to do some fky instance variables thing with dot
-        @pieces = (cl.buildings_with_empties + cl.tokens + cl.warriors)
+        @buildings = cl.buildings_with_empties
+        @pieces = (cl.tokens + cl.warriors)
 
         if cl.priority == 4
           [
@@ -188,6 +189,7 @@ module Root
             [cor, hor, hor, hor, hor, hor, hor, hor, hor, hor, cor],
           ]
         end.tap do
+          @buildings = []
           @pieces = []
         end
       end
@@ -195,11 +197,14 @@ module Root
       def dot(num = 1)
         res = []
         num.times do |i|
-          if @pieces.empty?
+          if @pieces.empty? && @buildings.empty?
             res << Rainbow("\u00B7").fg(:lightgoldenrod).faint
-          else
+          elsif @buildings.empty?
             pie = @pieces.shift
             res << Rainbow(pie.display_symbol).color(pie.display_color)
+          else
+            build = @buildings.shift
+            res << Rainbow(build.display_symbol).color(build.display_color).bright.underline
           end
         end
 
