@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Factions::Cat do
-  describe '.handle_faction_token_setup' do
+  describe '#handle_faction_token_setup' do
     it 'gives faction 25 meeples, and then 6 buildings of each type' do
       player = Root::Players::Human.for('Sneak', :cats)
       faction = player.faction
@@ -16,7 +16,7 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '.setup' do
+  describe '#setup' do
     it 'sets a keep in the corner' do
       board = Root::Boards::Woodlands.new
       player = Root::Players::Human.for('Sneak', :cats)

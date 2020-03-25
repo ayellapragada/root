@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Grid::Clearing do
-  describe '.initialize' do
+  describe '#initialize' do
     it 'sets values for a clearing' do
       clearing = Root::Grid::Clearing.new(
         priority: 1,
@@ -17,7 +17,7 @@ RSpec.describe Root::Grid::Clearing do
     end
   end
 
-  describe '.add_path' do
+  describe '#add_path' do
     it 'creates a link between two adjacent clearings' do
       clearing_one = Root::Grid::Clearing.new(priority: 1, suit: :fox, slots: 2)
       clearing_two = Root::Grid::Clearing.new(priority: 2, suit: :fox, slots: 2)
@@ -28,7 +28,7 @@ RSpec.describe Root::Grid::Clearing do
     end
   end
 
-  describe '.available_slots' do
+  describe '#available_slots' do
     context 'without a ruin' do
       it 'counts all slots as available' do
         clearing = Root::Grid::Clearing.new(priority: 1, suit: :fox, slots: 3)
@@ -51,7 +51,7 @@ RSpec.describe Root::Grid::Clearing do
     end
   end
 
-  describe '.create_building' do
+  describe '#create_building' do
     context 'when there is room' do
       it 'creates a building' do
         clearing = Root::Grid::Clearing.new(
@@ -84,7 +84,7 @@ RSpec.describe Root::Grid::Clearing do
     end
   end
 
-  describe '.buildings_with_empties' do
+  describe '#buildings_with_empties' do
     it 'fills available slots with empty slots for display' do
       clearing = Root::Grid::Clearing.new(
         priority: 1,

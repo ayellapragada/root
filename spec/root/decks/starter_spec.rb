@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Decks::Starter do
-  describe '.initialize' do
+  describe '#initialize' do
     it 'creates a deck with cards' do
       deck = Root::Decks::Starter.new
       first_card = deck.first
@@ -11,7 +11,7 @@ RSpec.describe Root::Decks::Starter do
     end
   end
 
-  describe '.draw_from_top' do
+  describe '#draw_from_top' do
     it 'draws a number of cards from the top' do
       deck = Root::Decks::Starter.new
 

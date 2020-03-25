@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Players::List do
-  describe '.initialize' do
+  describe '#initialize' do
     it 'sets players and current_player' do
       list = Root::Players::List.new(
         Root::Players::Human.for('Sneaky', :mice),
@@ -14,7 +14,7 @@ RSpec.describe Root::Players::List do
     end
   end
 
-  describe '.rotate_current_player' do
+  describe '#rotate_current_player' do
     it 'rotates to the next and wraps around' do
       list = Root::Players::List.default_player_list
 
@@ -30,7 +30,7 @@ RSpec.describe Root::Players::List do
     end
   end
 
-  describe '.order_by_setup_priority' do
+  describe '#order_by_setup_priority' do
     it 'sorts by setup priority, not turn priority' do
       list = Root::Players::List.default_player_list
       ordered = list.order_by_setup_priority

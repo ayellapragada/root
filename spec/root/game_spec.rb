@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Game do
-  describe '.initialize' do
+  describe '#initialize' do
     it 'takes players, board, and deck' do
       players = Root::Players::List.default_player_list
       board = Root::Boards::Woodlands.new
@@ -15,8 +15,7 @@ RSpec.describe Root::Game do
     end
   end
 
-  # OOF this gon be big.
-  describe '.setup' do
+  describe '#setup' do
     it 'sets up the game' do
       game = Root::Game.default_game
       human_player = game.players.fetch_player(:mice)
