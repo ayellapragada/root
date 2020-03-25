@@ -27,6 +27,8 @@ require 'root/factions/cats/workshop'
 require 'root/factions/cats/wood'
 
 require 'root/factions/birds/birdable'
+require 'root/factions/birds/decree'
+require 'root/factions/birds/leader'
 require 'root/factions/birds/roost'
 
 require 'root/grid/clearing'
