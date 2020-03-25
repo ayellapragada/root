@@ -38,7 +38,7 @@ RSpec.describe Root::Factions::Cat do
 
       player.setup(board)
 
-      clearing = board.clearing_with_keep
+      clearing = board.corner_with_keep
       expect(clearing_has_building(clearing, :recruiter)).to be true
       expect(clearing_has_building(clearing, :sawmill)).to be true
       expect(clearing_has_building(clearing, :workshop)).to be true

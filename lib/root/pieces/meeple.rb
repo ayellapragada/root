@@ -2,13 +2,15 @@
 
 require_relative './base'
 require_relative '../factions/cats/catable'
+require_relative '../factions/birds/birdable'
 
 module Root
   module Pieces
     # Handles base logic for Warrior Tokens
     class Meeple < Base
       COLOR_FACTION_MAP = {
-        cat: Factions::Cats::Catable::DISPLAY_COLOR
+        cat: Factions::Cats::Catable::DISPLAY_COLOR,
+        bird: Factions::Birds::Birdable::DISPLAY_COLOR
       }.freeze
 
       attr_reader :faction
@@ -22,7 +24,7 @@ module Root
       end
 
       def display_symbol
-        super.downcase
+        'o'
       end
     end
   end

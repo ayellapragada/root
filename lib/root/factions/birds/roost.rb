@@ -2,10 +2,10 @@
 
 module Root
   module Factions
-    module Cats
+    module Birds
       # Recruiter building for cats, how they get more warriors out.
-      class Recruiter < Pieces::Building
-        include Catable
+      class Roost < Pieces::Building
+        include Birdable
       end
     end
   end

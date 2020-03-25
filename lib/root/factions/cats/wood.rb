@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../pieces/token'
-require_relative './catable'
-
 module Root
   module Factions
     module Cats

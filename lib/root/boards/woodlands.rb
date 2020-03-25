@@ -37,20 +37,27 @@ module Root
         clearing.place_meeple(meeple)
       end
 
-      def clearing_with_keep
+      def corner_with_keep
+        corner_with(:keep)
+      end
+
+      def corner_with_roost
+        corner_with(:roost)
+      end
+
+      def corner_with(type)
         corners.find do |corner|
-          corner.tokens.any? do |tokens|
-            tokens.type == :keep
-          end
+          corner.tokens.any? { |tokens| tokens.type == type } ||
+            corner.buildings.any? { |building| building.type == type }
         end
       end
 
       def keep_in_corner?
-        !!clearing_with_keep
+        !!corner_with_keep
       end
 
       def clearing_across_from_keep
-        clearings[DIAGANOLS[clearing_with_keep.priority]]
+        clearings[DIAGANOLS[corner_with_keep.priority]]
       end
 
       def clearings_other_than(other_clearing)

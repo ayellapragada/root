@@ -19,12 +19,15 @@ require 'root/factions/cat'
 require 'root/factions/mouse'
 require 'root/factions/vagabond'
 
-require 'root/factions/cats/catable'
 require 'root/factions/cats/keep'
+require 'root/factions/cats/catable'
 require 'root/factions/cats/recruiter'
 require 'root/factions/cats/sawmill'
 require 'root/factions/cats/workshop'
 require 'root/factions/cats/wood'
+
+require 'root/factions/birds/birdable'
+require 'root/factions/birds/roost'
 
 require 'root/grid/clearing'
 require 'root/grid/empty_slot'

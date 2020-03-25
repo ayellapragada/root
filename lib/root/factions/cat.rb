@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './base'
-require_relative '../pieces/meeple'
-
 module Root
   module Factions
     # Handle cats faction logic
@@ -20,18 +17,19 @@ module Root
       end
 
       def handle_meeple_setup
-        25.times { meeples << Pieces::Meeple.new(:cat) }
+        @meeples = Array.new(25) { Pieces::Meeple.new(:cat) }
       end
 
       def handle_building_setup
-        6.times { buildings << Cats::Recruiter.new }
-        6.times { buildings << Cats::Sawmill.new }
-        6.times { buildings << Cats::Workshop.new }
+        @buildings = [
+          Array.new(6) { Cats::Recruiter.new },
+          Array.new(6) { Cats::Sawmill.new },
+          Array.new(6) { Cats::Workshop.new }
+        ].flatten
       end
 
       def handle_token_setup
-        8.times { tokens << Cats::Wood.new }
-        tokens << Cats::Keep.new
+        @tokens = [Cats::Keep.new] + Array.new(8) { Cats::Wood.new }
       end
 
       def recruiters
@@ -82,7 +80,7 @@ module Root
       end
 
       def find_initial_options(board)
-        keep_clearing = board.clearing_with_keep
+        keep_clearing = board.corner_with_keep
         [keep_clearing, *keep_clearing.adjacents].select(&:with_spaces?)
       end
 
