@@ -22,7 +22,7 @@ module Root
     def setup
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card(deck) }
-        player.setup(board)
+        player.setup(board, deck)
       end
     end
 

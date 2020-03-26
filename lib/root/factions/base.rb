@@ -37,8 +37,10 @@ module Root
         self.class::SETUP_PRIORITY
       end
 
-      def setup(board:)
+      def setup(board:, deck: nil)
         # will be removed once all factions handle this on their own
+        # We need a board to interact with
+        # But not all factions draw from deck
       end
     end
   end

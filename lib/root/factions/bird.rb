@@ -36,7 +36,7 @@ module Root
         @roosts ||= buildings.select { |b| b.type == :roost }
       end
 
-      def setup(board:)
+      def setup(board:, **_)
         setup_roost_in_corner(board)
         change_current_leader
         change_viziers_with_leader

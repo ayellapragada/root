@@ -2,7 +2,7 @@
 
 RSpec.describe Root::Factions::Bird do
   describe '#handle_faction_token_setup' do
-    it 'gives faction 20 meeples,7 roosts, 2 loyal viziers, and 4 leaders' do
+    it 'gives faction 20 meeples, 7 roosts, 2 loyal viziers, and 4 leaders' do
       player = Root::Players::Human.for('Sneak', :birds)
       faction = player.faction
 

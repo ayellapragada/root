@@ -45,8 +45,8 @@ module Root
         faction.faction_symbol
       end
 
-      def setup(board)
-        faction.setup(board: board)
+      def setup(board, deck = nil)
+        faction.setup(board: board, deck: deck)
       end
     end
   end

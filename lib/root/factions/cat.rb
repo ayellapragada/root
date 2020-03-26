@@ -52,7 +52,7 @@ module Root
         @keep ||= tokens.select { |b| b.type == :keep }
       end
 
-      def setup(board:)
+      def setup(board:, **_)
         build_keep(board)
         build_initial_buildings(board)
         place_initial_warriors(board)
