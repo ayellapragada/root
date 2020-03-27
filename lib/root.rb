@@ -41,6 +41,7 @@ require 'root/factions/vagabonds/character'
 require 'root/factions/vagabonds/characters'
 require 'root/factions/vagabonds/quest_card'
 require 'root/factions/vagabonds/quest_deck'
+require 'root/factions/vagabonds/relationships'
 require 'root/factions/vagabonds/vagabondable'
 
 require 'root/grid/clearing'

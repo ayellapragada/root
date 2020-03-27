@@ -35,6 +35,10 @@ module Root
         players.find { |player| player.faction_symbol == faction_symbol }
       end
 
+      def except_player(player)
+        players.reject { |other_player| other_player == player }
+      end
+
       def player_count
         players.count
       end

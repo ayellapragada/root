@@ -45,4 +45,19 @@ RSpec.describe Root::Players::List do
       )
     end
   end
+
+  describe '#except_player' do
+    it 'returns all other players' do
+      list = Root::Players::List.default_player_list
+      p1 = list.fetch_player(:cats)
+
+      expect(list.except_player(p1)).to match_array(
+        [
+          list.fetch_player(:birds),
+          list.fetch_player(:mice),
+          list.fetch_player(:vagabond)
+        ]
+      )
+    end
+  end
 end
