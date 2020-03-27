@@ -9,12 +9,12 @@ module Root
     # Not going to lie this might be the only one I end up creating.
     # I haven't played the expansions much so I'm not familiar with them.
     class Woodlands
-      attr_accessor :clearings
+      attr_accessor :all_clearings
 
       DIAGANOLS = { 1 => :three, 2 => :four, 3 => :one, 4 => :two }.freeze
 
       def initialize
-        @clearings = WoodlandsGenerator.generate
+        @all_clearings = WoodlandsGenerator.generate
       end
 
       def available_corners
@@ -23,6 +23,14 @@ module Root
 
       def corners
         [clearings[:one], clearings[:two], clearings[:three], clearings[:four]]
+      end
+
+      def clearings
+        all_clearings.select { |key, _| all_clearings[key].clearing? }
+      end
+
+      def forests
+        all_clearings.select { |key, _| all_clearings[key].forest? }
       end
 
       def place_token(token, clearing)

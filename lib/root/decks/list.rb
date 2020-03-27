@@ -9,15 +9,17 @@ module Root
       def self.default_decks_list
         new(
           shared: Decks::Starter.new,
-          quest: Factions::Vagabonds::QuestDeck.new
+          quest: Factions::Vagabonds::QuestDeck.new,
+          characters: Factions::Vagabonds::Characters.new
         )
       end
 
-      attr_accessor :shared, :quest
+      attr_reader :shared, :quest, :characters
 
-      def initialize(shared:, quest:)
+      def initialize(shared:, quest:, characters:)
         @shared = shared
         @quest = quest
+        @characters = characters
       end
     end
   end

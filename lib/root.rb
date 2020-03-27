@@ -37,6 +37,8 @@ require 'root/factions/mice/miceable'
 require 'root/factions/mice/base'
 require 'root/factions/mice/sympathy'
 
+require 'root/factions/vagabonds/character'
+require 'root/factions/vagabonds/characters'
 require 'root/factions/vagabonds/quest_card'
 require 'root/factions/vagabonds/quest_deck'
 require 'root/factions/vagabonds/vagabondable'

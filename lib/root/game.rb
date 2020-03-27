@@ -23,10 +23,6 @@ module Root
       decks.shared
     end
 
-    def quests
-      decks.quests
-    end
-
     def setup
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card(deck) }

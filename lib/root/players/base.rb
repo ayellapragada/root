@@ -50,7 +50,8 @@ module Root
           board: board,
           players: players,
           deck: decks&.shared,
-          quest: decks&.quest
+          quest: decks&.quest,
+          characters: decks&.characters
         )
       end
     end

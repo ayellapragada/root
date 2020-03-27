@@ -4,6 +4,7 @@ require_relative './base'
 require_relative '../factions/cats/catable'
 require_relative '../factions/birds/birdable'
 require_relative '../factions/mice/miceable'
+require_relative '../factions/vagabonds/vagabondable'
 
 module Root
   module Pieces
@@ -12,7 +13,8 @@ module Root
       COLOR_FACTION_MAP = {
         cat: Factions::Cats::Catable::DISPLAY_COLOR,
         bird: Factions::Birds::Birdable::DISPLAY_COLOR,
-        mouse: Factions::Mice::Miceable::DISPLAY_COLOR
+        mouse: Factions::Mice::Miceable::DISPLAY_COLOR,
+        vagabond: Factions::Vagabonds::Vagabondable::DISPLAY_COLOR
       }.freeze
 
       attr_reader :faction

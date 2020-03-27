@@ -22,7 +22,14 @@ module Root
         { name: :nine, priority: 9, suit: :mouse, slots: 2 },
         { name: :ten, priority: 10, suit: :rabbit, slots: 2, ruin: true },
         { name: :eleven, priority: 11, suit: :mouse, slots: 3, ruin: true },
-        { name: :twelve, priority: 12, suit: :fox, slots: 2, ruin: true }
+        { name: :twelve, priority: 12, suit: :fox, slots: 2, ruin: true },
+        { name: :a, priority: :A, suit: :forest, slots: 0, type: :forest },
+        { name: :b, priority: :B, suit: :forest, slots: 0, type: :forest },
+        { name: :c, priority: :C, suit: :forest, slots: 0, type: :forest },
+        { name: :d, priority: :D, suit: :forest, slots: 0, type: :forest },
+        { name: :e, priority: :E, suit: :forest, slots: 0, type: :forest },
+        { name: :f, priority: :F, suit: :forest, slots: 0, type: :forest },
+        { name: :g, priority: :G, suit: :forest, slots: 0, type: :forest }
       ].freeze
 
       CLEARING_ADJACENCY_LINKS = {
@@ -37,7 +44,14 @@ module Root
         nine: %i[one four twelve],
         ten: %i[one two twelve],
         eleven: %i[three six twelve],
-        twelve: %i[four seven eight nine ten eleven]
+        twelve: %i[four seven eight nine ten eleven],
+        a: %i[b c one two five ten],
+        b: %i[a c d one nine ten twelve],
+        c: %i[a b f g two six ten eleven twelve],
+        d: %i[b e four nine twelve],
+        e: %i[d f four seven eight twelve],
+        f: %i[c e g three seven eleven twelve],
+        g: %i[c f three six eleven]
       }.freeze
 
       def self.generate

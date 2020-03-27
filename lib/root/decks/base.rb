@@ -18,6 +18,18 @@ module Root
         deck.shift(num)
       end
 
+      def remove_from_deck(card)
+        deck.delete(card)
+      end
+
+      def [](value)
+        deck[value]
+      end
+
+      def sample
+        deck.sample
+      end
+
       private
 
       def each
