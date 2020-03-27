@@ -63,15 +63,6 @@ RSpec.describe Root::Factions::Vagabond do
     end
 
     it 'sets up 4 ruins with item cards'
-
-    context 'without active quest cards' do
-      it 'sets up quest cards'
-    end
-
-    context 'with active quest cards' do
-      it 'does not draw new quest cards' do
-      end
-    end
   end
 
   def vagabond_is_in_forest(board)

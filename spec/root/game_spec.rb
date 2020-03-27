@@ -29,6 +29,7 @@ RSpec.describe Root::Game do
 
       expect(game.players.all? { |p| p.current_hand_size == 3 }).to be true
       expect(game.players.all? { |p| p.victory_points == 0 }).to be true
+      expect(game.active_quests.count).to be(3)
     end
   end
 end
