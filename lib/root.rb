@@ -35,6 +35,8 @@ require 'root/factions/mice/miceable'
 require 'root/factions/mice/base'
 require 'root/factions/mice/sympathy'
 
+require 'root/factions/vagabonds/vagabondable'
+
 require 'root/grid/clearing'
 require 'root/grid/empty_slot'
 require 'root/grid/ruin'

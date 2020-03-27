@@ -11,6 +11,26 @@ module Root
       def faction_symbol
         :vagabond
       end
+
+      def items
+        []
+      end
+
+      def damaged_items
+        []
+      end
+
+      def teas
+        []
+      end
+
+      def coins
+        []
+      end
+
+      def bags
+        []
+      end
     end
   end
 end

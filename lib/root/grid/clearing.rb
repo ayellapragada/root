@@ -27,6 +27,7 @@ module Root
         @meeples = []
       end
 
+      # Not testing because it's just a debug method, nbd.
       # :nocov:
       # This breaks sandi_meter :sweats:
       # rubocop:disable all

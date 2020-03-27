@@ -4,12 +4,12 @@ RSpec.describe Root::Factions::Bird do
   describe '#handle_faction_token_setup' do
     it 'gives faction 20 meeples, 7 roosts, 2 loyal viziers, and 4 leaders' do
       player = Root::Players::Human.for('Sneak', :birds)
-      faction = player.faction
+      birds = player.faction
 
-      expect(faction.meeples.count).to eq(20)
-      expect(faction.roosts.count).to eq(7)
-      expect(faction.viziers.count).to eq(2)
-      leaders = faction.leaders.map(&:leader)
+      expect(birds.meeples.count).to eq(20)
+      expect(birds.roosts.count).to eq(7)
+      expect(birds.viziers.count).to eq(2)
+      leaders = birds.leaders.map(&:leader)
       expect(leaders).to match_array(%i[builder charismatic commander despot])
     end
   end
@@ -56,11 +56,11 @@ RSpec.describe Root::Factions::Bird do
 
       player = Root::Players::Human.for('Sneak', :birds)
       allow(player).to receive(:pick_option).and_return(0)
-      faction = player.faction
+      birds = player.faction
 
-      expect(faction.current_leader).to be_nil
+      expect(birds.current_leader).to be_nil
       player.setup(board)
-      expect(faction.current_leader).not_to be nil
+      expect(birds.current_leader).not_to be nil
     end
 
     it 'starts initial decree for player with viziers' do
@@ -69,14 +69,14 @@ RSpec.describe Root::Factions::Bird do
       cat_faction.build_keep(board)
 
       player = Root::Players::Human.for('Sneak', :birds)
-      faction = player.faction
+      birds = player.faction
       allow(player).to receive(:pick_option).and_return(0)
-      expect(faction.decree).to be_empty
+      expect(birds.decree).to be_empty
 
       player.setup(board)
 
-      expect(faction.decree[:recruit]).to eq([:bird])
-      expect(faction.decree[:move]).to eq([:bird])
+      expect(birds.decree[:recruit]).to eq([:bird])
+      expect(birds.decree[:move]).to eq([:bird])
     end
   end
 
@@ -84,47 +84,47 @@ RSpec.describe Root::Factions::Bird do
     context 'when not given a leader to switch to' do
       it 'removes current leader and picks a new one' do
         player = Root::Players::Human.for('Sneak', :birds)
-        faction = player.faction
+        birds = player.faction
         allow(player).to receive(:pick_option).and_return(0)
-        expect(faction.current_leader).to be nil
+        expect(birds.current_leader).to be nil
 
-        faction.change_current_leader
-        expect(faction.current_leader).not_to be nil
-        old_leader = faction.current_leader
-        faction.change_current_leader
-        expect(faction.current_leader).not_to be old_leader
-        expect(faction.used_leaders).to match_array([old_leader])
-        faction.change_current_leader
-        faction.change_current_leader
-        expect(faction.used_leaders.count).to eq(3)
-        faction.change_current_leader
-        expect(faction.used_leaders.count).to eq(0)
+        birds.change_current_leader
+        expect(birds.current_leader).not_to be nil
+        old_leader = birds.current_leader
+        birds.change_current_leader
+        expect(birds.current_leader).not_to be old_leader
+        expect(birds.used_leaders).to match_array([old_leader])
+        birds.change_current_leader
+        birds.change_current_leader
+        expect(birds.used_leaders.count).to eq(3)
+        birds.change_current_leader
+        expect(birds.used_leaders.count).to eq(0)
       end
     end
 
     context 'when given a leader to switch to' do
       it 'switches current leader to given one' do
-        faction = Root::Players::Computer.for('Sneak', :birds).faction
-        expect(faction.current_leader).to be nil
+        birds = Root::Players::Computer.for('Sneak', :birds).faction
+        expect(birds.current_leader).to be nil
 
-        faction.change_current_leader(:despot)
-        expect(faction.current_leader.leader).to eq(:despot)
-        faction.change_current_leader(:builder)
+        birds.change_current_leader(:despot)
+        expect(birds.current_leader.leader).to eq(:despot)
+        birds.change_current_leader(:builder)
 
-        expect(faction.current_leader.leader).to eq(:builder)
-        expect(faction.used_leaders.first.leader).to eq(:despot)
+        expect(birds.current_leader.leader).to eq(:builder)
+        expect(birds.used_leaders.first.leader).to eq(:despot)
       end
     end
   end
 
   describe '#change_viziers_with_leader' do
     it 'sets the viziers into the decree based off leader' do
-      faction = Root::Players::Computer.for('Sneak', :birds).faction
-      faction.change_current_leader(:despot)
+      birds = Root::Players::Computer.for('Sneak', :birds).faction
+      birds.change_current_leader(:despot)
 
-      faction.change_viziers_with_leader
+      birds.change_viziers_with_leader
 
-      expect(faction.decree.decree).to eq(
+      expect(birds.decree.decree).to eq(
         recruit: [],
         move: [:bird],
         battle: [],

@@ -8,6 +8,7 @@ module Root
     # We currently (and probably will only ever) display to terminal.
     # This handles all of that sort of logic here.
     class Terminal
+      # NOT TESTING TERMINAL BECAUSE OOFY
       #:nocov:
       def pick_option(options)
         display_pick_option_message
