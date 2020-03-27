@@ -9,6 +9,8 @@ require 'root/boards/woodlands_generator'
 require 'root/cards/base'
 require 'root/cards/item'
 
+require 'root/decks/base'
+require 'root/decks/list'
 require 'root/decks/starter'
 
 require 'root/display/terminal'
@@ -35,6 +37,8 @@ require 'root/factions/mice/miceable'
 require 'root/factions/mice/base'
 require 'root/factions/mice/sympathy'
 
+require 'root/factions/vagabonds/quest_card'
+require 'root/factions/vagabonds/quest_deck'
 require 'root/factions/vagabonds/vagabondable'
 
 require 'root/grid/clearing'

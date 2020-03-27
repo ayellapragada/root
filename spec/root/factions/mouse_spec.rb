@@ -15,12 +15,12 @@ RSpec.describe Root::Factions::Mouse do
   describe '#setup' do
     it 'draws 3 supporters from deck' do
       board = Root::Boards::Woodlands.new
-      deck = Root::Decks::Starter.new
+      decks = Root::Decks::List.default_decks_list
       player = Root::Players::Human.for('Sneak', :mice)
       mice = player.faction
 
       expect(mice.supporters.count).to eq(0)
-      player.setup(board, deck)
+      player.setup(board: board, decks: decks)
 
       expect(mice.supporters.count).to eq(3)
     end

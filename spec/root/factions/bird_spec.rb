@@ -25,7 +25,7 @@ RSpec.describe Root::Factions::Bird do
 
         player = Root::Players::Human.for('Sneak', :birds)
         allow(player).to receive(:pick_option).and_return(0)
-        player.setup(board)
+        player.setup(board: board)
 
         initial_bird_clearing = board.clearing_across_from_keep
         initial_meeples = initial_bird_clearing.meeples
@@ -40,7 +40,7 @@ RSpec.describe Root::Factions::Bird do
         player = Root::Players::Human.for('Sneak', :birds)
         allow(player).to receive(:pick_option).and_return(0)
 
-        player.setup(board)
+        player.setup(board: board)
 
         initial_bird_clearing = board.corner_with_roost
         initial_meeples = initial_bird_clearing.meeples
@@ -59,7 +59,7 @@ RSpec.describe Root::Factions::Bird do
       birds = player.faction
 
       expect(birds.current_leader).to be_nil
-      player.setup(board)
+      player.setup(board: board)
       expect(birds.current_leader).not_to be nil
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Root::Factions::Bird do
       allow(player).to receive(:pick_option).and_return(0)
       expect(birds.decree).to be_empty
 
-      player.setup(board)
+      player.setup(board: board)
 
       expect(birds.decree[:recruit]).to eq([:bird])
       expect(birds.decree[:move]).to eq([:bird])

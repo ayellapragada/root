@@ -24,7 +24,7 @@ RSpec.describe Root::Factions::Cat do
       allow(player).to receive(:pick_option).and_return(0)
       expect(board.keep_in_corner?).to be false
 
-      player.setup(board)
+      player.setup(board: board)
 
       expect(board.keep_in_corner?).to be true
       expect(cats.keep).to be_empty
@@ -36,7 +36,7 @@ RSpec.describe Root::Factions::Cat do
       cats = player.faction
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board)
+      player.setup(board: board)
 
       clearing = board.corner_with_keep
       expect(clearing_has_building(clearing, :recruiter)).to be true
@@ -53,7 +53,7 @@ RSpec.describe Root::Factions::Cat do
       cats = player.faction
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board)
+      player.setup(board: board)
 
       keep_clearing = board.clearing_across_from_keep
       other_clearings = board.clearings_other_than(keep_clearing)

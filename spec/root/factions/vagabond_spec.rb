@@ -16,6 +16,19 @@ RSpec.describe Root::Factions::Vagabond do
   # THIS IS FOR LATER WE DON'T DO IT INITIALLY!
   # expect(vagabond.relationships.all?(&:neutral?)).to be true
 
-  # describe '#setup' do
-  # end
+  describe '#setup' do
+    it 'selects a forest clearing to start in'
+    it 'selects a leader and gets starting items'
+    it 'sets up 4 ruins with item cards'
+    it 'sets up the relationships with other factions to neutral'
+
+    context 'without active quest cards' do
+      it 'sets up quest cards'
+    end
+
+    context 'with active quest cards' do
+      it 'does not draw new quest cards' do
+      end
+    end
+  end
 end

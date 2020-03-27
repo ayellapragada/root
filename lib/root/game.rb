@@ -7,22 +7,34 @@ module Root
       new(
         players: Players::List.default_player_list,
         board: Boards::Woodlands.new,
-        deck: Decks::Starter.new
+        decks: Decks::List.default_decks_list
       )
     end
 
-    attr_accessor :players, :board, :deck
+    attr_accessor :players, :board, :decks
 
-    def initialize(players:, board:, deck:)
+    def initialize(players:, board:, decks:)
       @players = players
       @board = board
-      @deck = deck
+      @decks = decks
+    end
+
+    def deck
+      decks.shared
+    end
+
+    def quests
+      decks.quests
     end
 
     def setup
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card(deck) }
-        player.setup(board, deck)
+        player.setup(
+          board: board,
+          decks: decks,
+          players: players
+        )
       end
     end
 
