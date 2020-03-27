@@ -53,6 +53,13 @@ module Root
         corner_with(:roost)
       end
 
+      def ruins
+        clearings
+          .select { |_, clearing| clearing.includes_building?(:ruin) }
+          .values
+          .map(&:ruin)
+      end
+
       def corner_with(type)
         corners.find do |corner|
           corner.tokens.any? { |tokens| tokens.type == type } ||

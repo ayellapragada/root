@@ -8,6 +8,16 @@ module Root
     # Node data structure for ruins
     class Ruin < Pieces::Building
       include Factions::Vagabonds::Vagabondable
+
+      attr_accessor :items
+
+      def initialize
+        @items = []
+      end
+
+      def contains_item?
+        items.any?
+      end
     end
   end
 end

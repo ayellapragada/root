@@ -18,14 +18,13 @@ RSpec.describe Root::Factions::Vagabond do
     end
   end
 
-
   describe '#setup' do
     it 'selects a character and gets starting items' do
       game = Root::Game.default_game
       board = game.board
       decks = game.decks
       players = game.players
-      player = Root::Players::Human.for('Sneak', :vagabond)
+      player = players.fetch_player(:vagabond)
       allow(player).to receive(:pick_option).and_return(0)
 
       player.setup(board: board, decks: decks, players: players)
@@ -62,7 +61,18 @@ RSpec.describe Root::Factions::Vagabond do
       expect(vagabond.relationships.all_neutral?).to be true
     end
 
-    it 'sets up 4 ruins with item cards'
+    it 'sets up 4 ruins with item cards' do
+      game = Root::Game.default_game
+      board = game.board
+      decks = game.decks
+      players = game.players
+      player = players.fetch_player(:vagabond)
+      allow(player).to receive(:pick_option).and_return(0)
+
+      player.setup(board: board, decks: decks, players: players)
+
+      expect(board.ruins.all?(&:contains_item?)).to be true
+    end
   end
 
   def vagabond_is_in_forest(board)
