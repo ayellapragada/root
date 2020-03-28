@@ -12,7 +12,7 @@ module Root
     class Base
       attr_accessor :suit
 
-      def initialize(suit: nil)
+      def initialize(suit:)
         @suit = suit
       end
     end
