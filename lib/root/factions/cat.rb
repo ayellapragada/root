@@ -95,15 +95,20 @@ module Root
       end
 
       def take_turn(board:, deck:, **_)
-        daylight(board)
+        birdsong(board)
+        evening(deck)
       end
 
-      def daylight(board)
+      def birdsong(board)
         board.clearings_with(:sawmill).each do |sawmill_clearing|
           piece = wood.first
           board.place_token(piece, sawmill_clearing)
           tokens.delete(piece)
         end
+      end
+
+      def evening(deck)
+        draw_card(deck)
       end
     end
   end

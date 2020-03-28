@@ -43,25 +43,36 @@ module Root
       end
 
       def setup_roost_in_corner(board)
-        if board.keep_in_corner?
-          clearing = board.clearing_across_from_keep
-        else
-          options = board.available_corners
-          choice = player.pick_option(options)
-          clearing = options[choice]
-        end
+        clearing = find_clearing_for_first_root(board)
         piece = buildings.delete(roosts.pop)
         board.create_building(piece, clearing)
         6.times { board.place_meeple(meeples.pop, clearing) }
       end
 
+      def find_clearing_for_first_root(board)
+        if board.keep_in_corner?
+          board.clearing_across_from_keep
+        else
+          options = board.available_corners
+          choice = player.pick_option(options)
+          options[choice]
+        end
+      end
+
       def change_current_leader(type = nil)
         used_leaders << current_leader if current_leader
-        if used_leaders.count >= 4
-          self.leaders = used_leaders
-          self.used_leaders = []
-        end
+        reset_leaders if used_leaders.count >= 4
 
+        new_leader = find_next_leader(type)
+        self.current_leader = new_leader
+      end
+
+      def reset_leaders
+        self.leaders = used_leaders
+        self.used_leaders = []
+      end
+
+      def find_next_leader(type)
         if type
           new_leader = leaders.find { |l| l.leader == type }
           leaders.delete(new_leader)
@@ -70,7 +81,7 @@ module Root
           choice = player.pick_option(options)
           new_leader = leaders.delete(options[choice])
         end
-        self.current_leader = new_leader
+        new_leader
       end
 
       def change_viziers_with_leader

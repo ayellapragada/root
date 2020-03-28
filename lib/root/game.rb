@@ -68,7 +68,7 @@ module Root
 
     def render
       players.each { |player| player.render_game(self) }
-      return nil
+      nil
     end
 
     # :nocov:

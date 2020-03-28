@@ -16,7 +16,7 @@ module Root
         ask_for_selected_option
       end
 
-      def render_game(game, player_to_view_as)
+      def render_game(game, _player_to_view_as)
         # render_items
         render_map(game.board)
         # render_clearings_in_map

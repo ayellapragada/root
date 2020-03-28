@@ -8,7 +8,7 @@ module Root
     class Mouse < Base
       SETUP_PRIORITY = 'C'
 
-      alias_method :sympathy, :tokens
+      alias sympathy tokens
 
       attr_reader :supporters
 

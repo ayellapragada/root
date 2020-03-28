@@ -74,17 +74,43 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '#daylight' do
+  describe '#birdsong' do
     it 'gives all sawmills wood' do
       board = Root::Boards::Base.new
       player = Root::Players::Computer.for('Sneak', :cats)
       player.setup(board: board)
 
       faction = player.faction
-      expect { faction.daylight(board) }
+      expect { faction.birdsong(board) }
         .to change { faction.wood.count }
         .by(-1)
       expect(board.clearings_with(:sawmill).first.wood?).to be true
+    end
+  end
+
+  describe '#evening' do
+    context 'with no draw bonuses' do
+      it 'draw one card' do
+        board = Root::Boards::Base.new
+        player = Root::Players::Computer.for('Sneak', :cats)
+        deck = Root::Decks::Starter.new
+        player.setup(board: board)
+
+        faction = player.faction
+        expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
+      end
+    end
+
+    xcontext 'with draw bonuses' do
+      it 'draw one card plus one per bonus' do
+        # board = Root::Boards::Base.new
+        # player = Root::Players::Computer.for('Sneak', :cats)
+        # deck = Root::Decks::Starter.new
+        # player.setup(board: board)
+
+        # faction = player.faction
+        # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
+      end
     end
   end
 
