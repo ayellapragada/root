@@ -30,6 +30,10 @@ module Root
 
     def setup
       setup_quests
+      setup_by_priority
+    end
+
+    def setup_by_priority
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card(deck) }
         player.setup(
