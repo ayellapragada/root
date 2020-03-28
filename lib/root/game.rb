@@ -6,7 +6,7 @@ module Root
     def self.default_game(with_computers: false)
       new(
         players: Players::List.default_player_list(with_computers),
-        board: Boards::Woodlands.new,
+        board: Boards::Base.new,
         decks: Decks::List.default_decks_list
       )
     end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe Root::Boards::Woodlands do
+RSpec.describe Root::Boards::Base do
   describe '.initialize' do
     it 'creates board with correct clearing state' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       clearings = board.clearings.values
 
       expect(board.clearings).to be_truthy
@@ -14,7 +14,7 @@ RSpec.describe Root::Boards::Woodlands do
 
     # We're not going to test them ALL.
     it 'populates paths between clearings' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
 
       clearing_one = board.clearings[:one]
       clearing_two = board.clearings[:two]
@@ -24,13 +24,13 @@ RSpec.describe Root::Boards::Woodlands do
     end
 
     it 'creates board with correct number of forests' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
 
       expect(board.forests.values.count).to be(7)
     end
 
     it 'populates paths between forests and clearings' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
 
       forest_f = board.forests[:f]
       forest_a = board.forests[:a]

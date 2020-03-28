@@ -17,7 +17,7 @@ RSpec.describe Root::Factions::Bird do
   describe '#setup' do
     context 'when there is a keep on the board' do
       it 'sets up opposite to keep' do
-        board = Root::Boards::Woodlands.new
+        board = Root::Boards::Base.new
         cat_player = Root::Players::Human.for('Other', :cats)
         cat_faction = cat_player.faction
         allow(cat_player).to receive(:pick_option).and_return(0)
@@ -36,7 +36,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when there is not a keep on the board' do
       it 'sets up in a corner it chooses' do
-        board = Root::Boards::Woodlands.new
+        board = Root::Boards::Base.new
         player = Root::Players::Human.for('Sneak', :birds)
         allow(player).to receive(:pick_option).and_return(0)
 
@@ -50,7 +50,7 @@ RSpec.describe Root::Factions::Bird do
     end
 
     it 'lets player picks a starting leader' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       cat_faction = Root::Players::Computer.for('Other', :cats).faction
       cat_faction.build_keep(board)
 
@@ -64,7 +64,7 @@ RSpec.describe Root::Factions::Bird do
     end
 
     it 'starts initial decree for player with viziers' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       cat_faction = Root::Players::Computer.for('Other', :cats).faction
       cat_faction.build_keep(board)
 

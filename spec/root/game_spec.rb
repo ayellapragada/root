@@ -4,7 +4,7 @@ RSpec.describe Root::Game do
   describe '#initialize' do
     it 'takes players, board, and deck' do
       players = Root::Players::List.default_player_list
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       decks = Root::Decks::List.default_decks_list
 
       game = Root::Game.new(

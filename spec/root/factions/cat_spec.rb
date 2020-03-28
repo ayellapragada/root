@@ -18,7 +18,7 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#setup' do
     it 'sets a keep in the corner' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       player = Root::Players::Human.for('Sneak', :cats)
       cats = player.faction
       allow(player).to receive(:pick_option).and_return(0)
@@ -31,7 +31,7 @@ RSpec.describe Root::Factions::Cat do
     end
 
     it 'sets a sawmill, recruiter, and workshop in adjacent clearing' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       player = Root::Players::Human.for('Sneak', :cats)
       cats = player.faction
       allow(player).to receive(:pick_option).and_return(0)
@@ -48,7 +48,7 @@ RSpec.describe Root::Factions::Cat do
     end
 
     it 'sets 11 warrior in all clearings except directly across' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       player = Root::Players::Human.for('Sneak', :cats)
       cats = player.faction
       allow(player).to receive(:pick_option).and_return(0)
@@ -76,7 +76,7 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#daylight' do
     it 'gives all sawmills wood' do
-      board = Root::Boards::Woodlands.new
+      board = Root::Boards::Base.new
       player = Root::Players::Computer.for('Sneak', :cats)
       player.setup(board: board)
 
