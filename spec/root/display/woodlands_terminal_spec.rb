@@ -9,8 +9,7 @@ RSpec.describe Root::Display::WoodlandsTerminal do
       place_vagabond_token_for_display(game)
       game.setup
 
-      d = Root::Display::WoodlandsTerminal.new(game.board)
-      expect(d.display).to eq('')
+      expect(game.render).to be nil
     end
   end
 

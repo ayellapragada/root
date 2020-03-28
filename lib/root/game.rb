@@ -68,6 +68,13 @@ module Root
 
     def render
       players.each { |player| player.render_game(self) }
+      return nil
     end
+
+    # :nocov:
+    def test_render
+      Display::Terminal.new.render_game(self, players.fetch_player(:mice))
+    end
+    # :nocov:
   end
 end
