@@ -8,9 +8,8 @@ RSpec.describe Root::Display::WoodlandsTerminal do
       place_mice_tokens_for_display(game)
       place_vagabond_token_for_display(game)
       game.setup
-      game.render
 
-      d = Root::Display::WoodlandsTerminal.new(game)
+      d = Root::Display::WoodlandsTerminal.new(game.board)
       expect(d.display).to eq('')
     end
   end

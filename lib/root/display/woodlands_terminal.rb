@@ -38,8 +38,8 @@ module Root
     # We currently (and probably will only ever) display to terminal.
     # This handles all of that sort of logic here.
     class WoodlandsTerminal
-      def initialize(game)
-        @game = game
+      def initialize(board)
+        @board = board
       end
 
       SUIT_COLOR = {
@@ -49,8 +49,8 @@ module Root
       }
 
       def display
-        cls = game.board.clearings
-        fr = game.board.forests
+        cls = board.clearings
+        fr = board.forests
         [
           n(0) + bf(40) + dur(2) + bf(29),
           n(1) + bf(33) + c(cls[:five])[0] + bf(27),
@@ -233,7 +233,7 @@ module Root
         res
       end
 
-      attr_reader :game
+      attr_reader :board
     end
   end
 end

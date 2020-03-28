@@ -9,13 +9,23 @@ module Root
 
       attr_reader :players
 
-      def self.default_player_list
+      def self.default_player_list(with_computers = false)
         new(
-          Root::Players::Human.for('Sneaky', :mice),
+          make_first_player(with_computers),
           Root::Players::Computer.for('Hal', :cats),
           Root::Players::Computer.for('Tron', :birds),
           Root::Players::Computer.for('Ultron', :vagabond)
         )
+      end
+
+      # Computers don't need mocked input,
+      # so if we do an all computer game life is easier
+      def self.make_first_player(with_computers)
+        if with_computers
+          Root::Players::Computer.for('Sneaky', :mice)
+        else
+          Root::Players::Human.for('Sneaky', :mice)
+        end
       end
 
       def initialize(*players)

@@ -53,6 +53,23 @@ module Root
           characters: decks&.characters
         )
       end
+
+      def take_turn(board:, decks:, players: nil, active_quests: nil)
+        faction.take_turn(
+          board: board,
+          players: players,
+          deck: decks.shared,
+          active_quests: active_quests
+        )
+      end
+
+      # This breaks sandi_meter :sweats:
+      # rubocop:disable all
+      def inspect
+        f = faction
+        "#{f.faction_symbol.upcase}::H#{current_hand_size}::M#{f.meeples.count}::B#{f.buildings.count}::T#{f.tokens.count}"
+      end
+      # rubocop:enable all
     end
   end
 end

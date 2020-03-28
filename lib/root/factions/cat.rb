@@ -33,23 +33,23 @@ module Root
       end
 
       def recruiters
-        @recruiters ||= buildings.select { |b| b.type == :recruiter }
+        buildings.select { |b| b.type == :recruiter }
       end
 
       def sawmills
-        @sawmills ||= buildings.select { |b| b.type == :sawmill }
+        buildings.select { |b| b.type == :sawmill }
       end
 
       def workshops
-        @workshops ||= buildings.select { |b| b.type == :workshop }
+        buildings.select { |b| b.type == :workshop }
       end
 
       def wood
-        @wood ||= tokens.select { |b| b.type == :wood }
+        tokens.select { |b| b.type == :wood }
       end
 
       def keep
-        @keep ||= tokens.select { |b| b.type == :keep }
+        tokens.select { |b| b.type == :keep }
       end
 
       def setup(board:, **_)
@@ -63,11 +63,14 @@ module Root
         choice = player.pick_option(options)
         clearing = options[choice]
 
-        board.place_token(keep.pop, clearing)
+        piece = tokens.delete(keep.pop)
+        board.place_token(piece, clearing)
       end
 
       def build_initial_buildings(board)
-        [sawmills.pop, recruiters.pop, workshops.pop].each do |building|
+        [sawmills, recruiters, workshops].each do |buils|
+          building = buils.first
+          buildings.delete(building)
           player_places_building(building, board)
         end
       end
@@ -88,6 +91,18 @@ module Root
         clearing = board.clearing_across_from_keep
         board.clearings_other_than(clearing).each do |cl|
           board.place_meeple(meeples.pop, cl)
+        end
+      end
+
+      def take_turn(board:, deck:, **_)
+        daylight(board)
+      end
+
+      def daylight(board)
+        board.clearings_with(:sawmill).each do |sawmill_clearing|
+          piece = wood.first
+          board.place_token(piece, sawmill_clearing)
+          tokens.delete(piece)
         end
       end
     end

@@ -21,15 +21,37 @@ RSpec.describe Root::Game do
 
   describe '#setup' do
     it 'sets up the game' do
-      game = Root::Game.default_game
-      human_player = game.players.fetch_player(:mice)
-      allow(human_player).to receive(:pick_option).and_return(0)
+      game = Root::Game.default_game(with_computers: true)
 
       game.setup
 
       expect(game.players.all? { |p| p.current_hand_size == 3 }).to be true
       expect(game.players.all? { |p| p.victory_points == 0 }).to be true
       expect(game.active_quests.count).to be(3)
+    end
+  end
+
+  describe '#state' do
+    it 'is a quick easy reference for the game state' do
+      game = Root::Game.default_game(with_computers: true)
+      game.setup
+
+      res = <<~RES
+        MICE::H3::M10::B3::T8
+        CATS::H3::M14::B15::T8
+        BIRDS::H3::M14::B6::T0
+        VAGABOND::H3::M0::B0::T0
+      RES
+      expect(game.state).to eq(res.chomp)
+    end
+  end
+
+  describe '#run_game' do
+    it 'all players take their turn' do
+      game = Root::Game.default_game(with_computers: true)
+      game.setup
+
+      expect { game.run_game }.to change(game, :state)
     end
   end
 end

@@ -33,7 +33,7 @@ module Root
       end
 
       def roosts
-        @roosts ||= buildings.select { |b| b.type == :roost }
+        buildings.select { |b| b.type == :roost }
       end
 
       def setup(board:, **_)
@@ -50,7 +50,8 @@ module Root
           choice = player.pick_option(options)
           clearing = options[choice]
         end
-        board.create_building(roosts.pop, clearing)
+        piece = buildings.delete(roosts.pop)
+        board.create_building(piece, clearing)
         6.times { board.place_meeple(meeples.pop, clearing) }
       end
 

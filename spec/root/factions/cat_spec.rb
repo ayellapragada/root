@@ -63,6 +63,31 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  describe '#take_turn' do
+    it 'goes through all phases of a turn' do
+      game = Root::Game.default_game(with_computers: true)
+      player = game.players.fetch_player(:cats)
+      game.setup
+
+      expect { player.faction.take_turn(board: game.board, deck: game.deck) }
+        .to change(player, :inspect)
+    end
+  end
+
+  describe '#daylight' do
+    it 'gives all sawmills wood' do
+      board = Root::Boards::Woodlands.new
+      player = Root::Players::Computer.for('Sneak', :cats)
+      player.setup(board: board)
+
+      faction = player.faction
+      expect { faction.daylight(board) }
+        .to change { faction.wood.count }
+        .by(-1)
+      expect(board.clearings_with(:sawmill).first.wood?).to be true
+    end
+  end
+
   def clearing_has_building(clearing, type)
     clearing.includes_building?(type) ||
       clearing.adjacents.one? { |adj| adj.includes_building?(type) }

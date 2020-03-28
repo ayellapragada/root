@@ -22,9 +22,6 @@ module Root
         @tokens = []
       end
 
-      # This is where every faction gets their pieces into their hand.
-      def handle_faction_token_setup; end
-
       def hand_size
         hand.size
       end
@@ -36,6 +33,8 @@ module Root
       def setup_priority
         self.class::SETUP_PRIORITY
       end
+
+      def take_turn(board:, players:, deck:, active_quests: nil); end
     end
   end
 end

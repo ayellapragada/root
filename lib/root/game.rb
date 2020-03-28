@@ -3,9 +3,9 @@
 module Root
   # Handles logic for starting and handling a game
   class Game
-    def self.default_game
+    def self.default_game(with_computers: false)
       new(
-        players: Players::List.default_player_list,
+        players: Players::List.default_player_list(with_computers),
         board: Boards::Woodlands.new,
         decks: Decks::List.default_decks_list
       )
@@ -42,6 +42,24 @@ module Root
           players: players
         )
       end
+    end
+
+    def run_game
+      players.each { |player| take_turn(player) }
+    end
+
+    def take_turn(player)
+      player.take_turn(
+        board: board,
+        decks: decks,
+        players: players,
+        active_quests: active_quests
+      )
+    end
+
+    # Simple way to check game state
+    def state
+      players.map(&:inspect).join("\n")
     end
 
     def setup_quests

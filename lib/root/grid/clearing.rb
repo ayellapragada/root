@@ -99,6 +99,10 @@ module Root
         buildings.any? { |building| building.type == type }
       end
 
+      def includes_token?(type)
+        tokens.any? { |token| token.type == type }
+      end
+
       def includes_meeple?(type)
         meeples.any? { |meeples| meeples.faction == type }
       end
@@ -113,6 +117,10 @@ module Root
 
       def clearing?
         type == :clearing
+      end
+
+      def wood?
+        includes_token?(:wood)
       end
 
       private

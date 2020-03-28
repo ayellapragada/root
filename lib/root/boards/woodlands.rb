@@ -78,6 +78,12 @@ module Root
       def clearings_other_than(other_clearing)
         clearings.values.reject { |clearing| clearing == other_clearing }
       end
+
+      def clearings_with(type)
+        clearings.select do |_, clearing|
+          clearing.includes_building?(type) || clearing.includes_token?(type)
+        end.values
+      end
     end
   end
 end
