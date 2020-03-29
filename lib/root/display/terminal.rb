@@ -20,12 +20,21 @@ module Root
         b_new_leader: 'Pick the next leader',
         b_first_roost: 'Pick where to place the first Roost'
       }.freeze
+
       # NOT TESTING TERMINAL BECAUSE OOFY
       #:nocov:
       def pick_option(key, options)
         display_pick_option_message(key)
-        display_options(options)
-        ask_for_selected_option
+        if options.first.is_a?(Grid::Clearing)
+          display_clearing_options(options)
+          get_and_map_choice_to_index(options)
+        else
+          display_options(options)
+          input_for_options(options)
+        end
+      rescue StandardError
+        puts 'oops'
+        retry
       end
 
       def render_game(game, _player_to_view_as, clearings)
@@ -49,15 +58,37 @@ module Root
         puts format_options_with_numbers(options)
       end
 
+      def display_clearing_options(options)
+        puts format_options_with_clearings(options)
+      end
+
       def format_options_with_numbers(options)
         options
           .map
-          .with_index { |option, i| "(#{i + 1}) #{option}" }
-          .join(' | ')
+          .with_index { |option, i| "(#{i + 1}) #{option.inspect}" }
+          .join("\n")
       end
 
-      def ask_for_selected_option
-        gets.chomp.to_i - 1
+      def format_options_with_clearings(options)
+        options
+          .map { |option| "(#{option.priority}) #{option.inspect}" }
+          .join("\n")
+      end
+
+      def get_and_map_choice_to_index(options)
+        priority = gets.chomp
+        options.find_index do |o|
+          o.priority == priority.to_i ||
+            o.priority == priority.upcase.to_sym
+        end.tap do |res|
+          raise unless res
+        end
+      end
+
+      def input_for_options(options)
+        (gets.chomp.to_i - 1).tap do |res|
+          raise if res <= -1 || res >= options.count
+        end
       end
       #:nocov:
     end
