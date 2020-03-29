@@ -6,8 +6,8 @@ module Root
   module Players
     # Handles user logic for this.
     class Human < Base
-      def pick_option(options)
-        display.pick_option(options)
+      def pick_option(key, options)
+        display.pick_option(key, options)
       end
 
       def render_game(game)

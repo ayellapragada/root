@@ -9,14 +9,31 @@ module Root
 
       attr_reader :players
 
-      def self.default_player_list(with_computers = false)
+      def self.default_player_list(with_computers = false, with_humans = false)
+        # :nocov:
+        if with_humans
+          human_list
+        else
+          # :nocov:
+          new(
+            make_first_player(with_computers),
+            Root::Players::Computer.for('Hal', :cats),
+            Root::Players::Computer.for('Tron', :birds),
+            Root::Players::Computer.for('Ultron', :vagabond)
+          )
+        end
+      end
+
+      # :nocov:
+      def self.human_list
         new(
-          make_first_player(with_computers),
-          Root::Players::Computer.for('Hal', :cats),
-          Root::Players::Computer.for('Tron', :birds),
-          Root::Players::Computer.for('Ultron', :vagabond)
+          Root::Players::Human.for('Hal', :cats),
+          Root::Players::Human.for('Brainiac', :mice),
+          Root::Players::Human.for('Tron', :birds),
+          Root::Players::Human.for('Ultron', :vagabond)
         )
       end
+      # :nocov:
 
       # Computers don't need mocked input,
       # so if we do an all computer game life is easier

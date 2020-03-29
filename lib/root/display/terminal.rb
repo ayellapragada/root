@@ -8,15 +8,28 @@ module Root
     # We currently (and probably will only ever) display to terminal.
     # This handles all of that sort of logic here.
     class Terminal
+      PROMPT_MESSAGES = {
+        test_option: 'Test Option Woo!',
+        v_char_sel: 'Pick a Vagabond to be your Character',
+        v_forest_sel: 'Pick a Forest to start in',
+        c_initial_keep: 'Pick where to place the Keep',
+        c_initial_sawmill: 'Pick where to place first Sawmill',
+        c_initial_workshop: 'Pick where to place first Workshop',
+        c_initial_recruiter: 'Pick where to place first Recruiter',
+        f_item_selet: 'Pick an item to craft',
+        b_new_leader: 'Pick the next leader',
+        b_first_roost: 'Pick where to place the first Roost'
+      }.freeze
       # NOT TESTING TERMINAL BECAUSE OOFY
       #:nocov:
-      def pick_option(options)
-        display_pick_option_message
+      def pick_option(key, options)
+        display_pick_option_message(key)
         display_options(options)
         ask_for_selected_option
       end
 
       def render_game(game, _player_to_view_as)
+        system("clear")
         # render_items
         render_map(game.board)
         # render_clearings_in_map
@@ -26,8 +39,8 @@ module Root
 
       private
 
-      def display_pick_option_message
-        puts 'Pick an Option'
+      def display_pick_option_message(key)
+        puts PROMPT_MESSAGES[key]
       end
 
       def display_options(options)

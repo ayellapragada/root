@@ -38,14 +38,14 @@ module Root
       end
 
       def handle_character_select(characters)
-        choice = player.pick_option(characters)
+        choice = player.pick_option(:v_char_sel, characters)
         character = characters.remove_from_deck(characters[choice])
         @character = character
       end
 
       def handle_forest_select(board)
         options = board.forests.values
-        choice = player.pick_option(options)
+        choice = player.pick_option(:v_forest_sel, options)
         forest = options[choice]
         board.place_meeple(meeples.pop, forest)
       end

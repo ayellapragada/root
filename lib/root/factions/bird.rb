@@ -54,7 +54,7 @@ module Root
           board.clearing_across_from_keep
         else
           options = board.available_corners
-          choice = player.pick_option(options)
+          choice = player.pick_option(:b_first_roost, options)
           options[choice]
         end
       end
@@ -78,7 +78,7 @@ module Root
           leaders.delete(new_leader)
         else
           options = leaders
-          choice = player.pick_option(options)
+          choice = player.pick_option(:b_new_leader, options)
           new_leader = leaders.delete(options[choice])
         end
         new_leader

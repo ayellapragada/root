@@ -60,7 +60,7 @@ module Root
 
       def build_keep(board)
         options = board.available_corners
-        choice = player.pick_option(options)
+        choice = player.pick_option(:c_initial_keep, options)
         clearing = options[choice]
 
         piece = tokens.delete(keep.pop)
@@ -77,7 +77,8 @@ module Root
 
       def player_places_building(building, board)
         options_for_building = find_initial_options(board)
-        choice = player.pick_option(options_for_building)
+        key = "c_initial_#{building.type}".to_sym
+        choice = player.pick_option(key, options_for_building)
         clearing = options_for_building[choice]
         board.create_building(building, clearing)
       end
@@ -116,7 +117,7 @@ module Root
         @crafted_suits = []
         until craftable_items(board).empty?
           options = craftable_items(board)
-          choice = player.pick_option(options)
+          choice = player.pick_option(:f_item_select, options)
           item = options[choice]
           craft_item(board, item, deck)
         end

@@ -3,13 +3,23 @@
 module Root
   # Handles logic for starting and handling a game
   class Game
-    def self.default_game(with_computers: false)
+    def self.default_game(with_computers: false, with_humans: false)
       new(
-        players: Players::List.default_player_list(with_computers),
+        players: Players::List.default_player_list(with_computers, with_humans),
         board: Boards::Base.new,
         decks: Decks::List.default_decks_list
       )
     end
+
+    # :nocov:
+    def self.start_and_play_game
+      game = default_game(with_computers: false, with_humans: true)
+      game.render
+      game.setup
+      game.render
+      game.run_game
+    end
+    # :nocov:
 
     attr_accessor :players, :board, :decks, :active_quests
 
