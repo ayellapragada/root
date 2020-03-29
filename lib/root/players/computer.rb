@@ -8,6 +8,7 @@ module Root
     class Computer < Base
       # This is silly but I just want a random valid index.
       def pick_option(_key, options)
+        $GAME&.render
         choice = options.sample
         options.find_index(choice)
       end

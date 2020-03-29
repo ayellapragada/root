@@ -47,7 +47,6 @@ module Root
         piece = buildings.delete(roosts.pop)
         board.create_building(piece, clearing)
         6.times { board.place_meeple(meeples.pop, clearing) }
-        $GAME&.render
       end
 
       def find_clearing_for_first_root(board)
@@ -66,7 +65,6 @@ module Root
 
         new_leader = find_next_leader(type)
         self.current_leader = new_leader
-        $GAME&.render
       end
 
       def reset_leaders
