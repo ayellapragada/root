@@ -77,8 +77,8 @@ module Root
       @active_quests = quest_deck.draw_from_top(3)
     end
 
-    def render
-      players.each { |player| player.render_game(self) }
+    def render(clearings: [])
+      players.each { |player| player.render_game(self, clearings: clearings) }
       nil
     end
 

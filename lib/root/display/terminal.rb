@@ -28,10 +28,15 @@ module Root
         ask_for_selected_option
       end
 
-      def render_game(game, _player_to_view_as)
-        r = Root::Display::WoodlandsTerminal.new(game.board).display.join("\n")
-        system('clear') || system('cls')
-        puts(r)
+      def render_game(game, _player_to_view_as, clearings)
+        Root::Display::WoodlandsTerminal
+          .new(game.board, clearings)
+          .display
+          .join("\n")
+          .tap do |res|
+          system('clear') || system('cls')
+          puts(res)
+        end
       end
 
       private

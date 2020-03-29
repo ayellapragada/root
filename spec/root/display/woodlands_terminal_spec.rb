@@ -8,6 +8,7 @@ RSpec.describe Root::Display::WoodlandsTerminal do
       place_mice_tokens_for_display(game)
       place_vagabond_token_for_display(game)
       game.setup
+      mock_clearing_options(game)
 
       expect(game.render).to be nil
     end
@@ -35,5 +36,20 @@ RSpec.describe Root::Display::WoodlandsTerminal do
     forest_f = board.forests[:f]
     board.place_meeple(meeple, forest_f)
     board.place_meeple(meeple, forest_f)
+  end
+
+  # rubocop:disable all
+  def mock_clearing_options(game)
+    board = game.board
+    allow_any_instance_of(Root::Display::WoodlandsTerminal)
+      .to receive(:clearing_options)
+      .and_return(
+        [
+          board.clearings[:one],
+          board.clearings[:eleven],
+          board.forests[:e]
+        ]
+    )
+    # rubocop:enable all
   end
 end
