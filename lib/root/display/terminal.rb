@@ -29,12 +29,9 @@ module Root
       end
 
       def render_game(game, _player_to_view_as)
-        system("clear")
-        # render_items
-        render_map(game.board)
-        # render_clearings_in_map
-        # render_victory_points
-        # render_current_player_info
+        r = Root::Display::WoodlandsTerminal.new(game.board).display.join("\n")
+        system('clear') || system('cls')
+        puts(r)
       end
 
       private
@@ -56,10 +53,6 @@ module Root
 
       def ask_for_selected_option
         gets.chomp.to_i - 1
-      end
-
-      def render_map(board)
-        Root::Display::WoodlandsTerminal.new(board).display
       end
       #:nocov:
     end

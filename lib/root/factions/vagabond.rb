@@ -32,9 +32,12 @@ module Root
 
       def setup(board:, players:, characters:, **_)
         handle_character_select(characters)
+        $GAME&.render
         handle_forest_select(board)
+        $GAME&.render
         handle_ruins(board)
         handle_relationships(players)
+        $GAME&.render
       end
 
       def handle_character_select(characters)

@@ -54,8 +54,10 @@ module Root
 
       def setup(board:, **_)
         build_keep(board)
+        $GAME&.render
         build_initial_buildings(board)
         place_initial_warriors(board)
+        $GAME&.render
       end
 
       def build_keep(board)
@@ -72,6 +74,7 @@ module Root
           building = buils.first
           buildings.delete(building)
           player_places_building(building, board)
+          $GAME&.render
         end
       end
 
@@ -120,6 +123,7 @@ module Root
           choice = player.pick_option(:f_item_select, options)
           item = options[choice]
           craft_item(board, item, deck)
+          $GAME&.render
         end
       end
 

@@ -64,7 +64,7 @@ module Root
           n(9) + bf(7) + vp + f(10) + dd + f(4) + c(cls[:ten])[0] + f(24) + c(cls[:two])[2] + bf(2),
           n(10) + bf(7) + vp + f(12) + dd(3) + c(cls[:ten])[1] + hp(24) + c(cls[:two])[3] + bf(2),
           n(11) + bf(7) + vp + f(15) + c(cls[:ten])[2] + f(5) + f(19) + c(cls[:two])[4] + bf(2),
-          n(12) + bf(7) + vp + f(8) +fc(fr[:b]) + f(4) + c(cls[:ten])[3] + f(5) + f(22) + vp + bf(9),
+          n(12) + bf(7) + vp + f(8) + fc(fr[:b]) + f(4) + c(cls[:ten])[3] + f(5) + f(22) + vp + bf(9),
           n(13) + bf(2) + c(cls[:nine])[0] + f(10) + c(cls[:ten])[4] + f(12) + fc(fr[:c]) + f(12) + vp + bf(9),
           n(14) + bf(2) + c(cls[:nine])[1] + f(11) +  du + f(8) + ddb(2) + f(26) + vp + bf(9),
           n(15) + bf(2) + c(cls[:nine])[2] + f(10) + du + f(11) + ddr(7) + f(19) + vp + bf(9),
@@ -73,10 +73,10 @@ module Root
           n(18) + bf(7) + vp + f(4) + dd + f(3) + c(cls[:twelve])[0] + f(13) + c(cls[:eleven])[2] + hp(6) + c(cls[:six])[1] + bf(3),
           n(19) + bf(7) + vp + f(6) + dd(2) + c(cls[:twelve])[1] + hp(13) + c(cls[:eleven])[3] + f(6) + c(cls[:six])[2] + bf(3),
           n(20) + bf(7) + vp + f(8) + c(cls[:twelve])[2] + f(13) + c(cls[:eleven])[4] + f(6) + c(cls[:six])[3] + bf(3),
-          n(21) + bf(7) + vp + f(3) +fc(fr[:d]) + f(2) + c(cls[:twelve])[3] + dd + f(5) + fc(fr[:f]) + f(5) + dur(2) + f(3) + dd + f(10) + c(cls[:six])[4] + bf(3),
+          n(21) + bf(7) + vp + f(3) + fc(fr[:d]) + f(2) + c(cls[:twelve])[3] + dd + f(5) + fc(fr[:f]) + f(5) + dur(2) + f(3) + dd + f(10) + c(cls[:six])[4] + bf(3),
           n(22) + bf(7) + vp + f(8) + c(cls[:twelve])[4] + f(2) + dd + f(10) + dub(2) + f(5) + dd + f(13) + du + bf(9),
           n(23) + bf(7) + vp + f(6) + du + f(16) + dd + f(7) +  dur(2) + f(7) + dd + f(4) + fc(fr[:g]) + f(4) + du + bf(10),
-          n(24) + bf(7) + vp + f(5) + du + f(6) +fc(fr[:e]) + f(10) + dd + c(cls[:seven])[0] + f(4) + dd + f(4) + f(5) + du + bf(11),
+          n(24) + bf(7) + vp + f(5) + du + f(6) + fc(fr[:e]) + f(10) + dd + c(cls[:seven])[0] + f(4) + dd + f(4) + f(5) + du + bf(11),
           n(25) + bf(7) + vp + f(4) + du + f(5) + dur(4) + dub(2) + dur(8) + f(2) + c(cls[:seven])[1] + f(5) + dd + f(7) + du + bf(12),
           n(26) + bf(2) + c(cls[:four])[0] + dur(6) + f(10) + dur(5) + c(cls[:seven])[2] + dd + f(5) + dd + f(5) + du + bf(13),
           n(27) + bf(2) + c(cls[:four])[1] + dd + f(6) + c(cls[:eight])[0] + f(2) + du + c(cls[:seven])[3] + bf(2) + dd + f(2) + c(cls[:three])[0] + bf(10),
@@ -85,10 +85,9 @@ module Root
           n(30) + bf(2) + c(cls[:four])[4] + bf(6) + dd + c(cls[:eight])[3] + bf(19) + c(cls[:three])[3] + bf(10),
           n(31) + bf(20) + c(cls[:eight])[4] + bf(19) + c(cls[:three])[4] + bf(10),
           n(32) + bf(71),
-        ].each do |line|
-          puts line.join
+        ].map do |line|
+          line.join('')
         end
-        ''
       end
 
       def n(number)
@@ -140,7 +139,7 @@ module Root
       end
 
       def fc(forest)
-        @pieces = forest.meeples
+        @pieces = forest.meeples.dup
         if forest.meeples.count == 1
           [ f, dot, f ]
         elsif forest.meeples.count == 2
