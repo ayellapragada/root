@@ -15,6 +15,14 @@ module Root
       def initialize(suit:)
         @suit = suit
       end
+
+      def craft
+        []
+      end
+
+      def craftable?
+        !craft.empty?
+      end
     end
   end
 end

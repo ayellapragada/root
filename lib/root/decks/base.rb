@@ -7,10 +7,11 @@ module Root
     class Base
       include Enumerable
 
-      attr_reader :deck
+      attr_reader :deck, :discard
 
       def initialize
         @deck = []
+        @discard = []
         generate_deck
       end
 
@@ -28,6 +29,10 @@ module Root
 
       def sample
         deck.sample
+      end
+
+      def discard_card(card)
+        discard << remove_from_deck(card)
       end
 
       private

@@ -11,6 +11,14 @@ module Root
     # We got passives
     # I ain't consolidating that heck no
     class Item < Base
+      attr_reader :craft, :item, :vp
+
+      def initialize(suit:, craft: nil, item:, vp:)
+        super(suit: suit)
+        @craft = craft
+        @item = item
+        @vp = vp
+      end
     end
   end
 end

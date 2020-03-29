@@ -26,7 +26,7 @@ module Root
       def handle_base_building
         @buildings = [
           Mice::Base.new(:mouse),
-          Mice::Base.new(:rabbit),
+          Mice::Base.new(:bunny),
           Mice::Base.new(:fox)
         ]
       end

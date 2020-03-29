@@ -88,6 +88,113 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  describe '#daylight' do
+
+  end
+
+  describe '#handle_main_options' do
+    describe '#battle'
+    describe '#march'
+    describe '#recruit'
+    describe '#build'
+    describe '#overwork'
+    describe '#discard_bird'
+  end
+
+  describe '#craft_items' do
+    it 'crafts card, removes from board and adds victory points' do
+      board = Root::Boards::Base.new
+      deck = Root::Decks::List.default_decks_list
+      player = Root::Players::Human.for('Sneak', :cats)
+      allow(player).to receive(:pick_option).and_return(0)
+      player.setup(board: board, decks: deck)
+      faction = player.faction
+      card_to_craft = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[bunny],
+        item: :tea,
+        vp: 2
+      )
+      card_unable_to_be_crafted = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[bunny],
+        item: :coin,
+        vp: 1
+      )
+      faction.hand << card_to_craft
+      faction.hand << card_unable_to_be_crafted
+
+      faction.craft_items(board, deck.shared)
+      expect(faction.hand).not_to include(card_to_craft)
+      expect(faction.hand).to include(card_unable_to_be_crafted)
+      # expect(faction.victory_points).to be(2)
+      expect(faction.items).to include(:tea)
+    end
+  end
+
+  describe 'craftable_items' do
+    context 'when you have item card in hand that is available' do
+      it 'is craftable' do
+        board = Root::Boards::Base.new
+        deck = Root::Decks::Starter.new
+        player = Root::Players::Human.for('Sneak', :cats)
+        allow(player).to receive(:pick_option).and_return(0)
+        player.setup(board: board)
+        faction = player.faction
+        card_to_craft = Root::Cards::Item.new(
+          suit: :fox,
+          craft: %i[bunny],
+          item: :tea,
+          vp: 2
+        )
+        faction.discard_hand
+        faction.hand << card_to_craft
+
+        expect(faction.craftable_items(board)).to match_array([card_to_craft])
+      end
+    end
+
+    context 'when you have item card that is craftable but not available' do
+      it 'is not craftable' do
+        board = Root::Boards::Base.new(items: [])
+        player = Root::Players::Human.for('Sneak', :cats)
+        allow(player).to receive(:pick_option).and_return(0)
+        player.setup(board: board)
+        faction = player.faction
+
+        card = Root::Cards::Item.new(
+          suit: :fox,
+          craft: %i[bunny],
+          item: :tea,
+          vp: 2
+        )
+        faction.hand << card
+
+        expect(faction.craftable_items(board)).not_to include(card)
+      end
+    end
+
+    context 'when you have item card in hand different from clearing' do
+      it 'is not craftable' do
+        board = Root::Boards::Base.new
+        player = Root::Players::Human.for('Sneak', :cats)
+        allow(player).to receive(:pick_option).and_return(0)
+        player.setup(board: board)
+        faction = player.faction
+
+        card = Root::Cards::Item.new(
+          suit: :fox,
+          craft: %i[fox],
+          item: :tea,
+          vp: 2
+        )
+        faction.hand << card
+
+        expect(faction.craftable_items(board)).not_to include(card)
+      end
+    end
+  end
+
   describe '#evening' do
     context 'with no draw bonuses' do
       it 'draw one card' do
@@ -103,6 +210,18 @@ RSpec.describe Root::Factions::Cat do
 
     xcontext 'with draw bonuses' do
       it 'draw one card plus one per bonus' do
+        # board = Root::Boards::Base.new
+        # player = Root::Players::Computer.for('Sneak', :cats)
+        # deck = Root::Decks::Starter.new
+        # player.setup(board: board)
+
+        # faction = player.faction
+        # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
+      end
+    end
+
+    xcontext 'when over 5 cards' do
+      it 'discards down to 5 cards' do
         # board = Root::Boards::Base.new
         # player = Root::Players::Computer.for('Sneak', :cats)
         # deck = Root::Decks::Starter.new

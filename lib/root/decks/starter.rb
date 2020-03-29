@@ -12,7 +12,7 @@ module Root
       # We're not currently interested in getting items done
       # Really just want to lay the foundation
       def generate_deck
-        DECK_SIZE.times { deck << Cards::Item.new(suit: :fox) }
+        DECK_SIZE.times { deck << Cards::Base.new(suit: :fox) }
       end
     end
   end

@@ -9,7 +9,7 @@ RSpec.describe Root::Boards::Base do
       expect(board.clearings).to be_truthy
       expect(clearings.select { |c| c.suit == :fox }.count).to be(4)
       expect(clearings.select { |c| c.suit == :mouse }.count).to be(4)
-      expect(clearings.select { |c| c.suit == :rabbit }.count).to be(4)
+      expect(clearings.select { |c| c.suit == :bunny }.count).to be(4)
     end
 
     # We're not going to test them ALL.

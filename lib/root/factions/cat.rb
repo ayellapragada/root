@@ -96,6 +96,7 @@ module Root
 
       def take_turn(board:, deck:, **_)
         birdsong(board)
+        daylight(board, deck)
         evening(deck)
       end
 
@@ -104,6 +105,40 @@ module Root
           piece = wood.first
           board.place_token(piece, sawmill_clearing)
           tokens.delete(piece)
+        end
+      end
+
+      def daylight(board, deck)
+        craft_items(board, deck)
+      end
+
+      def craft_items(board, deck)
+        @crafted_suits = []
+        until craftable_items(board).empty?
+          options = craftable_items(board)
+          choice = player.pick_option(options)
+          item = options[choice]
+          craft_item(board, item, deck)
+        end
+      end
+
+      def craft_item(board, choice, deck)
+        @crafted_suits.concat(choice.craft)
+        board.items.delete(choice.item)
+        deck.discard_card(choice)
+        hand.delete(choice)
+        items << choice.item
+      end
+
+      def craftable_items(board)
+        @crafted_suits ||= []
+        suits = board.clearings_with(:workshop).map(&:suit)
+        usable_suits = suits - @crafted_suits
+        return unless usable_suits
+        hand.select do |card|
+          card.craftable? &&
+            (card.craft - usable_suits).empty? &&
+            board.items.include?(card.item)
         end
       end
 

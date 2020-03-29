@@ -9,13 +9,20 @@ module Root
     # Not going to lie this might be the only one I end up creating.
     # I haven't played the expansions much so I'm not familiar with them.
     class Base
-      attr_accessor :all_clearings
+      attr_reader :all_clearings, :items
 
       DIAGANOLS = { 1 => :three, 2 => :four, 3 => :one, 4 => :two }.freeze
 
-      def initialize(generator = WoodlandsGenerator)
+      def initialize(generator: WoodlandsGenerator, items: nil)
         @all_clearings = generator.generate
+        @items = items || ItemsGenerator.generate
       end
+
+      #:nocov:
+      def test_render
+        Root::Display::WoodlandsTerminal.new(self).display
+      end
+      #:nocov:
 
       def available_corners
         corners.select(&:with_spaces?)

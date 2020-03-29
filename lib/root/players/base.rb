@@ -34,7 +34,7 @@ module Root
       end
 
       def draw_card(deck)
-        faction.draw_card(deck)
+        faction.draw_card(deck).first
       end
 
       def victory_points

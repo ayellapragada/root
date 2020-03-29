@@ -45,7 +45,7 @@ module Root
       SUIT_COLOR = {
         fox: :firebrick,
         mouse: :sandybrown,
-        rabbit: :gold,
+        bunny: :gold,
       }
 
       def display

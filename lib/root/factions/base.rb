@@ -6,7 +6,8 @@ module Root
     class Base
       SETUP_PRIORITY = 'ZZZ'
 
-      attr_reader :hand, :victory_points, :player, :meeples, :buildings, :tokens
+      attr_reader :hand, :victory_points, :player,
+                  :meeples, :buildings, :tokens, :items
 
       def initialize(player)
         @player = player
@@ -20,14 +21,19 @@ module Root
         @meeples = []
         @buildings = []
         @tokens = []
+        @items = []
       end
 
       def hand_size
         hand.size
       end
 
+      def discard_hand
+        @hand = []
+      end
+
       def draw_card(deck)
-        @hand << deck.draw_from_top
+        @hand.concat(deck.draw_from_top)
       end
 
       def setup_priority
