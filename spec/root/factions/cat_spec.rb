@@ -127,7 +127,7 @@ RSpec.describe Root::Factions::Cat do
       faction.craft_items(board, deck.shared)
       expect(faction.hand).not_to include(card_to_craft)
       expect(faction.hand).to include(card_unable_to_be_crafted)
-      # expect(faction.victory_points).to be(2)
+      expect(faction.victory_points).to be(2)
       expect(faction.items).to include(:tea)
     end
   end
@@ -136,11 +136,11 @@ RSpec.describe Root::Factions::Cat do
     context 'when you have item card in hand that is available' do
       it 'is craftable' do
         board = Root::Boards::Base.new
-        deck = Root::Decks::Starter.new
         player = Root::Players::Human.for('Sneak', :cats)
         allow(player).to receive(:pick_option).and_return(0)
         player.setup(board: board)
         faction = player.faction
+
         card_to_craft = Root::Cards::Item.new(
           suit: :fox,
           craft: %i[bunny],

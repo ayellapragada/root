@@ -6,8 +6,9 @@ module Root
     class Base
       SETUP_PRIORITY = 'ZZZ'
 
-      attr_reader :hand, :victory_points, :player,
-                  :meeples, :buildings, :tokens, :items
+      attr_accessor :victory_points
+
+      attr_reader :hand, :player, :meeples, :buildings, :tokens, :items
 
       def initialize(player)
         @player = player

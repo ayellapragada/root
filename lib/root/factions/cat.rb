@@ -128,6 +128,7 @@ module Root
         board.items.delete(choice.item)
         deck.discard_card(choice)
         hand.delete(choice)
+        self.victory_points += choice.vp
         items << choice.item
       end
 

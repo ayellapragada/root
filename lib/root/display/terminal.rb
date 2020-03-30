@@ -38,14 +38,19 @@ module Root
       end
 
       def render_game(game, _player_to_view_as, clearings)
+        n = 0
         Root::Display::WoodlandsTerminal
           .new(game.board, clearings)
           .display
           .join("\n")
           .tap do |res|
-          system('clear') || system('cls')
+          clear_screen(n)
           puts(res)
         end
+      end
+
+      def clear_screen(n)
+        system('clear') || system('cls')
       end
 
       private
