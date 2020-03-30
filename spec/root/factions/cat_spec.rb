@@ -89,17 +89,83 @@ RSpec.describe Root::Factions::Cat do
   end
 
   describe '#daylight' do
-
+    it 'gives player 3 actions with choices' do
+      board = Root::Boards::Base.new
+      player = Root::Players::Human.for('Sneak', :cats)
+      deck = Root::Decks::List.default_decks_list
+      allow(player).to receive(:pick_option).and_return(0)
+      player.setup(board: board)
+      faction = player.faction
+      faction.hand << Root::Cards::Base.new(suit: :bird)
+      faction.birdsong(board)
+      faction.daylight(board, deck)
+    end
   end
 
-  describe '#handle_main_options' do
-    describe '#battle'
-    describe '#march'
-    describe '#recruit'
-    describe '#build'
-    describe '#overwork'
-    describe '#discard_bird'
+  describe '#currently_available_options' do
+    context 'when in its default state' do
+      it 'shows 5 default options' do
+        board = Root::Boards::Base.new
+        player = Root::Players::Computer.for('Sneak', :cats)
+        player.setup(board: board)
+        faction = player.faction
+
+        faction.birdsong(board)
+        expect(faction.currently_available_options)
+          .to match_array(%i[battle march recruit build overwork])
+      end
+    end
+
+    context 'when having recruited already' do
+      it 'no longer shows recruit' do
+        board = Root::Boards::Base.new
+        player = Root::Players::Computer.for('Sneak', :cats)
+        player.setup(board: board)
+        faction = player.faction
+
+        faction.birdsong(board)
+        faction.recruit(board)
+
+        expect(faction.currently_available_options)
+          .to match_array(%i[battle march build overwork])
+      end
+    end
+
+    context 'with a bird card in hand' do
+      it 'shows option to discard bird card' do
+        board = Root::Boards::Base.new
+        player = Root::Players::Computer.for('Sneak', :cats)
+        player.setup(board: board)
+        faction = player.faction
+
+        faction.hand << Root::Cards::Base.new(suit: :bird)
+        faction.birdsong(board)
+
+        expect(faction.currently_available_options)
+          .to match_array(%i[battle march recruit build overwork discard_bird])
+      end
+    end
   end
+
+  describe '#battle'
+  describe '#march'
+
+  describe '#recruit' do
+    it 'places a meeple at every clearing with a recruiter' do
+      board = Root::Boards::Base.new
+      player = Root::Players::Computer.for('Sneak', :cats)
+      player.setup(board: board)
+
+      faction = player.faction
+      expect { faction.recruit(board) }
+        .to change { faction.meeples.count }.by(-1)
+      expect(board.clearings_with(:recruiter).first.meeples.count).to be(2)
+    end
+  end
+
+  describe '#build'
+  describe '#overwork'
+  describe '#discard_bird'
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do
@@ -174,7 +240,7 @@ RSpec.describe Root::Factions::Cat do
       end
     end
 
-    context 'when you have item card in hand different from clearing' do
+    context 'when you have item card in hand different from clearing suit' do
       it 'is not craftable' do
         board = Root::Boards::Base.new
         player = Root::Players::Human.for('Sneak', :cats)

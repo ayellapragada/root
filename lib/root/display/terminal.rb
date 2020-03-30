@@ -8,6 +8,7 @@ module Root
     # We currently (and probably will only ever) display to terminal.
     # This handles all of that sort of logic here.
     class Terminal
+      class InputError < StandardError; end
       PROMPT_MESSAGES = {
         test_option: 'Test Option Woo!',
         v_char_sel: 'Pick a Vagabond to be your Character',
@@ -32,7 +33,7 @@ module Root
           display_options(options)
           input_for_options(options)
         end
-      rescue StandardError
+      rescue Root::Display::Terminal::InputError
         puts 'oops'
         retry
       end
@@ -88,13 +89,13 @@ module Root
           o.priority == priority.to_i ||
             o.priority == priority.upcase.to_sym
         end.tap do |res|
-          raise unless res
+          raise InputError unless res
         end
       end
 
       def input_for_options(options)
         (gets.chomp.to_i - 1).tap do |res|
-          raise if res <= -1 || res >= options.count
+          raise InputError if res <= -1 || res >= options.count
         end
       end
       #:nocov:

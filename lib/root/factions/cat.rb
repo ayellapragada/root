@@ -96,6 +96,7 @@ module Root
       end
 
       def take_turn(board:, deck:, **_)
+        @recruited = false
         birdsong(board)
         daylight(board, deck)
         evening(deck)
@@ -106,6 +107,20 @@ module Root
           piece = wood.first
           board.place_token(piece, sawmill_clearing)
           tokens.delete(piece)
+        end
+      end
+
+      def recruit(board)
+        @recruited = true
+        board.clearings_with(:recruiter).each do |clearing|
+          board.place_meeple(meeples.pop, clearing)
+        end
+      end
+
+      def currently_available_options
+        %i[battle march build overwork].tap do |options|
+          options << :discard_bird if hand.any? { |hand| hand.suit == :bird }
+          options << :recruit unless @recruited
         end
       end
 
