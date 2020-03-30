@@ -38,19 +38,21 @@ module Root
       end
 
       def render_game(game, _player_to_view_as, clearings)
-        n = 0
         Root::Display::WoodlandsTerminal
           .new(game.board, clearings)
           .display
           .join("\n")
           .tap do |res|
-          clear_screen(n)
+          clear_screen
           puts(res)
         end
       end
 
-      def clear_screen(n)
+      # EXPERIMENTAL! Lots to be tried and tested here
+      def clear_screen
         system('clear') || system('cls')
+        # print "\033[2J"
+        # print "\033[0;0H"
       end
 
       private
