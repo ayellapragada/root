@@ -149,6 +149,8 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#battle'
   describe '#march'
+  describe '#build'
+  describe '#overwork'
 
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do
@@ -163,9 +165,24 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '#build'
-  describe '#overwork'
-  describe '#discard_bird'
+  describe '#discard_bird' do
+    it 'discards a bird card in hand to get an extra action' do
+      board = Root::Boards::Base.new
+      deck = Root::Decks::List.default_decks_list.shared
+      player = Root::Players::Computer.for('Sneak', :cats)
+      player.setup(board: board)
+
+      faction = player.faction
+      card = Root::Cards::Base.new(suit: :bird)
+      faction.hand << card
+
+      expect { faction.discard_bird(deck) }
+        .to change { faction.remaining_actions }
+        .by(1)
+
+      expect(faction.hand).not_to include(card)
+    end
+  end
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do

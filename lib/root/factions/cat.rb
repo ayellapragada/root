@@ -6,6 +6,8 @@ module Root
     class Cat < Base
       SETUP_PRIORITY = 'A'
 
+      attr_reader :remaining_actions
+
       def faction_symbol
         :cats
       end
@@ -14,6 +16,7 @@ module Root
         handle_meeple_setup
         handle_building_setup
         handle_token_setup
+        @remaining_actions = 0
       end
 
       def handle_meeple_setup
@@ -119,13 +122,23 @@ module Root
 
       def currently_available_options
         %i[battle march build overwork].tap do |options|
-          options << :discard_bird if hand.any? { |hand| hand.suit == :bird }
+          options << :discard_bird if hand.any? { |card| card.suit == :bird }
           options << :recruit unless @recruited
         end
       end
 
+      def discard_bird(deck)
+        options = hand.select { |card| card.suit == :bird }
+        choice = player.pick_option(:c_discard_bird, options)
+        card = options[choice]
+        deck.discard_card(card)
+        hand.delete(card)
+        @remaining_actions += 1
+      end
+
       def daylight(board, deck)
         craft_items(board, deck)
+        @remaining_actions = 3
       end
 
       def craft_items(board, deck)

@@ -32,7 +32,7 @@ module Root
       end
 
       def discard_card(card)
-        discard << remove_from_deck(card)
+        discard << card
       end
 
       private

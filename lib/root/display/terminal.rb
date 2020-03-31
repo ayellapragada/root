@@ -17,6 +17,7 @@ module Root
         c_initial_sawmill: 'Pick where to place first Sawmill',
         c_initial_workshop: 'Pick where to place first Workshop',
         c_initial_recruiter: 'Pick where to place first Recruiter',
+        c_discard_bird: 'Pick a Bird card to discard to gain an extra action',
         f_item_selet: 'Pick an item to craft',
         b_new_leader: 'Pick the next leader',
         b_first_roost: 'Pick where to place the first Roost'
