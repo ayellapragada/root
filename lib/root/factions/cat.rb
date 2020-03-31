@@ -150,9 +150,7 @@ module Root
         choice = player.pick_option(:c_overwork, options)
         sawmill_clearing = options[choice]
         discard_card_with_suit(sawmill_clearing.suit, deck)
-        piece = wood.first
-        board.place_token(piece, sawmill_clearing)
-        tokens.delete(piece)
+        place_wood(sawmill_clearing)
       end
 
       def discard_bird(deck)
@@ -170,12 +168,15 @@ module Root
 
       def birdsong
         board.clearings_with(:sawmill).each do |sawmill_clearing|
-          piece = wood.first
-          board.place_token(piece, sawmill_clearing)
-          tokens.delete(piece)
+          place_wood(sawmill_clearing)
         end
       end
 
+      def place_wood(clearing)
+        piece = wood.first
+        board.place_token(piece, clearing)
+        tokens.delete(piece)
+      end
 
       private
 
