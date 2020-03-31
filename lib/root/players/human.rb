@@ -7,7 +7,7 @@ module Root
     # Handles user logic for this.
     class Human < Base
       def pick_option(key, options)
-        $GAME&.render(clearings: options)
+        @game&.render(clearings: options)
         display.pick_option(key, options)
       end
 

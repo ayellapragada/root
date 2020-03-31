@@ -14,7 +14,7 @@ module Root
     # :nocov:
     def self.start_and_play_game
       game = default_game(with_computers: false, with_humans: true)
-      $GAME = game
+      game.players.each { |p| p.game = game }
       game.setup
       game.run_game
       game.render

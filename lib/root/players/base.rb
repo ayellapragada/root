@@ -22,6 +22,7 @@ module Root
       end
 
       attr_reader :name, :faction, :display
+      attr_accessor :game
 
       def initialize(name:, faction:)
         @name = name
