@@ -10,6 +10,7 @@ RSpec.describe Root::Display::WoodlandsTerminal do
       game.setup
       mock_clearing_options(game)
 
+      game.print_display = true
       expect(game.render).to be nil
     end
   end

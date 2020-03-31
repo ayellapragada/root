@@ -14,21 +14,22 @@ module Root
     # :nocov:
     def self.start_and_play_game
       game = default_game(with_computers: false, with_humans: true)
-      game.players.each { |p| p.game = game }
+      game.print_display = true
       game.setup
       game.run_game
       game.render
     end
     # :nocov:
 
-    attr_accessor :players, :board, :decks, :active_quests
+    attr_accessor :players, :board, :decks, :active_quests, :print_display
 
     def initialize(players:, board:, decks:)
       @players = players
       @board = board
       @decks = decks
       @active_quests = []
-      @players.each { |p| p.board = board }
+      @players.each { |p| p.game = self }
+      @print_display = false
     end
 
     def deck
@@ -78,6 +79,8 @@ module Root
     end
 
     def render(clearings: [])
+      return unless print_display
+
       players.each { |player| player.render_game(self, clearings: clearings) }
       nil
     end
