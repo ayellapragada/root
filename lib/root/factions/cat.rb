@@ -164,7 +164,7 @@ module Root
         @crafted_suits ||= []
         suits = board.clearings_with(:workshop).map(&:suit)
         usable_suits = suits - @crafted_suits
-        return unless usable_suits
+        return [] if usable_suits.empty?
         hand.select do |card|
           card.craftable? &&
             (card.craft - usable_suits).empty? &&

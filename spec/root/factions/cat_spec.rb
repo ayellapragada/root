@@ -230,6 +230,21 @@ RSpec.describe Root::Factions::Cat do
       end
     end
 
+    context 'when you have no workshops out' do
+      it 'does not allow for crafting anything' do
+        player = Root::Players::Computer.for('Sneak', :cats)
+        faction = player.faction
+        card = Root::Cards::Item.new(
+          suit: :fox,
+          craft: %i[bunny],
+          item: :tea,
+          vp: 2
+        )
+        faction.hand << card
+        expect(faction.craftable_items).not_to include(card)
+      end
+    end
+
     context 'when you have item card that is craftable but not available' do
       it 'is not craftable' do
         board = Root::Boards::Base.new(items: [])
