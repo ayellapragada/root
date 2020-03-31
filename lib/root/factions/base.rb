@@ -47,6 +47,41 @@ module Root
       end
 
       def take_turn(board:, players:, deck:, active_quests: nil); end
+
+      def craft_items(deck)
+        @crafted_suits = []
+        until craftable_items.empty?
+          options = craftable_items
+          choice = player.pick_option(:f_item_select, options)
+          item = options[choice]
+          craft_item(item, deck)
+        end
+      end
+
+      def craft_item(choice, deck)
+        @crafted_suits.concat(choice.craft)
+        board.items.delete(choice.item)
+        deck.discard_card(choice)
+        hand.delete(choice)
+        self.victory_points += choice.vp
+        items << choice.item
+      end
+
+      def craftable_items
+        @crafted_suits ||= []
+        usable_suits = suits_to_craft_with - @crafted_suits
+        return [] if usable_suits.empty?
+
+        craftable_cards_in_hand(usable_suits)
+      end
+
+      def craftable_cards_in_hand(suits)
+        hand.select do |card|
+          card.craftable? &&
+            (card.craft - suits).empty? &&
+            board.items.include?(card.item)
+        end
+      end
     end
   end
 end
