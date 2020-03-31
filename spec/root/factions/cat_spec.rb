@@ -146,7 +146,36 @@ RSpec.describe Root::Factions::Cat do
   describe '#battle'
   describe '#march'
   describe '#build'
-  describe '#overwork'
+
+  describe '#overwork' do
+    context 'when a card is available in the hand matching clearing' do
+      it 'places a wood at a workshop after discarding a card of that suit' do
+        deck = Root::Decks::List.default_decks_list.shared
+        player = Root::Players::Computer.for('Sneak', :cats)
+        player.setup
+        clearing = player.board.clearings_with(:workshop).first
+        faction = player.faction
+        faction.hand << Root::Cards::Base.new(suit: clearing.suit)
+        expect { faction.overwork(deck) }
+          .to change { faction.wood.count }
+          .by(-1).and change { faction.hand.count }.by(-1)
+        expect(clearing.wood.count).to be(1)
+      end
+    end
+
+    context 'when no card is available in the hand matching clearing' do
+      it 'does not place a wood there' do
+        deck = Root::Decks::List.default_decks_list.shared
+        player = Root::Players::Computer.for('Sneak', :cats)
+        player.setup
+        clearing = player.board.clearings_with(:workshop).first
+        faction = player.faction
+
+        expect { faction.overwork(deck) }.not_to change { faction.wood.count }
+        expect(clearing.wood.count).to be(0)
+      end
+    end
+  end
 
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do

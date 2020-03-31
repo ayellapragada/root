@@ -105,11 +105,13 @@ module Root
         evening(deck)
       end
 
-      def recruit
-        @recruited = true
-        board.clearings_with(:recruiter).each do |clearing|
-          board.place_meeple(meeples.pop, clearing)
-        end
+      def daylight(deck)
+        craft_items(deck)
+        @remaining_actions = 3
+      end
+
+      def evening(deck)
+        draw_card(deck)
       end
 
       def currently_available_options
@@ -119,13 +121,39 @@ module Root
         end
       end
 
+      def recruit
+        @recruited = true
+        board.clearings_with(:recruiter).each do |clearing|
+          board.place_meeple(meeples.pop, clearing)
+        end
+      end
+
+      def overwork(deck)
+        valid_suits = hand.map(&:suit)
+        options = board.clearings_with(:workshop).select do |c|
+          valid_suits.include?(c.suit)
+        end
+        return if options.empty?
+
+        choice = player.pick_option(:c_overwork, options)
+        sawmill_clearing = options[choice]
+        discard_card_with_suit(sawmill_clearing.suit, deck)
+        piece = wood.first
+        board.place_token(piece, sawmill_clearing)
+        tokens.delete(piece)
+      end
+
       def discard_bird(deck)
-        options = hand.select { |card| card.suit == :bird }
+        discard_card_with_suit(:bird, deck)
+        @remaining_actions += 1
+      end
+
+      def discard_card_with_suit(suit, deck)
+        options = hand.select { |card| card.suit == suit }
         choice = player.pick_option(:c_discard_bird, options)
         card = options[choice]
         deck.discard_card(card)
         hand.delete(card)
-        @remaining_actions += 1
       end
 
       def birdsong
@@ -136,14 +164,6 @@ module Root
         end
       end
 
-      def daylight(deck)
-        craft_items(deck)
-        @remaining_actions = 3
-      end
-
-      def evening(deck)
-        draw_card(deck)
-      end
 
       private
 

@@ -123,6 +123,10 @@ module Root
         includes_token?(:wood)
       end
 
+      def wood
+        tokens.select { |token| token.type == :wood }
+      end
+
       private
 
       def create_ruin
