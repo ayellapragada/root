@@ -28,6 +28,7 @@ module Root
       @board = board
       @decks = decks
       @active_quests = []
+      @players.each { |p| p.board = board }
     end
 
     def deck

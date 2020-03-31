@@ -9,6 +9,7 @@ module Root
       attr_accessor :victory_points
 
       attr_reader :hand, :player, :meeples, :buildings, :tokens, :items
+      attr_writer :board
 
       def initialize(player)
         @player = player
@@ -16,6 +17,10 @@ module Root
         @victory_points = 0
         set_base_pieces
         handle_faction_token_setup
+      end
+
+      def board
+        player.board
       end
 
       def set_base_pieces

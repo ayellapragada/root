@@ -23,11 +23,16 @@ module Root
 
       attr_reader :name, :faction, :display
       attr_accessor :game
+      attr_writer :board
 
       def initialize(name:, faction:)
         @name = name
         @faction = faction.new(self)
         @display = Display::Terminal.new
+      end
+
+      def board
+        @board ||= game&.board || Boards::Base.new
       end
 
       def current_hand_size

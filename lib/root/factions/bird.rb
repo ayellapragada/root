@@ -36,20 +36,20 @@ module Root
         buildings.select { |b| b.type == :roost }
       end
 
-      def setup(board:, **_)
-        setup_roost_in_corner(board)
+      def setup(*)
+        setup_roost_in_corner
         change_current_leader
         change_viziers_with_leader
       end
 
-      def setup_roost_in_corner(board)
-        clearing = find_clearing_for_first_root(board)
+      def setup_roost_in_corner
+        clearing = find_clearing_for_first_root
         piece = buildings.delete(roosts.pop)
         board.create_building(piece, clearing)
         6.times { board.place_meeple(meeples.pop, clearing) }
       end
 
-      def find_clearing_for_first_root(board)
+      def find_clearing_for_first_root
         if board.keep_in_corner?
           board.clearing_across_from_keep
         else

@@ -55,13 +55,13 @@ module Root
         tokens.select { |b| b.type == :keep }
       end
 
-      def setup(board:, **_)
-        build_keep(board)
-        build_initial_buildings(board)
-        place_initial_warriors(board)
+      def setup(*)
+        build_keep
+        build_initial_buildings
+        place_initial_warriors
       end
 
-      def build_keep(board)
+      def build_keep
         options = board.available_corners
         choice = player.pick_option(:c_initial_keep, options)
         clearing = options[choice]
@@ -70,42 +70,42 @@ module Root
         board.place_token(piece, clearing)
       end
 
-      def build_initial_buildings(board)
+      def build_initial_buildings
         [sawmills, recruiters, workshops].each do |buils|
           building = buils.first
           buildings.delete(building)
-          player_places_building(building, board)
+          player_places_building(building)
         end
       end
 
-      def player_places_building(building, board)
-        options_for_building = find_initial_options(board)
+      def player_places_building(building)
+        options_for_building = find_initial_options
         key = "c_initial_#{building.type}".to_sym
         choice = player.pick_option(key, options_for_building)
         clearing = options_for_building[choice]
         board.create_building(building, clearing)
       end
 
-      def find_initial_options(board)
+      def find_initial_options
         keep_clearing = board.corner_with_keep
         [keep_clearing, *keep_clearing.adjacents].select(&:with_spaces?)
       end
 
-      def place_initial_warriors(board)
+      def place_initial_warriors
         clearing = board.clearing_across_from_keep
         board.clearings_other_than(clearing).each do |cl|
           board.place_meeple(meeples.pop, cl)
         end
       end
 
-      def take_turn(board:, deck:, **_)
+      def take_turn( deck:, **_)
         @recruited = false
-        birdsong(board)
-        daylight(board, deck)
+        birdsong
+        daylight(deck)
         evening(deck)
       end
 
-      def birdsong(board)
+      def birdsong
         board.clearings_with(:sawmill).each do |sawmill_clearing|
           piece = wood.first
           board.place_token(piece, sawmill_clearing)
@@ -113,7 +113,7 @@ module Root
         end
       end
 
-      def recruit(board)
+      def recruit
         @recruited = true
         board.clearings_with(:recruiter).each do |clearing|
           board.place_meeple(meeples.pop, clearing)
@@ -136,22 +136,22 @@ module Root
         @remaining_actions += 1
       end
 
-      def daylight(board, deck)
-        craft_items(board, deck)
+      def daylight(deck)
+        craft_items(deck)
         @remaining_actions = 3
       end
 
-      def craft_items(board, deck)
+      def craft_items(deck)
         @crafted_suits = []
-        until craftable_items(board).empty?
-          options = craftable_items(board)
+        until craftable_items.empty?
+          options = craftable_items
           choice = player.pick_option(:f_item_select, options)
           item = options[choice]
-          craft_item(board, item, deck)
+          craft_item(item, deck)
         end
       end
 
-      def craft_item(board, choice, deck)
+      def craft_item(choice, deck)
         @crafted_suits.concat(choice.craft)
         board.items.delete(choice.item)
         deck.discard_card(choice)
@@ -160,7 +160,7 @@ module Root
         items << choice.item
       end
 
-      def craftable_items(board)
+      def craftable_items
         @crafted_suits ||= []
         suits = board.clearings_with(:workshop).map(&:suit)
         usable_suits = suits - @crafted_suits

@@ -18,25 +18,25 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#setup' do
     it 'sets a keep in the corner' do
-      board = Root::Boards::Base.new
       player = Root::Players::Human.for('Sneak', :cats)
       cats = player.faction
+      board = player.board
       allow(player).to receive(:pick_option).and_return(0)
       expect(board.keep_in_corner?).to be false
 
-      player.setup(board: board)
+      player.setup
 
       expect(board.keep_in_corner?).to be true
       expect(cats.keep).to be_empty
     end
 
     it 'sets a sawmill, recruiter, and workshop in adjacent clearing' do
-      board = Root::Boards::Base.new
       player = Root::Players::Human.for('Sneak', :cats)
       cats = player.faction
+      board = player.board
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board: board)
+      player.setup
 
       clearing = board.corner_with_keep
       expect(clearing_has_building(clearing, :recruiter)).to be true
@@ -48,12 +48,12 @@ RSpec.describe Root::Factions::Cat do
     end
 
     it 'sets 11 warrior in all clearings except directly across' do
-      board = Root::Boards::Base.new
       player = Root::Players::Human.for('Sneak', :cats)
       cats = player.faction
+      board = player.board
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board: board)
+      player.setup
 
       keep_clearing = board.clearing_across_from_keep
       other_clearings = board.clearings_other_than(keep_clearing)
@@ -69,19 +69,19 @@ RSpec.describe Root::Factions::Cat do
       player = game.players.fetch_player(:cats)
       game.setup
 
-      expect { player.faction.take_turn(board: game.board, deck: game.deck) }
+      expect { player.faction.take_turn(deck: game.deck) }
         .to change(player, :inspect)
     end
   end
 
   describe '#birdsong' do
     it 'gives all sawmills wood' do
-      board = Root::Boards::Base.new
       player = Root::Players::Computer.for('Sneak', :cats)
-      player.setup(board: board)
+      player.setup
+      board = player.board
 
       faction = player.faction
-      expect { faction.birdsong(board) }
+      expect { faction.birdsong }
         .to change { faction.wood.count }
         .by(-1)
       expect(board.clearings_with(:sawmill).first.wood?).to be true
@@ -90,27 +90,25 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#daylight' do
     it 'gives player 3 actions with choices' do
-      board = Root::Boards::Base.new
       player = Root::Players::Human.for('Sneak', :cats)
       deck = Root::Decks::List.default_decks_list
       allow(player).to receive(:pick_option).and_return(0)
-      player.setup(board: board)
+      player.setup
       faction = player.faction
       faction.hand << Root::Cards::Base.new(suit: :bird)
-      faction.birdsong(board)
-      faction.daylight(board, deck)
+      faction.birdsong
+      faction.daylight(deck)
     end
   end
 
   describe '#currently_available_options' do
     context 'when in its default state' do
       it 'shows 5 default options' do
-        board = Root::Boards::Base.new
         player = Root::Players::Computer.for('Sneak', :cats)
-        player.setup(board: board)
+        player.setup
         faction = player.faction
 
-        faction.birdsong(board)
+        faction.birdsong
         expect(faction.currently_available_options)
           .to match_array(%i[battle march recruit build overwork])
       end
@@ -118,13 +116,12 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when having recruited already' do
       it 'no longer shows recruit' do
-        board = Root::Boards::Base.new
         player = Root::Players::Computer.for('Sneak', :cats)
-        player.setup(board: board)
+        player.setup
         faction = player.faction
 
-        faction.birdsong(board)
-        faction.recruit(board)
+        faction.birdsong
+        faction.recruit
 
         expect(faction.currently_available_options)
           .to match_array(%i[battle march build overwork])
@@ -133,13 +130,12 @@ RSpec.describe Root::Factions::Cat do
 
     context 'with a bird card in hand' do
       it 'shows option to discard bird card' do
-        board = Root::Boards::Base.new
         player = Root::Players::Computer.for('Sneak', :cats)
-        player.setup(board: board)
+        player.setup
         faction = player.faction
 
         faction.hand << Root::Cards::Base.new(suit: :bird)
-        faction.birdsong(board)
+        faction.birdsong
 
         expect(faction.currently_available_options)
           .to match_array(%i[battle march recruit build overwork discard_bird])
@@ -154,12 +150,12 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do
-      board = Root::Boards::Base.new
       player = Root::Players::Computer.for('Sneak', :cats)
-      player.setup(board: board)
+      board = player.board
+      player.setup
 
       faction = player.faction
-      expect { faction.recruit(board) }
+      expect { faction.recruit }
         .to change { faction.meeples.count }.by(-1)
       expect(board.clearings_with(:recruiter).first.meeples.count).to be(2)
     end
@@ -167,10 +163,9 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#discard_bird' do
     it 'discards a bird card in hand to get an extra action' do
-      board = Root::Boards::Base.new
       deck = Root::Decks::List.default_decks_list.shared
       player = Root::Players::Computer.for('Sneak', :cats)
-      player.setup(board: board)
+      player.setup
 
       faction = player.faction
       card = Root::Cards::Base.new(suit: :bird)
@@ -186,11 +181,10 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do
-      board = Root::Boards::Base.new
       deck = Root::Decks::List.default_decks_list
       player = Root::Players::Human.for('Sneak', :cats)
       allow(player).to receive(:pick_option).and_return(0)
-      player.setup(board: board, decks: deck)
+      player.setup(decks: deck)
       faction = player.faction
       card_to_craft = Root::Cards::Item.new(
         suit: :fox,
@@ -207,7 +201,7 @@ RSpec.describe Root::Factions::Cat do
       faction.hand << card_to_craft
       faction.hand << card_unable_to_be_crafted
 
-      faction.craft_items(board, deck.shared)
+      faction.craft_items(deck.shared)
       expect(faction.hand).not_to include(card_to_craft)
       expect(faction.hand).to include(card_unable_to_be_crafted)
       expect(faction.victory_points).to be(2)
@@ -218,10 +212,9 @@ RSpec.describe Root::Factions::Cat do
   describe 'craftable_items' do
     context 'when you have item card in hand that is available' do
       it 'is craftable' do
-        board = Root::Boards::Base.new
         player = Root::Players::Human.for('Sneak', :cats)
         allow(player).to receive(:pick_option).and_return(0)
-        player.setup(board: board)
+        player.setup
         faction = player.faction
 
         card_to_craft = Root::Cards::Item.new(
@@ -233,7 +226,7 @@ RSpec.describe Root::Factions::Cat do
         faction.discard_hand
         faction.hand << card_to_craft
 
-        expect(faction.craftable_items(board)).to match_array([card_to_craft])
+        expect(faction.craftable_items).to match_array([card_to_craft])
       end
     end
 
@@ -241,8 +234,9 @@ RSpec.describe Root::Factions::Cat do
       it 'is not craftable' do
         board = Root::Boards::Base.new(items: [])
         player = Root::Players::Human.for('Sneak', :cats)
+        player.board = board
         allow(player).to receive(:pick_option).and_return(0)
-        player.setup(board: board)
+        player.setup
         faction = player.faction
 
         card = Root::Cards::Item.new(
@@ -253,16 +247,15 @@ RSpec.describe Root::Factions::Cat do
         )
         faction.hand << card
 
-        expect(faction.craftable_items(board)).not_to include(card)
+        expect(faction.craftable_items).not_to include(card)
       end
     end
 
     context 'when you have item card in hand different from clearing suit' do
       it 'is not craftable' do
-        board = Root::Boards::Base.new
         player = Root::Players::Human.for('Sneak', :cats)
         allow(player).to receive(:pick_option).and_return(0)
-        player.setup(board: board)
+        player.setup
         faction = player.faction
 
         card = Root::Cards::Item.new(
@@ -273,7 +266,7 @@ RSpec.describe Root::Factions::Cat do
         )
         faction.hand << card
 
-        expect(faction.craftable_items(board)).not_to include(card)
+        expect(faction.craftable_items).not_to include(card)
       end
     end
   end
@@ -281,10 +274,9 @@ RSpec.describe Root::Factions::Cat do
   describe '#evening' do
     context 'with no draw bonuses' do
       it 'draw one card' do
-        board = Root::Boards::Base.new
         player = Root::Players::Computer.for('Sneak', :cats)
         deck = Root::Decks::Starter.new
-        player.setup(board: board)
+        player.setup
 
         faction = player.faction
         expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
@@ -293,10 +285,9 @@ RSpec.describe Root::Factions::Cat do
 
     xcontext 'with draw bonuses' do
       it 'draw one card plus one per bonus' do
-        # board = Root::Boards::Base.new
         # player = Root::Players::Computer.for('Sneak', :cats)
         # deck = Root::Decks::Starter.new
-        # player.setup(board: board)
+        # player.setup
 
         # faction = player.faction
         # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
@@ -305,10 +296,9 @@ RSpec.describe Root::Factions::Cat do
 
     xcontext 'when over 5 cards' do
       it 'discards down to 5 cards' do
-        # board = Root::Boards::Base.new
         # player = Root::Players::Computer.for('Sneak', :cats)
         # deck = Root::Decks::Starter.new
-        # player.setup(board: board)
+        # player.setup
 
         # faction = player.faction
         # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
