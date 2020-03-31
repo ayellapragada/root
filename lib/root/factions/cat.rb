@@ -108,6 +108,18 @@ module Root
       def daylight(deck)
         craft_items(deck)
         @remaining_actions = 3
+        until remaining_actions.zero?
+          opts = currently_available_options
+          choice = player.pick_option(:f_pick_action, opts)
+          action = opts[choice]
+
+          case action
+          when :recruit then recruit
+          when :overwork then overwork(deck)
+          when :discard_bird then discard_bird(deck)
+          end
+          @remaining_actions -= 1
+        end
       end
 
       def evening(deck)
@@ -130,7 +142,7 @@ module Root
 
       def overwork(deck)
         valid_suits = hand.map(&:suit)
-        options = board.clearings_with(:workshop).select do |c|
+        options = board.clearings_with(:sawmill).select do |c|
           valid_suits.include?(c.suit)
         end
         return if options.empty?
@@ -150,7 +162,7 @@ module Root
 
       def discard_card_with_suit(suit, deck)
         options = hand.select { |card| card.suit == suit }
-        choice = player.pick_option(:c_discard_bird, options)
+        choice = player.pick_option(:f_discard_card, options)
         card = options[choice]
         deck.discard_card(card)
         hand.delete(card)

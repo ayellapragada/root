@@ -153,7 +153,7 @@ RSpec.describe Root::Factions::Cat do
         deck = Root::Decks::List.default_decks_list.shared
         player = Root::Players::Computer.for('Sneak', :cats)
         player.setup
-        clearing = player.board.clearings_with(:workshop).first
+        clearing = player.board.clearings_with(:sawmill).first
         faction = player.faction
         faction.hand << Root::Cards::Base.new(suit: clearing.suit)
         expect { faction.overwork(deck) }
@@ -168,7 +168,7 @@ RSpec.describe Root::Factions::Cat do
         deck = Root::Decks::List.default_decks_list.shared
         player = Root::Players::Computer.for('Sneak', :cats)
         player.setup
-        clearing = player.board.clearings_with(:workshop).first
+        clearing = player.board.clearings_with(:sawmill).first
         faction = player.faction
 
         expect { faction.overwork(deck) }.not_to change { faction.wood.count }
