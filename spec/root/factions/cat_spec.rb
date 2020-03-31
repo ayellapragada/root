@@ -84,11 +84,11 @@ RSpec.describe Root::Factions::Cat do
       expect { faction.birdsong }
         .to change { faction.wood.count }
         .by(-1)
-      expect(board.clearings_with(:sawmill).first.wood?).to be true
+      expect(board.clearings_with(:sawmill).all?(&:wood?)).to be true
     end
   end
 
-  describe '#daylight' do
+  xdescribe '#daylight' do
     it 'gives player 3 actions with choices' do
       player = Root::Players::Human.for('Sneak', :cats)
       deck = Root::Decks::List.default_decks_list
@@ -104,9 +104,8 @@ RSpec.describe Root::Factions::Cat do
   describe '#currently_available_options' do
     context 'when in its default state' do
       it 'shows 5 default options' do
-        player = Root::Players::Computer.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         player.setup
-        faction = player.faction
 
         faction.birdsong
         expect(faction.currently_available_options)
@@ -116,11 +115,9 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when having recruited already' do
       it 'no longer shows recruit' do
-        player = Root::Players::Computer.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         player.setup
-        faction = player.faction
 
-        faction.birdsong
         faction.recruit
 
         expect(faction.currently_available_options)
@@ -130,9 +127,8 @@ RSpec.describe Root::Factions::Cat do
 
     context 'with a bird card in hand' do
       it 'shows option to discard bird card' do
-        player = Root::Players::Computer.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         player.setup
-        faction = player.faction
 
         faction.hand << Root::Cards::Base.new(suit: :bird)
         faction.birdsong
@@ -143,6 +139,19 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  # battle only if meeple somewhere with another battleable piece
+  describe '#battle?'
+  # march only if meeples with rule that aren't trapped
+  describe '#march?'
+  # build only if wood and spaces you rule in you can build in
+  describe '#build?'
+  # overwork only if sawmill and card in hand that can be discarded
+  describe '#overwork?'
+  # recruit only if recruiters but not yet already recruited
+  describe '#recruit?'
+  # discard_bird if hand has a bird
+  describe '#discard_bird?'
+
   describe '#battle'
   describe '#march'
   describe '#build'
@@ -151,11 +160,11 @@ RSpec.describe Root::Factions::Cat do
     context 'when a card is available in the hand matching clearing' do
       it 'places a wood at a workshop after discarding a card of that suit' do
         deck = Root::Decks::List.default_decks_list.shared
-        player = Root::Players::Computer.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         player.setup
         clearing = player.board.clearings_with(:sawmill).first
-        faction = player.faction
         faction.hand << Root::Cards::Base.new(suit: clearing.suit)
+
         expect { faction.overwork(deck) }
           .to change { faction.wood.count }
           .by(-1).and change { faction.hand.count }.by(-1)
@@ -166,10 +175,9 @@ RSpec.describe Root::Factions::Cat do
     context 'when no card is available in the hand matching clearing' do
       it 'does not place a wood there' do
         deck = Root::Decks::List.default_decks_list.shared
-        player = Root::Players::Computer.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         player.setup
         clearing = player.board.clearings_with(:sawmill).first
-        faction = player.faction
 
         expect { faction.overwork(deck) }.not_to change { faction.wood.count }
         expect(clearing.wood.count).to be(0)
@@ -179,11 +187,10 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do
-      player = Root::Players::Computer.for('Sneak', :cats)
+      player, faction = build_player_and_faction
       board = player.board
       player.setup
 
-      faction = player.faction
       expect { faction.recruit }
         .to change { faction.meeples.count }.by(-1)
       expect(board.clearings_with(:recruiter).first.meeples.count).to be(2)
@@ -192,11 +199,10 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#discard_bird' do
     it 'discards a bird card in hand to get an extra action' do
+      player, faction = build_player_and_faction
       deck = Root::Decks::List.default_decks_list.shared
-      player = Root::Players::Computer.for('Sneak', :cats)
       player.setup
 
-      faction = player.faction
       card = Root::Cards::Base.new(suit: :bird)
       faction.hand << card
 
@@ -210,11 +216,12 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do
-      deck = Root::Decks::List.default_decks_list
-      player = Root::Players::Human.for('Sneak', :cats)
+      player, faction = build_player_and_faction
       allow(player).to receive(:pick_option).and_return(0)
+
+      deck = Root::Decks::List.default_decks_list
       player.setup(decks: deck)
-      faction = player.faction
+
       card_to_craft = Root::Cards::Item.new(
         suit: :fox,
         craft: %i[bunny],
@@ -227,6 +234,7 @@ RSpec.describe Root::Factions::Cat do
         item: :coin,
         vp: 1
       )
+
       faction.hand << card_to_craft
       faction.hand << card_unable_to_be_crafted
 
@@ -241,10 +249,9 @@ RSpec.describe Root::Factions::Cat do
   describe 'craftable_items' do
     context 'when you have item card in hand that is available' do
       it 'is craftable' do
-        player = Root::Players::Human.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         allow(player).to receive(:pick_option).and_return(0)
         player.setup
-        faction = player.faction
 
         card_to_craft = Root::Cards::Item.new(
           suit: :fox,
@@ -261,8 +268,7 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when you have no workshops out' do
       it 'does not allow for crafting anything' do
-        player = Root::Players::Computer.for('Sneak', :cats)
-        faction = player.faction
+        _player, faction = build_player_and_faction
         card = Root::Cards::Item.new(
           suit: :fox,
           craft: %i[bunny],
@@ -277,11 +283,10 @@ RSpec.describe Root::Factions::Cat do
     context 'when you have item card that is craftable but not available' do
       it 'is not craftable' do
         board = Root::Boards::Base.new(items: [])
-        player = Root::Players::Human.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         player.board = board
         allow(player).to receive(:pick_option).and_return(0)
         player.setup
-        faction = player.faction
 
         card = Root::Cards::Item.new(
           suit: :fox,
@@ -297,10 +302,9 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when you have item card in hand different from clearing suit' do
       it 'is not craftable' do
-        player = Root::Players::Human.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         allow(player).to receive(:pick_option).and_return(0)
         player.setup
-        faction = player.faction
 
         card = Root::Cards::Item.new(
           suit: :fox,
@@ -318,33 +322,30 @@ RSpec.describe Root::Factions::Cat do
   describe '#evening' do
     context 'with no draw bonuses' do
       it 'draw one card' do
-        player = Root::Players::Computer.for('Sneak', :cats)
+        player, faction = build_player_and_faction
         deck = Root::Decks::Starter.new
         player.setup
 
-        faction = player.faction
         expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
       end
     end
 
     xcontext 'with draw bonuses' do
       it 'draw one card plus one per bonus' do
-        # player = Root::Players::Computer.for('Sneak', :cats)
+        # player, faction = build_player_and_faction
         # deck = Root::Decks::Starter.new
         # player.setup
 
-        # faction = player.faction
         # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
       end
     end
 
     xcontext 'when over 5 cards' do
       it 'discards down to 5 cards' do
-        # player = Root::Players::Computer.for('Sneak', :cats)
+        # player, faction = build_player_and_faction
         # deck = Root::Decks::Starter.new
         # player.setup
 
-        # faction = player.faction
         # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
       end
     end
@@ -359,5 +360,10 @@ RSpec.describe Root::Factions::Cat do
     clearings.all? do |cl|
       cl.meeples.count == 1 && cl.meeples.first.faction == :cat
     end
+  end
+
+  def build_player_and_faction
+    player = Root::Players::Computer.for('Sneak', :cats)
+    [player, player.faction]
   end
 end
