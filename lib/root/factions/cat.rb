@@ -98,19 +98,11 @@ module Root
         end
       end
 
-      def take_turn( deck:, **_)
+      def take_turn(deck:, **_)
         @recruited = false
         birdsong
         daylight(deck)
         evening(deck)
-      end
-
-      def birdsong
-        board.clearings_with(:sawmill).each do |sawmill_clearing|
-          piece = wood.first
-          board.place_token(piece, sawmill_clearing)
-          tokens.delete(piece)
-        end
       end
 
       def recruit
@@ -136,17 +128,27 @@ module Root
         @remaining_actions += 1
       end
 
+      def birdsong
+        board.clearings_with(:sawmill).each do |sawmill_clearing|
+          piece = wood.first
+          board.place_token(piece, sawmill_clearing)
+          tokens.delete(piece)
+        end
+      end
+
       def daylight(deck)
         craft_items(deck)
         @remaining_actions = 3
       end
 
-      def suits_to_craft_with
-        board.clearings_with(:workshop).map(&:suit)
-      end
-
       def evening(deck)
         draw_card(deck)
+      end
+
+      private
+
+      def suits_to_craft_with
+        board.clearings_with(:workshop).map(&:suit)
       end
     end
   end
