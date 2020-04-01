@@ -132,6 +132,9 @@ module Root
         end
       end
 
+      def move_options
+      end
+
       def evening(deck)
         draw_card(deck)
       end

@@ -98,4 +98,70 @@ RSpec.describe Root::Grid::Clearing do
       expect(clearing.buildings.map(&:type)).to eq(%i[ruin])
     end
   end
+
+  describe '#ruled_by' do
+    context 'with the default conditions' do
+      it 'is ruled by people with most tokens' do
+        clearing = Root::Grid::Clearing.new(
+          priority: 1,
+          suit: :bunny,
+          slots: 3
+        )
+        clearing.create_building(Root::Factions::Cats::Sawmill.new)
+        clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
+        clearing.place_meeple(Root::Pieces::Meeple.new(:bird))
+
+        expect(clearing.ruled_by).to eq(:cat)
+      end
+
+      context 'when tied' do
+        it 'is ruled by no one' do
+          clearing = Root::Grid::Clearing.new(
+            priority: 1,
+            suit: :bunny,
+            slots: 3
+          )
+          clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
+          clearing.place_meeple(Root::Pieces::Meeple.new(:mouse))
+
+          expect(clearing.ruled_by).to eq(nil)
+        end
+      end
+    end
+
+    context 'when birdies are involved' do
+      it 'gives birds the win on a tie' do
+        clearing = Root::Grid::Clearing.new(
+          priority: 1,
+          suit: :bunny,
+          slots: 3
+        )
+        clearing.create_building(Root::Factions::Cats::Sawmill.new)
+        clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
+        clearing.create_building(Root::Factions::Birds::Roost.new)
+        clearing.place_meeple(Root::Pieces::Meeple.new(:bird))
+
+        expect(clearing.ruled_by).to eq(:bird)
+      end
+    end
+
+    context 'when a ruin is involved' do
+      it 'does not count the ruin ' do
+        clearing = Root::Grid::Clearing.new(
+          priority: 1,
+          suit: :bunny,
+          slots: 3,
+          ruin: true
+        )
+        clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
+
+        expect(clearing.ruled_by).to eq(:cat)
+      end
+    end
+
+    # ohoho for future me
+    # context 'when lizards are involved' do
+    #   it 'gives it to the lizardos over all else'
+    # end
+  end
 end

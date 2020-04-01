@@ -140,7 +140,7 @@ RSpec.describe Root::Factions::Cat do
   end
 
   # battle only if meeple somewhere with another factions piece
-  describe 'battle_options' do
+  describe '#battle_options' do
     it 'finds everywhere the cats can battle in' do
       player, faction = build_player_and_faction
       birds = Root::Players::Computer.for('Chonk', :birds).faction
@@ -151,11 +151,18 @@ RSpec.describe Root::Factions::Cat do
       board.create_building(birds.roosts.first, c)
 
       expect(faction.battle_options).to eq([c])
+      expect(faction.can_battle?).to be true
     end
   end
 
   # march only if meeples with rule that aren't trapped
-  describe '#march?'
+  describe '#move_options' do
+    it 'finds everywhere that can be moved to' do
+    end
+  end
+
+  describe '#can_move'
+
   # build only if wood and spaces you rule in you can build in
   describe '#build?'
   # overwork only if sawmill and card in hand that can be discarded

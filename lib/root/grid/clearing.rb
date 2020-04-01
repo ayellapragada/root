@@ -133,6 +133,23 @@ module Root
         tokens.select { |token| token.type == :wood }
       end
 
+      FACTIONS_WITHOUT_RULE = %i[vagabond]
+
+      def ruled_by
+        groups = (meeples + buildings).group_by(&:faction)
+        max = groups.values.map(&:count).max
+        contenders =
+          groups
+          .select { |_fac, units| units.count == max }
+          .keys
+          .reject { |f| FACTIONS_WITHOUT_RULE.include?(f) }
+
+        return :bird if contenders.include?(:bird)
+        return nil if contenders.length > 1
+
+        contenders.first
+      end
+
       private
 
       def create_ruin
