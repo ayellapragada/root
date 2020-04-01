@@ -8,6 +8,10 @@ module Root
       module Birdable
         DISPLAY_COLOR = :dodgerblue
 
+        def faction
+          :bird
+        end
+
         def display_color
           DISPLAY_COLOR
         end

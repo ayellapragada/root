@@ -122,6 +122,16 @@ module Root
         end
       end
 
+      def can_battle?
+        !battle_options.empty?
+      end
+
+      def battle_options
+        board.clearings_with_meeples(:cat).select do |clearing|
+          clearing.includes_any_other_attackable_faction?(:cat)
+        end
+      end
+
       def evening(deck)
         draw_card(deck)
       end

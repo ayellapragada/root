@@ -91,6 +91,12 @@ module Root
           clearing.includes_building?(type) || clearing.includes_token?(type)
         end.values
       end
+
+      def clearings_with_meeples(type)
+        clearings.select do |_, clearing|
+          clearing.includes_meeple?(type)
+        end.values
+      end
     end
   end
 end

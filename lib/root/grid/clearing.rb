@@ -111,6 +111,12 @@ module Root
         buildings.dup.fill(EmptySlot.new, buildings.count, available_slots)
       end
 
+      def includes_any_other_attackable_faction?(faction)
+        meeples.any? { |m| m.faction != faction && m.attackable? } ||
+          buildings.any? { |b| b.faction != faction && b.attackable? } ||
+          tokens.any? { |t| t.faction != faction && t.attackable? }
+      end
+
       def forest?
         type == :forest
       end

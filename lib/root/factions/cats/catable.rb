@@ -8,6 +8,10 @@ module Root
       module Catable
         DISPLAY_COLOR = :darkorange
 
+        def faction
+          :cat
+        end
+
         def display_color
           DISPLAY_COLOR
         end

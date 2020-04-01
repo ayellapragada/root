@@ -8,6 +8,10 @@ module Root
       module Vagabondable
         DISPLAY_COLOR = :webgray
 
+        def faction
+          :vagabond
+        end
+
         def display_color
           DISPLAY_COLOR
         end

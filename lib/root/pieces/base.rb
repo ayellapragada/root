@@ -11,6 +11,10 @@ module Root
       def display_symbol
         self.class.name.split('::').last[0]
       end
+
+      def attackable?
+        true
+      end
     end
   end
 end

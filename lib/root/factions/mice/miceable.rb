@@ -8,6 +8,10 @@ module Root
       module Miceable
         DISPLAY_COLOR = :forestgreen
 
+        def faction
+          :mouse
+        end
+
         def display_color
           DISPLAY_COLOR
         end

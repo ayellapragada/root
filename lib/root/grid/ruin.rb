@@ -18,6 +18,10 @@ module Root
       def contains_item?
         items.any?
       end
+
+      def attackable?
+        false
+      end
     end
   end
 end
