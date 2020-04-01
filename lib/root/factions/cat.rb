@@ -113,11 +113,14 @@ module Root
           choice = player.pick_option(:f_pick_action, opts)
           action = opts[choice]
 
+          # STILL IN PROGRESS, NOT ACCURATE TO WHAT IS OR IS NOT TESTED
+          # :nocov:
           case action
           when :recruit then recruit
           when :overwork then overwork(deck)
           when :discard_bird then discard_bird(deck)
           end
+          # :nocov:
           @remaining_actions -= 1
         end
       end

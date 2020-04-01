@@ -122,7 +122,7 @@ RSpec.describe Root::Grid::Clearing do
             slots: 3
           )
           clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
-          clearing.place_meeple(Root::Pieces::Meeple.new(:mouse))
+          clearing.place_meeple(Root::Factions::Mice::Base.new(:mouse))
 
           expect(clearing.ruled_by).to eq(nil)
         end
