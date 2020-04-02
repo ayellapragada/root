@@ -202,7 +202,20 @@ RSpec.describe Root::Factions::Cat do
     end
 
     context 'when faction rules neither' do
-      it 'is unable to move to the other clearing'
+      it 'is unable to move to the other clearing' do
+        player, faction = build_player_and_faction
+        clearings = player.board.clearings
+
+        bird_faction = Root::Players::Computer.for('Hal', :birds).faction
+        clearings[:one].place_meeple(bird_faction.meeples.first)
+        clearings[:two].place_meeple(bird_faction.meeples.first)
+        clearings[:five].place_meeple(bird_faction.meeples.first)
+
+        clearings[:five].place_meeple(faction.meeples.first)
+
+        expect(faction.clearing_move_options(clearings[:five]))
+          .to match_array([])
+      end
     end
   end
 
@@ -274,7 +287,6 @@ RSpec.describe Root::Factions::Cat do
       expect(faction.can_recruit?).to be false
     end
   end
-
 
   describe '#can_discard_bird?' do
     context 'when bird in hand' do
