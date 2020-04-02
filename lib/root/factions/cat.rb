@@ -118,6 +118,7 @@ module Root
           case action
           # when :battle then battle
           # when :march then march
+          # when :build then build
           when :recruit then recruit
           when :overwork then overwork(deck)
           when :discard_bird then discard_bird(deck)
@@ -136,7 +137,7 @@ module Root
       end
 
       def can_recruit?
-        !@recruited && !board.clearings_with(:sawmill).empty?
+        !@recruited && !board.clearings_with(:recruiter).empty?
       end
 
       def can_overwork?

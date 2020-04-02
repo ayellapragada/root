@@ -25,6 +25,15 @@ module Root
       end
 
       # :nocov:
+      def self.for_faction_for_play
+        new(
+          Root::Players::Human.for('Akshith', :cats),
+          Root::Players::Computer.for('Hal', :mice),
+          Root::Players::Computer.for('Tron', :birds),
+          Root::Players::Computer.for('Ultron', :vagabond)
+        )
+      end
+
       def self.human_list
         new(
           Root::Players::Human.for('Hal', :cats),

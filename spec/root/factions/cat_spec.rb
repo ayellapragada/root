@@ -219,11 +219,7 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '#battle'
   describe '#march'
-
-  # build only if wood and spaces you rule in you can build in
-  describe '#build?'
 
   describe '#overwork_options' do
     context 'without sawmills' do
@@ -267,12 +263,24 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  # recruit only if recruiters but not yet already recruited
-  describe '#recruit?'
+  # build only if wood and spaces you rule in you can build in
+  describe '#can_build?'
 
-  describe '#battle'
-  describe '#march'
   describe '#build'
+
+  # recruit only if recruiters but not yet already recruited
+  describe '#can_recruit?' do
+    context 'without any recruiters' do
+      it 'can not recruit' do
+        player, faction = build_player_and_faction
+        board = player.board
+
+        expect(faction.can_recruit?).to be false
+        board.clearings[:one].create_building(faction.recruiters.first)
+        expect(faction.can_recruit?).to be true
+      end
+    end
+  end
 
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do
@@ -283,7 +291,8 @@ RSpec.describe Root::Factions::Cat do
       expect(faction.can_recruit?).to be true
       expect { faction.recruit }
         .to change { faction.meeples.count }.by(-1)
-      expect(board.clearings_with(:recruiter).first.meeples.count).to be(2)
+      expect(board.clearings_with(:recruiter).all? { |r| r.meeples.count == 2 })
+        .to be true
       expect(faction.can_recruit?).to be false
     end
   end

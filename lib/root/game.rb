@@ -12,8 +12,16 @@ module Root
     end
 
     # :nocov:
+    def self.with_faction_for_play
+      new(
+        players: Players::List.for_faction_for_play,
+        board: Boards::Base.new,
+        decks: Decks::List.default_decks_list
+      )
+    end
+
     def self.start_and_play_game
-      game = default_game(with_computers: false, with_humans: true)
+      game = with_faction_for_play
       game.print_display = true
       game.setup
       game.run_game
