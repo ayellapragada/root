@@ -9,7 +9,7 @@ module Root
         DISPLAY_COLOR = :forestgreen
 
         def faction
-          :mouse
+          :mice
         end
 
         def display_color

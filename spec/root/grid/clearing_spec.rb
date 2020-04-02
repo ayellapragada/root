@@ -108,10 +108,10 @@ RSpec.describe Root::Grid::Clearing do
           slots: 3
         )
         clearing.create_building(Root::Factions::Cats::Sawmill.new)
-        clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
-        clearing.place_meeple(Root::Pieces::Meeple.new(:bird))
+        clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
+        clearing.place_meeple(Root::Pieces::Meeple.new(:birds))
 
-        expect(clearing.ruled_by).to eq(:cat)
+        expect(clearing.ruled_by).to eq(:cats)
       end
 
       context 'when tied' do
@@ -121,8 +121,8 @@ RSpec.describe Root::Grid::Clearing do
             suit: :bunny,
             slots: 3
           )
-          clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
-          clearing.place_meeple(Root::Factions::Mice::Base.new(:mouse))
+          clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
+          clearing.place_meeple(Root::Factions::Mice::Base.new(:mice))
 
           expect(clearing.ruled_by).to eq(nil)
         end
@@ -137,11 +137,11 @@ RSpec.describe Root::Grid::Clearing do
           slots: 3
         )
         clearing.create_building(Root::Factions::Cats::Sawmill.new)
-        clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
+        clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
         clearing.create_building(Root::Factions::Birds::Roost.new)
-        clearing.place_meeple(Root::Pieces::Meeple.new(:bird))
+        clearing.place_meeple(Root::Pieces::Meeple.new(:birds))
 
-        expect(clearing.ruled_by).to eq(:bird)
+        expect(clearing.ruled_by).to eq(:birds)
       end
     end
 
@@ -153,9 +153,9 @@ RSpec.describe Root::Grid::Clearing do
           slots: 3,
           ruin: true
         )
-        clearing.place_meeple(Root::Pieces::Meeple.new(:cat))
+        clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
 
-        expect(clearing.ruled_by).to eq(:cat)
+        expect(clearing.ruled_by).to eq(:cats)
       end
     end
 

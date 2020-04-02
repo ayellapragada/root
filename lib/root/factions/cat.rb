@@ -20,7 +20,7 @@ module Root
       end
 
       def handle_meeple_setup
-        @meeples = Array.new(25) { Pieces::Meeple.new(:cat) }
+        @meeples = Array.new(25) { Pieces::Meeple.new(:cats) }
       end
 
       def handle_building_setup
@@ -129,13 +129,37 @@ module Root
         !battle_options.empty?
       end
 
+      def can_move?
+        !move_options.empty?
+      end
+
       def battle_options
-        board.clearings_with_meeples(:cat).select do |clearing|
-          clearing.includes_any_other_attackable_faction?(:cat)
+        board.clearings_with_meeples(:cats).select do |clearing|
+          clearing.includes_any_other_attackable_faction?(:cats)
         end
       end
 
       def move_options
+        possible_options = []
+        board.clearings_with_meeples(:cats).select do |clearing|
+          clearing.adjacents.each do |adj|
+            next if possible_options.include?(clearing)
+
+            possible_options << clearing if rule?(clearing) || rule?(adj)
+          end
+        end
+
+        possible_options
+      end
+
+      def clearing_move_options(clearing)
+        clearing.adjacents.select do |adj|
+          rule?(clearing) || rule?(adj)
+        end
+      end
+
+      def rule?(clearing)
+        clearing.ruled_by == faction_symbol
       end
 
       def evening(deck)

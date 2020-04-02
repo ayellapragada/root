@@ -11,9 +11,9 @@ module Root
     # Handles base logic for Warrior Tokens
     class Meeple < Base
       COLOR_FACTION_MAP = {
-        cat: Factions::Cats::Catable::DISPLAY_COLOR,
-        bird: Factions::Birds::Birdable::DISPLAY_COLOR,
-        mouse: Factions::Mice::Miceable::DISPLAY_COLOR,
+        cats: Factions::Cats::Catable::DISPLAY_COLOR,
+        birds: Factions::Birds::Birdable::DISPLAY_COLOR,
+        mice: Factions::Mice::Miceable::DISPLAY_COLOR,
         vagabond: Factions::Vagabonds::Vagabondable::DISPLAY_COLOR
       }.freeze
 

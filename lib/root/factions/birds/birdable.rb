@@ -9,7 +9,7 @@ module Root
         DISPLAY_COLOR = :dodgerblue
 
         def faction
-          :bird
+          :birds
         end
 
         def display_color

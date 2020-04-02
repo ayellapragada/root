@@ -134,6 +134,6 @@ RSpec.describe Root::Factions::Bird do
   end
 
   def has_only_six_bird_warriors(meeples)
-    meeples.count == 6 && meeples.all? { |w| w.faction == :bird }
+    meeples.count == 6 && meeples.all? { |w| w.faction == :birds }
   end
 end

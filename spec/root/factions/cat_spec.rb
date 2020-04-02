@@ -143,21 +143,84 @@ RSpec.describe Root::Factions::Cat do
   describe '#battle_options' do
     it 'finds everywhere the cats can battle in' do
       player, faction = build_player_and_faction
-      birds = Root::Players::Computer.for('Chonk', :birds).faction
       board = player.board
       player.setup
 
-      c = player.board.clearings_with_meeples(:cat).select(&:with_spaces?).first
-      board.create_building(birds.roosts.first, c)
+      c1 = board.clearings_with_meeples(:cats).select(&:with_spaces?).first
+      c2 = board.clearings_with_meeples(:cats).select(&:with_spaces?).last
+      board.create_building(Root::Factions::Birds::Roost.new, c1)
+      board.place_token(Root::Factions::Mice::Sympathy.new, c2)
 
-      expect(faction.battle_options).to eq([c])
+      expect(faction.battle_options).to match_array([c1, c2])
       expect(faction.can_battle?).to be true
     end
   end
 
   # march only if meeples with rule that aren't trapped
   describe '#move_options' do
-    it 'finds everywhere that can be moved to' do
+    context 'with rule in a clearing' do
+      it 'finds everywhere that can be moved from' do
+        player, faction = build_player_and_faction
+        clearings = player.board.clearings
+
+        clearings[:five].place_meeple(faction.meeples.first)
+
+        expect(faction.move_options).to eq([clearings[:five]])
+        expect(faction.can_move?).to be true
+      end
+    end
+
+    context 'without rule in the from or to of a clearing' do
+      it 'does not have any move locations' do
+        player, faction = build_player_and_faction
+        clearings = player.board.clearings
+        bird_faction = Root::Players::Computer.for('Hal', :birds).faction
+
+        clearings[:five].place_meeple(faction.meeples.first)
+
+        clearings[:five].place_meeple(bird_faction.meeples.first)
+        clearings[:one].place_meeple(bird_faction.meeples.first)
+        clearings[:two].place_meeple(bird_faction.meeples.first)
+
+        expect(faction.move_options).to eq([])
+        expect(faction.can_move?).to be false
+      end
+    end
+  end
+
+  describe '#clearing_move_options' do
+    context 'when faction rules the from' do
+      it 'is able to move to the other clearing' do
+        player, faction = build_player_and_faction
+        clearings = player.board.clearings
+
+        clearings[:five].place_meeple(faction.meeples.first)
+
+        expect(faction.clearing_move_options(clearings[:five]))
+          .to match_array([clearings[:one], clearings[:two]])
+      end
+    end
+
+    context 'when faction rules the to' do
+      it 'is able to move to the other clearing' do
+        player, faction = build_player_and_faction
+        clearings = player.board.clearings
+
+        bird_faction = Root::Players::Computer.for('Hal', :birds).faction
+        clearings[:one].place_meeple(bird_faction.meeples.first)
+        clearings[:nine].place_meeple(bird_faction.meeples.first)
+        clearings[:ten].place_meeple(bird_faction.meeples.first)
+
+        clearings[:five].place_meeple(faction.meeples.first)
+        clearings[:one].place_meeple(faction.meeples.first)
+
+        expect(faction.clearing_move_options(clearings[:one]))
+          .to match_array([clearings[:five]])
+      end
+    end
+
+    context 'when faction rules neither' do
+      it 'is unable to move to the other clearing'
     end
   end
 
@@ -378,7 +441,7 @@ RSpec.describe Root::Factions::Cat do
 
   def clearings_have_one_cat_meeple?(clearings)
     clearings.all? do |cl|
-      cl.meeples.count == 1 && cl.meeples.first.faction == :cat
+      cl.meeples.count == 1 && cl.meeples.first.faction == :cats
     end
   end
 

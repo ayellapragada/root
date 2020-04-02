@@ -17,7 +17,7 @@ module Root
       end
 
       def handle_faction_token_setup
-        @meeples = Array.new(10) { Pieces::Meeple.new(:mouse) }
+        @meeples = Array.new(10) { Pieces::Meeple.new(:mice) }
         @tokens = Array.new(8) { Mice::Sympathy.new }
         @supporters = []
         handle_base_building

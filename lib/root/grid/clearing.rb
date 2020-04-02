@@ -144,7 +144,7 @@ module Root
           .keys
           .reject { |f| FACTIONS_WITHOUT_RULE.include?(f) }
 
-        return :bird if contenders.include?(:bird)
+        return :birds if contenders.include?(:birds)
         return nil if contenders.length > 1
 
         contenders.first

@@ -9,7 +9,7 @@ module Root
         DISPLAY_COLOR = :darkorange
 
         def faction
-          :cat
+          :cats
         end
 
         def display_color

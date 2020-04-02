@@ -15,7 +15,7 @@ module Root
       end
 
       def handle_faction_token_setup
-        @meeples = Array.new(20) { Pieces::Meeple.new(:bird) }
+        @meeples = Array.new(20) { Pieces::Meeple.new(:birds) }
         @buildings = Array.new(7) { Birds::Roost.new }
         @viziers = Array.new(2) { Cards::Base.new(suit: :bird) }
         handle_leader_setup
