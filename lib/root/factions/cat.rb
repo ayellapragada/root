@@ -116,6 +116,8 @@ module Root
           # STILL IN PROGRESS, NOT ACCURATE TO WHAT IS OR IS NOT TESTED
           # :nocov:
           case action
+          # when :battle then battle
+          # when :march then march
           when :recruit then recruit
           when :overwork then overwork(deck)
           when :discard_bird then discard_bird(deck)
@@ -131,6 +133,22 @@ module Root
 
       def can_move?
         !move_options.empty?
+      end
+
+      def can_recruit?
+        !@recruited && !board.clearings_with(:sawmill).empty?
+      end
+
+      def can_overwork?
+        !overwork_options.empty?
+      end
+
+      def can_build?
+        false
+      end
+
+      def can_discard_bird?
+        !cards_in_hand_with_suit(:bird).empty?
       end
 
       def battle_options
@@ -167,9 +185,13 @@ module Root
       end
 
       def currently_available_options
-        %i[battle march build overwork].tap do |options|
-          options << :discard_bird if hand.any? { |card| card.suit == :bird }
-          options << :recruit unless @recruited
+        [].tap do |options|
+          options << :battle if can_battle?
+          options << :march if can_move?
+          options << :build if can_build?
+          options << :recruit if can_recruit?
+          options << :overwork if can_overwork?
+          options << :discard_bird if can_discard_bird?
         end
       end
 
@@ -180,13 +202,15 @@ module Root
         end
       end
 
-      def overwork(deck)
+      def overwork_options
         valid_suits = hand.map(&:suit)
-        options = board.clearings_with(:sawmill).select do |c|
+        board.clearings_with(:sawmill).select do |c|
           valid_suits.include?(c.suit)
         end
-        return if options.empty?
+      end
 
+      def overwork(deck)
+        options = overwork_options
         choice = player.pick_option(:c_overwork, options)
         sawmill_clearing = options[choice]
         discard_card_with_suit(sawmill_clearing.suit, deck)
@@ -198,8 +222,12 @@ module Root
         @remaining_actions += 1
       end
 
+      def cards_in_hand_with_suit(suit)
+        hand.select { |card| card.suit == suit }
+      end
+
       def discard_card_with_suit(suit, deck)
-        options = hand.select { |card| card.suit == suit }
+        options = cards_in_hand_with_suit(suit)
         choice = player.pick_option(:f_discard_card, options)
         card = options[choice]
         deck.discard_card(card)

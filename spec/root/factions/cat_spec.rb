@@ -101,40 +101,22 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  # Little bit silly, but each method should reaally be tested correctly alone.
   describe '#currently_available_options' do
-    context 'when in its default state' do
-      it 'shows 5 default options' do
+    context 'when able to do everything' do
+      it 'has 6 options' do
         player, faction = build_player_and_faction
         player.setup
+        allow(faction).to receive(:can_battle?).and_return(true)
+        allow(faction).to receive(:can_move?).and_return(true)
+        allow(faction).to receive(:can_build?).and_return(true)
+        allow(faction).to receive(:can_recruit?).and_return(true)
+        allow(faction).to receive(:can_overwork?).and_return(true)
+        allow(faction).to receive(:can_discard_bird?).and_return(true)
 
-        faction.birdsong
-        expect(faction.currently_available_options)
-          .to match_array(%i[battle march recruit build overwork])
-      end
-    end
-
-    context 'when having recruited already' do
-      it 'no longer shows recruit' do
-        player, faction = build_player_and_faction
-        player.setup
-
-        faction.recruit
-
-        expect(faction.currently_available_options)
-          .to match_array(%i[battle march build overwork])
-      end
-    end
-
-    context 'with a bird card in hand' do
-      it 'shows option to discard bird card' do
-        player, faction = build_player_and_faction
-        player.setup
-
-        faction.hand << Root::Cards::Base.new(suit: :bird)
-        faction.birdsong
-
-        expect(faction.currently_available_options)
-          .to match_array(%i[battle march recruit build overwork discard_bird])
+        expect(faction.currently_available_options).to match_array(
+          %i[battle march build recruit overwork discard_bird]
+        )
       end
     end
   end
@@ -224,49 +206,60 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '#can_move'
+  describe '#battle'
+  describe '#march'
 
   # build only if wood and spaces you rule in you can build in
   describe '#build?'
-  # overwork only if sawmill and card in hand that can be discarded
-  describe '#overwork?'
+
+  describe '#overwork_options' do
+    context 'without sawmills' do
+      it 'does not have the ability to overwork' do
+        player, faction = build_player_and_faction
+        player.setup
+
+        expect(faction.overwork_options).to be_empty
+        expect(faction.can_overwork?).to be false
+      end
+    end
+
+    context 'with sawmills and valid cards' do
+      it 'finds all locations faction can overwork in' do
+        player, faction = build_player_and_faction
+        clearings = player.board.clearings
+
+        clearings[:one].create_building(faction.sawmills[0])
+        clearings[:two].create_building(faction.sawmills[1])
+
+        faction.hand << Root::Cards::Base.new(suit: :fox)
+
+        expect(faction.overwork_options).to eq([clearings[:one]])
+        expect(faction.can_overwork?).to be true
+      end
+    end
+  end
+
+  describe '#overwork' do
+    it 'places a wood at a workshop after discarding a card of that suit' do
+      deck = Root::Decks::List.default_decks_list.shared
+      player, faction = build_player_and_faction
+      player.setup
+      clearing = player.board.clearings_with(:sawmill).first
+      faction.hand << Root::Cards::Base.new(suit: clearing.suit)
+
+      expect { faction.overwork(deck) }
+        .to change { faction.wood.count }
+        .by(-1).and change { faction.hand.count }.by(-1)
+      expect(clearing.wood.count).to be(1)
+    end
+  end
+
   # recruit only if recruiters but not yet already recruited
   describe '#recruit?'
-  # discard_bird if hand has a bird
-  describe '#discard_bird?'
 
   describe '#battle'
   describe '#march'
   describe '#build'
-
-  describe '#overwork' do
-    context 'when a card is available in the hand matching clearing' do
-      it 'places a wood at a workshop after discarding a card of that suit' do
-        deck = Root::Decks::List.default_decks_list.shared
-        player, faction = build_player_and_faction
-        player.setup
-        clearing = player.board.clearings_with(:sawmill).first
-        faction.hand << Root::Cards::Base.new(suit: clearing.suit)
-
-        expect { faction.overwork(deck) }
-          .to change { faction.wood.count }
-          .by(-1).and change { faction.hand.count }.by(-1)
-        expect(clearing.wood.count).to be(1)
-      end
-    end
-
-    context 'when no card is available in the hand matching clearing' do
-      it 'does not place a wood there' do
-        deck = Root::Decks::List.default_decks_list.shared
-        player, faction = build_player_and_faction
-        player.setup
-        clearing = player.board.clearings_with(:sawmill).first
-
-        expect { faction.overwork(deck) }.not_to change { faction.wood.count }
-        expect(clearing.wood.count).to be(0)
-      end
-    end
-  end
 
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do
@@ -274,9 +267,34 @@ RSpec.describe Root::Factions::Cat do
       board = player.board
       player.setup
 
+      expect(faction.can_recruit?).to be true
       expect { faction.recruit }
         .to change { faction.meeples.count }.by(-1)
       expect(board.clearings_with(:recruiter).first.meeples.count).to be(2)
+      expect(faction.can_recruit?).to be false
+    end
+  end
+
+
+  describe '#can_discard_bird?' do
+    context 'when bird in hand' do
+      it 'discards a bird card in hand to get an extra action' do
+        player, faction = build_player_and_faction
+
+        card = Root::Cards::Base.new(suit: :bird)
+        faction.hand << card
+        expect(faction.can_discard_bird?).to be true
+      end
+    end
+
+    context 'when no bird in hand' do
+      it 'discards a bird card in hand to get an extra action' do
+        player, faction = build_player_and_faction
+
+        card = Root::Cards::Base.new(suit: :fox)
+        faction.hand << card
+        expect(faction.can_discard_bird?).to be false
+      end
     end
   end
 
