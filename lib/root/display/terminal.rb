@@ -22,6 +22,8 @@ module Root
         f_item_selet: 'Pick an item to craft',
         f_discard_card: 'Pick a card to discard',
         f_build_options: 'Pick a clearing to build in',
+        f_who_to_battle: 'Pick a faction to battle against',
+        f_battle_options: 'Pick a clearing to battle in',
         f_pick_building: 'Pick a type of building to make',
         f_move_from_options: 'Pick a clearing to move from',
         f_move_to_options: 'Pick a clearing to move to',

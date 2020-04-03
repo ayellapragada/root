@@ -103,8 +103,16 @@ module Root
         buildings.select { |building| building.type == type }
       end
 
+      def buildings_of_faction(faction)
+        buildings.select { |building| building.faction == faction }
+      end
+
       def includes_token?(type)
         tokens.any? { |token| token.type == type }
+      end
+
+      def tokens_of_faction(faction)
+        tokens.select { |m| m.faction == faction }
       end
 
       def meeples_of_type(faction)
@@ -123,6 +131,12 @@ module Root
         meeples.any? { |m| m.faction != faction && m.attackable? } ||
           buildings.any? { |b| b.faction != faction && b.attackable? } ||
           tokens.any? { |t| t.faction != faction && t.attackable? }
+      end
+
+      def other_attackable_factions(faction)
+        (meeples + buildings + tokens).select do |piece|
+          piece.faction != faction && piece.attackable?
+        end.map(&:faction).uniq
       end
 
       def forest?
