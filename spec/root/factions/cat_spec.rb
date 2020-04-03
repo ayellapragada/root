@@ -77,15 +77,17 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#birdsong' do
     it 'gives all sawmills wood' do
-      player = Root::Players::Computer.for('Sneak', :cats)
-      player.setup
-      board = player.board
+      player, faction = build_player_and_faction
+      clearings = player.board.clearings
+      faction.place_building(faction.sawmills.first, clearings[:nine])
+      faction.place_building(faction.sawmills.first, clearings[:nine])
+      faction.place_building(faction.sawmills.first, clearings[:one])
 
-      faction = player.faction
       expect { faction.birdsong }
         .to change { faction.wood.count }
-        .by(-1)
-      expect(board.clearings_with(:sawmill).all?(&:wood?)).to be true
+        .by(-3)
+      expect(clearings[:nine].wood.count).to be(2)
+      expect(clearings[:one].wood.count).to be(1)
     end
   end
 
@@ -436,15 +438,17 @@ RSpec.describe Root::Factions::Cat do
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do
       player, faction = build_player_and_faction
-      board = player.board
-      player.setup
+      clearings = player.board.clearings
 
-      expect(faction.can_recruit?).to be true
+      faction.place_building(faction.recruiters.first, clearings[:nine])
+      faction.place_building(faction.recruiters.first, clearings[:nine])
+      faction.place_building(faction.recruiters.first, clearings[:one])
+
       expect { faction.recruit }
-        .to change { faction.meeples.count }.by(-1)
-      expect(board.clearings_with(:recruiter).all? { |r| r.meeples.count == 2 })
-        .to be true
-      expect(faction.can_recruit?).to be false
+        .to change { faction.meeples.count }
+        .by(-3)
+      expect(clearings[:nine].meeples_of_type(:cats).count).to be(2)
+      expect(clearings[:one].meeples_of_type(:cats).count).to be(1)
     end
   end
 

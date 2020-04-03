@@ -99,12 +99,16 @@ module Root
         buildings.any? { |building| building.type == type }
       end
 
+      def buildings_of_type(type)
+        buildings.select { |building| building.type == type }
+      end
+
       def includes_token?(type)
         tokens.any? { |token| token.type == type }
       end
 
       def meeples_of_type(faction)
-        meeples.select { |m| m.faction == faction}
+        meeples.select { |m| m.faction == faction }
       end
 
       def includes_meeple?(type)

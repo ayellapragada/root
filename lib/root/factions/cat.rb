@@ -291,7 +291,11 @@ module Root
 
       def recruit
         @recruited = true
-        board.clearings_with(:recruiter).each { |cl| place_meeple(cl) }
+        board.clearings_with(:recruiter).each do |cl|
+          cl.buildings_of_type(:recruiter).count.times do
+            place_meeple(cl)
+          end
+        end
       end
 
       def place_meeple(clearing)
@@ -332,7 +336,9 @@ module Root
 
       def birdsong
         board.clearings_with(:sawmill).each do |sawmill_clearing|
-          place_wood(sawmill_clearing)
+          sawmill_clearing.buildings_of_type(:sawmill).count.times do
+            place_wood(sawmill_clearing)
+          end
         end
       end
 
