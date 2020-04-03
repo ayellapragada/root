@@ -138,6 +138,7 @@ RSpec.describe Root::Factions::Cat do
 
       expect(faction.battle_options).to match_array([c1, c2])
       expect(faction.can_battle?).to be true
+      expect(faction.currently_available_options).to include(:battle)
     end
   end
 
@@ -152,6 +153,7 @@ RSpec.describe Root::Factions::Cat do
 
         expect(faction.move_options).to eq([clearings[:five]])
         expect(faction.can_move?).to be true
+        expect(faction.currently_available_options).to include(:march)
       end
     end
 
@@ -169,6 +171,7 @@ RSpec.describe Root::Factions::Cat do
 
         expect(faction.move_options).to eq([])
         expect(faction.can_move?).to be false
+        expect(faction.currently_available_options).not_to include(:march)
       end
     end
   end

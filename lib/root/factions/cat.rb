@@ -20,7 +20,7 @@ module Root
       end
 
       def handle_meeple_setup
-        @meeples = Array.new(25) { Pieces::Meeple.new(:cats) }
+        @meeples = Array.new(25) { Pieces::Meeple.new(faction_symbol) }
       end
 
       def handle_building_setup
@@ -123,7 +123,7 @@ module Root
           # STILL IN PROGRESS, NOT ACCURATE TO WHAT IS OR IS NOT TESTED
           # :nocov:
           case action
-          # when :battle then battle
+          when :battle then battle
           when :march then march
           when :build then build
           when :recruit then recruit
@@ -160,14 +160,14 @@ module Root
       end
 
       def battle_options
-        board.clearings_with_meeples(:cats).select do |clearing|
-          clearing.includes_any_other_attackable_faction?(:cats)
+        board.clearings_with_meeples(faction_symbol).select do |clearing|
+          clearing.includes_any_other_attackable_faction?(faction_symbol)
         end
       end
 
       def move_options
         possible_options = []
-        board.clearings_with_meeples(:cats).select do |clearing|
+        board.clearings_with_meeples(faction_symbol).select do |clearing|
           clearing.adjacents.each do |adj|
             next if possible_options.include?(clearing)
 
@@ -220,12 +220,10 @@ module Root
 
         wood_to_remove = cost_for_next_building(building_type)
 
-        case building_type
-        when :sawmill then place_building(sawmills.first, clearing)
-        when :recruiter then place_building(recruiters.first, clearing)
-        when :workshop then place_building(workshops.first, clearing)
-        end
+        plural_form = "#{building_type}s".to_sym
+        piece = send(plural_form).first
 
+        place_building(piece, clearing)
         remove_wood(accessible_wood, wood_to_remove)
       end
 
@@ -276,11 +274,9 @@ module Root
       end
 
       def cost_for_next_building(building)
-        case building
-        when :sawmill then COSTS[:sawmill][6 - sawmills.length]
-        when :recruiter then COSTS[:recruiter][6 - recruiters.length]
-        when :workshop then COSTS[:workshop][6 - workshops.length]
-        end
+        plural_form = "#{building}s".to_sym
+        currently_not_built = send(plural_form).length
+        COSTS[building][6 - currently_not_built]
       end
 
       COSTS = {
