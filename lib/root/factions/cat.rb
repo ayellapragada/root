@@ -117,7 +117,7 @@ module Root
           # :nocov:
           case action
           # when :battle then battle
-          # when :march then march
+          when :march then march
           # when :build then build
           when :recruit then recruit
           when :overwork then overwork(deck)
@@ -193,6 +193,32 @@ module Root
           options << :recruit if can_recruit?
           options << :overwork if can_overwork?
           options << :discard_bird if can_discard_bird?
+        end
+      end
+
+      def march
+        2.times do
+          where_from_opts = move_options
+          where_from_choice = player.pick_option(:f_move_from_options, where_from_opts)
+          where_from = where_from_opts[where_from_choice]
+          move(where_from)
+        end
+      end
+
+      def move(clearing)
+        where_to_opts = clearing_move_options(clearing)
+        where_to_choice = player.pick_option(:f_move_to_options, where_to_opts)
+        where_to = where_to_opts[where_to_choice]
+
+        max_choice = clearing.meeples_of_type(faction_symbol).count
+        how_many_opts = [*1.upto(max_choice)]
+        how_many_choice = player.pick_option(:f_move_number, how_many_opts)
+        how_many = how_many_opts[how_many_choice]
+
+        how_many.times do
+          piece = clearing.meeples_of_type(faction_symbol).first
+          clearing.meeples.delete(piece)
+          where_to.meeples << piece
         end
       end
 

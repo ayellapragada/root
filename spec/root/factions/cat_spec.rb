@@ -219,7 +219,43 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '#march'
+  describe '#move' do
+    it 'faction moves any number of units from one clearingto another' do
+      player, faction = build_player_and_faction
+      clearing = player.board.clearings[:one]
+      clearing.place_meeple(faction.meeples[0])
+      clearing.place_meeple(faction.meeples[1])
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.move(clearing)
+
+      # Okay, so this is not ideal, but the idea is that option 0 will be:
+      # 1. move (1) meeple
+      # 2. to first clearing which is :five
+      expect(player.board.clearings[:one].meeples.count).to be(1)
+      expect(player.board.clearings[:five].meeples.count).to be(1)
+    end
+  end
+
+  describe '#march' do
+    it 'allows faction to move twice' do
+      player, faction = build_player_and_faction
+      clearing = player.board.clearings[:one]
+      clearing.place_meeple(faction.meeples[0])
+      # BIG OOF. Basically just
+      # 1. Move from clearing :one
+      # 2. Move to clearing :five
+      # 3. Move 1 unit
+      # 4. Move from clearing :five
+      # 5. Move to clearing :two, NOT clearing :one (which is 0)
+      # 6. Move 1 unit
+      allow(player).to receive(:pick_option).and_return(0, 0, 0, 0, 1, 0)
+
+      faction.march
+      expect(player.board.clearings[:one].meeples.count).to be(0)
+      expect(player.board.clearings[:two].meeples.count).to be(1)
+    end
+  end
 
   describe '#overwork_options' do
     context 'without sawmills' do

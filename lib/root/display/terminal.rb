@@ -20,6 +20,9 @@ module Root
         c_overwork: 'Pick a clearing to get an extra wood in',
         f_item_selet: 'Pick an item to craft',
         f_discard_card: 'Pick a card to discard',
+        f_move_from_options: 'Pick a clearing to move from',
+        f_move_to_options: 'Pick a clearing to move to',
+        f_move_number: 'Pick a number of meeples to move',
         f_pick_action: 'Pick an action to take',
         b_new_leader: 'Pick the next leader',
         b_first_roost: 'Pick where to place the first Roost'

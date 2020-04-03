@@ -103,6 +103,10 @@ module Root
         tokens.any? { |token| token.type == type }
       end
 
+      def meeples_of_type(faction)
+        meeples.select { |m| m.faction == faction}
+      end
+
       def includes_meeple?(type)
         meeples.any? { |meeples| meeples.faction == type }
       end
