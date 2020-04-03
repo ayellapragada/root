@@ -188,8 +188,20 @@ module Root
         clearing.ruled_by == faction_symbol
       end
 
+      DRAW_BONUSES = {
+        sawmill: [0, 0, 0, 0, 0, 0],
+        workshop: [0, 0, 0, 0, 0, 0],
+        recruiter: [0, 0, 1, 0, 1, 0]
+      }.freeze
+
       def evening(deck)
-        draw_card(deck)
+        num = DRAW_BONUSES[:recruiter][0...current_number_out(:recruiter)].sum
+        (1 + num).times { draw_card(deck) }
+      end
+
+      def current_number_out(type)
+        plural_form = "#{type}s".to_sym
+        6 - send(plural_form).count
       end
 
       def currently_available_options
@@ -223,9 +235,17 @@ module Root
         plural_form = "#{building_type}s".to_sym
         piece = send(plural_form).first
 
+        self.victory_points += vp_for_next(building_type)
         place_building(piece, clearing)
         remove_wood(accessible_wood, wood_to_remove)
       end
+
+      VICTORY_POINTS = {
+        sawmill: [0, 1, 2, 3, 4, 5],
+        workshop: [0, 2, 2, 3, 4, 5],
+        recruiter: [0, 1, 2, 3, 3, 4]
+      }.freeze
+
 
       def remove_wood(accessible_wood, num_wood_to_remove)
         until num_wood_to_remove.zero?
@@ -277,6 +297,12 @@ module Root
         plural_form = "#{building}s".to_sym
         currently_not_built = send(plural_form).length
         COSTS[building][6 - currently_not_built]
+      end
+
+      def vp_for_next(building)
+        plural_form = "#{building}s".to_sym
+        currently_not_built = send(plural_form).length
+        VICTORY_POINTS[building][6 - currently_not_built]
       end
 
       COSTS = {

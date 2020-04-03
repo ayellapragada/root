@@ -420,6 +420,8 @@ RSpec.describe Root::Factions::Cat do
 
       faction.build_in_clearing(clearing)
 
+      expect(faction.victory_points).to be(1)
+      expect(faction.sawmills.count).to be(4)
       expect(clearing.buildings.count).to be(2)
       expect(clearing.wood?).to be false
     end
@@ -610,13 +612,16 @@ RSpec.describe Root::Factions::Cat do
       end
     end
 
-    xcontext 'with draw bonuses' do
+    context 'with draw bonuses' do
       it 'draw one card plus one per bonus' do
-        # player, faction = build_player_and_faction
-        # deck = Root::Decks::Starter.new
-        # player.setup
+        player, faction = build_player_and_faction
+        deck = Root::Decks::Starter.new
+        clearings = player.board.clearings
+        faction.place_building(faction.recruiters.first, clearings[:two])
+        faction.place_building(faction.recruiters.first, clearings[:two])
+        faction.place_building(faction.recruiters.first, clearings[:two])
 
-        # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
+        expect { faction.evening(deck) }.to change(faction, :hand_size).by(2)
       end
     end
 
