@@ -164,4 +164,24 @@ RSpec.describe Root::Grid::Clearing do
     #   it 'gives it to the lizardos over all else'
     # end
   end
+
+  describe '#connected_wood' do
+    it 'checks adjacents and then some to find all connected paths' do
+      clearings = Root::Boards::Base.new.clearings
+      # connected
+      clearings[:one].place_meeple(Root::Pieces::Meeple.new(:cats))
+      clearings[:one].place_token(Root::Factions::Cats::Wood.new)
+      clearings[:five].place_meeple(Root::Pieces::Meeple.new(:cats))
+      clearings[:five].place_token(Root::Factions::Cats::Wood.new)
+      clearings[:two].place_meeple(Root::Pieces::Meeple.new(:cats))
+      clearings[:two].place_token(Root::Factions::Cats::Wood.new)
+
+      # not connected
+      clearings[:three].place_meeple(Root::Pieces::Meeple.new(:cats))
+      clearings[:three].place_token(Root::Factions::Cats::Wood.new)
+
+      expect(clearings[:one].connected_wood)
+        .to match_array([clearings[:one], clearings[:five], clearings[:two]])
+    end
+  end
 end

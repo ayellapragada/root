@@ -137,6 +137,12 @@ module Root
         tokens.select { |token| token.type == :wood }
       end
 
+      def remove_wood
+        piece = tokens.select { |token| token.type == :wood }.first
+        tokens.delete(piece)
+        piece
+      end
+
       FACTIONS_WITHOUT_RULE = %i[vagabond]
 
       def ruled_by
@@ -152,6 +158,24 @@ module Root
         return nil if contenders.length > 1
 
         contenders.first
+      end
+
+      def ruled_by?(faction)
+        ruled_by == faction
+      end
+
+      # Bruh what did I just do? It's 1 im going to bed
+      def connected_wood(already_checked = [])
+        connected = wood? ? [self] : []
+        adjacents.each do |adj|
+          next if already_checked.include?(adj)
+
+          connected << adj if adj.wood? && ruled_by?(:cats)
+          already_checked << adj
+          connected << adj.connected_wood(already_checked) if adj.ruled_by?(:cats)
+        end
+
+        connected.flatten.uniq
       end
 
       private

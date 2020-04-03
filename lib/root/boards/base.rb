@@ -97,6 +97,12 @@ module Root
           clearing.includes_meeple?(type)
         end.values
       end
+
+      def clearings_with_rule(faction)
+        clearings.select do |_, clearing|
+          clearing.ruled_by?(faction)
+        end.values
+      end
     end
   end
 end

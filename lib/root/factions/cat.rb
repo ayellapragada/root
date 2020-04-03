@@ -73,9 +73,18 @@ module Root
       def build_initial_buildings
         [sawmills, recruiters, workshops].each do |buils|
           building = buils.first
-          buildings.delete(building)
           player_places_building(building)
         end
+      end
+
+      def place_building(building, clearing)
+        buildings.delete(building)
+        board.create_building(building, clearing)
+      end
+
+      def place_token(token, clearing)
+        tokens.delete(token)
+        board.place_token(token, clearing)
       end
 
       def player_places_building(building)
@@ -83,7 +92,7 @@ module Root
         key = "c_initial_#{building.type}".to_sym
         choice = player.pick_option(key, options_for_building)
         clearing = options_for_building[choice]
-        board.create_building(building, clearing)
+        place_building(building, clearing)
       end
 
       def find_initial_options
@@ -93,9 +102,7 @@ module Root
 
       def place_initial_warriors
         clearing = board.clearing_across_from_keep
-        board.clearings_other_than(clearing).each do |cl|
-          board.place_meeple(meeples.pop, cl)
-        end
+        board.clearings_other_than(clearing).each { |cl| place_meeple(cl) }
       end
 
       def take_turn(deck:, **_)
@@ -118,7 +125,7 @@ module Root
           case action
           # when :battle then battle
           when :march then march
-          # when :build then build
+          when :build then build
           when :recruit then recruit
           when :overwork then overwork(deck)
           when :discard_bird then discard_bird(deck)
@@ -145,7 +152,7 @@ module Root
       end
 
       def can_build?
-        false
+        !build_options.empty?
       end
 
       def can_discard_bird?
@@ -196,6 +203,41 @@ module Root
         end
       end
 
+      def build
+        build_opts = build_options
+        build_opts_choice = player.pick_option(:f_build_options, build_opts)
+        clearing_to_build_in = build_options[build_opts_choice]
+        build_in_clearing(clearing_to_build_in)
+      end
+
+      def build_in_clearing(clearing)
+        accessible_wood = clearing.connected_wood
+        options_for_building = %i[sawmill recruiter workshop].select do |type|
+          accessible_wood.count >= cost_for_next_building(type)
+        end
+        choice = player.pick_option(:f_pick_building, options_for_building)
+        building_type = options_for_building[choice]
+
+        wood_to_remove = cost_for_next_building(building_type)
+
+        case building_type
+        when :sawmill then place_building(sawmills.first, clearing)
+        when :recruiter then place_building(recruiters.first, clearing)
+        when :workshop then place_building(workshops.first, clearing)
+        end
+
+        remove_wood(accessible_wood, wood_to_remove)
+      end
+
+      def remove_wood(accessible_wood, num_wood_to_remove)
+        until num_wood_to_remove.zero?
+          choice = player.pick_option(:c_wood_removal, accessible_wood)
+          clearing_to_remove_from = accessible_wood[choice]
+          wood << clearing_to_remove_from.remove_wood
+          num_wood_to_remove -= 1
+        end
+      end
+
       def march
         2.times do
           where_from_opts = move_options
@@ -222,11 +264,38 @@ module Root
         end
       end
 
+      def build_options
+        board
+          .clearings_with_rule(faction_symbol)
+          .select(&:with_spaces?)
+          .select do |cl|
+          %i[sawmill recruiter workshop].any? do |b_type|
+            cl.connected_wood.count >= cost_for_next_building(b_type)
+          end
+        end
+      end
+
+      def cost_for_next_building(building)
+        case building
+        when :sawmill then COSTS[:sawmill][6 - sawmills.length]
+        when :recruiter then COSTS[:recruiter][6 - recruiters.length]
+        when :workshop then COSTS[:workshop][6 - workshops.length]
+        end
+      end
+
+      COSTS = {
+        sawmill: [0, 1, 2, 3, 3, 4],
+        workshop: [0, 1, 2, 3, 3, 4],
+        recruiter: [0, 1, 2, 3, 3, 4]
+      }.freeze
+
       def recruit
         @recruited = true
-        board.clearings_with(:recruiter).each do |clearing|
-          board.place_meeple(meeples.pop, clearing)
-        end
+        board.clearings_with(:recruiter).each { |cl| place_meeple(cl) }
+      end
+
+      def place_meeple(clearing)
+        board.place_meeple(meeples.pop, clearing)
       end
 
       def overwork_options
@@ -269,8 +338,7 @@ module Root
 
       def place_wood(clearing)
         piece = wood.first
-        board.place_token(piece, clearing)
-        tokens.delete(piece)
+        place_token(piece, clearing)
       end
 
       private

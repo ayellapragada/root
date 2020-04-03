@@ -67,6 +67,7 @@ RSpec.describe Root::Factions::Cat do
     it 'goes through all phases of a turn' do
       game = Root::Game.default_game(with_computers: true)
       player = game.players.fetch_player(:cats)
+      allow(player).to receive(:pick_option).and_return(0)
       game.setup
 
       expect { player.faction.take_turn(deck: game.deck) }
@@ -299,12 +300,126 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  # build only if wood and spaces you rule in you can build in
-  describe '#can_build?'
+  describe '#cost_for_next_building' do
+    it 'finds next wood total needed to build another building' do
+      player, faction = build_player_and_faction
 
-  describe '#build'
+      expect(faction.cost_for_next_building(:sawmill)).to be(0)
+      expect(faction.cost_for_next_building(:recruiter)).to be(0)
+      expect(faction.cost_for_next_building(:workshop)).to be(0)
 
-  # recruit only if recruiters but not yet already recruited
+      clearings = player.board.clearings
+      faction.place_building(faction.sawmills.first, clearings[:one])
+      faction.place_building(faction.recruiters.first, clearings[:two])
+      faction.place_building(faction.workshops.first, clearings[:three])
+
+      expect(faction.cost_for_next_building(:sawmill)).to be(1)
+      expect(faction.cost_for_next_building(:recruiter)).to be(1)
+      expect(faction.cost_for_next_building(:workshop)).to be(1)
+
+      faction.place_building(faction.sawmills.first, clearings[:four])
+      faction.place_building(faction.recruiters.first, clearings[:five])
+      faction.place_building(faction.workshops.first, clearings[:six])
+
+      expect(faction.cost_for_next_building(:sawmill)).to be(2)
+      expect(faction.cost_for_next_building(:recruiter)).to be(2)
+      expect(faction.cost_for_next_building(:workshop)).to be(2)
+    end
+  end
+
+  describe 'build_options' do
+    context 'when wood is in clearing' do
+      it 'can craft new building' do
+        player, faction = build_player_and_faction
+        clearing = player.board.clearings[:two]
+
+        faction.place_wood(clearing)
+        faction.place_meeple(clearing)
+
+        expect(faction.build_options).to eq([clearing])
+        expect(faction.can_build?).to be true
+      end
+    end
+
+    context 'when wood is in connected clearing' do
+      it 'can craft new building' do
+        player, faction = build_player_and_faction
+
+        clearing_to_build_in = player.board.clearings[:one]
+        clearing_with_wood = player.board.clearings[:five]
+
+        faction.place_wood(clearing_with_wood)
+        faction.place_meeple(clearing_with_wood)
+        faction.place_meeple(clearing_to_build_in)
+        # Fill up clearing with wood to force to build somewhere else
+        faction.place_building(faction.sawmills.first, clearing_with_wood)
+        faction.place_building(faction.sawmills.first, clearing_with_wood)
+
+        expect(faction.build_options).to eq([clearing_to_build_in])
+        expect(faction.can_build?).to be true
+      end
+    end
+
+    context 'when wood is not connected to clearing' do
+      it 'can not craft' do
+        player, faction = build_player_and_faction
+
+        clearings = player.board.clearings
+        clearing_to_build_in = clearings[:one]
+        clearing_with_wood = clearings[:two]
+
+        # The idea is you need 2 wood to build something,
+        # and you have 2 wood, but they're not connected because of :five
+        faction.place_wood(clearing_with_wood)
+        faction.place_meeple(clearing_with_wood)
+        faction.place_wood(clearing_to_build_in)
+        faction.place_meeple(clearing_to_build_in)
+
+        # Fill up clearing with wood to force to build somewhere else
+        # Also raise the cost_for_next_building away from 1
+        faction.place_building(faction.sawmills.first, clearings[:eight])
+        faction.place_building(faction.sawmills.first, clearings[:eight])
+        faction.place_building(faction.recruiters.first, clearings[:four])
+        faction.place_building(faction.recruiters.first, clearings[:four])
+        faction.place_building(faction.workshops.first, clearings[:seven])
+        faction.place_building(faction.workshops.first, clearings[:seven])
+
+        expect(faction.build_options).to eq([])
+        expect(faction.can_build?).to be false
+      end
+    end
+  end
+
+  describe '#build' do
+    it 'builds in valid clearing and removes wood' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      clearing = player.board.clearings[:two]
+      faction.place_wood(clearing)
+      faction.place_building(faction.sawmills.first, clearing)
+
+      faction.build
+
+      expect(clearing.buildings.count).to be(2)
+      expect(clearing.wood?).to be false
+    end
+  end
+
+  describe '#build_in_clearing' do
+    it 'gives player options to build in a clearing' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      clearing = player.board.clearings[:two]
+      faction.place_wood(clearing)
+      faction.place_building(faction.sawmills.first, clearing)
+
+      faction.build_in_clearing(clearing)
+
+      expect(clearing.buildings.count).to be(2)
+      expect(clearing.wood?).to be false
+    end
+  end
+
   describe '#can_recruit?' do
     context 'without any recruiters' do
       it 'can not recruit' do
