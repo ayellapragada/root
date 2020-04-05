@@ -42,8 +42,7 @@ module Root
 
       def setup_roost_in_corner
         clearing = find_clearing_for_first_root
-        piece = buildings.delete(roosts.pop)
-        board.create_building(piece, clearing)
+        place_roost(clearing)
         6.times { board.place_meeple(meeples.pop, clearing) }
       end
 

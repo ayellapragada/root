@@ -32,10 +32,6 @@ module Root
         ]
       end
 
-      def bases
-        @bases ||= buildings.select { |b| b.type == :base }
-      end
-
       def setup(deck:, **_)
         draw_to_supporters(deck, 3)
       end

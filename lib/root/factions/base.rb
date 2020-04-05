@@ -18,11 +18,22 @@ module Root
         names.each { |name| define_methods(:tokens, name) }
       end
 
+      # Defines the plural accessor, i.e.
+      # sawmills, wood, roosts
+      # and the place_TOKEN(clearing) method
+      # place_keep, place_wood
       def self.define_methods(type, name)
         plural_name = name.pluralize
 
-        define_method(plural_name) do
-          send(type).select { |b| b.type == name }
+        define_method(plural_name) { send(type).select { |b| b.type == name } }
+        define_method("place_#{name}") do |clearing|
+          piece = send(plural_name).first
+          if type == :tokens
+            board.place_token(piece, clearing)
+          else
+            board.create_building(piece, clearing)
+          end
+          send(type).delete(piece)
         end
       end
 

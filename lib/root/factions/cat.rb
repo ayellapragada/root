@@ -49,8 +49,7 @@ module Root
         choice = player.pick_option(:c_initial_keep, options)
         clearing = options[choice]
 
-        piece = tokens.delete(keep.pop)
-        board.place_token(piece, clearing)
+        place_keep(clearing)
       end
 
       def build_initial_buildings
@@ -63,11 +62,6 @@ module Root
       def place_building(building, clearing)
         buildings.delete(building)
         board.create_building(building, clearing)
-      end
-
-      def place_token(token, clearing)
-        tokens.delete(token)
-        board.place_token(token, clearing)
       end
 
       def player_places_building(building)
@@ -192,7 +186,7 @@ module Root
             opts = cardboard_pieces
             choice = player.pick_option(:f_remove_piece, opts)
             piece = opts[choice]
-            plural_form = "#{piece.piece_type}s"
+            plural_form = piece.piece_type.pluralize
             faction.send(plural_form) << piece
             clearing.send(plural_form).delete(piece)
             other_faction.victory_points += 1
@@ -240,8 +234,7 @@ module Root
       end
 
       def current_number_out(type)
-        plural_form = "#{type}s".to_sym
-        6 - send(plural_form).count
+        6 - send(type.pluralize).count
       end
 
       def currently_available_options
@@ -272,8 +265,7 @@ module Root
 
         wood_to_remove = cost_for_next_building(building_type)
 
-        plural_form = "#{building_type}s".to_sym
-        piece = send(plural_form).first
+        piece = send(building_type.pluralize).first
 
         self.victory_points += vp_for_next(building_type)
         place_building(piece, clearing)
@@ -285,7 +277,6 @@ module Root
         workshop: [0, 2, 2, 3, 4, 5],
         recruiter: [0, 1, 2, 3, 3, 4]
       }.freeze
-
 
       def remove_wood(accessible_wood, num_wood_to_remove)
         until num_wood_to_remove.zero?
@@ -334,14 +325,12 @@ module Root
       end
 
       def cost_for_next_building(building)
-        plural_form = "#{building}s".to_sym
-        currently_not_built = send(plural_form).length
+        currently_not_built = send(building.pluralize).length
         COSTS[building][6 - currently_not_built]
       end
 
       def vp_for_next(building)
-        plural_form = "#{building}s".to_sym
-        currently_not_built = send(plural_form).length
+        currently_not_built = send(building.pluralize).length
         VICTORY_POINTS[building][6 - currently_not_built]
       end
 
@@ -402,11 +391,6 @@ module Root
             place_wood(sawmill_clearing)
           end
         end
-      end
-
-      def place_wood(clearing)
-        piece = wood.first
-        place_token(piece, clearing)
       end
 
       private
