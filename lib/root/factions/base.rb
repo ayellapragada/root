@@ -1,10 +1,30 @@
 # frozen_string_literal: true
 
+require_relative '../core_extensions/symbol/pluralize'
+
 module Root
   module Factions
     # Interface for basic faction logic
     class Base
+      Symbol.include CoreExtensions::Symbol::Pluralize
+
       SETUP_PRIORITY = 'ZZZ'
+
+      def self.attr_buildings(*names)
+        names.each { |name| define_methods(:buildings, name) }
+      end
+
+      def self.attr_tokens(*names)
+        names.each { |name| define_methods(:tokens, name) }
+      end
+
+      def self.define_methods(type, name)
+        plural_name = name.pluralize
+
+        define_method(plural_name) do
+          send(type).select { |b| b.type == name }
+        end
+      end
 
       attr_accessor :victory_points
 

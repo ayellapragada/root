@@ -8,6 +8,9 @@ module Root
 
       attr_reader :remaining_actions
 
+      attr_buildings :sawmill, :workshop, :recruiter
+      attr_tokens :wood, :keep
+
       def faction_symbol
         :cats
       end
@@ -33,26 +36,6 @@ module Root
 
       def handle_token_setup
         @tokens = [Cats::Keep.new] + Array.new(8) { Cats::Wood.new }
-      end
-
-      def recruiters
-        buildings.select { |b| b.type == :recruiter }
-      end
-
-      def sawmills
-        buildings.select { |b| b.type == :sawmill }
-      end
-
-      def workshops
-        buildings.select { |b| b.type == :workshop }
-      end
-
-      def wood
-        tokens.select { |b| b.type == :wood }
-      end
-
-      def keep
-        tokens.select { |b| b.type == :keep }
       end
 
       def setup(*)

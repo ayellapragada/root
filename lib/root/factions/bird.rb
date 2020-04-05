@@ -10,6 +10,8 @@ module Root
 
       attr_reader :viziers, :leaders, :used_leaders, :current_leader, :decree
 
+      attr_buildings :roost
+
       def faction_symbol
         :birds
       end
@@ -30,10 +32,6 @@ module Root
 
       def reset_decree
         @decree = Birds::Decree.new
-      end
-
-      def roosts
-        buildings.select { |b| b.type == :roost }
       end
 
       def setup(*)

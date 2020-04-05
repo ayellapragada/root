@@ -16,6 +16,17 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  # A place
+  # A taker
+  # describe 'attr_buildings' do
+  #   it 'creates methods for easy buiilding abstractions' do
+  #     _player, faction = build_player_and_faction
+  #     expect(faction.sawmills.count).to be(6)
+  #   end
+  # end
+
+  describe 'attr_tokens'
+
   describe '#setup' do
     it 'sets a keep in the corner' do
       player = Root::Players::Human.for('Sneak', :cats)

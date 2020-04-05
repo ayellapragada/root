@@ -8,9 +8,10 @@ module Root
     class Mouse < Base
       SETUP_PRIORITY = 'C'
 
-      alias sympathy tokens
-
       attr_reader :supporters
+
+      attr_buildings :base
+      attr_tokens :sympathy
 
       def faction_symbol
         :mice
