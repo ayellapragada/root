@@ -202,29 +202,6 @@ module Root
         [0, 1, 2, 3].sample
       end
 
-      def move_options
-        possible_options = []
-        board.clearings_with_meeples(faction_symbol).select do |clearing|
-          clearing.adjacents.each do |adj|
-            next if possible_options.include?(clearing)
-
-            possible_options << clearing if rule?(clearing) || rule?(adj)
-          end
-        end
-
-        possible_options
-      end
-
-      def clearing_move_options(clearing)
-        clearing.adjacents.select do |adj|
-          rule?(clearing) || rule?(adj)
-        end
-      end
-
-      def rule?(clearing)
-        clearing.ruled_by == faction_symbol
-      end
-
       DRAW_BONUSES = {
         sawmill: [0, 0, 0, 0, 0, 0],
         workshop: [0, 0, 0, 0, 0, 0],
@@ -292,27 +269,10 @@ module Root
 
       def march
         2.times do
-          where_from_opts = move_options
-          where_from_choice = player.pick_option(:f_move_from_options, where_from_opts)
-          where_from = where_from_opts[where_from_choice]
-          move(where_from)
-        end
-      end
-
-      def move(clearing)
-        where_to_opts = clearing_move_options(clearing)
-        where_to_choice = player.pick_option(:f_move_to_options, where_to_opts)
-        where_to = where_to_opts[where_to_choice]
-
-        max_choice = clearing.meeples_of_type(faction_symbol).count
-        how_many_opts = [*1.upto(max_choice)]
-        how_many_choice = player.pick_option(:f_move_number, how_many_opts)
-        how_many = how_many_opts[how_many_choice]
-
-        how_many.times do
-          piece = clearing.meeples_of_type(faction_symbol).first
-          clearing.meeples.delete(piece)
-          where_to.meeples << piece
+          move_opts = move_options
+          move_choice = player.pick_option(:f_move_from_options, move_opts)
+          clearing = move_opts[move_choice]
+          move(clearing)
         end
       end
 

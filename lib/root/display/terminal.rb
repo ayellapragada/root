@@ -34,6 +34,7 @@ module Root
         b_card_for_decree: 'Pick card to place into decree',
         b_area_in_decree: 'Pick a area in decree to place card',
         b_comeback_roost: 'Pick where to place your new first Roost with 3 Warriors',
+        b_recruit_clearing: 'Pick which clearing to recruit in',
       }.freeze
 
       # NOT TESTING TERMINAL BECAUSE OOFY

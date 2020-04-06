@@ -4,6 +4,8 @@ require_relative './base'
 
 module Root
   module Factions
+    class TurmoilError < StandardError; end
+
     # Handle birds faction logic
     class Bird < Base
       SETUP_PRIORITY = 'B'
@@ -69,7 +71,7 @@ module Root
         self.used_leaders = []
       end
 
-      def find_next_leader(type)
+      def find_next_leader(type = nil)
         if type
           new_leader = leaders.find { |l| l.leader == type }
           leaders.delete(new_leader)
@@ -127,9 +129,60 @@ module Root
         is_first_time ? opts : opts + [:none]
       end
 
-      def daylight(_players)
+      def daylight(players)
         craft_items
+        resolve_decree(players)
       end
+
+      # TODO: MAJOR BUG BIRD CARDS ARE NOT TREATED CORRECTLY
+      def resolve_decree(_players = nil)
+        resolve_recruit
+        resolve_move
+        # resolve_recruit(decree[:recruit])
+        # resolve_recruit(decree[:recruit])
+      rescue TurmoilError
+        turmoil!
+      end
+
+      def recruit_options(suits)
+        board.clearings_with(:roost).select { |cl| suits.include?(cl.suit) }
+      end
+
+      def resolve_recruit
+        needed_suits = decree.suits_in(:recruit)
+        until needed_suits.empty?
+          recruit_opts = recruit_options(needed_suits)
+          raise TurmoilError if recruit_opts.empty?
+
+          choice = player.pick_option(:b_recruit_clearing, recruit_opts)
+          clearing = recruit_opts[choice]
+
+          # TODO: MAJOR BUG BIRD CARDS ARE NOT TREATED CORRECTLY
+          # TODO: ALLOW USER TO PICK WHICH CARD THEY WERE USING FOR IT,
+          # WHEN THERE WERE MULTIPLE OPTIONS, SUCH AS BIRD AND FOX
+          needed_suits.delete_at(needed_suits.index(clearing.suit))
+          place_meeple(clearing)
+        end
+      end
+
+      def resolve_move
+        needed_suits = decree.suits_in(:move)
+        until needed_suits.empty?
+          move_opts = move_options(needed_suits)
+          raise TurmoilError if move_opts.empty?
+
+          move_choice = player.pick_option(:f_move_from_options, move_opts)
+          clearing = move_opts[move_choice]
+
+          # TODO: MAJOR BUG BIRD CARDS ARE NOT TREATED CORRECTLY
+          # TODO: ALLOW USER TO PICK WHICH CARD THEY WERE USING FOR IT,
+          # WHEN THERE WERE MULTIPLE OPTIONS, SUCH AS BIRD AND FOX
+          needed_suits.delete_at(needed_suits.index(clearing.suit))
+          move(clearing)
+        end
+      end
+
+      def turmoil!; end
 
       private
 

@@ -121,6 +121,50 @@ module Root
             board.items.include?(card.item)
         end
       end
+
+      def move_options(suits = [])
+        possible_options = []
+        clearings = board.clearings_with_meeples(faction_symbol)
+
+        clearings.select! { |cl| suits.include? cl.suit } unless suits.empty?
+
+        clearings.select do |clearing|
+          clearing.adjacents.each do |adj|
+            next if possible_options.include?(clearing)
+
+            possible_options << clearing if rule?(clearing) || rule?(adj)
+          end
+        end
+
+        possible_options
+      end
+
+      def clearing_move_options(clearing)
+        clearing.adjacents.select do |adj|
+          rule?(clearing) || rule?(adj)
+        end
+      end
+
+      def rule?(clearing)
+        clearing.ruled_by == faction_symbol
+      end
+
+      def move(clearing)
+        where_to_opts = clearing_move_options(clearing)
+        where_to_choice = player.pick_option(:f_move_to_options, where_to_opts)
+        where_to = where_to_opts[where_to_choice]
+
+        max_choice = clearing.meeples_of_type(faction_symbol).count
+        how_many_opts = [*1.upto(max_choice)]
+        how_many_choice = player.pick_option(:f_move_number, how_many_opts)
+        how_many = how_many_opts[how_many_choice]
+
+        how_many.times do
+          piece = clearing.meeples_of_type(faction_symbol).first
+          clearing.meeples.delete(piece)
+          where_to.meeples << piece
+        end
+      end
     end
   end
 end
