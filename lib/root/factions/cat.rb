@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# TODO: Field Hospitals for the Marquise
+# I REPEAT BEACUSE THIS IS MAJOR
+# TODO: Field Hospitals for the Marquise
 module Root
   module Factions
     # Handle cats faction logic
