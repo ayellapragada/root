@@ -30,10 +30,10 @@ module Root
         items.select(&:damaged?)
       end
 
-      def setup(board:, players:, characters:, **_)
+      def setup(players:, characters:)
         handle_character_select(characters)
-        handle_forest_select(board)
-        handle_ruins(board)
+        handle_forest_select
+        handle_ruins
         handle_relationships(players)
       end
 
@@ -43,14 +43,14 @@ module Root
         @character = character
       end
 
-      def handle_forest_select(board)
+      def handle_forest_select
         options = board.forests.values
         choice = player.pick_option(:v_forest_sel, options)
         forest = options[choice]
         board.place_meeple(meeples.pop, forest)
       end
 
-      def handle_ruins(board)
+      def handle_ruins
         starting_items = %i[bag boots hammer sword].shuffle
         board.ruins.each do |ruin|
           ruin.items << starting_items.pop

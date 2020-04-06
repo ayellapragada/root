@@ -23,7 +23,7 @@ module Root
 
       attr_reader :name, :faction, :display
       attr_accessor :game
-      attr_writer :board
+      attr_writer :board, :deck
 
       def initialize(name:, faction:)
         @name = name
@@ -33,6 +33,10 @@ module Root
 
       def board
         @board ||= game&.board || Boards::Base.new
+      end
+
+      def deck
+        @deck ||= game&.deck || Decks::Starter.new
       end
 
       def current_hand_size
@@ -51,20 +55,16 @@ module Root
         faction.faction_symbol
       end
 
-      def setup(board: nil, decks: nil, players: nil)
+      def setup(players: nil, decks: nil)
         faction.setup(
-          board: board,
           players: players,
-          deck: decks&.shared,
           characters: decks&.characters
         )
       end
 
-      def take_turn(board:, decks:, players: nil, active_quests: nil)
+      def take_turn(players: nil, active_quests: nil)
         faction.take_turn(
-          board: board,
           players: players,
-          deck: decks.shared,
           active_quests: active_quests
         )
       end

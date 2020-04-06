@@ -81,7 +81,7 @@ RSpec.describe Root::Factions::Cat do
       allow(player).to receive(:pick_option).and_return(0)
       game.setup
 
-      expect { player.faction.take_turn(deck: game.deck, players: game.players) }
+      expect { player.faction.take_turn(players: game.players) }
         .to change(player, :inspect)
     end
   end
@@ -105,13 +105,12 @@ RSpec.describe Root::Factions::Cat do
   xdescribe '#daylight' do
     it 'gives player 3 actions with choices' do
       player = Root::Players::Human.for('Sneak', :cats)
-      deck = Root::Decks::List.default_decks_list
       allow(player).to receive(:pick_option).and_return(0)
       player.setup
       faction = player.faction
       faction.hand << Root::Cards::Base.new(suit: :bird)
       faction.birdsong
-      faction.daylight(deck)
+      faction.daylight
     end
   end
 
@@ -363,13 +362,12 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#overwork' do
     it 'places a wood at a workshop after discarding a card of that suit' do
-      deck = Root::Decks::List.default_decks_list.shared
       player, faction = build_player_and_faction
       player.setup
       clearing = player.board.clearings_with(:sawmill).first
       faction.hand << Root::Cards::Base.new(suit: clearing.suit)
 
-      expect { faction.overwork(deck) }
+      expect { faction.overwork }
         .to change { faction.wood.count }
         .by(-1).and change { faction.hand.count }.by(-1)
       expect(clearing.wood.count).to be(1)
@@ -553,13 +551,12 @@ RSpec.describe Root::Factions::Cat do
   describe '#discard_bird' do
     it 'discards a bird card in hand to get an extra action' do
       player, faction = build_player_and_faction
-      deck = Root::Decks::List.default_decks_list.shared
       player.setup
 
       card = Root::Cards::Base.new(suit: :bird)
       faction.hand << card
 
-      expect { faction.discard_bird(deck) }
+      expect { faction.discard_bird }
         .to change { faction.remaining_actions }
         .by(1)
 
@@ -572,8 +569,7 @@ RSpec.describe Root::Factions::Cat do
       player, faction = build_player_and_faction
       allow(player).to receive(:pick_option).and_return(0)
 
-      deck = Root::Decks::List.default_decks_list
-      player.setup(decks: deck)
+      player.setup
 
       card_to_craft = Root::Cards::Item.new(
         suit: :fox,
@@ -591,7 +587,7 @@ RSpec.describe Root::Factions::Cat do
       faction.hand << card_to_craft
       faction.hand << card_unable_to_be_crafted
 
-      faction.craft_items(deck.shared)
+      faction.craft_items
       expect(faction.hand).not_to include(card_to_craft)
       expect(faction.hand).to include(card_unable_to_be_crafted)
       expect(faction.victory_points).to be(2)
@@ -676,30 +672,27 @@ RSpec.describe Root::Factions::Cat do
     context 'with no draw bonuses' do
       it 'draw one card' do
         player, faction = build_player_and_faction
-        deck = Root::Decks::Starter.new
         player.setup
 
-        expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
+        expect { faction.evening }.to change(faction, :hand_size).by(1)
       end
     end
 
     context 'with draw bonuses' do
       it 'draw one card plus one per bonus' do
         player, faction = build_player_and_faction
-        deck = Root::Decks::Starter.new
         clearings = player.board.clearings
         faction.place_building(faction.recruiters.first, clearings[:two])
         faction.place_building(faction.recruiters.first, clearings[:two])
         faction.place_building(faction.recruiters.first, clearings[:two])
 
-        expect { faction.evening(deck) }.to change(faction, :hand_size).by(2)
+        expect { faction.evening }.to change(faction, :hand_size).by(2)
       end
     end
 
     xcontext 'when over 5 cards' do
       it 'discards down to 5 cards' do
         # player, faction = build_player_and_faction
-        # deck = Root::Decks::Starter.new
         # player.setup
 
         # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)

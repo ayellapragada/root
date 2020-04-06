@@ -57,7 +57,6 @@ module Root
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card(deck) }
         player.setup(
-          board: board,
           decks: decks,
           players: players
         )
@@ -70,8 +69,6 @@ module Root
 
     def take_turn(player)
       player.take_turn(
-        board: board,
-        decks: decks,
         players: players,
         active_quests: active_quests
       )

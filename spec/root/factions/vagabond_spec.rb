@@ -27,7 +27,7 @@ RSpec.describe Root::Factions::Vagabond do
       player = players.fetch_player(:vagabond)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board: board, decks: decks, players: players)
+      player.setup(decks: decks, players: players)
       vagabond = player.faction
 
       # the first options name, ah well.
@@ -42,7 +42,7 @@ RSpec.describe Root::Factions::Vagabond do
       player = players.fetch_player(:vagabond)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board: board, decks: decks, players: players)
+      player.setup(decks: decks, players: players)
 
       expect(vagabond_is_in_forest(board)).to be true
     end
@@ -55,7 +55,7 @@ RSpec.describe Root::Factions::Vagabond do
       player = players.fetch_player(:vagabond)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board: board, decks: decks, players: players)
+      player.setup(decks: decks, players: players)
 
       vagabond = player.faction
       expect(vagabond.relationships.all_neutral?).to be true
@@ -69,7 +69,7 @@ RSpec.describe Root::Factions::Vagabond do
       player = players.fetch_player(:vagabond)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(board: board, decks: decks, players: players)
+      player.setup(decks: decks, players: players)
 
       expect(board.ruins.all?(&:contains_item?)).to be true
     end

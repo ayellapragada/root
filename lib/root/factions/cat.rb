@@ -82,15 +82,15 @@ module Root
         board.clearings_other_than(clearing).each { |cl| place_meeple(cl) }
       end
 
-      def take_turn(deck:, players:, **_)
+      def take_turn(players:, **_)
         @recruited = false
         birdsong
-        daylight(deck, players)
-        evening(deck)
+        daylight(players)
+        evening
       end
 
-      def daylight(deck, players)
-        craft_items(deck)
+      def daylight(players)
+        craft_items
         @remaining_actions = 3
         until remaining_actions.zero?
           opts = currently_available_options
@@ -104,8 +104,8 @@ module Root
           when :march then march
           when :build then build
           when :recruit then recruit
-          when :overwork then overwork(deck)
-          when :discard_bird then discard_bird(deck)
+          when :overwork then overwork
+          when :discard_bird then discard_bird
           end
           # :nocov:
           @remaining_actions -= 1
@@ -228,7 +228,7 @@ module Root
         recruiter: [0, 0, 1, 0, 1, 0]
       }.freeze
 
-      def evening(deck)
+      def evening
         num = DRAW_BONUSES[:recruiter][0...current_number_out(:recruiter)].sum
         (1 + num).times { draw_card(deck) }
       end
@@ -360,7 +360,7 @@ module Root
         end
       end
 
-      def overwork(deck)
+      def overwork
         options = overwork_options
         choice = player.pick_option(:c_overwork, options)
         sawmill_clearing = options[choice]
@@ -368,7 +368,7 @@ module Root
         place_wood(sawmill_clearing)
       end
 
-      def discard_bird(deck)
+      def discard_bird
         discard_card_with_suit(:bird, deck)
         @remaining_actions += 1
       end

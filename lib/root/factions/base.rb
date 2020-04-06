@@ -54,6 +54,10 @@ module Root
         player.board
       end
 
+      def deck
+        player.deck
+      end
+
       def set_base_pieces
         @meeples = []
         @buildings = []
@@ -77,25 +81,25 @@ module Root
         self.class::SETUP_PRIORITY
       end
 
-      def take_turn(board:, players:, deck:, active_quests: nil); end
+      def take_turn(players:, active_quests: nil); end
 
-      def craft_items(deck)
+      def craft_items
         @crafted_suits = []
         until craftable_items.empty?
           options = craftable_items
           choice = player.pick_option(:f_item_select, options)
           item = options[choice]
-          craft_item(item, deck)
+          craft_item(item)
         end
       end
 
-      def craft_item(choice, deck)
-        @crafted_suits.concat(choice.craft)
-        board.items.delete(choice.item)
-        deck.discard_card(choice)
-        hand.delete(choice)
-        self.victory_points += choice.vp
-        items << choice.item
+      def craft_item(item)
+        @crafted_suits.concat(item.craft)
+        board.items.delete(item.item)
+        deck.discard_card(item)
+        hand.delete(item)
+        self.victory_points += item.vp
+        items << item.item
       end
 
       def craftable_items

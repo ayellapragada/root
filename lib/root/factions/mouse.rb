@@ -32,12 +32,12 @@ module Root
         ]
       end
 
-      def setup(deck:, **_)
-        draw_to_supporters(deck, 3)
+      def setup(**_)
+        draw_to_supporters(3)
       end
 
-      def draw_to_supporters(deck, num = 1)
-        @supporters.concat(deck.draw_from_top(num).map(&:suit))
+      def draw_to_supporters(num = 1)
+        @supporters.concat(deck.draw_from_top(num))
       end
     end
   end
