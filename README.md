@@ -47,6 +47,4 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 ## Ideas For Next
 
-Game -> Players + Board + Deck + Discard
-Players -> Factions -> Buildings + + Meeples + Tokens + Hand + Special Section (If Any)
-Board -> Clearings -> Buildings + Tokens + Meeples
+- Fix bird cards to be wild babies
