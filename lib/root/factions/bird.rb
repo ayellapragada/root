@@ -184,15 +184,7 @@ module Root
       end
 
       def resolve_bird_in_decree(needed_suits, clearing)
-        if needed_suits.include?(:bird)
-          opts = needed_suits.select do |s|
-            [:bird, clearing.suit].include?(s)
-          end
-          card_choice = player.pick_option(:b_which_card_for_suit, opts)
-          opts[card_choice]
-        else
-          clearing.suit
-        end
+        needed_suits.include?(clearing.suit) ? clearing.suit : :bird
       end
 
       def turmoil!; end
