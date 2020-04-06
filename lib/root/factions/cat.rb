@@ -139,69 +139,6 @@ module Root
         !cards_in_hand_with_suit(:bird).empty?
       end
 
-      def battle_options
-        board.clearings_with_meeples(faction_symbol).select do |clearing|
-          clearing.includes_any_other_attackable_faction?(faction_symbol)
-        end
-      end
-
-      def battle(players)
-        opts = battle_options
-        choice = player.pick_option(:f_battle_options, opts)
-        clearing = opts[choice]
-        battle_in_clearing(clearing, players)
-      end
-
-      def battle_in_clearing(clearing, players)
-        opts = clearing.other_attackable_factions(faction_symbol)
-        choice = player.pick_option(:f_who_to_battle, opts)
-        faction_to_battle = opts[choice]
-        faction = players.fetch_player(faction_to_battle).faction
-
-        initiate_battle_with_faction(clearing, faction)
-      end
-
-      def initiate_battle_with_faction(clearing, faction)
-        attacker_roll, defender_roll = [dice_roll, dice_roll].sort.reverse
-        attacker_meeples = clearing.meeples_of_type(faction_symbol)
-        defender_meeples = clearing.meeples_of_type(faction.faction_symbol)
-
-        actual_attack = [attacker_roll, attacker_meeples.count].min
-        actual_defend = [defender_roll, defender_meeples.count].min
-
-        actual_attack += 1 if defender_meeples.empty?
-
-        deal_damage(actual_defend, self, clearing, faction)
-        deal_damage(actual_attack, faction, clearing, self)
-      end
-
-      def deal_damage(number, faction, clearing, other_faction)
-        until number.zero?
-          meeples = clearing.meeples_of_type(faction.faction_symbol)
-          cardboard_pieces =
-            (clearing.buildings_of_faction(faction.faction_symbol) +
-             clearing.tokens_of_faction(faction.faction_symbol))
-          if !meeples.empty?
-            piece = meeples.first
-            clearing.meeples.delete(piece)
-            faction.meeples << piece
-          elsif !cardboard_pieces.empty?
-            opts = cardboard_pieces
-            choice = player.pick_option(:f_remove_piece, opts)
-            piece = opts[choice]
-            plural_form = piece.piece_type.pluralize
-            faction.send(plural_form) << piece
-            clearing.send(plural_form).delete(piece)
-            other_faction.victory_points += 1
-          end
-          number -= 1
-        end
-      end
-
-      def dice_roll
-        [0, 1, 2, 3].sample
-      end
-
       DRAW_BONUSES = {
         sawmill: [0, 0, 0, 0, 0, 0],
         workshop: [0, 0, 0, 0, 0, 0],

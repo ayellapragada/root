@@ -134,52 +134,57 @@ module Root
         resolve_decree(players)
       end
 
-      # TODO: MAJOR BUG BIRD CARDS ARE NOT TREATED CORRECTLY
-      def resolve_decree(_players = nil)
+      # Resolve decree only needs players for battle
+      # So we're letting it be nil for test, but this is DEF needed
+      def resolve_decree(players = nil)
         resolve_recruit
         resolve_move
-        # resolve_recruit(decree[:recruit])
-        # resolve_recruit(decree[:recruit])
+        resolve_battle(players)
+        # resolve_move
       rescue TurmoilError
         turmoil!
+      end
+
+      def resolve_recruit
+        resolve(:recruit, :b_recruit_clearing) { |cl| place_meeple(cl) }
+      end
+
+      def resolve_move
+        resolve(:move, :f_move_from_options) { |cl| move(cl) }
+      end
+
+      def resolve_battle(players)
+        resolve(:battle, :f_battle_options) do |cl|
+          battle_in_clearing(cl, players)
+        end
       end
 
       def recruit_options(suits)
         board.clearings_with(:roost).select { |cl| suits.include?(cl.suit) }
       end
 
-      def get_needed_suits(suits)
+      def convert_needed_suits(suits)
         suits.include?(:bird) ? %i[fox mouse bunny] : suits
       end
 
-      def resolve_recruit
-        needed_suits = decree.suits_in(:recruit)
-        until needed_suits.empty?
-          recruit_opts = recruit_options(get_needed_suits(needed_suits))
-          raise TurmoilError if recruit_opts.empty?
+      def resolve(action, key)
+        needed_suits = decree.suits_in(action)
 
-          choice = player.pick_option(:b_recruit_clearing, recruit_opts)
-          clearing = recruit_opts[choice]
+        until needed_suits.empty?
+          opts = get_options_with_turmoil!(action, needed_suits)
+          choice = player.pick_option(key, opts)
+          clearing = opts[choice]
 
           suit = resolve_bird_in_decree(needed_suits, clearing)
           needed_suits.delete_at(needed_suits.index(suit))
-          place_meeple(clearing)
+          yield(clearing)
         end
       end
 
-      def resolve_move
-        needed_suits = decree.suits_in(:move)
-        until needed_suits.empty?
-          move_opts = move_options(get_needed_suits(needed_suits))
-          raise TurmoilError if move_opts.empty?
-
-          move_choice = player.pick_option(:f_move_from_options, move_opts)
-          clearing = move_opts[move_choice]
-
-          suit = resolve_bird_in_decree(needed_suits, clearing)
-
-          needed_suits.delete_at(needed_suits.index(suit))
-          move(clearing)
+      def get_options_with_turmoil!(action, needed_suits)
+        option_name = "#{action}_options"
+        send(option_name, convert_needed_suits(needed_suits)).tap do |opts|
+          raise TurmoilError if opts.empty?
         end
       end
 

@@ -225,49 +225,59 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#daylight'
 
-  # OH BOI LETS GO!
-  # TOMORROW
-  describe '#resolve_decree' do
-    context 'when in recruit' do
-      it 'recruits in any valid roosts any number of times' do
+  context 'when in recruit' do
+    it 'recruits in any valid roosts any number of times' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      clearings = player.board.clearings
+
+      faction.place_roost(clearings[:one])
+      faction.place_roost(clearings[:five])
+
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
+
+      expect { faction.resolve_decree }
+        .to change(faction.meeples, :count)
+        .by(-3)
+      expect(clearings[:one].meeples_of_type(:birds).count).to eq(2)
+      expect(clearings[:five].meeples_of_type(:birds).count).to eq(1)
+    end
+
+    context 'when hand has a bird card' do
+      it 'uses the bird card as a wild card' do
         player, faction = build_player_and_faction
         allow(player).to receive(:pick_option).and_return(0)
         clearings = player.board.clearings
 
         faction.place_roost(clearings[:one])
-        faction.place_roost(clearings[:five])
 
-        faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
-        faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
         faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
+        faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
 
-        expect { faction.resolve_decree }
-          .to change(faction.meeples, :count)
-          .by(-3)
-        expect(clearings[:one].meeples_of_type(:birds).count).to eq(2)
-        expect(clearings[:five].meeples_of_type(:birds).count).to eq(1)
-      end
-
-      context 'when hand has a bird card' do
-        it 'uses the bird card as a wild card' do
-          player, faction = build_player_and_faction
-          allow(player).to receive(:pick_option).and_return(0)
-          clearings = player.board.clearings
-
-          faction.place_roost(clearings[:one])
-
-          faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
-          faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
-
-          faction.resolve_decree
-          expect(clearings[:one].meeples_of_type(:birds).count).to eq(1)
-        end
-      end
-
-        # This is for charismatic leader and recruit with 1 meeple left
-        xit 'goes into turmoil if not able to complete'
+        faction.resolve_decree
+        expect(clearings[:one].meeples_of_type(:birds).count).to eq(1)
       end
     end
+
+    # This is for charismatic leader and recruit with 1 meeple left
+    xit 'goes into turmoil if not able to complete'
+    context 'when unable to recruit' do
+      it 'goes into turmoil' do
+        player, faction = build_player_and_faction
+        allow(player).to receive(:pick_option).and_return(0)
+        clearings = player.board.clearings
+
+        faction.place_meeple(clearings[:one])
+
+        faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+
+        expect { faction.resolve_move }
+          .to raise_error { Root::Factions::TurmoilError }
+      end
+    end
+  end
 
   context 'when in move' do
     it 'must move FROM clearings matching that suit' do
@@ -286,29 +296,38 @@ RSpec.describe Root::Factions::Bird do
       expect(clearings[:one].meeples_of_type(:birds).count).to eq(0)
       expect(clearings[:two].meeples_of_type(:birds).count).to eq(0)
     end
+  end
 
-    context 'when unable to recruit' do
-      it 'goes into turmoil' do
-        player, faction = build_player_and_faction
-        allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
-
-        faction.place_meeple(clearings[:one])
-
-        faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
-
-        expect { faction.resolve_move }
-          .to raise_error { Root::Factions::TurmoilError }
-      end
-
-    end
-
-    context 'when in battle'
-    context 'when in build'
-
+  context 'when in build' do
     context 'when out of buildings to build'
-    context 'when unable to complete the decree'
-    context 'when unable to complete the recruit entirely'
+  end
+
+  context 'when in battle' do
+    it 'much battle in clearings that match the suit' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      allow(faction).to receive(:dice_roll).and_return(2, 1)
+
+      cat_player = Root::Players::Human.for('Other', :cats)
+      cat_player.board = player.board
+      cat_faction = cat_player.faction
+      players = Root::Players::List.new(player, cat_player)
+
+      clearings = player.board.clearings
+      battle_cl = clearings[:one]
+      faction.place_meeple(battle_cl)
+      cat_faction.place_meeple(battle_cl)
+
+      faction.place_meeple(clearings[:two])
+      cat_faction.place_meeple(clearings[:two])
+
+      faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
+
+      faction.resolve_decree(players)
+
+      expect(clearings[:one].meeples.count).to eq(0)
+      expect(clearings[:two].meeples.count).to eq(2)
+    end
   end
 
   describe '#turmoil'
