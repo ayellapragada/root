@@ -87,9 +87,9 @@ module Root
         end
       end
 
-      # def take_turn(players:, **_)
-      def take_turn(*)
+      def take_turn(players:, **_)
         birdsong
+        daylight(players)
       end
 
       def birdsong
@@ -127,7 +127,15 @@ module Root
         is_first_time ? opts : opts + [:none]
       end
 
+      def daylight(_players)
+        craft_items
+      end
+
       private
+
+      def suits_to_craft_with
+        board.clearings_with(:roost).map(&:suit)
+      end
 
       attr_writer :current_leader, :leaders, :used_leaders
     end

@@ -97,13 +97,13 @@ module Root
         end
       end
 
-      def craft_item(item)
-        @crafted_suits.concat(item.craft)
-        board.items.delete(item.item)
-        deck.discard_card(item)
-        hand.delete(item)
-        self.victory_points += item.vp
-        items << item.item
+      def craft_item(choice)
+        @crafted_suits.concat(choice.craft)
+        board.items.delete(choice.item)
+        deck.discard_card(choice)
+        hand.delete(choice)
+        self.victory_points += choice.vp
+        items << choice.item
       end
 
       def craftable_items

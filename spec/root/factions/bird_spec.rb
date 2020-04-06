@@ -223,6 +223,43 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
+  describe '#daylight'
+
+  # OH BOI LETS GO!
+  # TOMORROW
+  describe '#resolve_decree'
+
+  describe '#craft_items' do
+    it 'crafts card, removes from board and adds victory points' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.place_roost(player.board.clearings[:one])
+
+      card_to_craft = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[fox],
+        item: :tea,
+        vp: 2
+      )
+      card_unable_to_be_crafted = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[fox],
+        item: :coin,
+        vp: 1
+      )
+
+      faction.hand << card_to_craft
+      faction.hand << card_unable_to_be_crafted
+
+      faction.craft_items
+      expect(faction.hand).not_to include(card_to_craft)
+      expect(faction.hand).to include(card_unable_to_be_crafted)
+      expect(faction.victory_points).to be(2)
+      expect(faction.items).to include(:tea)
+    end
+  end
+
   def has_only_six_bird_warriors(meeples)
     meeples.count == 6 && meeples.all? { |w| w.faction == :birds }
   end
