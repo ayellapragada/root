@@ -148,19 +148,21 @@ module Root
         board.clearings_with(:roost).select { |cl| suits.include?(cl.suit) }
       end
 
+      def get_needed_suits(suits)
+        suits.include?(:bird) ? %i[fox mouse bunny] : suits
+      end
+
       def resolve_recruit
         needed_suits = decree.suits_in(:recruit)
         until needed_suits.empty?
-          recruit_opts = recruit_options(needed_suits)
+          recruit_opts = recruit_options(get_needed_suits(needed_suits))
           raise TurmoilError if recruit_opts.empty?
 
           choice = player.pick_option(:b_recruit_clearing, recruit_opts)
           clearing = recruit_opts[choice]
 
-          # TODO: MAJOR BUG BIRD CARDS ARE NOT TREATED CORRECTLY
-          # TODO: ALLOW USER TO PICK WHICH CARD THEY WERE USING FOR IT,
-          # WHEN THERE WERE MULTIPLE OPTIONS, SUCH AS BIRD AND FOX
-          needed_suits.delete_at(needed_suits.index(clearing.suit))
+          suit = resolve_bird_in_decree(needed_suits, clearing)
+          needed_suits.delete_at(needed_suits.index(suit))
           place_meeple(clearing)
         end
       end
@@ -168,17 +170,28 @@ module Root
       def resolve_move
         needed_suits = decree.suits_in(:move)
         until needed_suits.empty?
-          move_opts = move_options(needed_suits)
+          move_opts = move_options(get_needed_suits(needed_suits))
           raise TurmoilError if move_opts.empty?
 
           move_choice = player.pick_option(:f_move_from_options, move_opts)
           clearing = move_opts[move_choice]
 
-          # TODO: MAJOR BUG BIRD CARDS ARE NOT TREATED CORRECTLY
-          # TODO: ALLOW USER TO PICK WHICH CARD THEY WERE USING FOR IT,
-          # WHEN THERE WERE MULTIPLE OPTIONS, SUCH AS BIRD AND FOX
-          needed_suits.delete_at(needed_suits.index(clearing.suit))
+          suit = resolve_bird_in_decree(needed_suits, clearing)
+
+          needed_suits.delete_at(needed_suits.index(suit))
           move(clearing)
+        end
+      end
+
+      def resolve_bird_in_decree(needed_suits, clearing)
+        if needed_suits.include?(:bird)
+          opts = needed_suits.select do |s|
+            [:bird, clearing.suit].include?(s)
+          end
+          card_choice = player.pick_option(:b_which_card_for_suit, opts)
+          opts[card_choice]
+        else
+          clearing.suit
         end
       end
 

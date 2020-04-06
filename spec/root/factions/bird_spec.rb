@@ -247,6 +247,44 @@ RSpec.describe Root::Factions::Bird do
         expect(clearings[:one].meeples_of_type(:birds).count).to eq(2)
         expect(clearings[:five].meeples_of_type(:birds).count).to eq(1)
       end
+
+      context 'when hand has a bird card' do
+        it 'uses the bird card as a wild card' do
+          player, faction = build_player_and_faction
+          allow(player).to receive(:pick_option).and_return(0)
+          clearings = player.board.clearings
+
+          faction.place_roost(clearings[:one])
+
+          faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
+          faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
+
+          faction.resolve_decree
+          expect(clearings[:one].meeples_of_type(:birds).count).to eq(1)
+        end
+      end
+
+        # This is for charismatic leader and recruit with 1 meeple left
+        xit 'goes into turmoil if not able to complete'
+      end
+    end
+
+  context 'when in move' do
+    it 'must move FROM clearings matching that suit' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      clearings = player.board.clearings
+
+      faction.place_meeple(clearings[:one])
+      faction.place_meeple(clearings[:two])
+
+      faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
+      faction.decree[:move] << Root::Cards::Base.new(suit: :mouse)
+
+      faction.resolve_decree
+
+      expect(clearings[:one].meeples_of_type(:birds).count).to eq(0)
+      expect(clearings[:two].meeples_of_type(:birds).count).to eq(0)
     end
 
     context 'when unable to recruit' do
@@ -255,35 +293,14 @@ RSpec.describe Root::Factions::Bird do
         allow(player).to receive(:pick_option).and_return(0)
         clearings = player.board.clearings
 
-        faction.place_roost(clearings[:one])
+        faction.place_meeple(clearings[:one])
 
-        faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
+        faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
 
-        expect { faction.resolve_recruit }
+        expect { faction.resolve_move }
           .to raise_error { Root::Factions::TurmoilError }
       end
 
-      # This is for charismatic leader and recruit with 1 meeple left
-      xit 'goes into turmoil if not able to complete'
-    end
-
-    context 'when in move' do
-      it 'must move FROM clearings matching that suit' do
-        player, faction = build_player_and_faction
-        allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
-
-        faction.place_meeple(clearings[:one])
-        faction.place_meeple(clearings[:two])
-
-        faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
-        faction.decree[:move] << Root::Cards::Base.new(suit: :mouse)
-
-        faction.resolve_decree
-
-        expect(clearings[:one].meeples_of_type(:birds).count).to eq(0)
-        expect(clearings[:two].meeples_of_type(:birds).count).to eq(0)
-      end
     end
 
     context 'when in battle'
