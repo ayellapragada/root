@@ -83,6 +83,10 @@ module Root
 
       def take_turn(players:, active_quests: nil); end
 
+      def place_meeple(clearing)
+        board.place_meeple(meeples.pop, clearing)
+      end
+
       def craft_items
         @crafted_suits = []
         until craftable_items.empty?

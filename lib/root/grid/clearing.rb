@@ -196,6 +196,10 @@ module Root
         connected.flatten.uniq
       end
 
+      def all_pieces
+        (meeples + buildings + tokens).select(&:attackable?)
+      end
+
       private
 
       def create_ruin

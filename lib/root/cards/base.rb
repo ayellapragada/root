@@ -23,6 +23,10 @@ module Root
       def craftable?
         !craft.empty?
       end
+
+      def bird?
+        suit == :bird
+      end
     end
   end
 end

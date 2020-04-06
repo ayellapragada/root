@@ -93,15 +93,17 @@ module Root
       end
 
       def clearings_with_meeples(type)
-        clearings.select do |_, clearing|
-          clearing.includes_meeple?(type)
-        end.values
+        clearings.values.select { |clearing| clearing.includes_meeple?(type) }
       end
 
       def clearings_with_rule(faction)
-        clearings.select do |_, clearing|
-          clearing.ruled_by?(faction)
-        end.values
+        clearings.values.select { |clearing| clearing.ruled_by?(faction) }
+      end
+
+      def clearings_with_fewest_pieces
+        clearings.values.min_by(clearings.count) do |clearing|
+          clearing.all_pieces.count
+        end
       end
     end
   end

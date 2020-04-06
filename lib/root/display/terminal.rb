@@ -30,7 +30,10 @@ module Root
         f_move_number: 'Pick a number of meeples to move',
         f_pick_action: 'Pick an action to take',
         b_new_leader: 'Pick the next leader',
-        b_first_roost: 'Pick where to place the first Roost'
+        b_first_roost: 'Pick where to place the first Roost with 6 Warriors',
+        b_card_for_decree: 'Pick card to place into decree',
+        b_area_in_decree: 'Pick a area in decree to place card',
+        b_comeback_roost: 'Pick where to place your new first Roost with 3 Warriors',
       }.freeze
 
       # NOT TESTING TERMINAL BECAUSE OOFY

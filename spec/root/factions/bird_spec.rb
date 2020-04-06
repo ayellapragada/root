@@ -75,8 +75,8 @@ RSpec.describe Root::Factions::Bird do
 
       player.setup
 
-      expect(birds.decree[:recruit]).to eq([:bird])
-      expect(birds.decree[:move]).to eq([:bird])
+      expect(birds.decree.suits_in(:recruit)).to eq([:bird])
+      expect(birds.decree.suits_in(:move)).to eq([:bird])
     end
   end
 
@@ -124,7 +124,7 @@ RSpec.describe Root::Factions::Bird do
 
       birds.change_viziers_with_leader
 
-      expect(birds.decree.decree).to eq(
+      expect(birds.decree.suits_in_decree).to eq(
         recruit: [],
         move: [:bird],
         battle: [],
@@ -133,7 +133,102 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
+  describe '#take_turn' do
+    xit 'goes through all phases of a turn' do
+      game = Root::Game.default_game(with_computers: true)
+      player = game.players.fetch_player(:birds)
+      allow(player).to receive(:pick_option).and_return(0)
+      game.setup
+
+      expect { player.faction.take_turn(players: game.players) }
+        .to change(player, :inspect)
+    end
+  end
+
+  describe '#birdsong' do
+    it 'adds a card to the decree' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      card = Root::Cards::Base.new(suit: :fox)
+      faction.hand << card
+
+      expect { faction.birdsong }
+        .to change(faction.decree, :size)
+        .by(1)
+        .and change(faction, :hand_size)
+        .by(-1)
+    end
+
+    context 'when adding two cards to the decree' do
+      it 'only allows one card added to be a bird' do
+        player, faction = build_player_and_faction
+        allow(player).to receive(:pick_option).and_return(0)
+        card1 = Root::Cards::Base.new(suit: :bird)
+        card2 = Root::Cards::Base.new(suit: :bird)
+        card3 = Root::Cards::Base.new(suit: :fox)
+
+        faction.hand << card1
+        faction.hand << card2
+        faction.hand << card3
+
+        faction.birdsong
+
+        expect(faction.decree.suits_in(:recruit)).to eq(%i[bird fox])
+      end
+    end
+
+    context 'when able to add 2, but only adding 1' do
+      it 'skips second step of adding to decree' do
+        player, faction = build_player_and_faction
+        # Pick first card, pick recruit, then pick none
+        allow(player).to receive(:pick_option).and_return(0, 0, 1)
+        card1 = Root::Cards::Base.new(suit: :fox)
+        card2 = Root::Cards::Base.new(suit: :mouse)
+        faction.hand << card1
+        faction.hand << card2
+
+        expect { faction.birdsong }
+          .to change(faction.decree, :size)
+          .by(1)
+          .and change(faction, :hand_size)
+          .by(-1)
+      end
+    end
+
+    context 'when hand is empty' do
+      it 'draws a card' do
+        player, faction = build_player_and_faction
+        allow(player).to receive(:pick_option).and_return(0)
+
+        expect { faction.birdsong }.to change(faction.decree, :size).by(1)
+      end
+    end
+
+    context 'when no roosts on the board' do
+      it 'places roost and 3 warriors into clearing with fewest pieces' do
+        player, faction = build_player_and_faction
+        cat_faction = Root::Players::Computer.for('Hal', :cats).faction
+        clearings = player.board.clearings
+
+        cat_faction.place_meeple(clearings[:one])
+        cat_faction.place_meeple(clearings[:two])
+        cat_faction.place_meeple(clearings[:three])
+
+        expect { faction.birdsong }
+          .to change(faction.buildings, :count)
+          .by(-1)
+          .and change(faction.meeples, :count)
+          .by(-3)
+      end
+    end
+  end
+
   def has_only_six_bird_warriors(meeples)
     meeples.count == 6 && meeples.all? { |w| w.faction == :birds }
+  end
+
+  def build_player_and_faction
+    player = Root::Players::Computer.for('Sneak', :birds)
+    [player, player.faction]
   end
 end

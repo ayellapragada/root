@@ -43,7 +43,7 @@ module Root
       def setup_roost_in_corner
         clearing = find_clearing_for_first_root
         place_roost(clearing)
-        6.times { board.place_meeple(meeples.pop, clearing) }
+        6.times { place_meeple(clearing) }
       end
 
       def find_clearing_for_first_root
@@ -83,8 +83,48 @@ module Root
 
       def change_viziers_with_leader
         current_leader.decree.each do |action|
-          decree[action] << viziers.pop.suit
+          decree[action] << viziers.pop
         end
+      end
+
+      # def take_turn(players:, **_)
+      def take_turn(*)
+        birdsong
+      end
+
+      def birdsong
+        @bird_added = false
+        draw_card(deck) if hand.empty?
+        2.times do |i|
+          next if hand.empty?
+          is_first_time = i.zero?
+          card_opts = get_decree_hand_opts(is_first_time)
+          card_choice = player.pick_option(:b_card_for_decree, card_opts)
+          card = card_opts[card_choice]
+          next if card == :none
+
+          @bird_added = true if card.bird?
+
+          decree_opts = decree.choices
+          decree_choice = player.pick_option(:b_area_in_decree, decree_opts)
+          area = decree_opts[decree_choice]
+
+          decree[area] << card
+          hand.delete(card)
+        end
+
+        return unless board.clearings_with(:roost).empty?
+
+        new_base_opts = board.clearings_with_fewest_pieces
+        new_base_choice = player.pick_option(:b_comeback_roost, new_base_opts)
+        clearing = new_base_opts[new_base_choice]
+        place_roost(clearing)
+        3.times { place_meeple(clearing) }
+      end
+
+      def get_decree_hand_opts(is_first_time)
+        opts = @bird_added ? hand.reject(&:bird?) : hand
+        is_first_time ? opts : opts + [:none]
       end
 
       private

@@ -212,14 +212,13 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  # march only if meeples with rule that aren't trapped
   describe '#move_options' do
     context 'with rule in a clearing' do
       it 'finds everywhere that can be moved from' do
         player, faction = build_player_and_faction
         clearings = player.board.clearings
 
-        clearings[:five].place_meeple(faction.meeples.first)
+        faction.place_meeple(clearings[:five])
 
         expect(faction.move_options).to eq([clearings[:five]])
         expect(faction.can_move?).to be true

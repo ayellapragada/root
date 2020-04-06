@@ -349,10 +349,6 @@ module Root
         end
       end
 
-      def place_meeple(clearing)
-        board.place_meeple(meeples.pop, clearing)
-      end
-
       def overwork_options
         valid_suits = hand.map(&:suit)
         board.clearings_with(:sawmill).select do |c|
@@ -364,12 +360,12 @@ module Root
         options = overwork_options
         choice = player.pick_option(:c_overwork, options)
         sawmill_clearing = options[choice]
-        discard_card_with_suit(sawmill_clearing.suit, deck)
+        discard_card_with_suit(sawmill_clearing.suit)
         place_wood(sawmill_clearing)
       end
 
       def discard_bird
-        discard_card_with_suit(:bird, deck)
+        discard_card_with_suit(:bird)
         @remaining_actions += 1
       end
 
@@ -377,7 +373,7 @@ module Root
         hand.select { |card| card.suit == suit }
       end
 
-      def discard_card_with_suit(suit, deck)
+      def discard_card_with_suit(suit)
         options = cards_in_hand_with_suit(suit)
         choice = player.pick_option(:f_discard_card, options)
         card = options[choice]
