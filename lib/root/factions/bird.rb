@@ -140,13 +140,20 @@ module Root
         resolve_recruit
         resolve_move
         resolve_battle(players)
-        # resolve_move
+        resolve_build
       rescue TurmoilError
         turmoil!
       end
 
       def resolve_recruit
-        resolve(:recruit, :b_recruit_clearing) { |cl| place_meeple(cl) }
+        resolve(:recruit, :b_recruit_clearing) do |cl|
+          # So technically this isn't an issue yet.
+          # It certainly is a bug, in a few ways, but that's ok.
+          # This will get tested with charismatic leader intro.
+          # raise TurmoilError if meeples.count.zero?
+
+          place_meeple(cl)
+        end
       end
 
       def resolve_move
@@ -159,8 +166,22 @@ module Root
         end
       end
 
+      def resolve_build
+        resolve(:build, :f_build_options) do |cl|
+          raise TurmoilError if roosts.count.zero?
+
+          place_roost(cl)
+        end
+      end
+
       def recruit_options(suits)
         board.clearings_with(:roost).select { |cl| suits.include?(cl.suit) }
+      end
+
+      def build_options(suits = [])
+        clearings_ruled_with_space
+          .select { |cl| suits.include?(cl.suit) }
+          .select { |cl| cl.buildings_of_type(:roost).empty? }
       end
 
       def convert_needed_suits(suits)

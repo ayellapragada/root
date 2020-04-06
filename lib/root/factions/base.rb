@@ -232,6 +232,12 @@ module Root
       def dice_roll
         [0, 1, 2, 3].sample
       end
+
+      def clearings_ruled_with_space
+        board
+          .clearings_with_rule(faction_symbol)
+          .select(&:with_spaces?)
+      end
     end
   end
 end

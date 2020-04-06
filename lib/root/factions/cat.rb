@@ -213,10 +213,8 @@ module Root
         end
       end
 
-      def build_options
-        board
-          .clearings_with_rule(faction_symbol)
-          .select(&:with_spaces?)
+      def build_options(*)
+        clearings_ruled_with_space
           .select do |cl|
           %i[sawmill recruiter workshop].any? do |b_type|
             cl.connected_wood.count >= cost_for_next_building(b_type)

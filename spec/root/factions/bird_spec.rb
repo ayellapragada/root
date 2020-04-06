@@ -299,7 +299,63 @@ RSpec.describe Root::Factions::Bird do
   end
 
   context 'when in build' do
-    context 'when out of buildings to build'
+    it 'must build in ruled clearings without a roost' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      cat_player = Root::Players::Computer.for('Other', :cats)
+      cat_player.board = player.board
+      cat_faction = cat_player.faction
+
+      clearings = player.board.clearings
+      faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+
+      faction.place_meeple(clearings[:six])
+
+      faction.decree[:build] << Root::Cards::Base.new(suit: :fox)
+
+      faction.resolve_decree
+
+      expect(clearings[:six].buildings_of_type(:roost).count).to eq(0)
+      expect(clearings[:one].buildings_of_type(:roost).count).to eq(1)
+    end
+
+    context 'when roost is already there' do
+      it 'goes into turmoil' do
+        player, faction = build_player_and_faction
+        allow(player).to receive(:pick_option).and_return(0)
+        clearings = player.board.clearings
+
+        faction.place_roost(clearings[:one])
+
+        faction.decree[:build] << Root::Cards::Base.new(suit: :fox)
+
+        expect { faction.resolve_build }
+          .to raise_error { Root::Factions::TurmoilError }
+      end
+    end
+
+    context 'when out of buildings to build' do
+      it 'goes into turmoil' do
+        player, faction = build_player_and_faction
+        allow(player).to receive(:pick_option).and_return(0)
+        clearings = player.board.clearings
+
+        faction.place_roost(clearings[:one])
+        faction.place_roost(clearings[:two])
+        faction.place_roost(clearings[:two])
+        faction.place_roost(clearings[:three])
+        faction.place_roost(clearings[:five])
+        faction.place_roost(clearings[:five])
+        faction.place_roost(clearings[:six])
+
+        faction.place_meeple(clearings[:twelve])
+        faction.decree[:build] << Root::Cards::Base.new(suit: :fox)
+
+        expect { faction.resolve_build }
+          .to raise_error { Root::Factions::TurmoilError }
+      end
+    end
   end
 
   context 'when in battle' do
