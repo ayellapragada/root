@@ -227,7 +227,14 @@ RSpec.describe Root::Factions::Bird do
 
   # OH BOI LETS GO!
   # TOMORROW
-  describe '#resolve_decree'
+  describe '#resolve_decree' do
+    it 'resolves the entire decree from left to right'
+    context 'when out of buildings to build'
+    context 'when unable to complete the decree'
+    context 'when unable to complete the recruit entirely'
+  end
+
+  describe '#turmoil'
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do
