@@ -40,6 +40,9 @@ Layout/HashAlignment:
     - key
     - table
 
+Style/LambdaCall:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
