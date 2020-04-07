@@ -223,7 +223,22 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
-  describe '#daylight'
+  describe '#evening' do
+    it 'gains victory points and draws cards' do
+      player, faction = build_player_and_faction
+      clearings = player.board.clearings
+
+      faction.place_roost(clearings[:one])
+      faction.place_roost(clearings[:two])
+      faction.place_roost(clearings[:three])
+
+      expect { faction.evening }
+        .to change(faction, :victory_points)
+        .by(2)
+        .and change(faction, :hand_size)
+        .by(2)
+    end
+  end
 
   context 'when in recruit' do
     it 'recruits in any valid roosts any number of times' do
@@ -253,7 +268,6 @@ RSpec.describe Root::Factions::Bird do
 
         faction.place_roost(clearings[:one])
 
-        faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
         faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
 
         faction.resolve_decree
@@ -386,7 +400,21 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
-  describe '#turmoil'
+  describe '#turmoil' do
+    it 'reduces victory_points, clears decree, and resets leader + viziers' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+      faction.setup
+
+      faction.victory_points = 5
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
+      expect { faction.turmoil! }
+        .to change(faction, :victory_points)
+        .by(-2)
+        .and change(faction, :current_leader)
+        .and change(faction, :decree)
+    end
+  end
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do

@@ -34,6 +34,10 @@ module Root
         def size
           decree.values.map(&:size).sum
         end
+
+        def number_of_birds
+          decree.values.flatten.count(&:bird?)
+        end
       end
     end
   end

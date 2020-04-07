@@ -92,6 +92,7 @@ module Root
       def take_turn(players:, **_)
         birdsong
         daylight(players)
+        evening
       end
 
       def birdsong
@@ -132,6 +133,25 @@ module Root
       def daylight(players)
         craft_items
         resolve_decree(players)
+      end
+
+      VICTORY_POINTS = {
+        roost: [0, 1, 2, 3, 4, 4, 5]
+      }.freeze
+
+      DRAW_BONUSES = {
+        roost: [0, 0, 1, 0, 0, 1, 0]
+      }.freeze
+
+      def evening
+        vps = VICTORY_POINTS[:roost][current_number_out(:roost) - 1]
+        self.victory_points += vps
+        num = DRAW_BONUSES[:roost][0...current_number_out(:roost)].sum
+        (1 + num).times { draw_card(deck) }
+      end
+
+      def current_number_out(type)
+        7 - send(type.pluralize).count
       end
 
       # Resolve decree only needs players for battle
@@ -213,7 +233,12 @@ module Root
         needed_suits.include?(clearing.suit) ? clearing.suit : :bird
       end
 
-      def turmoil!; end
+      def turmoil!
+        self.victory_points -= decree.number_of_birds
+        change_current_leader
+        reset_decree
+        change_viziers_with_leader
+      end
 
       private
 
