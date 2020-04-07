@@ -57,7 +57,7 @@ module Root
 
     def setup_by_priority
       players.order_by_setup_priority.each do |player|
-        3.times { player.draw_card(deck) }
+        3.times { player.draw_card }
         player.setup(
           decks: decks,
           players: players

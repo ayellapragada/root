@@ -689,12 +689,14 @@ RSpec.describe Root::Factions::Cat do
       end
     end
 
-    xcontext 'when over 5 cards' do
+    context 'when over 5 cards' do
       it 'discards down to 5 cards' do
-        # player, faction = build_player_and_faction
-        # player.setup
+        player, faction = build_player_and_faction
+        allow(player).to receive(:pick_option).and_return(0)
+        allow(player.deck)
+        5.times { faction.hand << Root::Cards::Base.new(suit: :bird) }
 
-        # expect { faction.evening(deck) }.to change(faction, :hand_size).by(1)
+        expect { faction.evening }.to change { faction.hand }
       end
     end
   end

@@ -101,7 +101,7 @@ module Root
 
       def birdsong
         @bird_added = false
-        draw_card(deck) if hand.empty?
+        draw_card if hand.empty?
         2.times do |i|
           next if hand.empty?
           is_first_time = i.zero?
@@ -150,8 +150,12 @@ module Root
       def evening
         vps = VICTORY_POINTS[:roost][current_number_out(:roost) - 1]
         self.victory_points += vps
-        num = DRAW_BONUSES[:roost][0...current_number_out(:roost)].sum
-        (1 + num).times { draw_card(deck) }
+
+        draw_cards
+      end
+
+      def draw_bonuses
+        DRAW_BONUSES[:roost][0...current_number_out(:roost)].sum
       end
 
       def current_number_out(type)

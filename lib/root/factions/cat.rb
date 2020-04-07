@@ -146,8 +146,11 @@ module Root
       }.freeze
 
       def evening
-        num = DRAW_BONUSES[:recruiter][0...current_number_out(:recruiter)].sum
-        (1 + num).times { draw_card(deck) }
+        draw_cards
+      end
+
+      def draw_bonuses
+        DRAW_BONUSES[:recruiter][0...current_number_out(:recruiter)].sum
       end
 
       def current_number_out(type)
@@ -267,16 +270,10 @@ module Root
         @remaining_actions += 1
       end
 
-      def cards_in_hand_with_suit(suit)
-        hand.select { |card| card.suit == suit }
-      end
+      def cards_in_hand_with_suit(suit = nil)
+        return hand unless suit
 
-      def discard_card_with_suit(suit)
-        options = cards_in_hand_with_suit(suit)
-        choice = player.pick_option(:f_discard_card, options)
-        card = options[choice]
-        deck.discard_card(card)
-        hand.delete(card)
+        hand.select { |card| card.suit == suit }
       end
 
       def birdsong

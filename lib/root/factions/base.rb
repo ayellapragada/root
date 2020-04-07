@@ -74,7 +74,7 @@ module Root
         @hand = []
       end
 
-      def draw_card(deck)
+      def draw_card
         @hand.concat(deck.draw_from_top)
       end
 
@@ -238,6 +238,19 @@ module Root
         board
           .clearings_with_rule(faction_symbol)
           .select(&:with_spaces?)
+      end
+
+      def discard_card_with_suit(suit)
+        options = cards_in_hand_with_suit(suit)
+        choice = player.pick_option(:f_discard_card, options)
+        card = options[choice]
+        deck.discard_card(card)
+        hand.delete(card)
+      end
+
+      def draw_cards
+        (1 + draw_bonuses).times { draw_card }
+        discard_card_with_suit(nil) until hand_size <= 5
       end
     end
   end
