@@ -400,15 +400,17 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
-  describe '#turmoil' do
+  describe '#turmoil!' do
     it 'reduces victory_points, clears decree, and resets leader + viziers' do
       player, faction = build_player_and_faction
       allow(player).to receive(:pick_option).and_return(0)
-      faction.setup
 
       faction.victory_points = 5
       faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
-      expect { faction.turmoil! }
+      faction.decree[:build] << Root::Cards::Base.new(suit: :bird)
+      faction.decree[:build] << Root::Cards::Base.new(suit: :bird)
+
+      expect { faction.resolve_decree }
         .to change(faction, :victory_points)
         .by(-2)
         .and change(faction, :current_leader)
