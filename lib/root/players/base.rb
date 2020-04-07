@@ -76,6 +76,15 @@ module Root
         "#{f.faction_symbol.upcase}::H#{current_hand_size}::M#{f.meeples.count}::B#{f.buildings.count}::T#{f.tokens.count}"
       end
       # rubocop:enable all
+
+      def format_for_history(key, options, choice)
+        {
+          player: inspect,
+          key: key,
+          options: options,
+          choice: choice
+        }
+      end
     end
   end
 end

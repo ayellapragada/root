@@ -29,7 +29,8 @@ module Root
     end
     # :nocov:
 
-    attr_accessor :players, :board, :decks, :active_quests, :print_display
+    attr_accessor :players, :board, :decks, :active_quests, :print_display,
+                  :history
 
     def initialize(players:, board:, decks:)
       @players = players
@@ -38,6 +39,7 @@ module Root
       @active_quests = []
       @players.each { |p| p.game = self }
       @print_display = false
+      @history = []
     end
 
     def deck

@@ -34,7 +34,7 @@ module Root
         b_card_for_decree: 'Pick card to place into decree',
         b_area_in_decree: 'Pick a area in decree to place card',
         b_comeback_roost: 'Pick where to place your new first Roost with 3 Warriors',
-        b_recruit_clearing: 'Pick which clearing to recruit in',
+        b_recruit_clearing: 'Pick which clearing to recruit in'
       }.freeze
 
       # NOT TESTING TERMINAL BECAUSE OOFY
@@ -54,14 +54,12 @@ module Root
       end
 
       def render_game(game, _player_to_view_as, clearings)
-        Root::Display::WoodlandsTerminal
-          .new(game.board, clearings)
-          .display
-          .join("\n")
-          .tap do |res|
-          clear_screen
-          puts(res)
-        end
+        game_map = Root::Display::WoodlandsTerminal.new(game.board, clearings).display.join("\n")
+        history = Root::Display::HistoryTerminal.new(game.history).display
+        clear_screen
+        puts(game_map)
+        puts('--- HISTORY ---')
+        puts(history)
       end
 
       # EXPERIMENTAL! Lots to be tried and tested here

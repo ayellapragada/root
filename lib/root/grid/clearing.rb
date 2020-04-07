@@ -51,6 +51,10 @@ module Root
         result.join(' | ')
       end
       # rubocop:enable all
+
+      def quick_inspect
+        "Cl##{priority}#{suit[0].upcase}"
+      end
       # :nocov:
 
       def adjacents

@@ -10,7 +10,11 @@ module Root
         # :nocov:
         @game&.render(clearings: options)
         # :nocov:
-        display.pick_option(key, options)
+        display.pick_option(key, options).tap do |i|
+          # :nocov:
+          game.history << format_for_history(key, options, options[i]) if @game
+          # :nocov:
+        end
       end
 
       def render_game(game, clearings: nil)
