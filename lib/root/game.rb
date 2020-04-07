@@ -66,7 +66,7 @@ module Root
     end
 
     def run_game
-      players.each { |player| take_turn(player) }
+      loop { players.each { |player| take_turn(player) } }
     end
 
     def take_turn(player)
