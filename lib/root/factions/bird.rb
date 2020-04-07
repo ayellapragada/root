@@ -21,7 +21,6 @@ module Root
       def handle_faction_token_setup
         @meeples = Array.new(20) { Pieces::Meeple.new(:birds) }
         @buildings = Array.new(7) { Birds::Roost.new }
-        @viziers = Array.new(2) { Cards::Base.new(suit: :bird) }
         handle_leader_setup
       end
 
@@ -29,7 +28,12 @@ module Root
         @leaders = Birds::Leader.generate_initial
         @used_leaders = []
         @current_leader = nil
+        reset_viziers
         reset_decree
+      end
+
+      def reset_viziers
+        @viziers = Array.new(2) { Cards::Base.new(suit: :bird) }
       end
 
       def reset_decree
@@ -237,6 +241,7 @@ module Root
         self.victory_points -= decree.number_of_birds
         change_current_leader
         reset_decree
+        reset_viziers
         change_viziers_with_leader
       end
 

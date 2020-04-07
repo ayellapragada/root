@@ -28,6 +28,7 @@ module Root
         define_method(plural_name) { send(type).select { |b| b.type == name } }
         define_method("place_#{name}") do |clearing|
           piece = send(plural_name).first
+
           if type == :tokens
             board.place_token(piece, clearing)
           else
