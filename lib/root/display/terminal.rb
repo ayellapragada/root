@@ -57,8 +57,8 @@ module Root
         history = Root::Display::HistoryTerminal.new(game.history).display
 
         merged = game_map.map.with_index do |i, idx|
-          hist = history[idx]
-          hist ? i + hist : i
+          hist = history[idx] || '' # Default History / Empty Spaces
+          i + hist
         end
 
         current = Cursor.pos
