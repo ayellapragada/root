@@ -3,7 +3,6 @@
 require_relative './woodlands_terminal'
 
 module Root
-  # This is going to be handling input / output for different screens
   module Display
     # We currently (and probably will only ever) display to terminal.
     # This handles all of that sort of logic here.
@@ -54,19 +53,26 @@ module Root
       end
 
       def render_game(game, _player_to_view_as, clearings)
-        game_map = Root::Display::WoodlandsTerminal.new(game.board, clearings).display.join("\n")
+        game_map = Root::Display::WoodlandsTerminal.new(game.board, clearings).display
         history = Root::Display::HistoryTerminal.new(game.history).display
-        clear_screen
-        puts(game_map)
-        puts('--- HISTORY ---')
-        puts(history)
-      end
 
-      # EXPERIMENTAL! Lots to be tried and tested here
-      def clear_screen
-        system('clear') || system('cls')
-        # print "\033[2J"
-        # print "\033[0;0H"
+        merged = game_map.map.with_index do |i, idx|
+          hist = history[idx]
+          hist ? i + hist : i
+        end
+
+        current = Cursor.pos
+
+        puts "\e[0;0H"
+
+        merged.each { |row| puts row }
+
+        puts "\e[s"
+        remaining = current[:row] - game_map.length
+        remaining.times do
+          puts "\e[0K"
+        end
+        puts "\e[u"
       end
 
       private

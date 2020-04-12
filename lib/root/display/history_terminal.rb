@@ -12,7 +12,7 @@ module Root
         history.last(5).map do |hist|
           res = [hist[:player], hist[:key], try_quick_inspect(hist[:choice])]
           res << hist[:options].map { |obj| try_quick_inspect(obj) }.join(' | ')
-          res.join(' :: ')
+          res.join(' :: ')[0..90]
         end
       end
 

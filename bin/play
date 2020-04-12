@@ -5,4 +5,5 @@ require 'bundler/setup'
 require 'root'
 require 'pry'
 
+system('clear') || system('cls')
 Root::Game.start_and_play_game
