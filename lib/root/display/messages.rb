@@ -18,7 +18,7 @@ module Root
         },
         c_initial_keep: {
           prompt: 'Pick where to place the Keep',
-          history: 'Placed Keep in clearing %s'
+          history: ''
         },
         c_initial_sawmill: {
           prompt: 'Pick where to place first Sawmill',

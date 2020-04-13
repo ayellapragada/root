@@ -57,7 +57,6 @@ module Root
         clearing = options[choice]
 
         place_keep(clearing)
-        player.add_to_history(:c_initial_keep, clearing: clearing.priority)
       end
 
       def build_initial_buildings
