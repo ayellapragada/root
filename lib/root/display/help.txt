@@ -1,0 +1,3 @@
+This is my quarantine project :sweats:
+This is a single player version of Root
+It will rely on the BBP and CWE versions of the Bots for AI

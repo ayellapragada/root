@@ -130,10 +130,8 @@ module Root
       end
 
       def render_help
-        very_long_string1 = Array.new(50) { 'this is help' }
-        very_long_string2 = Array.new(50) { 'this is also help' }
-        very_long_string = (very_long_string1 + very_long_string2).join("\n")
-        IO.popen('less', 'w') { |f| f.puts very_long_string }
+        file = File.read(File.join(File.dirname(__FILE__), 'help.txt'))
+        IO.popen('less', 'w') { |f| f.puts file }
       end
 
       def render_discard
