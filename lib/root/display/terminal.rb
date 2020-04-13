@@ -15,6 +15,10 @@ module Root
       def pick_option(key, options, discard:)
         @discard = discard
         display_pick_option_message(key)
+        handle_input(options)
+      end
+
+      def handle_input(options)
         if options.first.is_a?(Grid::Clearing)
           display_clearing_options(options)
           get_and_map_choice_to_index(options)
@@ -23,6 +27,7 @@ module Root
           input_for_options(options)
         end
       rescue Root::Display::Terminal::InputError
+        (1 + options.length).times { clear_previous_line }
         puts 'Invalid Choice, try again'
         retry
       end

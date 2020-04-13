@@ -46,7 +46,7 @@ module Root
         },
         f_item_selet: {
           prompt: 'Pick an item to craft',
-          history: 'Crafted %s for %s victory points'
+          history: 'Crafted %s for %s victory point(s)'
         },
         f_discard_card: {
           prompt: 'Pick a card to discard',
@@ -78,7 +78,7 @@ module Root
         },
         f_move_number: {
           prompt: 'Pick a number of meeples to move',
-          history: 'Moved %s warriors from clearing %s to clearing %s'
+          history: 'Moved %s warrior(s) from clearing %s to clearing %s'
         },
         f_pick_action: {
           prompt: 'Pick an action to take',
@@ -90,7 +90,7 @@ module Root
         },
         b_new_leader: {
           prompt: 'Pick the next leader',
-          history: 'Picked %s as their new Leader'
+          history: 'Picked %s as new Leader'
         },
         b_first_roost: {
           prompt: 'Pick where to place the first Roost with 6 Warriors',
