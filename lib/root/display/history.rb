@@ -5,7 +5,7 @@ require 'rainbow'
 module Root
   module Display
     # Handle the display logic for the history object
-    class HistoryTerminal
+    class History
       MAX_NUMBER_OF_MAP_LINES = 32
       def initialize(history)
         @history = history
@@ -22,10 +22,6 @@ module Root
           Rainbow(res).fg(hist[:color])
         end
       end
-
-      # def try_quick_inspect(obj)
-      #   obj.respond_to?(:quick_inspect) ? obj.quick_inspect : obj.inspect
-      # end
 
       private
 

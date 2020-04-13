@@ -20,7 +20,7 @@ module Root
 
       #:nocov:
       def test_render
-        Root::Display::WoodlandsTerminal.new(self).display
+        Root::Display::WoodlandsMap.new(self).display
       end
       #:nocov:
 

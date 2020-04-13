@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Root::Display::WoodlandsTerminal do
+RSpec.describe Root::Display::WoodlandsMap do
   describe '#display' do
     it 'renders a board' do
       game = Root::Game.default_game
@@ -42,7 +42,7 @@ RSpec.describe Root::Display::WoodlandsTerminal do
   # rubocop:disable all
   def mock_clearing_options(game)
     board = game.board
-    allow_any_instance_of(Root::Display::WoodlandsTerminal)
+    allow_any_instance_of(Root::Display::WoodlandsMap)
       .to receive(:clearing_options)
       .and_return(
         [

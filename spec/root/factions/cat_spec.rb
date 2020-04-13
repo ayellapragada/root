@@ -548,6 +548,8 @@ RSpec.describe Root::Factions::Cat do
   end
 
   describe '#discard_bird' do
+    # This is slightly annoying
+    # but it needs to be 2 because we use it in a method that costs 1 action
     it 'discards a bird card in hand to get an extra action' do
       player, faction = build_player_and_faction
       player.setup
@@ -557,7 +559,7 @@ RSpec.describe Root::Factions::Cat do
 
       expect { faction.discard_bird }
         .to change { faction.remaining_actions }
-        .by(1)
+        .by(2)
 
       expect(faction.hand).not_to include(card)
     end

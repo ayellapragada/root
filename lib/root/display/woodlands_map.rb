@@ -38,7 +38,7 @@ module Root
   module Display
     # We currently (and probably will only ever) display to terminal.
     # This handles all of that sort of logic here.
-    class WoodlandsTerminal
+    class WoodlandsMap
       def initialize(board, clearing_options)
         @board = board
         @clearing_options = clearing_options

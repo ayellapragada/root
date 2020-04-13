@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './woodlands_terminal'
+require_relative './woodlands_map'
 
 module Root
   module Display
@@ -26,8 +26,8 @@ module Root
       end
 
       def render_game(game, _player_to_view_as, clearings)
-        game_map = Root::Display::WoodlandsTerminal.new(game.board, clearings).display
-        history = Root::Display::HistoryTerminal.new(game.history).display
+        game_map = Root::Display::WoodlandsMap.new(game.board, clearings).display
+        history = Root::Display::History.new(game.history).display
 
         merged = game_map.map.with_index do |i, idx|
           hist = history[idx] || '' # Default History / Empty Spaces
