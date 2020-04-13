@@ -8,33 +8,6 @@ module Root
     # This handles all of that sort of logic here.
     class Terminal
       class InputError < StandardError; end
-      PROMPT_MESSAGES = {
-        test_option: 'Test Option Woo!',
-        v_char_sel: 'Pick a Vagabond to be your Character',
-        v_forest_sel: 'Pick a Forest to start in',
-        c_initial_keep: 'Pick where to place the Keep',
-        c_initial_sawmill: 'Pick where to place first Sawmill',
-        c_initial_workshop: 'Pick where to place first Workshop',
-        c_initial_recruiter: 'Pick where to place first Recruiter',
-        c_overwork: 'Pick a clearing to get an extra wood in',
-        c_wood_removal: 'Pick clearings to remove wood from',
-        f_item_selet: 'Pick an item to craft',
-        f_discard_card: 'Pick a card to discard',
-        f_build_options: 'Pick a clearing to build in',
-        f_who_to_battle: 'Pick a faction to battle against',
-        f_battle_options: 'Pick a clearing to battle in',
-        f_pick_building: 'Pick a type of building to make',
-        f_move_from_options: 'Pick a clearing to move from',
-        f_move_to_options: 'Pick a clearing to move to',
-        f_move_number: 'Pick a number of meeples to move',
-        f_pick_action: 'Pick an action to take',
-        b_new_leader: 'Pick the next leader',
-        b_first_roost: 'Pick where to place the first Roost with 6 Warriors',
-        b_card_for_decree: 'Pick card to place into decree',
-        b_area_in_decree: 'Pick a area in decree to place card',
-        b_comeback_roost: 'Pick where to place your new first Roost with 3 Warriors',
-        b_recruit_clearing: 'Pick which clearing to recruit in'
-      }.freeze
 
       # NOT TESTING TERMINAL BECAUSE OOFY
       #:nocov:
@@ -78,7 +51,7 @@ module Root
       private
 
       def display_pick_option_message(key)
-        puts PROMPT_MESSAGES[key]
+        puts Messages::LIST[key][:prompt]
       end
 
       def display_options(options)

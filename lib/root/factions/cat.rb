@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../factions/cats/catable'
+
 # TODO: Field Hospitals for the Marquise
 # I REPEAT BEACUSE THIS IS MAJOR
 # TODO: Field Hospitals for the Marquise
@@ -7,6 +9,8 @@ module Root
   module Factions
     # Handle cats faction logic
     class Cat < Base
+      include Factions::Cats::Catable
+
       SETUP_PRIORITY = 'A'
 
       attr_reader :remaining_actions
@@ -53,6 +57,7 @@ module Root
         clearing = options[choice]
 
         place_keep(clearing)
+        player.add_to_history(:c_initial_keep, clearing: clearing.priority)
       end
 
       def build_initial_buildings
@@ -73,6 +78,7 @@ module Root
         choice = player.pick_option(key, options_for_building)
         clearing = options_for_building[choice]
         place_building(building, clearing)
+        player.add_to_history(key, clearing: clearing.priority)
       end
 
       def find_initial_options

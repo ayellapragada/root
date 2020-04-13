@@ -1,24 +1,31 @@
+# frozen_string_literal: true
+
 require 'rainbow'
 
 module Root
   module Display
     # Handle the display logic for the history object
     class HistoryTerminal
+      MAX_NUMBER_OF_MAP_LINES = 32
       def initialize(history)
         @history = history
       end
 
+      # player, key, opts
       def display
-        history.last(5).map do |hist|
-          res = [hist[:player], hist[:key], try_quick_inspect(hist[:choice])]
-          res << hist[:options].map { |obj| try_quick_inspect(obj) }.join(' | ')
-          res.join(' :: ')[0..90]
+        history.last(MAX_NUMBER_OF_MAP_LINES).map do |hist|
+          res = [
+            Messages::LIST[hist[:key]][:history] % hist[:opts].values,
+            hist[:player]
+          ].join(' | ')
+
+          Rainbow(res).fg(hist[:color])
         end
       end
 
-      def try_quick_inspect(obj)
-        obj.respond_to?(:quick_inspect) ? obj.quick_inspect : obj.inspect
-      end
+      # def try_quick_inspect(obj)
+      #   obj.respond_to?(:quick_inspect) ? obj.quick_inspect : obj.inspect
+      # end
 
       private
 

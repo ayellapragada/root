@@ -69,20 +69,27 @@ module Root
         )
       end
 
-      # This breaks sandi_meter :sweats:
-      # rubocop:disable all
       def inspect
         f = faction
-        "#{f.faction_symbol.upcase}::H#{current_hand_size}::M#{f.meeples.count}::B#{f.buildings.count}::T#{f.tokens.count}"
+        symbol = f.faction_symbol[0].upcase
+        meeps = f.meeples.count.to_s.rjust(2, '0')
+        builds = f.buildings.count.to_s.rjust(2, '0')
+        toks = f.tokens.count.to_s.rjust(2, '0')
+        "#{symbol}:H#{current_hand_size}:M#{meeps}:B#{builds}:T#{toks}"
       end
-      # rubocop:enable all
 
-      def format_for_history(key, options, choice)
+      def add_to_history(key, opts)
+        return unless @game
+
+        game.history << format_for_history(key, opts)
+      end
+
+      def format_for_history(key, opts)
         {
           player: inspect,
+          color: faction.display_color,
           key: key,
-          options: options,
-          choice: choice
+          opts: opts
         }
       end
     end

@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require_relative './base'
+require_relative '../factions/mice/miceable'
 
 module Root
   module Factions
     # Handle mice faction logic
     class Mouse < Base
+      include Factions::Mice::Miceable
+
       SETUP_PRIORITY = 'C'
 
       attr_reader :supporters

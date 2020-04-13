@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require_relative './base'
+require_relative '../factions/vagabonds/vagabondable'
 
 module Root
   module Factions
     # Handle vagabond faction logic
     class Vagabond < Base
+      include Factions::Vagabonds::Vagabondable
+
       SETUP_PRIORITY = 'D'
 
       attr_reader :items, :teas, :coins, :bags, :character, :relationships

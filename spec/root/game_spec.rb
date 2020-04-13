@@ -37,10 +37,10 @@ RSpec.describe Root::Game do
       game.setup
 
       res = <<~RES
-        MICE::H3::M10::B3::T8
-        CATS::H3::M14::B15::T8
-        BIRDS::H3::M14::B6::T0
-        VAGABOND::H3::M0::B0::T0
+        M:H3:M10:B03:T08
+        C:H3:M14:B15:T08
+        B:H3:M14:B06:T00
+        V:H3:M00:B00:T00
       RES
       expect(game.state).to eq(res.chomp)
     end

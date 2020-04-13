@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './base'
+require_relative '../factions/birds/birdable'
 
 module Root
   module Factions
@@ -8,6 +9,8 @@ module Root
 
     # Handle birds faction logic
     class Bird < Base
+      include Factions::Birds::Birdable
+
       SETUP_PRIORITY = 'B'
 
       attr_reader :viziers, :leaders, :used_leaders, :current_leader, :decree
@@ -50,6 +53,7 @@ module Root
         clearing = find_clearing_for_first_root
         place_roost(clearing)
         6.times { place_meeple(clearing) }
+        player.add_to_history(:b_first_roost, clearing: clearing.priority)
       end
 
       def find_clearing_for_first_root
@@ -68,6 +72,7 @@ module Root
 
         new_leader = find_next_leader(type)
         self.current_leader = new_leader
+        player.add_to_history(:b_new_leader, leader: new_leader.leader)
       end
 
       def reset_leaders

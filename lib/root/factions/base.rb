@@ -165,6 +165,13 @@ module Root
           clearing.meeples.delete(piece)
           where_to.meeples << piece
         end
+
+        player.add_to_history(
+          :f_move_number,
+          num: how_many,
+          from: clearing.priority,
+          to: where_to.priority
+        )
       end
 
       def battle_options(suits = [])
