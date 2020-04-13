@@ -38,6 +38,10 @@ module Root
         def number_of_birds
           decree.values.flatten.count(&:bird?)
         end
+
+        def all_cards_except_viziers
+          decree.values.flatten.reject(&:vizier?)
+        end
       end
     end
   end

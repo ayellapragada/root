@@ -88,6 +88,11 @@ module Root
         @hand.concat(deck.draw_from_top)
       end
 
+      def discard_card(card)
+        deck.discard_card(card)
+        hand.delete(card)
+      end
+
       def setup_priority
         self.class::SETUP_PRIORITY
       end
@@ -267,9 +272,8 @@ module Root
         options = cards_in_hand_with_suit(suit)
         choice = player.pick_option(:f_discard_card, options)
         card = options[choice]
-        deck.discard_card(card)
-        hand.delete(card)
-        player.add_to_history(:f_discard_card, card: card)
+        discard_card(card)
+        player.add_to_history(:f_discard_card, suit: card.suit)
       end
 
       def draw_cards

@@ -12,7 +12,8 @@ module Root
 
       # NOT TESTING TERMINAL BECAUSE OOFY
       #:nocov:
-      def pick_option(key, options)
+      def pick_option(key, options, discard:)
+        @discard = discard
         display_pick_option_message(key)
         if options.first.is_a?(Grid::Clearing)
           display_clearing_options(options)
@@ -131,10 +132,8 @@ module Root
       end
 
       def render_discard
-        very_long_string1 = Array.new(50) { 'discardabba' }
-        very_long_string2 = Array.new(50) { 'bbbbbbbbbdiscard' }
-        very_long_string = (very_long_string1 + very_long_string2).join("\n")
-        IO.popen('less', 'w') { |f| f.puts very_long_string }
+        res = @discard.empty? ? 'None' : @discard.map(&:inspect).join("\n")
+        IO.popen('less', 'w') { |f| f.puts res }
       end
       #:nocov:
     end

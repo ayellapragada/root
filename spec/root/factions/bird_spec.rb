@@ -449,6 +449,22 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
+  describe '#discard_from_decree' do
+    it 'discards cards to the decks discard pile' do
+      player, faction = build_player_and_faction
+      allow(player).to receive(:pick_option).and_return(0)
+
+      card1 = Root::Cards::Base.new(suit: :bunny)
+      card2 = Root::Cards::Base.new(suit: :bunny)
+      faction.decree[:move] << card1
+      faction.decree[:move] << card2
+
+      expect { faction.discard_from_decree }
+        .to change(faction.deck.discard, :count).by(2)
+      expect(faction.deck.discard).to match_array([card1, card2])
+    end
+  end
+
   def has_only_six_bird_warriors(meeples)
     meeples.count == 6 && meeples.all? { |w| w.faction == :birds }
   end

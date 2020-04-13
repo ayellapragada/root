@@ -27,6 +27,10 @@ module Root
       def bird?
         suit == :bird
       end
+
+      def vizier?
+        false
+      end
     end
   end
 end

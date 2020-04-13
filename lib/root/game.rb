@@ -25,6 +25,7 @@ module Root
       game.print_display = true
       game.setup
       game.run_game
+      game.run_game
       game.render
     end
     # :nocov:

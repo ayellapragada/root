@@ -10,7 +10,7 @@ module Root
         # :nocov:
         @game&.render(clearings: options)
         # :nocov:
-        display.pick_option(key, options)
+        display.pick_option(key, options, discard: deck.discard)
       end
 
       def render_game(game, clearings: nil)

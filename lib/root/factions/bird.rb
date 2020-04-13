@@ -36,7 +36,7 @@ module Root
       end
 
       def reset_viziers
-        @viziers = Array.new(2) { Cards::Base.new(suit: :bird) }
+        @viziers = Array.new(2) { Cards::Vizier.new }
       end
 
       def reset_decree
@@ -255,10 +255,16 @@ module Root
       def turmoil!
         self.victory_points -= decree.number_of_birds
         player.add_to_history(:b_turmoil)
+        discard_from_decree
         change_current_leader
         reset_decree
         reset_viziers
         change_viziers_with_leader
+      end
+
+      def discard_from_decree
+        all_cards = decree.all_cards_except_viziers
+        all_cards.each { |card| discard_card(card) }
       end
 
       private

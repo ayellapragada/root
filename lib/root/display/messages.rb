@@ -50,7 +50,7 @@ module Root
         },
         f_discard_card: {
           prompt: 'Pick a card to discard',
-          history: 'Discarded a card'
+          history: 'Discarded a %s card'
         },
         f_build_options: {
           prompt: 'Pick a clearing to build in',
