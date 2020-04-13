@@ -47,4 +47,6 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 ## Ideas For Next
 
-- Fix bird cards to be wild babies
+- Show Hand
+- Show Player Boards
+- Move History Over
