@@ -22,19 +22,23 @@ module Root
         },
         c_initial_sawmill: {
           prompt: 'Pick where to place first Sawmill',
-          history: 'Placed first Sawmill in clearing %s'
+          history: ''
         },
         c_initial_workshop: {
           prompt: 'Pick where to place first Workshop',
-          history: 'Placed first Workshop in clearing %s'
+          history: ''
         },
         c_initial_recruiter: {
           prompt: 'Pick where to place first Recruiter',
-          history: 'Placed first Recruiter in clearing %s'
+          history: ''
         },
         c_overwork: {
           prompt: 'Pick a clearing to get an extra wood in',
           history: 'Overworked in clearing %s'
+        },
+        c_recruit: {
+          prompt: '',
+          history: 'Recruited in clearing(s) %s'
         },
         c_wood_removal: {
           prompt: 'Pick clearings to remove wood from',
@@ -46,7 +50,7 @@ module Root
         },
         f_discard_card: {
           prompt: 'Pick a card to discard',
-          history: ''
+          history: 'Discarded a card'
         },
         f_build_options: {
           prompt: 'Pick a clearing to build in',
@@ -54,7 +58,7 @@ module Root
         },
         f_who_to_battle: {
           prompt: 'Pick a faction to battle against',
-          history: ''
+          history: 'Did %s damage and recieved %s damage from %s'
         },
         f_battle_options: {
           prompt: 'Pick a clearing to battle in',
@@ -80,6 +84,10 @@ module Root
           prompt: 'Pick an action to take',
           history: ''
         },
+        f_draw_cards: {
+          prompt: '',
+          history: 'Drew %s cards'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as their new Leader'
@@ -94,7 +102,7 @@ module Root
         },
         b_area_in_decree: {
           prompt: 'Pick a area in decree to place card',
-          history: ''
+          history: 'Added %s Suit to %s in Decre'
         },
         b_comeback_roost: {
           prompt: 'Pick where to place your new first Roost with 3 Warriors',
@@ -103,6 +111,10 @@ module Root
         b_recruit_clearing: {
           prompt: 'Pick which clearing to recruit in',
           history: 'Recruited in clearing %s'
+        },
+        b_turmoil: {
+          prompt: '',
+          history: 'Went into turmoil'
         }
       }.freeze
     end

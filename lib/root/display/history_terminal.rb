@@ -15,8 +15,8 @@ module Root
       def display
         history.last(MAX_NUMBER_OF_MAP_LINES).map do |hist|
           res = [
-            Messages::LIST[hist[:key]][:history] % hist[:opts].values,
-            hist[:player]
+            hist[:player],
+            Messages::LIST[hist[:key]][:history] % hist[:opts].values
           ].join(' | ')
 
           Rainbow(res).fg(hist[:color])

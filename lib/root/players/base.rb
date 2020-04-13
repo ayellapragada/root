@@ -78,7 +78,7 @@ module Root
         "#{symbol}:H#{current_hand_size}:M#{meeps}:B#{builds}:T#{toks}"
       end
 
-      def add_to_history(key, opts)
+      def add_to_history(key, opts = {})
         return unless @game
 
         game.history << format_for_history(key, opts)

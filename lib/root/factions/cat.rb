@@ -70,6 +70,11 @@ module Root
       def place_building(building, clearing)
         buildings.delete(building)
         board.create_building(building, clearing)
+        player.add_to_history(
+          :f_build_options,
+          type: building.type,
+          clearing: clearing.priority
+        )
       end
 
       def player_places_building(building)
@@ -78,7 +83,6 @@ module Root
         choice = player.pick_option(key, options_for_building)
         clearing = options_for_building[choice]
         place_building(building, clearing)
-        player.add_to_history(key, clearing: clearing.priority)
       end
 
       def find_initial_options
@@ -249,11 +253,16 @@ module Root
 
       def recruit
         @recruited = true
-        board.clearings_with(:recruiter).each do |cl|
+        recuitable_clearings = board.clearings_with(:recruiter)
+        recuitable_clearings.each do |cl|
           cl.buildings_of_type(:recruiter).count.times do
             place_meeple(cl)
           end
         end
+        player.add_to_history(
+          :c_recruit,
+          clearings: recuitable_clearings.map(&:priority).join(', ')
+        )
       end
 
       def overwork_options
@@ -269,11 +278,13 @@ module Root
         sawmill_clearing = options[choice]
         discard_card_with_suit(sawmill_clearing.suit)
         place_wood(sawmill_clearing)
+        player.add_to_history(:c_overwork, clearing: sawmill_clearing.priority)
       end
 
       def discard_bird
         discard_card_with_suit(:bird)
-        @remaining_actions += 1
+        @remaining_actions += 2
+        # Because we still technically lose an action if we do this :>
       end
 
       def cards_in_hand_with_suit(suit = nil)

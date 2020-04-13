@@ -53,7 +53,6 @@ module Root
         clearing = find_clearing_for_first_root
         place_roost(clearing)
         6.times { place_meeple(clearing) }
-        player.add_to_history(:b_first_roost, clearing: clearing.priority)
       end
 
       def find_clearing_for_first_root
@@ -123,6 +122,12 @@ module Root
 
           decree[area] << card
           hand.delete(card)
+
+          player.add_to_history(
+            :b_area_in_decree,
+            suit: card.suit,
+            area: area
+          )
         end
 
         return unless board.clearings_with(:roost).empty?
@@ -186,6 +191,7 @@ module Root
           # raise TurmoilError if meeples.count.zero?
 
           place_meeple(cl)
+          player.add_to_history(:b_recruit_clearing, clearing: cl.priority)
         end
       end
 
@@ -248,6 +254,7 @@ module Root
 
       def turmoil!
         self.victory_points -= decree.number_of_birds
+        player.add_to_history(:b_turmoil)
         change_current_leader
         reset_decree
         reset_viziers

@@ -10,6 +10,8 @@ module Root
 
       SETUP_PRIORITY = 'ZZZ'
 
+      HISTORY_EXCLUSION = %i[wood].freeze
+
       def self.attr_buildings(*names)
         names.each { |name| define_methods(:buildings, name) }
       end
@@ -35,6 +37,14 @@ module Root
             board.create_building(piece, clearing)
           end
           send(type).delete(piece)
+
+          return if HISTORY_EXCLUSION.include?(piece.type)
+
+          player.add_to_history(
+            :f_build_options,
+            type: piece.type,
+            clearing: clearing.priority
+          )
         end
       end
 
@@ -212,6 +222,12 @@ module Root
 
         deal_damage(actual_defend, self, clearing, faction)
         deal_damage(actual_attack, faction, clearing, self)
+        player.add_to_history(
+          :f_who_to_battle,
+          damage_done: actual_attack,
+          damage_taken: actual_defend,
+          other_faction: faction.faction_symbol
+        )
       end
 
       def deal_damage(number, faction, clearing, other_faction)
@@ -253,10 +269,13 @@ module Root
         card = options[choice]
         deck.discard_card(card)
         hand.delete(card)
+        player.add_to_history(:f_discard_card, card: card)
       end
 
       def draw_cards
-        (1 + draw_bonuses).times { draw_card }
+        num = 1 + draw_bonuses
+        num.times { draw_card }
+        player.add_to_history(:f_draw_cards, num: num)
         discard_card_with_suit(nil) until hand_size <= 5
       end
     end
