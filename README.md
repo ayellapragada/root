@@ -47,6 +47,4 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 ## Ideas For Next
 
-- Show Hand
-- Show Player Boards
 - Move History Over
