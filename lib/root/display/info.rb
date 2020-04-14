@@ -7,6 +7,16 @@ module Root
     # We currently (and probably will only ever) display to terminal.
     # This handles all of that sort of logic here.
     class Info
+      def self.for_multiple(players)
+        players.map do |player|
+          player_info = new(player, show_private: false)
+          player_info
+            .format(player.faction.formatted_special_info(false))
+            .split("\n")
+            .map { |str| Rainbow(str).fg(player.faction.display_color) }
+        end.flatten
+      end
+
       def initialize(player, show_private:)
         @player = player
         @show_private = show_private

@@ -38,6 +38,8 @@ module Root
         map = WoodlandsMap.new(game.board, clearings).display
         history = History.new(game.history).display
         current_info = Info.new(current_player, show_private: true).display
+        other_info = Info.for_multiple(game.players.except_player(current_player))
+        space_for_other_info = other_info.map { |str| str.gsub(/\e\[([;\d]+)?m/, '').length }.max
 
         # If needed, how to get the length of a board.
         # current_info.split("\n").length
@@ -45,8 +47,9 @@ module Root
         total_height = map.length + current_player.faction.hand.length
 
         merged = map.map.with_index do |i, idx|
+          info = other_info[idx] || ' ' * space_for_other_info
           hist = history[idx] || '' # Default History / Empty Spaces
-          i + hist
+          i + '  ' + info + '  ' +  hist
         end
 
         current_row = Cursor.pos[:row]
