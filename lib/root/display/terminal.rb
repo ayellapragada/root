@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rainbow'
+
 require_relative './woodlands_map'
 
 module Root
@@ -32,7 +34,7 @@ module Root
         retry
       end
 
-      def render_game(game, _player_to_view_as, clearings)
+      def render_game(game, player_to_view_as, clearings)
         map = Root::Display::WoodlandsMap.new(game.board, clearings).display
         history = Root::Display::History.new(game.history).display
 
@@ -43,8 +45,19 @@ module Root
 
         current_row = Cursor.pos[:row]
         move_cursor_to_top
+
         merged.each { |row| puts row }
+        puts ''
+        render_hand(player_to_view_as)
         clear_out_rest_of_screen(current_row, map.length)
+      end
+
+      def render_hand(player)
+        hand = player.faction.hand
+        puts 'Hand:'
+        hand.each do |card|
+          puts Rainbow(card.inspect).fg(Colors::SUIT_COLOR[card.suit])
+        end
       end
 
       def clear_out_rest_of_screen(current_row, total_rows)
@@ -108,7 +121,7 @@ module Root
       end
 
       def handle_getting_input
-        menu_opts = %w[? discard]
+        menu_opts = %w[? discard screen_clear]
         loop do
           option = gets.chomp
           return option unless menu_opts.include?(option)
@@ -127,6 +140,7 @@ module Root
       def handle_showing_menu(option)
         render_help if option == '?'
         render_discard if option == 'discard'
+        system('clear') || system('cls') if option == 'screen_clear'
       end
 
       def render_help

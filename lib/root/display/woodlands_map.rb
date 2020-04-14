@@ -44,12 +44,6 @@ module Root
         @clearing_options = clearing_options
       end
 
-      SUIT_COLOR = {
-        fox: :firebrick,
-        mouse: :sandybrown,
-        bunny: :gold,
-      }
-
       def display
         cls = board.clearings
         fr = board.forests
@@ -165,7 +159,7 @@ module Root
       end
 
       def c(cl)
-        co = SUIT_COLOR[cl.suit]
+        co = Root::Display::Colors::SUIT_COLOR[cl.suit]
         hor = Rainbow('-').fg(co)
         cor = Rainbow('+').fg(co)
         ver = Rainbow('|').fg(co)
