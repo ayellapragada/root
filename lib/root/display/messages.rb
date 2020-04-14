@@ -59,7 +59,7 @@ module Root
         },
         f_who_to_battle: {
           prompt: 'Pick a faction to battle against',
-          history: 'Did %s damage and recieved %s damage from %s'
+          history: 'Did %s damage and recieved %s damage from %s in clearing %s'
         },
         f_battle_options: {
           prompt: 'Pick a clearing to battle in',

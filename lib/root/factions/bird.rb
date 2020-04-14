@@ -175,8 +175,13 @@ module Root
 
       def special_info(_show_private)
         {
-          board: board_special_info,
-          decree: decree.special_info
+          board: {
+            rows: board_special_info
+          },
+          decree: {
+            rows: decree.special_info,
+            headings: %w[Recruit Move Battle Build]
+          }
         }
       end
 

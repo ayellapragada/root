@@ -482,12 +482,14 @@ RSpec.describe Root::Factions::Bird do
       faction.place_roost(clearings[:five])
 
       expect(faction.special_info(true)).to eq(
-        board: [['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']],
-        decree: [
-          %w[Recruit Move Battle Build],
-          ['Mouse', 'Fox', 'Bird', ''],
-          ['', 'Bunny', '', '']
-        ]
+        board: { rows: [['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']] },
+        decree: {
+          headings: %w[Recruit Move Battle Build],
+          rows: [
+            ['Mouse', 'Fox', 'Bird', ''],
+            ['', 'Bunny', '', '']
+          ]
+        }
       )
     end
   end

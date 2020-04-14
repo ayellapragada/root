@@ -104,8 +104,12 @@ module Root
       end
 
       def formatted_special_info(show_private)
-        special_info(show_private).map do |key, val|
-          Terminal::Table.new(rows: val)
+        special_info(show_private).map do |_key, val|
+          opts = {}.tap do |obj|
+            obj[:rows] = val[:rows]
+            obj[:headings] = val[:headings] if val[:headings]
+          end
+          Terminal::Table.new(opts)
         end
       end
 
@@ -256,7 +260,8 @@ module Root
           :f_who_to_battle,
           damage_done: actual_attack,
           damage_taken: actual_defend,
-          other_faction: faction.faction_symbol
+          other_faction: faction.faction_symbol,
+          clearing: clearing.priority
         )
       end
 

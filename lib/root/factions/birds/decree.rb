@@ -44,7 +44,7 @@ module Root
         end
 
         def special_info
-          rows = [%w[Recruit Move Battle Build]]
+          rows = []
           suits = suits_in_decree
           until suits.values.all?(&:empty?)
             recruit_val = format_and_pop_card(:recruit, suits)
