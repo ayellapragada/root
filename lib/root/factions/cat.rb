@@ -62,9 +62,10 @@ module Root
         bonuses = DRAW_BONUSES[type][0...current_number_out(type)]
         piece_symbol = send(type.pluralize).first&.display_symbol
         res = current_points.map.with_index do |val, idx|
-          bonuses[idx].zero? ? val.to_s : "#{val} (D+#{bonuses[idx]})"
+          bonuses[idx].zero? ? val.to_s : "#{val}(+#{bonuses[idx]})"
         end
-        [type.pluralize.to_s.capitalize] + res.fill(piece_symbol, res.length, 6 - res.length)
+        [type.pluralize.to_s.capitalize] +
+          res.fill(piece_symbol, res.length, 6 - res.length)
       end
 
       def setup(*)
@@ -233,6 +234,7 @@ module Root
         until num_wood_to_remove.zero?
           choice = player.pick_option(:c_wood_removal, accessible_wood)
           clearing_to_remove_from = accessible_wood[choice]
+          accessible_wood.delete(clearing_to_remove_from)
           wood << clearing_to_remove_from.remove_wood
           num_wood_to_remove -= 1
         end

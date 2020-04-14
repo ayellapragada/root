@@ -104,7 +104,10 @@ module Root
       end
 
       def formatted_special_info(show_private)
-        Terminal::Table.new rows: special_info(show_private)
+        Terminal::Table.new(
+          # title: faction_symbol.capitalize,
+          rows: special_info(show_private)
+        )
       end
 
       def place_meeple(clearing)

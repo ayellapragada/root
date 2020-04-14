@@ -39,6 +39,9 @@ module Root
         history = History.new(game.history).display
         current_info = Info.new(current_player, show_private: true).display
 
+        # If needed, how to get the length of a board.
+        # current_info.split("\n").length
+
         total_height = map.length + current_player.faction.hand.length
 
         merged = map.map.with_index do |i, idx|
