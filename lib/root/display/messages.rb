@@ -86,7 +86,7 @@ module Root
         },
         f_draw_cards: {
           prompt: '',
-          history: 'Drew %s cards'
+          history: 'Drew %s card(s)'
         },
         b_new_leader: {
           prompt: 'Pick the next leader',

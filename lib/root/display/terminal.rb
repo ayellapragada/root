@@ -29,7 +29,7 @@ module Root
           input_for_options(options)
         end
       rescue Root::Display::Terminal::InputError
-        (1 + options.length).times { clear_previous_line }
+        (1 + options.length).times { Cursor.clear_previous_line }
         puts 'Invalid Choice, try again'
         retry
       end
@@ -37,6 +37,7 @@ module Root
       def render_game(game, player_to_view_as, clearings)
         map = Root::Display::WoodlandsMap.new(game.board, clearings).display
         history = Root::Display::History.new(game.history).display
+        total_height = map.length + player_to_view_as.faction.hand.length
 
         merged = map.map.with_index do |i, idx|
           hist = history[idx] || '' # Default History / Empty Spaces
@@ -47,9 +48,8 @@ module Root
         move_cursor_to_top
 
         merged.each { |row| puts row }
-        puts ''
+        clear_out_rest_of_screen(current_row, total_height)
         render_hand(player_to_view_as)
-        clear_out_rest_of_screen(current_row, map.length)
       end
 
       def render_hand(player)
@@ -76,9 +76,14 @@ module Root
       private
 
       def display_pick_option_message(key)
+        puts_blank_space
         puts 'Use "?" for help and "discard" to check discard pile.'
-        puts ''
+        puts_blank_space
         puts Messages::LIST[key][:prompt]
+      end
+
+      def puts_blank_space
+        puts ''
       end
 
       def display_options(options)
@@ -127,15 +132,10 @@ module Root
           return option unless menu_opts.include?(option)
 
           handle_showing_menu(option)
-          clear_previous_line
+          Cursor.clear_previous_line
         end
       end
 
-      def clear_previous_line
-        puts "\e[2A"
-        puts "\e[0K"
-        puts "\e[2A"
-      end
 
       def handle_showing_menu(option)
         render_help if option == '?'
