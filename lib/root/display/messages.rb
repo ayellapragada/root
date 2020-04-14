@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Root
   module Display
-    # We currently (and probably will only ever) display to terminal.
-    # This handles all of that sort of logic here.
+    # All messages, basically a more complicated en.yml tbh
     class Messages
       LIST = {
         test_option: {

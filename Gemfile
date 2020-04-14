@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rainbow'
+gem 'terminal-table'
 
 # DEV
 gem 'byebug', '~> 11.0'

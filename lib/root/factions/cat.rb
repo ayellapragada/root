@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require 'terminal-table'
+
 require_relative '../factions/cats/catable'
+
 
 # TODO: Field Hospitals for the Marquise
 # I REPEAT BEACUSE THIS IS MAJOR
@@ -43,6 +46,25 @@ module Root
 
       def handle_token_setup
         @tokens = [Cats::Keep.new] + Array.new(8) { Cats::Wood.new }
+      end
+
+      def special_info(_show_private)
+        rows = []
+        rows << %w[Wood 0 1 2 3 3 4]
+        rows << format_with_victory_ponts_and_draw_bonuses(:sawmill)
+        rows << format_with_victory_ponts_and_draw_bonuses(:workshop)
+        rows << format_with_victory_ponts_and_draw_bonuses(:recruiter)
+        rows
+      end
+
+      def format_with_victory_ponts_and_draw_bonuses(type)
+        current_points = VICTORY_POINTS[type][0...current_number_out(type)]
+        bonuses = DRAW_BONUSES[type][0...current_number_out(type)]
+        piece_symbol = send(type.pluralize).first&.display_symbol
+        res = current_points.map.with_index do |val, idx|
+          bonuses[idx].zero? ? val.to_s : "#{val} (D+#{bonuses[idx]})"
+        end
+        [type.pluralize.to_s.capitalize] + res.fill(piece_symbol, res.length, 6 - res.length)
       end
 
       def setup(*)

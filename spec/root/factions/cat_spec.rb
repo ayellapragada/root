@@ -703,6 +703,39 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  describe '#special_info' do
+    it 'returns number of VP and draw bonuses, or else building tyoe' do
+      player, faction = build_player_and_faction
+      clearings = player.board.clearings
+
+      faction.place_recruiter(clearings[:twelve])
+      faction.place_recruiter(clearings[:twelve])
+      faction.place_recruiter(clearings[:eight])
+
+      faction.place_workshop(clearings[:eight])
+      faction.place_workshop(clearings[:nine])
+      faction.place_workshop(clearings[:nine])
+      faction.place_workshop(clearings[:one])
+      faction.place_workshop(clearings[:five])
+      faction.place_workshop(clearings[:five])
+
+      faction.place_sawmill(clearings[:seven])
+      faction.place_sawmill(clearings[:seven])
+
+      faction.place_meeple(clearings[:seven])
+      faction.place_meeple(clearings[:seven])
+
+      expect(faction.special_info(true)).to eq(
+        [
+          %w[Wood 0 1 2 3 3 4],
+          %w[Sawmills 0 1 S S S S],
+          %w[Workshops 0 2 2 3 4 5],
+          ['Recruiters', '0', '1', '2 (D+1)', 'R', 'R', 'R']
+        ]
+      )
+    end
+  end
+
   def clearing_has_building(clearing, type)
     clearing.includes_building?(type) ||
       clearing.adjacents.one? { |adj| adj.includes_building?(type) }

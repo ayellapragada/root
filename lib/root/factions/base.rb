@@ -99,6 +99,14 @@ module Root
 
       def take_turn(players:, active_quests: nil); end
 
+      def special_info(_show_private)
+        []
+      end
+
+      def formatted_special_info(show_private)
+        Terminal::Table.new rows: special_info(show_private)
+      end
+
       def place_meeple(clearing)
         board.place_meeple(meeples.pop, clearing)
       end

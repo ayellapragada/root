@@ -118,6 +118,8 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11.0)
     simplecov-html (0.11.0)
+    terminal-table (1.8.0)
+      unicode-display_width (~> 1.1, >= 1.1.1)
     thor (1.0.1)
     thread_safe (0.3.6)
     turnip (4.1.0)
@@ -145,6 +147,7 @@ DEPENDENCIES
   rubocop-rspec (~> 1.38)
   sandi_meter
   simplecov
+  terminal-table
   turnip (~> 4.0)
 
 BUNDLED WITH

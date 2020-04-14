@@ -34,10 +34,12 @@ module Root
         retry
       end
 
-      def render_game(game, player_to_view_as, clearings)
-        map = Root::Display::WoodlandsMap.new(game.board, clearings).display
-        history = Root::Display::History.new(game.history).display
-        total_height = map.length + player_to_view_as.faction.hand.length
+      def render_game(game, current_player, clearings)
+        map = WoodlandsMap.new(game.board, clearings).display
+        history = History.new(game.history).display
+        current_info = Info.new(current_player, show_private: true).display
+
+        total_height = map.length + current_player.faction.hand.length
 
         merged = map.map.with_index do |i, idx|
           hist = history[idx] || '' # Default History / Empty Spaces
@@ -49,7 +51,8 @@ module Root
 
         merged.each { |row| puts row }
         clear_out_rest_of_screen(current_row, total_height)
-        render_hand(player_to_view_as)
+        puts current_info
+        render_hand(current_player)
       end
 
       def render_hand(player)
