@@ -110,6 +110,21 @@ module Root
         )
       end
 
+      def current_number_out(type)
+        self.class::BUILDINGS - send(type.pluralize).count
+      end
+
+      def format_with_victory_ponts_and_draw_bonuses(type)
+        current_points = self.class::VICTORY_POINTS[type][0...current_number_out(type)]
+        bonuses = self.class::DRAW_BONUSES[type][0...current_number_out(type)]
+        piece_symbol = send(type.pluralize).first&.display_symbol
+        res = current_points.map.with_index do |val, idx|
+          bonuses[idx].zero? ? val.to_s : "#{val}(+#{bonuses[idx]})"
+        end
+        [type.pluralize.to_s.capitalize] +
+          res.fill(piece_symbol, res.length, self.class::BUILDINGS - res.length)
+      end
+
       def place_meeple(clearing)
         board.place_meeple(meeples.pop, clearing)
       end

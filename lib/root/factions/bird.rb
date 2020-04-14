@@ -11,6 +11,7 @@ module Root
     class Bird < Base
       include Factions::Birds::Birdable
 
+      BUILDINGS = 7
       SETUP_PRIORITY = 'B'
 
       attr_reader :viziers, :leaders, :used_leaders, :current_leader, :decree
@@ -170,6 +171,12 @@ module Root
 
       def current_number_out(type)
         7 - send(type.pluralize).count
+      end
+
+      def special_info(_show_private)
+        [].tap do |rows|
+          rows << format_with_victory_ponts_and_draw_bonuses(:roost)
+        end
       end
 
       # Resolve decree only needs players for battle

@@ -14,6 +14,7 @@ module Root
     class Cat < Base
       include Factions::Cats::Catable
 
+      BUILDINGS = 6
       SETUP_PRIORITY = 'A'
 
       attr_reader :remaining_actions
@@ -55,17 +56,6 @@ module Root
         rows << format_with_victory_ponts_and_draw_bonuses(:workshop)
         rows << format_with_victory_ponts_and_draw_bonuses(:recruiter)
         rows
-      end
-
-      def format_with_victory_ponts_and_draw_bonuses(type)
-        current_points = VICTORY_POINTS[type][0...current_number_out(type)]
-        bonuses = DRAW_BONUSES[type][0...current_number_out(type)]
-        piece_symbol = send(type.pluralize).first&.display_symbol
-        res = current_points.map.with_index do |val, idx|
-          bonuses[idx].zero? ? val.to_s : "#{val}(+#{bonuses[idx]})"
-        end
-        [type.pluralize.to_s.capitalize] +
-          res.fill(piece_symbol, res.length, 6 - res.length)
       end
 
       def setup(*)
@@ -183,10 +173,6 @@ module Root
 
       def draw_bonuses
         DRAW_BONUSES[:recruiter][0...current_number_out(:recruiter)].sum
-      end
-
-      def current_number_out(type)
-        6 - send(type.pluralize).count
       end
 
       def currently_available_options

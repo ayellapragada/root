@@ -454,14 +454,33 @@ RSpec.describe Root::Factions::Bird do
       player, faction = build_player_and_faction
       allow(player).to receive(:pick_option).and_return(0)
 
+      vizier = Root::Cards::Vizier.new
       card1 = Root::Cards::Base.new(suit: :bunny)
       card2 = Root::Cards::Base.new(suit: :bunny)
       faction.decree[:move] << card1
       faction.decree[:move] << card2
+      faction.decree[:recruit] << vizier
 
       expect { faction.discard_from_decree }
         .to change(faction.deck.discard, :count).by(2)
       expect(faction.deck.discard).to match_array([card1, card2])
+    end
+  end
+
+  describe '#special_info' do
+    it 'shows the roosts board and decree' do
+      player, faction = build_player_and_faction
+      clearings = player.board.clearings
+
+      faction.place_roost(clearings[:one])
+      faction.place_roost(clearings[:five])
+      faction.place_roost(clearings[:five])
+
+      expect(faction.special_info(true)).to eq(
+        [
+          ['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']
+        ]
+      )
     end
   end
 
