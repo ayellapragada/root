@@ -50,6 +50,12 @@ module Root
       end
 
       def special_info(_show_private)
+        {
+          board: board_special_info
+        }
+      end
+
+      def board_special_info
         rows = []
         rows << %w[Wood 0 1 2 3 3 4]
         rows << format_with_victory_ponts_and_draw_bonuses(:sawmill)

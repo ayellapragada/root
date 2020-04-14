@@ -42,6 +42,25 @@ module Root
         def all_cards_except_viziers
           decree.values.flatten.reject(&:vizier?)
         end
+
+        def special_info
+          rows = [%w[Recruit Move Battle Build]]
+          suits = suits_in_decree
+          until suits.values.all?(&:empty?)
+            recruit_val = format_and_pop_card(:recruit, suits)
+            move_val = format_and_pop_card(:move, suits)
+            battle_val = format_and_pop_card(:battle, suits)
+            build_val = format_and_pop_card(:build, suits)
+
+            rows << [recruit_val, move_val, battle_val, build_val]
+          end
+
+          rows
+        end
+
+        def format_and_pop_card(key, dup_decree)
+          dup_decree[key].pop.to_s.capitalize
+        end
       end
     end
   end

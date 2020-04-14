@@ -142,7 +142,6 @@ module Root
         end
       end
 
-
       def handle_showing_menu(option)
         render_help if option == '?'
         render_discard if option == 'discard'

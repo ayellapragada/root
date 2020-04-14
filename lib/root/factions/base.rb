@@ -104,10 +104,9 @@ module Root
       end
 
       def formatted_special_info(show_private)
-        Terminal::Table.new(
-          # title: faction_symbol.capitalize,
-          rows: special_info(show_private)
-        )
+        special_info(show_private).map do |key, val|
+          Terminal::Table.new(rows: val)
+        end
       end
 
       def current_number_out(type)

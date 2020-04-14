@@ -472,13 +472,21 @@ RSpec.describe Root::Factions::Bird do
       player, faction = build_player_and_faction
       clearings = player.board.clearings
 
+      faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+      faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
+      faction.decree[:battle] << Root::Cards::Base.new(suit: :bird)
+
       faction.place_roost(clearings[:one])
       faction.place_roost(clearings[:five])
       faction.place_roost(clearings[:five])
 
       expect(faction.special_info(true)).to eq(
-        [
-          ['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']
+        board: [['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']],
+        decree: [
+          %w[Recruit Move Battle Build],
+          ['Mouse', 'Fox', 'Bird', ''],
+          ['', 'Bunny', '', '']
         ]
       )
     end

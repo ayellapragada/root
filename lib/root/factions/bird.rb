@@ -174,9 +174,14 @@ module Root
       end
 
       def special_info(_show_private)
-        [].tap do |rows|
-          rows << format_with_victory_ponts_and_draw_bonuses(:roost)
-        end
+        {
+          board: board_special_info,
+          decree: decree.special_info
+        }
+      end
+
+      def board_special_info
+        [format_with_victory_ponts_and_draw_bonuses(:roost)]
       end
 
       # Resolve decree only needs players for battle

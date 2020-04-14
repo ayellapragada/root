@@ -726,12 +726,14 @@ RSpec.describe Root::Factions::Cat do
       faction.place_meeple(clearings[:seven])
 
       expect(faction.special_info(true)).to eq(
-        [
-          %w[Wood 0 1 2 3 3 4],
-          %w[Sawmills 0 1 S S S S],
-          %w[Workshops 0 2 2 3 4 5],
-          ['Recruiters', '0', '1', '2(+1)', 'R', 'R', 'R']
-        ]
+        {
+          board: [
+            %w[Wood 0 1 2 3 3 4],
+            %w[Sawmills 0 1 S S S S],
+            %w[Workshops 0 2 2 3 4 5],
+            ['Recruiters', '0', '1', '2(+1)', 'R', 'R', 'R']
+          ]
+        }
       )
     end
   end

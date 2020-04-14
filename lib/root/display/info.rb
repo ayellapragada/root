@@ -13,8 +13,9 @@ module Root
       end
 
       def display
-        Rainbow(player.faction.formatted_special_info(show_private))
-          .fg(player.faction.display_color)
+        player.faction.formatted_special_info(show_private).map do |table|
+          Rainbow(table).fg(player.faction.display_color)
+        end
       end
 
       private
