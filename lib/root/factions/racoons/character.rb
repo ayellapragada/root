@@ -4,7 +4,7 @@ require_relative '../../pieces/meeple'
 
 module Root
   module Factions
-    module Vagabonds
+    module Racoons
       # All characters can be plopped in here for now
       class Character < Pieces::Meeple
         attr_reader :name
@@ -28,7 +28,7 @@ module Root
         end
 
         def initialize(name:)
-          super(faction: :vagabond)
+          super(faction: :racoon)
           @name = name
         end
       end

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require_relative '../pieces/building'
-require_relative '../factions/vagabonds/vagabondable'
+require_relative '../factions/racoons/racoonable'
 
 module Root
   module Grid
     # Node data structure for ruins
     class Ruin < Pieces::Building
-      include Factions::Vagabonds::Vagabondable
+      include Factions::Racoons::Racoonable
 
       attr_accessor :items
 

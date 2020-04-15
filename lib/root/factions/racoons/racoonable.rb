@@ -2,14 +2,14 @@
 
 module Root
   module Factions
-    module Vagabonds
+    module Racoons
       # module for catable methods
       # probably just color tbh
-      module Vagabondable
+      module Racoonable
         DISPLAY_COLOR = :webgray
 
         def faction
-          :vagabond
+          :racoon
         end
 
         def display_color

@@ -6,7 +6,7 @@ RSpec.describe Root::Display::WoodlandsMap do
       game = Root::Game.default_game
 
       place_mice_tokens_for_display(game)
-      place_vagabond_token_for_display(game)
+      place_racoon_token_for_display(game)
       game.setup
       mock_clearing_options(game)
 
@@ -25,14 +25,14 @@ RSpec.describe Root::Display::WoodlandsMap do
   end
 
   # Effectively this is just for test
-  # Normally we won't have three vagabondos
+  # Normally we won't have three racoons
   # Maximum we'll have 2, so we're just displaying all options
-  def place_vagabond_token_for_display(game)
-    player = game.players.fetch_player(:vagabond)
-    vagabond = player.faction
+  def place_racoon_token_for_display(game)
+    player = game.players.fetch_player(:racoon)
+    faction = player.faction
     allow(player).to receive(:pick_option).and_return(0)
     board = game.board
-    meeple = vagabond.meeples.first
+    meeple = faction.meeples.first
 
     forest_f = board.forests[:f]
     board.place_meeple(meeple, forest_f)

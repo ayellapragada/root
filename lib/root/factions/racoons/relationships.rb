@@ -2,7 +2,7 @@
 
 module Root
   module Factions
-    module Vagabonds
+    module Racoons
       # This will just make it easier to handle relationships
       class Relationships
         attr_reader :relationships

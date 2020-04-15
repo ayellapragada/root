@@ -4,13 +4,13 @@ module Root
   module Decks
     # This is just an easier way to get a list of decks to be passed around
     # We're going to have things like a shared deck
-    # But also a vagabond list fo cases where we have 2 vagabonds!
+    # But also a racoon list for cases where we have 2 racoons!
     class List
       def self.default_decks_list
         new(
           shared: Decks::Starter.new,
-          quest: Factions::Vagabonds::QuestDeck.new,
-          characters: Factions::Vagabonds::Characters.new
+          quest: Factions::Racoons::QuestDeck.new,
+          characters: Factions::Racoons::Characters.new
         )
       end
 

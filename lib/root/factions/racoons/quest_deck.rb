@@ -2,7 +2,7 @@
 
 module Root
   module Factions
-    module Vagabonds
+    module Racoons
       # module for catable methods
       # probably just color tbh
       class QuestDeck < Decks::Base
@@ -12,7 +12,7 @@ module Root
         # Really just want to lay the foundation for having quests out
         def generate_deck
           DECK_SIZE.times do
-            deck << Factions::Vagabonds::QuestCard.new(
+            deck << Factions::Racoons::QuestCard.new(
               suit: :fox,
               items: %i[tea coin]
             )

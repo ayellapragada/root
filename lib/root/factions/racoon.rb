@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
 require_relative './base'
-require_relative '../factions/vagabonds/vagabondable'
+require_relative '../factions/racoons/racoonable'
 
 module Root
   module Factions
-    # Handle vagabond faction logic
-    class Vagabond < Base
-      include Factions::Vagabonds::Vagabondable
+    # Handle racoon faction logic
+    class Racoon < Base
+      include Factions::Racoons::Racoonable
 
       SETUP_PRIORITY = 'D'
 
       attr_reader :items, :teas, :coins, :bags, :character, :relationships
 
       def faction_symbol
-        :vagabond
+        :racoon
       end
 
       def handle_faction_token_setup
-        @meeples = [Pieces::Meeple.new(:vagabond)]
+        @meeples = [Pieces::Meeple.new(:racoon)]
         handle_empty_item_setup
       end
 
@@ -62,7 +62,7 @@ module Root
 
       def handle_relationships(players)
         others = players.except_player(player)
-        @relationships = Vagabonds::Relationships.new(others)
+        @relationships = Racoons::Relationships.new(others)
       end
     end
   end

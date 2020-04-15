@@ -2,7 +2,7 @@
 
 module Root
   module Factions
-    module Vagabonds
+    module Racoons
       # All characters can be plopped in here for now
       class Characters < Decks::Base
         # We're not currently interested in getting this list done

@@ -40,7 +40,7 @@ RSpec.describe Root::Players::List do
           list.fetch_player(:cats),
           list.fetch_player(:birds),
           list.fetch_player(:mice),
-          list.fetch_player(:vagabond)
+          list.fetch_player(:racoon)
         ]
       )
     end
@@ -55,7 +55,7 @@ RSpec.describe Root::Players::List do
         [
           list.fetch_player(:birds),
           list.fetch_player(:mice),
-          list.fetch_player(:vagabond)
+          list.fetch_player(:racoon)
         ]
       )
     end

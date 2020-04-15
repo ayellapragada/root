@@ -47,4 +47,4 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 ## Ideas For Next
 
-- Move History Over
+- Refactor code and tests to Daylight() type structure for everyone.

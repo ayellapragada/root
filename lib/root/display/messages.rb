@@ -10,7 +10,7 @@ module Root
           history: 'Test Option'
         },
         v_char_sel: {
-          prompt: 'Pick a Vagabond to be your Character',
+          prompt: 'Pick a Racoon to be your Character',
           history: 'Picked the %s Character'
         },
         v_forest_sel: {

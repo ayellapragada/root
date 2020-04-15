@@ -2,9 +2,9 @@
 
 module Root
   module Factions
-    module Vagabonds
+    module Racoons
       # This is just a generic data struct for quest cards
-      # Only vagabond uses really
+      # Only racoon uses really
       class QuestCard < Cards::Base
         attr_reader :suit, :items
 

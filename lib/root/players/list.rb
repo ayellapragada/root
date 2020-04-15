@@ -19,7 +19,7 @@ module Root
             make_first_player(with_computers),
             Root::Players::Computer.for('Hal', :cats),
             Root::Players::Computer.for('Tron', :birds),
-            Root::Players::Computer.for('Ultron', :vagabond)
+            Root::Players::Computer.for('Ultron', :racoon)
           )
         end
       end
@@ -30,7 +30,7 @@ module Root
           Root::Players::Human.for('Akshith', :cats),
           Root::Players::Computer.for('Hal', :mice),
           Root::Players::Computer.for('Tron', :birds),
-          Root::Players::Computer.for('Ultron', :vagabond)
+          Root::Players::Computer.for('Ultron', :racoon)
         )
       end
 
@@ -39,7 +39,7 @@ module Root
           Root::Players::Human.for('Hal', :cats),
           Root::Players::Human.for('Brainiac', :mice),
           Root::Players::Human.for('Tron', :birds),
-          Root::Players::Human.for('Ultron', :vagabond)
+          Root::Players::Human.for('Ultron', :racoon)
         )
       end
       # :nocov:

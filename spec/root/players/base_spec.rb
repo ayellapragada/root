@@ -11,7 +11,7 @@ RSpec.describe Root::Players::Base do
 
     context 'when built alone' do
       it 'makes and persists its own board' do
-        player = Root::Players::Computer.for('Ultron', :vagabond)
+        player = Root::Players::Computer.for('Ultron', :racoon)
         board = player.board
 
         expect(board).not_to be nil

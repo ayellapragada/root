@@ -161,7 +161,7 @@ module Root
         piece
       end
 
-      FACTIONS_WITHOUT_RULE = %i[vagabond]
+      FACTIONS_WITHOUT_RULE = %i[racoon]
 
       def ruled_by
         groups = (meeples + buildings).group_by(&:faction)

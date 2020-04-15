@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe Root::Factions::Vagabonds::QuestCard do
+RSpec.describe Root::Factions::Racoons::QuestCard do
   describe '#initialize' do
     it 'has a suit and 2 cards for the item requirement' do
-      card = Root::Factions::Vagabonds::QuestCard.new(
+      card = Root::Factions::Racoons::QuestCard.new(
         suit: :fox,
         items: %i[torch tea]
       )

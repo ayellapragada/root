@@ -3,13 +3,13 @@
 require_relative '../factions/bird'
 require_relative '../factions/cat'
 require_relative '../factions/mouse'
-require_relative '../factions/vagabond'
+require_relative '../factions/racoon'
 
 FACTION_MAPPING = {
   birds: Root::Factions::Bird,
   cats: Root::Factions::Cat,
   mice: Root::Factions::Mouse,
-  vagabond: Root::Factions::Vagabond
+  racoon: Root::Factions::Racoon
 }.freeze
 
 module Root
