@@ -189,7 +189,8 @@ module Root
         [format_with_victory_ponts_and_draw_bonuses(:roost)]
       end
 
-      # Resolve decree only needs players for battle
+      # Resolve decree only needs players for battle and move!
+      # MOVE IS OUTRAGE :yikes:
       # So we're letting it be nil for test, but this is DEF needed
       def resolve_decree(players = nil)
         resolve_recruit

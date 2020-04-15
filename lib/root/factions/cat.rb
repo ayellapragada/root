@@ -234,6 +234,7 @@ module Root
         end
       end
 
+      # ALSO NEEDS PLAYERS FOR OUTRAGE!
       def march
         2.times do
           move_opts = move_options
