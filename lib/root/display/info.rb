@@ -8,12 +8,13 @@ module Root
     # This handles all of that sort of logic here.
     class Info
       def self.for_multiple(players)
-        players.map do |player|
-          player_info = new(player, show_private: false)
-          player_info
-            .format(player.faction.formatted_special_info(false))
-            .split("\n")
-            .map { |str| Rainbow(str).fg(player.faction.display_color) }
+        res = players.map do |player|
+          res = player.faction.formatted_special_info(false)
+          res
+            .map { |r| r.to_s.split("\n") }
+            .map do |arr|
+            arr.map { |str| Rainbow(str).fg(player.faction.display_color) }
+          end
         end.flatten
       end
 
