@@ -244,52 +244,18 @@ module Root
         initiate_battle_with_faction(clearing, faction)
       end
 
-      def initiate_battle_with_faction(clearing, faction)
-        attacker_roll, defender_roll = [dice_roll, dice_roll].sort.reverse
-        attacker_meeples = clearing.meeples_of_type(faction_symbol)
-        defender_meeples = clearing.meeples_of_type(faction.faction_symbol)
+      def initiate_battle_with_faction(clearing, other_faction)
+        battle = Actions::Battle.new(clearing, self, other_faction)
 
-        actual_attack = [attacker_roll, attacker_meeples.count].min
-        actual_defend = [defender_roll, defender_meeples.count].min
+        battle.()
 
-        actual_attack += 1 if defender_meeples.empty?
-
-        deal_damage(actual_defend, self, clearing, faction)
-        deal_damage(actual_attack, faction, clearing, self)
         player.add_to_history(
           :f_who_to_battle,
-          damage_done: actual_attack,
-          damage_taken: actual_defend,
-          other_faction: faction.faction_symbol,
+          damage_done: battle.actual_attack,
+          damage_taken: battle.actual_defend,
+          other_faction: other_faction.faction_symbol,
           clearing: clearing.priority
         )
-      end
-
-      def deal_damage(number, faction, clearing, other_faction)
-        until number.zero?
-          meeples = clearing.meeples_of_type(faction.faction_symbol)
-          cardboard_pieces =
-            (clearing.buildings_of_faction(faction.faction_symbol) +
-             clearing.tokens_of_faction(faction.faction_symbol))
-          if !meeples.empty?
-            piece = meeples.first
-            clearing.meeples.delete(piece)
-            faction.meeples << piece
-          elsif !cardboard_pieces.empty?
-            opts = cardboard_pieces
-            choice = player.pick_option(:f_remove_piece, opts)
-            piece = opts[choice]
-            plural_form = piece.piece_type.pluralize
-            faction.send(plural_form) << piece
-            clearing.send(plural_form).delete(piece)
-            other_faction.victory_points += 1
-          end
-          number -= 1
-        end
-      end
-
-      def dice_roll
-        [0, 1, 2, 3].sample
       end
 
       def clearings_ruled_with_space

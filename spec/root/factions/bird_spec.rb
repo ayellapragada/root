@@ -376,7 +376,8 @@ RSpec.describe Root::Factions::Bird do
     it 'much battle in clearings that match the suit' do
       player, faction = build_player_and_faction
       allow(player).to receive(:pick_option).and_return(0)
-      allow(faction).to receive(:dice_roll).and_return(2, 1)
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 1)
 
       cat_player = Root::Players::Human.for('Other', :cats)
       cat_player.board = player.board
