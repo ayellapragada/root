@@ -147,7 +147,7 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#birdsong' do
     it 'adds a card to the decree' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       card = Root::Cards::Base.new(suit: :fox)
       faction.hand << card
@@ -161,7 +161,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when adding two cards to the decree' do
       it 'only allows one card added to be a bird' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
         card1 = Root::Cards::Base.new(suit: :bird)
         card2 = Root::Cards::Base.new(suit: :bird)
@@ -179,7 +179,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when able to add 2, but only adding 1' do
       it 'skips second step of adding to decree' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         # Pick first card, pick recruit, then pick none
         allow(player).to receive(:pick_option).and_return(0, 0, 1)
         card1 = Root::Cards::Base.new(suit: :fox)
@@ -197,7 +197,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when hand is empty' do
       it 'draws a card' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
 
         expect { faction.birdsong }.to change(faction.decree, :size).by(1)
@@ -206,7 +206,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when no roosts on the board' do
       it 'places roost and 3 warriors into clearing with fewest pieces' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         cat_faction = Root::Players::Computer.for('Hal', :cats).faction
         clearings = player.board.clearings
 
@@ -225,7 +225,7 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#evening' do
     it 'gains victory points and draws cards' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       clearings = player.board.clearings
 
       faction.place_roost(clearings[:one])
@@ -242,7 +242,7 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in recruit' do
     it 'recruits in any valid roosts any number of times' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
 
@@ -262,7 +262,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when hand has a bird card' do
       it 'uses the bird card as a wild card' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
         clearings = player.board.clearings
 
@@ -279,7 +279,7 @@ RSpec.describe Root::Factions::Bird do
     xit 'goes into turmoil if not able to complete'
     context 'when unable to recruit' do
       it 'goes into turmoil' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
         clearings = player.board.clearings
 
@@ -295,7 +295,7 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in move' do
     it 'must move FROM clearings matching that suit' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
 
@@ -314,7 +314,7 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in build' do
     it 'must build in ruled clearings without a roost' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       cat_player = Root::Players::Computer.for('Other', :cats)
       cat_player.board = player.board
@@ -336,7 +336,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when roost is already there' do
       it 'goes into turmoil' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
         clearings = player.board.clearings
 
@@ -351,7 +351,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when out of buildings to build' do
       it 'goes into turmoil' do
-        player, faction = build_player_and_faction
+        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
         clearings = player.board.clearings
 
@@ -374,7 +374,7 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in battle' do
     it 'much battle in clearings that match the suit' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(2, 1)
@@ -403,7 +403,7 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#turmoil!' do
     it 'reduces victory_points, clears decree, and resets leader + viziers' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.victory_points = 5
@@ -421,7 +421,7 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.place_roost(player.board.clearings[:one])
@@ -452,7 +452,7 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#discard_from_decree' do
     it 'discards cards to the decks discard pile' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
 
       vizier = Root::Factions::Birds::Vizier.new
@@ -470,7 +470,7 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#special_info' do
     it 'shows the roosts board and decree' do
-      player, faction = build_player_and_faction
+      player, faction = build_player_and_faction(:birds)
       clearings = player.board.clearings
 
       faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
@@ -497,10 +497,5 @@ RSpec.describe Root::Factions::Bird do
 
   def has_only_six_bird_warriors(meeples)
     meeples.count == 6 && meeples.all? { |w| w.faction == :birds }
-  end
-
-  def build_player_and_faction
-    player = Root::Players::Computer.for('Sneak', :birds)
-    [player, player.faction]
   end
 end

@@ -37,28 +37,38 @@ module Root
       def render_game(game, current_player, clearings)
         map = WoodlandsMap.new(game.board, clearings).display
         history = History.new(game.history).display
-        current_info = Info.new(current_player, show_private: true).display
-        other_info = Info.for_multiple(game.players.except_player(current_player))
-        max_space_for_info = other_info.map { |str| str.gsub(/\e\[([;\d]+)?m/, '').length }.max
-
-        # If needed, how to get the length of a board.
-        # current_info.split("\n").length
-
+        other = Info.for_multiple(game.players.except_player(current_player))
+        vps = VictoryPoints.new(game.players).display.to_s.split("\n")
         total_height = map.length + current_player.faction.hand.length
-
-        merged = map.map.with_index do |i, idx|
-          info = other_info[idx] || ' '
-          hist = history[idx] || '' # Default History / Empty Spaces
-          i + '  ' + append_space(info, max_space_for_info) + '  ' + hist
-        end
 
         current_row = Cursor.pos[:row]
         move_cursor_to_top
 
-        merged.each { |row| puts row }
+        render_map(map, history, other, vps)
         clear_out_rest_of_screen(current_row, total_height)
-        puts current_info
+        render_current_info(current_player)
         render_hand(current_player)
+      end
+
+      def render_map(game_map, history, other, vps)
+        others = vps + other
+        buffer = others.map { |str| escape_color(str).length }.max
+
+        merged = game_map.map.with_index do |i, idx|
+          info = others[idx] || ' '
+          hist = history[idx] || '' # Default History / Empty Spaces
+          i + '  ' + append_space(info, buffer) + '  ' + hist
+        end
+
+        puts merged
+      end
+
+      def escape_color(str)
+        str.gsub(/\e\[([;\d]+)?m/, '')
+      end
+
+      def render_current_info(player)
+        puts Info.new(player, show_private: true).display
       end
 
       def append_space(str, num)

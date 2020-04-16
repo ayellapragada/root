@@ -27,3 +27,8 @@ RSpec.configure do |config|
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
 end
+
+def build_player_and_faction(faction)
+  player = Root::Players::Computer.for('Sneak', faction)
+  [player, player.faction]
+end

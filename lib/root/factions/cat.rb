@@ -319,6 +319,9 @@ module Root
         end
       end
 
+      def field_hospital
+      end
+
       private
 
       def suits_to_craft_with

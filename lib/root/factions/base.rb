@@ -249,6 +249,8 @@ module Root
 
         battle.()
 
+        # [self, other_faction].each { |f| f.post_battle(battle) }
+
         player.add_to_history(
           :f_who_to_battle,
           damage_done: battle.actual_attack,

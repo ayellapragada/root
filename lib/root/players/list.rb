@@ -90,6 +90,16 @@ module Root
         end
       end
 
+      def victory_points
+        players.map do |player|
+          {
+            faction: player.faction.faction_symbol,
+            victory_points: player.faction.victory_points,
+            color: player.faction.display_color
+          }
+        end
+      end
+
       private
 
       attr_accessor :current_player_index
