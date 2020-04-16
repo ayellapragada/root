@@ -2,6 +2,8 @@
 
 require_relative './base'
 require_relative '../factions/birds/birdable'
+require_relative '../factions/birds/leader'
+require_relative '../factions/birds/vizier'
 
 module Root
   module Factions
@@ -37,7 +39,7 @@ module Root
       end
 
       def reset_viziers
-        @viziers = Array.new(2) { Cards::Vizier.new }
+        @viziers = Array.new(2) { Birds::Vizier.new }
       end
 
       def reset_decree

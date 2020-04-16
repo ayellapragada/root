@@ -454,7 +454,7 @@ RSpec.describe Root::Factions::Bird do
       player, faction = build_player_and_faction
       allow(player).to receive(:pick_option).and_return(0)
 
-      vizier = Root::Cards::Vizier.new
+      vizier = Root::Factions::Birds::Vizier.new
       card1 = Root::Cards::Base.new(suit: :bunny)
       card2 = Root::Cards::Base.new(suit: :bunny)
       faction.decree[:move] << card1

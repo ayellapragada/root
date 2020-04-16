@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../cards/base'
+require_relative './birdable'
 
 module Root
   module Factions
