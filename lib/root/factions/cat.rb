@@ -312,7 +312,11 @@ module Root
       end
 
       def birdsong
-        Turns::Cats::Birdsong.new(self).()
+        board.clearings_with(:sawmill).each do |sawmill_clearing|
+          sawmill_clearing.buildings_of_type(:sawmill).count.times do
+            place_wood(sawmill_clearing)
+          end
+        end
       end
 
       private
