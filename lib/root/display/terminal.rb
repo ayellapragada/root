@@ -101,8 +101,6 @@ module Root
 
       def display_pick_option_message(key)
         puts_blank_space
-        puts 'Use "?" for help and "discard" to check discard pile.'
-        puts_blank_space
         puts Messages::LIST[key][:prompt]
       end
 
@@ -150,7 +148,7 @@ module Root
       end
 
       def handle_getting_input
-        menu_opts = %w[? discard screen_clear]
+        menu_opts = %w[? help discard screen_clear]
         loop do
           option = gets.chomp
           return option unless menu_opts.include?(option)
@@ -161,7 +159,8 @@ module Root
       end
 
       def handle_showing_menu(option)
-        render_help if option == '?'
+        help_opts = %w[? help]
+        render_help if help_opts.include?(option)
         render_discard if option == 'discard'
         system('clear') || system('cls') if option == 'screen_clear'
       end
