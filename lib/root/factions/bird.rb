@@ -274,6 +274,7 @@ module Root
 
       def turmoil!
         self.victory_points -= decree.number_of_birds
+        self.victory_points = 0 if self.victory_points.negative?
         player.add_to_history(:b_turmoil)
         discard_from_decree
         change_current_leader

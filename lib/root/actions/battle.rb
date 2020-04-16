@@ -12,6 +12,11 @@ module Root
 
       def call
         attacker_roll, defender_roll = [dice_roll, dice_roll].sort.reverse
+        attacker.player.add_to_history(
+          :f_dice_roll,
+          attaacker_roll: attacker_roll,
+          defender_roll: defender_roll
+        )
         attacker_meeples = clearing.meeples_of_type(attacker.faction_symbol)
         defender_meeples = clearing.meeples_of_type(defender.faction_symbol)
 

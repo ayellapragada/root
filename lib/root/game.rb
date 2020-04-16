@@ -24,8 +24,7 @@ module Root
       game = with_faction_for_play
       game.print_display = true
       game.setup
-      game.run_game
-      game.run_game
+      3.times { game.run_game }
       game.render
     end
     # :nocov:

@@ -89,6 +89,10 @@ module Root
           prompt: '',
           history: 'Drew %s card(s)'
         },
+        f_dice_roll: {
+          prompt: '',
+          history: 'Rolled a %s and %s'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'

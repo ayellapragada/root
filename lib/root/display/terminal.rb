@@ -35,6 +35,7 @@ module Root
       end
 
       def render_game(game, current_player, clearings)
+        puts "\e[?25l"
         map = WoodlandsMap.new(game.board, clearings).display
         history = History.new(game.history).display
         other = Info.for_multiple(game.players.except_player(current_player))
@@ -48,6 +49,7 @@ module Root
         clear_out_rest_of_screen(current_row, total_height)
         render_current_info(current_player)
         render_hand(current_player)
+        puts "\e[?25h"
       end
 
       def render_map(game_map, history, other, vps)
@@ -60,7 +62,11 @@ module Root
           i + '  ' + append_space(info, buffer) + '  ' + hist
         end
 
-        puts merged
+        merged.each do |row|
+          puts "\e[0K"
+          puts "\e[2A"
+          puts row
+        end
       end
 
       def escape_color(str)
