@@ -108,6 +108,8 @@ module Root
           opts = {}.tap do |obj|
             obj[:rows] = val[:rows]
             obj[:headings] = val[:headings] if val[:headings]
+            # Currently unused
+            # obj[:style] = val[:style] if val[:style]
           end
           Terminal::Table.new(opts)
         end
