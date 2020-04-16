@@ -4,8 +4,8 @@ require 'rainbow'
 
 module Root
   module Display
-    # We currently (and probably will only ever) display to terminal.
-    # This handles all of that sort of logic here.
+    # This handles displaying player boards.
+    # Horizontal for current, vertical for everyone else.
     class Info
       def self.for_multiple(players)
         res = players.map do |player|
