@@ -34,6 +34,10 @@ module Root
       def meeple_of_type?(faction_symbol)
         faction_symbol == faction
       end
+
+      def points_for_removing?
+        false
+      end
     end
   end
 end

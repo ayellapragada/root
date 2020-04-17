@@ -460,6 +460,86 @@ RSpec.describe Root::Factions::Bird do
         expect(clearings[:one].meeples_of_type(:cats).count).to eq(0)
       end
     end
+
+    context 'with despot as leader' do
+      it 'score one extra point on removing building' do
+        player, faction = build_player_and_faction(:birds)
+        cat_player, cat_faction = build_player_and_faction(:cats)
+        cat_player.board = player.board
+        allow(player).to receive(:pick_option).and_return(0)
+        allow(cat_player).to receive(:pick_option).and_return(0)
+
+        players = Root::Players::List.new(player, cat_player)
+
+        clearings = player.board.clearings
+
+        battle_cl = clearings[:one]
+
+        faction.place_meeple(battle_cl)
+        cat_faction.place_sawmill(battle_cl)
+
+        allow_any_instance_of(Root::Actions::Battle).
+          to receive(:dice_roll).and_return(2, 0)
+
+        faction.change_current_leader(:despot)
+        faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
+
+        expect { faction.resolve_decree(players) }
+          .to change(faction, :victory_points).by(2)
+      end
+
+      it 'score one extra point on removing token' do
+        player, faction = build_player_and_faction(:birds)
+        cat_player, cat_faction = build_player_and_faction(:cats)
+        cat_player.board = player.board
+        allow(player).to receive(:pick_option).and_return(0)
+        allow(cat_player).to receive(:pick_option).and_return(0)
+
+        players = Root::Players::List.new(player, cat_player)
+
+        clearings = player.board.clearings
+
+        battle_cl = clearings[:one]
+
+        faction.place_meeple(battle_cl)
+        cat_faction.place_wood(battle_cl)
+
+        allow_any_instance_of(Root::Actions::Battle).
+          to receive(:dice_roll).and_return(2, 0)
+
+        faction.change_current_leader(:despot)
+        faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
+
+        expect { faction.resolve_decree(players) }
+          .to change(faction, :victory_points).by(2)
+      end
+
+      it 'does not score one extra point on removing meeple' do
+        player, faction = build_player_and_faction(:birds)
+        cat_player, cat_faction = build_player_and_faction(:cats)
+        cat_player.board = player.board
+        allow(player).to receive(:pick_option).and_return(0)
+        allow(cat_player).to receive(:pick_option).and_return(0)
+
+        players = Root::Players::List.new(player, cat_player)
+
+        clearings = player.board.clearings
+
+        battle_cl = clearings[:one]
+
+        faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+
+        allow_any_instance_of(Root::Actions::Battle).
+          to receive(:dice_roll).and_return(2, 0)
+
+        faction.change_current_leader(:despot)
+        faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
+
+        expect { faction.resolve_decree(players) }
+          .to change(faction, :victory_points).by(0)
+      end
+    end
   end
 
   describe '#turmoil!' do

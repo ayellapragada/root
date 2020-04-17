@@ -9,6 +9,10 @@ module Root
       def piece_type
         :token
       end
+
+      def points_for_removing?
+        true
+      end
     end
   end
 end
