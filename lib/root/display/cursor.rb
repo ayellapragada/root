@@ -24,9 +24,9 @@ module Root
 
         # :nocov:
         def clear_previous_line
-          move_two_up
+          move_up(2)
           clear_line
-          move_two_up
+          move_up(2)
         end
 
         def hide_cursor
@@ -34,11 +34,11 @@ module Root
         end
 
         def clear_line
-          puts "\e[0K"
+          puts "\e[K"
         end
 
-        def move_two_up
-          puts "\e[2A"
+        def move_up(num)
+          puts "\e[#{num}A"
         end
 
         def show_cursor
@@ -54,7 +54,15 @@ module Root
         end
 
         def move_to_top
-          puts "\e[0;0H"
+          move_to_area(0, 0)
+        end
+
+        def move_to_area(row, col)
+          puts "\e[#{row};#{col}H"
+        end
+
+        def move_forward(num)
+          puts "\e[#{num}C"
         end
         # :nocov:
       end

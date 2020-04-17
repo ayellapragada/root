@@ -682,7 +682,32 @@ RSpec.describe Root::Factions::Bird do
           ]
         },
         specials: {
-          rows: [['Lords of the Forest | Disdain for Trade'], ['tea, sword']]
+          rows: [
+            ['Lords of the Forest | Disdain for Trade'],
+            ['Current leader: none'],
+            ['tea, sword']
+          ]
+        }
+      )
+    end
+
+    it 'shows current leader' do
+      player, faction = build_player_and_faction(:birds)
+
+      faction.change_current_leader(:despot)
+
+      expect(faction.special_info(true)).to eq(
+        board: { rows: [%w[Roosts R R R R R R R]] },
+        decree: {
+          headings: %w[Recruit Move Battle Build],
+          rows: []
+        },
+        specials: {
+          rows: [
+            ['Lords of the Forest | Disdain for Trade'],
+            ['Current leader: despot'],
+            ['No items']
+          ]
         }
       )
     end

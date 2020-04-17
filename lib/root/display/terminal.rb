@@ -47,9 +47,11 @@ module Root
           i + '  ' + append_space(info, buffer) + '  ' + hist
         end
 
-        merged.each do |row|
+        num_till_history = escape_color(game_map.first).length + buffer + 4
+
+        merged.each_with_index do |row, idx|
           Cursor.clear_line
-          Cursor.move_two_up
+          Cursor.move_up(2)
           puts row
         end
       end

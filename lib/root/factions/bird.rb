@@ -187,6 +187,7 @@ module Root
           specials: {
             rows: [
               ['Lords of the Forest | Disdain for Trade'],
+              ["Current leader: #{current_leader&.leader || 'none'}"],
               item_list_for_info
             ]
           }
