@@ -56,14 +56,22 @@ module Root
       def format_options_with_numbers
         options
           .map
-          .with_index { |option, i| "(#{i + 1}) #{option.inspect}" }
+          .with_index { |option, i| format_with_color("(#{i + 1}) #{option.inspect}", option) }
           .join("\n")
       end
 
       def format_options_with_clearings
         options
-          .map { |option| "(#{option.priority}) #{option.inspect}" }
+          .map { |option| format_with_color("(#{option.priority}) #{option.inspect}", option) }
           .join("\n")
+      end
+
+      def format_with_color(string, option)
+        if option.respond_to?(:suit)
+          Rainbow(string).fg(Colors::SUIT_COLOR[option.suit])
+        else
+          string
+        end
       end
 
       def receive_and_map_choice
