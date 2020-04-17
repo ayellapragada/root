@@ -15,6 +15,10 @@ module Root
       def attackable?
         true
       end
+
+      def meeple_of_type?(_type)
+        false
+      end
     end
   end
 end

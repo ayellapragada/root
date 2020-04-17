@@ -45,6 +45,10 @@ module Root
           prompt: 'Pick clearings to remove wood from',
           history: ''
         },
+        c_field_hospital: {
+          prompt: 'Use Field Hospital for 1 card of matching clearing?',
+          history: 'Used Field Hospital in %s to recover %s meeples'
+        },
         f_item_selet: {
           prompt: 'Pick an item to craft',
           history: 'Crafted %s for %s victory point(s)'

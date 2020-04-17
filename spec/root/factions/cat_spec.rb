@@ -691,29 +691,29 @@ RSpec.describe Root::Factions::Cat do
   describe '#post_battle'
 
   describe '#field_hospital' do
-    # xit 'allows player to return units lost in battle to keep', :focus do
-    #   player, faction = build_player_and_faction(:cats)
-    #   bird_player, bird_faction = build_player_and_faction(:birds)
-    #   players = Root::Players::List.new(player, bird_player)
-    #   allow(player).to receive(:pick_option).and_return(0)
-    #   allow(bird_player).to receive(:pick_option).and_return(0)
-    #   clearings = player.board.clearings
+    it 'allows player to return units lost in battle to keep' do
+      player, faction = build_player_and_faction(:cats)
+      bird_player, bird_faction = build_player_and_faction(:birds)
+      players = Root::Players::List.new(player, bird_player)
+      allow(player).to receive(:pick_option).and_return(0)
+      allow(bird_player).to receive(:pick_option).and_return(0)
+      clearings = player.board.clearings
 
-    #   faction.place_keep(clearings[:one])
-    #   faction.place_meeple(clearings[:five])
-    #   faction.place_meeple(clearings[:five])
-    #   bird_faction.place_meeple(clearings[:five])
-    #   bird_faction.place_meeple(clearings[:five])
+      faction.place_keep(clearings[:one])
+      faction.place_meeple(clearings[:five])
+      faction.place_meeple(clearings[:five])
+      bird_faction.place_meeple(clearings[:five])
+      bird_faction.place_meeple(clearings[:five])
 
-    #   allow_any_instance_of(Root::Actions::Battle).
-    #     to receive(:dice_roll).and_return(2, 1)
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 1)
 
-    #   faction.hand << Root::Cards::Base.new(suit: :bunny)
-    #   faction.battle(players)
+      faction.hand << Root::Cards::Base.new(suit: :bunny)
+      faction.initiate_battle_with_faction(clearings[:five], bird_faction)
 
-    #   expect(faction.hand.count).to eq(0)
-    #   expect(clearings[:one].meeples_of_type(:cats).count).to eq(1)
-    # end
+      expect(faction.hand.count).to eq(0)
+      expect(clearings[:one].meeples_of_type(:cats).count).to eq(1)
+    end
   end
 
   def clearing_has_building(clearing, type)

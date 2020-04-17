@@ -251,8 +251,6 @@ module Root
 
         battle.()
 
-        # [self, other_faction].each { |f| f.post_battle(battle) }
-
         player.add_to_history(
           :f_who_to_battle,
           damage_done: battle.actual_attack,
@@ -282,6 +280,8 @@ module Root
         player.add_to_history(:f_draw_cards, num: num)
         discard_card_with_suit(nil) until hand_size <= 5
       end
+
+      def post_battle(battle, pieces_removed); end
     end
   end
 end

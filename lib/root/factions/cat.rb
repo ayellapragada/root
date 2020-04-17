@@ -319,7 +319,28 @@ module Root
         end
       end
 
-      def field_hospital
+      def post_battle(battle, pieces_removed)
+        card_opts = cards_in_hand_with_suit(battle.clearing.suit)
+        meeps = pieces_removed.select { |p| p.meeple_of_type?(faction_symbol) }
+        return if card_opts.empty? || meeps.empty? || !board.keep_in_corner?
+
+        opt = player.pick_option(:c_field_hospital, %i[yes no])
+        return if opt == 1
+
+        field_hospital(meeps, battle.clearing.suit)
+      end
+
+      def field_hospital(meeps, suit)
+        discard_card_with_suit(suit)
+        meeps.length.times do
+          place_meeple(board.corner_with_keep)
+        end
+
+        player.add_to_history(
+          :c_field_hospital,
+          suit: suit,
+          num: meeps.count
+        )
       end
 
       private

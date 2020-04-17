@@ -11,6 +11,7 @@ module Root
 
       attr_reader :key, :options, :discard
 
+      # :nocov:
       def initialize(key, options, discard:)
         @key = key
         @options = options
@@ -110,6 +111,7 @@ module Root
         res = discard.empty? ? 'None' : @discard.map(&:inspect).join("\n")
         IO.popen('less', 'w') { |f| f.puts res }
       end
+      # :nocov:
     end
   end
 end

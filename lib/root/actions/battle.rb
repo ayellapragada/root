@@ -2,6 +2,10 @@
 
 module Root
   module Actions
+    # Handles all Battle related logic!
+    # Honestly more things will probably want to be moved into these.
+    # For example, crafting logic and draw logic.
+    # That may be a better abstraction than "Daylight()"
     class Battle
       attr_reader :clearing, :attacker, :defender, :actual_attack, :actual_defend
       def initialize(clearing, attacker, defender)
@@ -24,11 +28,16 @@ module Root
         @actual_defend = [defender_roll, defender_meeples.count].min
 
         @actual_attack += 1 if defender_meeples.empty?
-        deal_damage(actual_attack, defender, attacker)
-        deal_damage(actual_defend, attacker, defender)
+        pieces_removed = []
+        pieces_removed << deal_damage(actual_attack, defender, attacker)
+        pieces_removed << deal_damage(actual_defend, attacker, defender)
+        pieces_removed.flatten!
+        attacker.post_battle(self, pieces_removed)
+        defender.post_battle(self, pieces_removed)
       end
 
       def deal_damage(number, defender, attacker)
+        pieces_removed = []
         until number.zero?
           meeples = clearing.meeples_of_type(defender.faction_symbol)
           cardboard_pieces =
@@ -47,8 +56,10 @@ module Root
             clearing.send(plural_form).delete(piece)
             attacker.victory_points += 1
           end
+          pieces_removed << piece
           number -= 1
         end
+        pieces_removed
       end
 
       def dice_roll

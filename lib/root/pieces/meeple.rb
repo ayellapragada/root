@@ -30,6 +30,10 @@ module Root
       def display_symbol
         'o'
       end
+
+      def meeple_of_type?(faction_symbol)
+        faction_symbol == faction
+      end
     end
   end
 end
