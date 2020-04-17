@@ -111,7 +111,7 @@ module Root
         },
         b_area_in_decree: {
           prompt: 'Pick a area in decree to place card',
-          history: 'Added %s Suit to %s in Decre'
+          history: 'Added %s Suit to %s in Decree'
         },
         b_comeback_roost: {
           prompt: 'Pick where to place your new first Roost with 3 Warriors',
