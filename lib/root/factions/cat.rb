@@ -54,6 +54,12 @@ module Root
           board: {
             rows: board_special_info,
             headings: %w[Wood 0 1 2 3 3 4]
+          },
+          specials: {
+            rows: [
+              ['The Keep | Field Hospital'],
+              item_list_for_info
+            ]
           }
         }
       end

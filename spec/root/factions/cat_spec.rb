@@ -682,6 +682,9 @@ RSpec.describe Root::Factions::Cat do
               ['Recruiters', '0', '1', '2(+1)', 'R', 'R', 'R']
             ],
             headings: %w[Wood 0 1 2 3 3 4]
+          },
+          specials: {
+            rows: [['The Keep | Field Hospital'], ['No items']]
           }
         }
       )

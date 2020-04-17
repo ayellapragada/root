@@ -183,6 +183,12 @@ module Root
           decree: {
             rows: decree.special_info,
             headings: %w[Recruit Move Battle Build]
+          },
+          specials: {
+            rows: [
+              ['Lords of the Forest | Disdain for Trade'],
+              item_list_for_info
+            ]
           }
         }
       end

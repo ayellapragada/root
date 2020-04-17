@@ -103,6 +103,10 @@ module Root
         []
       end
 
+      def item_list_for_info
+        items.empty? ? ['No items'] : [items.join(', ')]
+      end
+
       def formatted_special_info(show_private)
         special_info(show_private).map do |_key, val|
           opts = {}.tap do |obj|

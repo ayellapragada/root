@@ -669,6 +669,8 @@ RSpec.describe Root::Factions::Bird do
       faction.place_roost(clearings[:one])
       faction.place_roost(clearings[:five])
       faction.place_roost(clearings[:five])
+      faction.items << :tea
+      faction.items << :sword
 
       expect(faction.special_info(true)).to eq(
         board: { rows: [['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']] },
@@ -678,6 +680,9 @@ RSpec.describe Root::Factions::Bird do
             ['Mouse', 'Fox', 'Bird', ''],
             ['', 'Bunny', '', '']
           ]
+        },
+        specials: {
+          rows: [['Lords of the Forest | Disdain for Trade'], ['tea, sword']]
         }
       )
     end
