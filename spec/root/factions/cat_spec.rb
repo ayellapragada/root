@@ -694,7 +694,6 @@ RSpec.describe Root::Factions::Cat do
     it 'allows player to return units lost in battle to keep' do
       player, faction = build_player_and_faction(:cats)
       bird_player, bird_faction = build_player_and_faction(:birds)
-      players = Root::Players::List.new(player, bird_player)
       allow(player).to receive(:pick_option).and_return(0)
       allow(bird_player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
@@ -713,6 +712,28 @@ RSpec.describe Root::Factions::Cat do
 
       expect(faction.hand.count).to eq(0)
       expect(clearings[:one].meeples_of_type(:cats).count).to eq(1)
+    end
+
+    it 'allows players to say :no:' do
+      player, faction = build_player_and_faction(:cats)
+      _bird_player, bird_faction = build_player_and_faction(:birds)
+      allow(player).to receive(:pick_option).and_return(1)
+      clearings = player.board.clearings
+
+      faction.place_keep(clearings[:one])
+      faction.place_meeple(clearings[:five])
+      faction.place_meeple(clearings[:five])
+      bird_faction.place_meeple(clearings[:five])
+      bird_faction.place_meeple(clearings[:five])
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 1)
+
+      faction.hand << Root::Cards::Base.new(suit: :bunny)
+      faction.initiate_battle_with_faction(clearings[:five], bird_faction)
+
+      expect(faction.hand.count).to eq(1)
+      expect(clearings[:one].meeples_of_type(:cats).count).to eq(0)
     end
   end
 

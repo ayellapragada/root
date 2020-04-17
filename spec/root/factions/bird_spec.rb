@@ -417,9 +417,24 @@ RSpec.describe Root::Factions::Bird do
         .and change(faction, :current_leader)
         .and change(faction, :decree)
     end
+
+    context 'when points lost is greater than current points' do
+      it 'does not go below zero' do
+        player, faction = build_player_and_faction(:birds)
+        allow(player).to receive(:pick_option).and_return(0)
+
+        faction.victory_points = 0
+        faction.decree[:build] << Root::Cards::Base.new(suit: :bird)
+
+        expect { faction.resolve_decree }
+          .to change(faction, :victory_points)
+          .by(0)
+      end
+    end
   end
 
   describe '#craft_items' do
+    # DISDAIN FOR TRADE WOO
     it 'crafts card, removes from board and adds victory points' do
       player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
@@ -445,8 +460,40 @@ RSpec.describe Root::Factions::Bird do
       faction.craft_items
       expect(faction.hand).not_to include(card_to_craft)
       expect(faction.hand).to include(card_unable_to_be_crafted)
-      expect(faction.victory_points).to be(2)
+      expect(faction.victory_points).to be(1)
       expect(faction.items).to include(:tea)
+    end
+
+    context 'when builder is leader' do
+      it 'actually uses the items VP' do
+        player, faction = build_player_and_faction(:birds)
+        allow(player).to receive(:pick_option).and_return(0)
+
+        faction.change_current_leader(:builder)
+        faction.place_roost(player.board.clearings[:one])
+
+        card_to_craft = Root::Cards::Item.new(
+          suit: :fox,
+          craft: %i[fox],
+          item: :tea,
+          vp: 2
+        )
+        card_unable_to_be_crafted = Root::Cards::Item.new(
+          suit: :fox,
+          craft: %i[fox],
+          item: :coin,
+          vp: 1
+        )
+
+        faction.hand << card_to_craft
+        faction.hand << card_unable_to_be_crafted
+
+        faction.craft_items
+        expect(faction.hand).not_to include(card_to_craft)
+        expect(faction.hand).to include(card_unable_to_be_crafted)
+        expect(faction.victory_points).to be(2)
+        expect(faction.items).to include(:tea)
+      end
     end
   end
 

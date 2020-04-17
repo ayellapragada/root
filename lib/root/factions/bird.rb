@@ -273,9 +273,8 @@ module Root
       end
 
       def turmoil!
-        self.victory_points -= decree.number_of_birds
-        self.victory_points = 0 if self.victory_points.negative?
         player.add_to_history(:b_turmoil)
+        change_victory_points_for_turmoil
         discard_from_decree
         change_current_leader
         reset_decree
@@ -283,9 +282,23 @@ module Root
         change_viziers_with_leader
       end
 
+      def change_victory_points_for_turmoil
+        self.victory_points -= decree.number_of_birds
+        self.victory_points = 0 if self.victory_points.negative?
+      end
+
       def discard_from_decree
         all_cards = decree.all_cards_except_viziers
         all_cards.each { |card| discard_card(card) }
+      end
+
+      # Disdain for Trade
+      def handle_item_vp(item)
+        current_leader?(:builder) ? item.vp : 1
+      end
+
+      def current_leader?(type)
+        current_leader&.leader == type
       end
 
       private

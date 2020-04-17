@@ -27,10 +27,10 @@ module Root
       # :nocov:
       def self.for_faction_for_play
         new(
-          Root::Players::Human.for('Akshith', :cats),
-          # Root::Players::Computer.for('Akshith', :cats),
-          # Root::Players::Human.for('Tron', :birds),
-          Root::Players::Computer.for('Tron', :birds),
+          # Root::Players::Human.for('Akshith', :cats),
+          Root::Players::Computer.for('Akshith', :cats),
+          Root::Players::Human.for('Tron', :birds),
+          # Root::Players::Computer.for('Tron', :birds),
           Root::Players::Computer.for('Hal', :mice),
           Root::Players::Computer.for('Ultron', :racoon)
         )

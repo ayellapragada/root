@@ -10,21 +10,43 @@ module Root
       class Leader < Cards::Base
         def self.generate_initial
           [
-            new(suit: :bird, leader: :builder, decree: %i[recruit move]),
-            new(suit: :bird, leader: :commander, decree: %i[move battle]),
-            new(suit: :bird, leader: :charismatic, decree: %i[recruit battle]),
-            new(suit: :bird, leader: :despot, decree: %i[move build])
+            new(
+              leader: :builder,
+              decree: %i[recruit move],
+              ability: 'Ignore your Disdain for Trade when you craft.'
+            ),
+            new(
+              leader: :commander,
+              decree: %i[move battle], ability: 'As attacker in battle you deal an extra hit.'
+            ),
+            new(
+              leader: :charismatic,
+              decree: %i[recruit battle],
+              ability: 'You place two warriors, not one when you recruit.'
+            ),
+            new(
+              leader: :despot,
+              decree: %i[move build],
+              ability: 'If you remove at least one enemy building or token in battle, score one point.'
+            )
           ]
         end
         include Birdable
 
-        attr_accessor :leader, :decree
+        attr_accessor :leader, :decree, :ability
 
-        def initialize(suit:, leader:, decree:)
-          super(suit: suit)
+        def initialize(leader:, decree:, ability:)
+          super(suit: :bird)
           @leader = leader
           @decree = decree
+          @ability = ability
         end
+
+        # :nocov:
+        def inspect
+          "#{leader.capitalize}: #{ability} (Viziers: #{decree.map(&:capitalize).join(' + ')})"
+        end
+        # :nocov:
       end
     end
   end

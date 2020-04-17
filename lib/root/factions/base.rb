@@ -149,8 +149,12 @@ module Root
         board.items.delete(choice.item)
         deck.discard_card(choice)
         hand.delete(choice)
-        self.victory_points += choice.vp
+        self.victory_points += handle_item_vp(choice)
         items << choice.item
+      end
+
+      def handle_item_vp(item)
+        item.vp
       end
 
       def craftable_items
