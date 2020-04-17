@@ -285,7 +285,9 @@ module Root
         discard_card_with_suit(nil) until hand_size <= 5
       end
 
-      def post_battle(battle, pieces_removed); end
+      def pre_battle(battle); end
+
+      def post_battle(battle); end
     end
   end
 end

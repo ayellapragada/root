@@ -688,8 +688,6 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '#post_battle'
-
   describe '#field_hospital' do
     it 'allows player to return units lost in battle to keep' do
       player, faction = build_player_and_faction(:cats)

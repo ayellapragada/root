@@ -7,7 +7,11 @@ module Root
     # For example, crafting logic and draw logic.
     # That may be a better abstraction than "Daylight()"
     class Battle
-      attr_reader :clearing, :attacker, :defender, :actual_attack, :actual_defend
+      attr_reader :clearing,
+                  :attacker, :defender, :actual_defend,
+                  :pieces_removed
+      attr_accessor :actual_attack
+
       def initialize(clearing, attacker, defender)
         @clearing = clearing
         @attacker = attacker
@@ -28,12 +32,14 @@ module Root
         @actual_defend = [defender_roll, defender_meeples.count].min
 
         @actual_attack += 1 if defender_meeples.empty?
-        pieces_removed = []
-        pieces_removed << deal_damage(actual_attack, defender, attacker)
-        pieces_removed << deal_damage(actual_defend, attacker, defender)
+        attacker.pre_battle(self)
+        defender.pre_battle(self)
+        @pieces_removed = []
+        @pieces_removed << deal_damage(actual_attack, defender, attacker)
+        @pieces_removed << deal_damage(actual_defend, attacker, defender)
         pieces_removed.flatten!
-        attacker.post_battle(self, pieces_removed)
-        defender.post_battle(self, pieces_removed)
+        attacker.post_battle(self)
+        defender.post_battle(self)
       end
 
       def deal_damage(number, defender, attacker)
@@ -60,6 +66,10 @@ module Root
           number -= 1
         end
         pieces_removed
+      end
+
+      def attacker?(faction)
+        attacker == faction
       end
 
       def dice_roll

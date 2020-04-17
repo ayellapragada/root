@@ -276,7 +276,6 @@ RSpec.describe Root::Factions::Bird do
     end
 
     # This is for charismatic leader and recruit with 1 meeple left
-    xit 'goes into turmoil if not able to complete'
     context 'when unable to recruit' do
       it 'goes into turmoil' do
         player, faction = build_player_and_faction(:birds)
@@ -289,6 +288,37 @@ RSpec.describe Root::Factions::Bird do
 
         expect { faction.resolve_move }
           .to raise_error { Root::Factions::TurmoilError }
+      end
+
+      it 'goes into turmoil if not able to complete completely' do
+        player, faction = build_player_and_faction(:birds)
+        allow(player).to receive(:pick_option).and_return(0)
+        clearings = player.board.clearings
+
+        faction.place_roost(clearings[:one])
+        19.times { faction.place_meeple(clearings[:one]) }
+        faction.change_current_leader(:charismatic)
+
+        faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
+
+        expect { faction.resolve_recruit }
+          .to raise_error { Root::Factions::TurmoilError }
+      end
+    end
+
+    context 'when leader is charismatic' do
+      it 'recruits twice' do
+        player, faction = build_player_and_faction(:birds)
+        allow(player).to receive(:pick_option).and_return(0)
+        clearings = player.board.clearings
+
+        faction.place_roost(clearings[:one])
+
+        faction.change_current_leader(:charismatic)
+        faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
+
+        expect { faction.resolve_recruit }
+          .to change(faction.meeples, :count).by(-2)
       end
     end
   end
@@ -373,7 +403,7 @@ RSpec.describe Root::Factions::Bird do
   end
 
   context 'when in battle' do
-    it 'much battle in clearings that match the suit' do
+    it 'must battle in clearings that match the suit' do
       player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       allow_any_instance_of(Root::Actions::Battle).
@@ -398,6 +428,37 @@ RSpec.describe Root::Factions::Bird do
 
       expect(clearings[:one].meeples.count).to eq(0)
       expect(clearings[:two].meeples.count).to eq(2)
+    end
+
+    context 'with commander as leader' do
+      it 'does one extra damage as attacker' do
+        player, faction = build_player_and_faction(:birds)
+        allow(player).to receive(:pick_option).and_return(0)
+
+        cat_player = Root::Players::Human.for('Other', :cats)
+        cat_player.board = player.board
+        cat_faction = cat_player.faction
+        players = Root::Players::List.new(player, cat_player)
+
+        clearings = player.board.clearings
+
+        battle_cl = clearings[:one]
+
+        faction.place_meeple(battle_cl)
+        faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+
+        allow_any_instance_of(Root::Actions::Battle).
+          to receive(:dice_roll).and_return(1, 0)
+
+        faction.change_current_leader(:commander)
+        faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
+
+        faction.resolve_decree(players)
+
+        expect(clearings[:one].meeples_of_type(:cats).count).to eq(0)
+      end
     end
   end
 

@@ -210,7 +210,10 @@ module Root
           # This will get tested with charismatic leader intro.
           # raise TurmoilError if meeples.count.zero?
 
-          place_meeple(cl)
+          num_to_recruit = current_leader?(:charismatic) ? 2 : 1
+          raise TurmoilError if meeples.count < num_to_recruit
+
+          num_to_recruit.times { place_meeple(cl) }
           player.add_to_history(:b_recruit_clearing, clearing: cl.priority)
         end
       end
@@ -295,6 +298,12 @@ module Root
       # Disdain for Trade
       def handle_item_vp(item)
         current_leader?(:builder) ? item.vp : 1
+      end
+
+      def pre_battle(battle)
+        return unless battle.attacker?(self) && current_leader?(:commander)
+
+        battle.actual_attack += 1
       end
 
       def current_leader?(type)
