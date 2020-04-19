@@ -104,7 +104,7 @@ module Root
       end
 
       def item_list_for_info
-        items.empty? ? ['No items'] : [items.join(', ')]
+        items.empty? ? 'No items' : items.map(&:capitalize).join(', ')
       end
 
       def formatted_special_info(show_private)
@@ -112,6 +112,7 @@ module Root
           opts = {}.tap do |obj|
             obj[:rows] = val[:rows]
             obj[:headings] = val[:headings] if val[:headings]
+            obj[:title] = val[:title] if val[:title]
             # Currently unused
             # obj[:style] = val[:style] if val[:style]
           end

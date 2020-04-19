@@ -676,6 +676,7 @@ RSpec.describe Root::Factions::Cat do
       expect(faction.special_info(true)).to eq(
         {
           board: {
+            title: "The Keep | Field Hospital \n No items",
             rows: [
               %w[Sawmills 0 1 S S S S],
               %w[Workshops 0 2 2 3 4 5],
@@ -683,9 +684,6 @@ RSpec.describe Root::Factions::Cat do
             ],
             headings: %w[Wood 0 1 2 3 3 4]
           },
-          specials: {
-            rows: [['The Keep | Field Hospital'], ['No items']]
-          }
         }
       )
     end

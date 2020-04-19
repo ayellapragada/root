@@ -175,23 +175,27 @@ module Root
         7 - send(type.pluralize).count
       end
 
+      def board_title
+        "Lords of the Forest, Disdain for Trade \n #{formatted_leader} | #{item_list_for_info}"
+      end
+
       def special_info(_show_private)
         {
           board: {
+            title: board_title,
             rows: board_special_info
           },
           decree: {
             rows: decree.special_info,
             headings: %w[Recruit Move Battle Build]
-          },
-          specials: {
-            rows: [
-              ['Lords of the Forest | Disdain for Trade'],
-              ["Current leader: #{current_leader&.leader || 'none'}"],
-              item_list_for_info
-            ]
           }
         }
+      end
+
+      def formatted_leader
+        return 'No Leader' unless current_leader
+
+        current_leader.leader.capitalize
       end
 
       def board_special_info

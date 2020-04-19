@@ -673,7 +673,10 @@ RSpec.describe Root::Factions::Bird do
       faction.items << :sword
 
       expect(faction.special_info(true)).to eq(
-        board: { rows: [['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']] },
+        board: {
+          title: "Lords of the Forest, Disdain for Trade \n No Leader | Tea, Sword",
+          rows: [['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']]
+        },
         decree: {
           headings: %w[Recruit Move Battle Build],
           rows: [
@@ -681,13 +684,6 @@ RSpec.describe Root::Factions::Bird do
             ['', 'Bunny', '', '']
           ]
         },
-        specials: {
-          rows: [
-            ['Lords of the Forest | Disdain for Trade'],
-            ['Current leader: none'],
-            ['tea, sword']
-          ]
-        }
       )
     end
 
@@ -697,18 +693,14 @@ RSpec.describe Root::Factions::Bird do
       faction.change_current_leader(:despot)
 
       expect(faction.special_info(true)).to eq(
-        board: { rows: [%w[Roosts R R R R R R R]] },
+        board: {
+          title: "Lords of the Forest, Disdain for Trade \n Despot | No items",
+          rows: [%w[Roosts R R R R R R R]]
+        },
         decree: {
           headings: %w[Recruit Move Battle Build],
           rows: []
         },
-        specials: {
-          rows: [
-            ['Lords of the Forest | Disdain for Trade'],
-            ['Current leader: despot'],
-            ['No items']
-          ]
-        }
       )
     end
   end

@@ -49,17 +49,16 @@ module Root
         @tokens = [Cats::Keep.new] + Array.new(8) { Cats::Wood.new }
       end
 
+      def board_title
+        "The Keep | Field Hospital \n #{item_list_for_info}"
+      end
+
       def special_info(_show_private)
         {
           board: {
+            title: board_title,
             rows: board_special_info,
             headings: %w[Wood 0 1 2 3 3 4]
-          },
-          specials: {
-            rows: [
-              ['The Keep | Field Hospital'],
-              item_list_for_info
-            ]
           }
         }
       end
