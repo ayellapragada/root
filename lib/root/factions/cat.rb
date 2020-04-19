@@ -50,7 +50,7 @@ module Root
       end
 
       def board_title
-        "The Keep | Field Hospital \n #{item_list_for_info}"
+        "The Keep | Field Hospital \n#{item_list_for_info}"
       end
 
       def special_info(_show_private)

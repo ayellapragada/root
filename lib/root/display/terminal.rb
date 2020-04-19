@@ -24,11 +24,12 @@ module Root
         other = Info.for_multiple(game.players.except_player(current_player))
         vps = VictoryPoints.new(game.players).display.to_s.split("\n")
         items = ItemsInfo.new(game.board.items).display.to_s.split("\n")
+        quests = ActiveQuests.new(game.active_quests).display.to_s.split("\n")
         total_height = map.length + current_player.faction.hand.length
 
         current_row = Cursor.pos[:row]
         Cursor.move_to_top
-        game_info = vps + [' '] + items
+        game_info = vps + [' '] + items + [' '] + quests
 
         render_map(map, game_info, other, history)
         clear_out_rest_of_screen(current_row, total_height)
