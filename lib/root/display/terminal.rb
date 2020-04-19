@@ -23,12 +23,14 @@ module Root
         history = History.new(game.history).display
         other = Info.for_multiple(game.players.except_player(current_player))
         vps = VictoryPoints.new(game.players).display.to_s.split("\n")
+        items = ItemsInfo.new(game.board.items).display.to_s.split("\n")
         total_height = map.length + current_player.faction.hand.length
 
         current_row = Cursor.pos[:row]
         Cursor.move_to_top
+        game_info = vps + [' '] + items
 
-        render_map(map, history, other, vps)
+        render_map(map, game_info, other, history)
         clear_out_rest_of_screen(current_row, total_height)
         render_current_info(current_player)
         render_hand(current_player)
@@ -37,19 +39,20 @@ module Root
 
       private
 
-      def render_map(game_map, history, other, vps)
-        others = vps + other
+      def render_map(game_map, game_info, others, history)
         buffer = others.map { |str| escape_color(str).length }.max
+        game_info_buffer = game_info.map { |str| escape_color(str).length }.max
 
-        merged = game_map.map.with_index do |i, idx|
-          info = others[idx] || ' '
+        merged = game_map.map.with_index do |map_row, idx|
+          game_info_line = game_info[idx] || ' '
+          other_info = others[idx] || ' '
           hist = history[idx] || '' # Default History / Empty Spaces
-          i + '  ' + append_space(info, buffer) + '  ' + hist
+          map_row + '  ' +
+            append_space(game_info_line, game_info_buffer) + '  ' +
+            append_space(other_info, buffer) + '  ' + hist
         end
 
-        num_till_history = escape_color(game_map.first).length + buffer + 4
-
-        merged.each_with_index do |row, idx|
+        merged.each do |row|
           Cursor.clear_line
           Cursor.move_up(2)
           puts row

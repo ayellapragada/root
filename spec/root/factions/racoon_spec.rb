@@ -9,7 +9,7 @@ RSpec.describe Root::Factions::Racoon do
       expect(faction.damaged_items).to be_empty
       expect(faction.teas.count).to be(0)
       expect(faction.coins.count).to be(0)
-      expect(faction.bags.count).to be(0)
+      expect(faction.satchels.count).to be(0)
     end
 
     it 'sets up a single meeple' do
@@ -21,7 +21,6 @@ RSpec.describe Root::Factions::Racoon do
   describe '#setup' do
     it 'selects a character and gets starting items' do
       game = Root::Game.default_game
-      board = game.board
       decks = game.decks
       players = game.players
       player = players.fetch_player(:racoon)
@@ -49,7 +48,6 @@ RSpec.describe Root::Factions::Racoon do
 
     it 'sets up the relationships with other factions to neutral' do
       game = Root::Game.default_game
-      board = game.board
       decks = game.decks
       players = game.players
       player = players.fetch_player(:racoon)

@@ -6,7 +6,14 @@ module Root
     # But I don't want to think about it all that much
     class ItemsGenerator
       def self.generate
-        %i[boots boots bag bag crossbow hammer sword sword tea tea coin coin]
+        %i[
+          boots boots
+          satchel satchel
+          crossbow hammer
+          sword sword
+          tea tea
+          coin coin
+        ]
       end
     end
   end

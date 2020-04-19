@@ -11,7 +11,7 @@ module Root
 
       SETUP_PRIORITY = 'D'
 
-      attr_reader :items, :teas, :coins, :bags, :character, :relationships
+      attr_reader :items, :teas, :coins, :satchels, :character, :relationships
 
       def faction_symbol
         :racoon
@@ -26,7 +26,7 @@ module Root
         @items = []
         @teas = []
         @coins = []
-        @bags = []
+        @satchels = []
       end
 
       def damaged_items

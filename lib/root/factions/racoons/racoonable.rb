@@ -6,7 +6,7 @@ module Root
       # module for catable methods
       # probably just color tbh
       module Racoonable
-        DISPLAY_COLOR = :webgray
+        DISPLAY_COLOR = :gray
 
         def faction
           :racoon

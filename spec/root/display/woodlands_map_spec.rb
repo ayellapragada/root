@@ -7,6 +7,7 @@ RSpec.describe Root::Display::WoodlandsMap do
 
       place_mice_tokens_for_display(game)
       place_racoon_token_for_display(game)
+      craft_items_for_cat(game)
       game.setup
       mock_clearing_options(game)
 
@@ -52,5 +53,18 @@ RSpec.describe Root::Display::WoodlandsMap do
         ]
     )
     # rubocop:enable all
+  end
+
+  def craft_items_for_cat(game)
+    tea = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :tea, vp: 2)
+    hammer = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :hammer, vp: 2)
+    sword1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
+    sword2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
+
+    faction = game.players.fetch_player(:cats).faction
+    faction.craft_item(tea)
+    faction.craft_item(hammer)
+    faction.craft_item(sword1)
+    faction.craft_item(sword2)
   end
 end

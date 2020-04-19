@@ -14,18 +14,18 @@ module Root
 
       def display
         ::Terminal::Table.new(
-          # headings: %w[Faction VP],
+          headings: %w[Faction VP],
           rows: rows
         )
       end
 
       def rows
-        [
-          players.victory_points.map do |player|
-            info = "#{player[:faction].to_s.capitalize}: #{player[:victory_points]}"
-            Rainbow(info).fg(player[:color])
-          end
-        ]
+        players.victory_points.map do |player|
+          [
+            Rainbow(player[:faction].to_s.capitalize).fg(player[:color]),
+            Rainbow(player[:victory_points]).fg(player[:color])
+          ]
+        end
       end
 
       attr_reader :players

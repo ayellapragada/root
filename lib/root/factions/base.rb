@@ -144,13 +144,13 @@ module Root
           options = craftable_items
           choice = player.pick_option(:f_item_select, options)
           item = options[choice]
+          @crafted_suits.concat(item.craft)
           craft_item(item)
         end
       end
 
       def craft_item(choice)
-        @crafted_suits.concat(choice.craft)
-        board.items.delete(choice.item)
+        board.items.delete_at(board.items.index(choice.item))
         deck.discard_card(choice)
         hand.delete(choice)
         self.victory_points += handle_item_vp(choice)
