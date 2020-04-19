@@ -2,12 +2,12 @@
 
 RSpec.describe Root::Factions::Mouse do
   describe '#handle_faction_token_setup' do
-    it 'gives faction 10 meeples, 3 bases, and 8 sympathy' do
+    it 'gives faction 10 meeples, 3 bases, and 10 sympathy' do
       _player, faction = build_player_and_faction(:mice)
 
       expect(faction.meeples.count).to eq(10)
       expect(faction.bases.count).to eq(3)
-      expect(faction.sympathy.count).to eq(8)
+      expect(faction.sympathy.count).to eq(10)
       expect(faction.officers.count).to eq(0)
       expect(faction.supporters.count).to eq(0)
     end
@@ -32,6 +32,11 @@ RSpec.describe Root::Factions::Mouse do
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :bird)
+        faction.place_sympathy(clearings[:one])
+        faction.place_sympathy(clearings[:two])
+        faction.place_sympathy(clearings[:three])
+        faction.place_sympathy(clearings[:four])
+        faction.place_sympathy(clearings[:five])
 
         expect(faction.special_info(true)).to eq(
           {
@@ -41,6 +46,13 @@ RSpec.describe Root::Factions::Mouse do
               rows: [
                 %w[Bases (+1) B B -],
                 %w[Supporters 0 1 2 1]
+              ]
+            },
+            sympathy: {
+              title: 'Sympathy Track | Martial Law',
+              headings: ['   1', '   2', '   3'],
+              rows: [
+                [' 0 1 1', ' 1 2 S', 'S S S S']
               ]
             }
           }
@@ -66,6 +78,13 @@ RSpec.describe Root::Factions::Mouse do
               headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird'],
               rows: [
                 %w[Bases (+1) B B -]
+              ]
+            },
+            sympathy: {
+              title: 'Sympathy Track | Martial Law',
+              headings: ['   1', '   2', '   3'],
+              rows: [
+                [' S S S', ' S S S', 'S S S S']
               ]
             }
           }

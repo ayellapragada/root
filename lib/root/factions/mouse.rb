@@ -13,6 +13,9 @@ module Root
 
       SETUP_PRIORITY = 'C'
 
+      # Actually tokens but ya feel me
+      BUILDINGS = 10
+
       attr_reader :supporters, :officers
 
       attr_buildings :base
@@ -24,7 +27,7 @@ module Root
 
       def handle_faction_token_setup
         @meeples = Array.new(10) { Pieces::Meeple.new(:mice) }
-        @tokens = Array.new(8) { Mice::Sympathy.new }
+        @tokens = Array.new(10) { Mice::Sympathy.new }
         @supporters = []
         @officers = []
         handle_base_building
@@ -41,8 +44,29 @@ module Root
             title: board_title(show_private),
             rows: board_special_info(show_private),
             headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird']
+          },
+          sympathy: {
+            title: 'Sympathy Track | Martial Law',
+            headings: ['   1', '   2', '   3'],
+            rows: sympathy_tracker_info
           }
         }
+      end
+
+      VICTORY_POINTS = {
+        sympathy: [0, 1, 1, 1, 2, 2, 3, 4, 4, 4]
+      }.freeze
+
+      def sympathy_tracker_info
+        cur = VICTORY_POINTS[:sympathy][0...current_number_out(:sympathy)]
+        symp = cur.fill('S', cur.length, BUILDINGS - cur.length)
+        [
+          [
+            " #{symp[0]} #{symp[1]} #{symp[2]}",
+            " #{symp[3]} #{symp[4]} #{symp[5]}",
+            "#{symp[6]} #{symp[7]} #{symp[8]} #{symp[9]}"
+          ]
+        ]
       end
 
       def formatted_bases
