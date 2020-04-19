@@ -290,6 +290,16 @@ module Root
         discard_card_with_suit(nil) until hand_size <= 5
       end
 
+      def place_building(building, clearing)
+        buildings.delete(building)
+        board.create_building(building, clearing)
+        player.add_to_history(
+          :f_build_options,
+          type: building.type,
+          clearing: clearing.priority
+        )
+      end
+
       def pre_battle(battle); end
 
       def post_battle(battle); end

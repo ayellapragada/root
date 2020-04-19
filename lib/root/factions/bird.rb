@@ -46,6 +46,34 @@ module Root
         @decree = Birds::Decree.new
       end
 
+      def board_title
+        "Lords of the Forest | Disdain for Trade \n#{formatted_leader} | #{item_list_for_info}"
+      end
+
+      def special_info(_show_private)
+        {
+          board: {
+            title: board_title,
+            rows: board_special_info
+          },
+          decree: {
+            rows: decree.special_info,
+            headings: %w[Recruit Move Battle Build]
+          }
+        }
+      end
+
+      def formatted_leader
+        return 'No Leader' unless current_leader
+
+        current_leader.leader.capitalize
+      end
+
+      def board_special_info
+        [format_with_victory_ponts_and_draw_bonuses(:roost)]
+      end
+
+
       def setup(*)
         setup_roost_in_corner
         change_current_leader
@@ -173,33 +201,6 @@ module Root
 
       def current_number_out(type)
         7 - send(type.pluralize).count
-      end
-
-      def board_title
-        "Lords of the Forest, Disdain for Trade \n#{formatted_leader} | #{item_list_for_info}"
-      end
-
-      def special_info(_show_private)
-        {
-          board: {
-            title: board_title,
-            rows: board_special_info
-          },
-          decree: {
-            rows: decree.special_info,
-            headings: %w[Recruit Move Battle Build]
-          }
-        }
-      end
-
-      def formatted_leader
-        return 'No Leader' unless current_leader
-
-        current_leader.leader.capitalize
-      end
-
-      def board_special_info
-        [format_with_victory_ponts_and_draw_bonuses(:roost)]
       end
 
       # Resolve decree only needs players for battle and move!

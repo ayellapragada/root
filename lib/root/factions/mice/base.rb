@@ -7,10 +7,10 @@ module Root
       class Base < Pieces::Building
         include Miceable
 
-        attr_reader :base_type
+        attr_reader :suit
 
-        def initialize(base_type)
-          @base_type = base_type
+        def initialize(suit)
+          @suit = suit
         end
       end
     end

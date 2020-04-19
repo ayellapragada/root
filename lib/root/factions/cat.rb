@@ -4,10 +4,6 @@ require 'terminal-table'
 
 require_relative '../factions/cats/catable'
 
-
-# TODO: Field Hospitals for the Marquise
-# I REPEAT BEACUSE THIS IS MAJOR
-# TODO: Field Hospitals for the Marquise
 module Root
   module Factions
     # Handle cats faction logic
@@ -90,16 +86,6 @@ module Root
           building = buils.first
           player_places_building(building)
         end
-      end
-
-      def place_building(building, clearing)
-        buildings.delete(building)
-        board.create_building(building, clearing)
-        player.add_to_history(
-          :f_build_options,
-          type: building.type,
-          clearing: clearing.priority
-        )
       end
 
       def player_places_building(building)
