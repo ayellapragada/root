@@ -42,7 +42,7 @@ module Root
         {
           board: {
             title: board_title(show_private),
-            rows: board_special_info(show_private),
+            rows: board_special_info(show_private)
           }
         }
       end
@@ -124,6 +124,15 @@ module Root
         return unless move_action.to_clearing.sympathetic?
 
         outrage(move_action.faction, move_action.to_clearing.suit)
+      end
+
+      # If Sympathy removed
+      # If Base removed
+      # Easy hook for bases later
+      def post_battle(battle)
+        if battle.pieces_removed.map(&:type).include?(:sympathy)
+          outrage(battle.other_faction(self), battle.clearing.suit)
+        end
       end
 
       def outrage(other_faction, suit)

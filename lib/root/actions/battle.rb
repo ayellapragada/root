@@ -16,6 +16,7 @@ module Root
         @clearing = clearing
         @attacker = attacker
         @defender = defender
+        @pieces_removed = []
       end
 
       def call
@@ -34,9 +35,8 @@ module Root
         @actual_attack += 1 if defender_meeples.empty?
         attacker.pre_battle(self)
         defender.pre_battle(self)
-        @pieces_removed = []
-        @pieces_removed << deal_damage(actual_attack, defender, attacker)
-        @pieces_removed << deal_damage(actual_defend, attacker, defender)
+        pieces_removed << deal_damage(actual_attack, defender, attacker)
+        pieces_removed << deal_damage(actual_defend, attacker, defender)
         pieces_removed.flatten!
         attacker.post_battle(self)
         defender.post_battle(self)
@@ -82,6 +82,10 @@ module Root
 
       def attacker?(faction)
         attacker == faction
+      end
+
+      def other_faction(faction)
+        attacker == faction ? defender : attacker
       end
 
       def dice_roll

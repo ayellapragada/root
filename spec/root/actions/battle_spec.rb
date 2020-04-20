@@ -42,4 +42,17 @@ RSpec.describe Root::Actions::Battle do
       end
     end
   end
+
+  describe '#other_faction' do
+    it 'returns the other faction that is not self' do
+      player, faction = build_player_and_faction(:cats)
+      _mice_player, mice_faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+
+      battle = Root::Actions::Battle.new(clearings[:one], faction, mice_faction)
+
+      expect(battle.other_faction(faction)).to eq(mice_faction)
+      expect(battle.other_faction(mice_faction)).to eq(faction)
+    end
+  end
 end

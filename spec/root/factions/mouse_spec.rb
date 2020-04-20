@@ -144,5 +144,47 @@ RSpec.describe Root::Factions::Mouse do
           .by(0)
       end
     end
+
+    context 'when other faction removes sympathy token' do
+      it 'must give card' do
+        player, faction = build_player_and_faction(:mice)
+        cat_player, cats = build_player_and_faction(:cats)
+        allow(cat_player).to receive(:pick_option).and_return(0)
+
+        allow_any_instance_of(Root::Actions::Battle).
+          to receive(:dice_roll).and_return(2, 1)
+
+        clearings = player.board.clearings
+        cats.hand << Root::Cards::Base.new(suit: :fox)
+        cats.place_meeple(clearings[:one])
+        faction.place_sympathy(clearings[:one])
+
+        expect { cats.initiate_battle_with_faction(clearings[:one], faction) }
+          .to change(faction.supporters, :count)
+          .by(1)
+          .and change(cats, :hand_size)
+          .by(-1)
+      end
+
+      it 'does nothing if meeps removed' do
+        player, faction = build_player_and_faction(:mice)
+        cat_player, cats = build_player_and_faction(:cats)
+        allow(cat_player).to receive(:pick_option).and_return(0)
+
+        allow_any_instance_of(Root::Actions::Battle).
+          to receive(:dice_roll).and_return(1, 1)
+
+        clearings = player.board.clearings
+        cats.hand << Root::Cards::Base.new(suit: :fox)
+        cats.place_meeple(clearings[:one])
+        faction.place_meeple(clearings[:one])
+
+        expect { faction.initiate_battle_with_faction(clearings[:one], cats) }
+          .to change(faction.supporters, :count)
+          .by(0)
+          .and change(cats, :hand_size)
+          .by(0)
+      end
+    end
   end
 end
