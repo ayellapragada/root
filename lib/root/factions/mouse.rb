@@ -146,17 +146,18 @@ module Root
       end
 
       def take_turn(players:, **_)
-        birdsong
+        birdsong(players)
         daylight
         evening(players)
       end
 
-      def birdsong
-        revolt
+      def birdsong(players)
+        revolt(players)
         spread_sympathy
       end
 
-      def revolt; end
+      def revolt(players)
+      end
 
       def spread_sympathy; end
 

@@ -210,5 +210,6 @@ RSpec.describe Root::Factions::Mouse do
     end
   end
 
-  describe '#revolt'
+  describe '#revolt' do
+  end
 end
