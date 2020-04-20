@@ -258,10 +258,6 @@ module Root
           .select { |cl| cl.buildings_of_type(:roost).empty? }
       end
 
-      def convert_needed_suits(suits)
-        suits.include?(:bird) ? %i[fox mouse bunny] : suits
-      end
-
       def resolve(action, key)
         needed_suits = decree.suits_in(action)
 

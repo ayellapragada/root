@@ -144,6 +144,25 @@ module Root
         other_faction.hand.delete(card)
         supporters << card
       end
+
+      def take_turn(players:, **_)
+        birdsong
+        daylight
+        evening(players)
+      end
+
+      def birdsong
+        revolt
+        spread_sympathy
+      end
+
+      def revolt; end
+
+      def spread_sympathy; end
+
+      def daylight; end
+
+      def evening(players); end
     end
   end
 end

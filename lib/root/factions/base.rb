@@ -254,14 +254,20 @@ module Root
           .select(&:with_spaces?)
       end
 
-      def cards_in_hand_with_suit(suit = nil)
-        return hand unless suit
-
-        hand.select { |card| card.suit == suit }
+      def convert_needed_suits(suits)
+        suits.include?(:bird) ? %i[fox mouse bunny] : suits
       end
 
-      def discard_card_with_suit(suit)
-        options = cards_in_hand_with_suit(suit)
+      def cards_in_hand_with_suit(suit = nil, bird: true)
+        return hand unless suit
+
+        hand.select do |card|
+          card.suit == suit || (bird && card.suit == :bird)
+        end
+      end
+
+      def discard_card_with_suit(suit, bird: true)
+        options = cards_in_hand_with_suit(suit, bird: bird)
         choice = player.pick_option(:f_discard_card, options)
         card = options[choice]
         discard_card(card)

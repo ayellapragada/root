@@ -209,4 +209,6 @@ RSpec.describe Root::Factions::Mouse do
       expect(clearing.meeples_of_type(:mice).count).to eq(2)
     end
   end
+
+  describe '#revolt'
 end

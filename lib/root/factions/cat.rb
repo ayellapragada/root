@@ -286,7 +286,7 @@ module Root
       end
 
       def overwork_options
-        valid_suits = hand.map(&:suit)
+        valid_suits = convert_needed_suits(hand.map(&:suit))
         board.clearings_with(:sawmill).select do |c|
           valid_suits.include?(c.suit)
         end
