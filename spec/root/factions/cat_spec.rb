@@ -91,18 +91,6 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  xdescribe '#daylight' do
-    it 'gives player 3 actions with choices' do
-      player = Root::Players::Human.for('Sneak', :cats)
-      allow(player).to receive(:pick_option).and_return(0)
-      player.setup
-      faction = player.faction
-      faction.hand << Root::Cards::Base.new(suit: :bird)
-      faction.birdsong
-      faction.daylight
-    end
-  end
-
   # Little bit silly, but each method should reaally be tested correctly alone.
   describe '#currently_available_options' do
     context 'when able to do everything' do

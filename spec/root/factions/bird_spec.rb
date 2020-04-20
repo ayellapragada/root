@@ -133,18 +133,6 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
-  describe '#take_turn' do
-    xit 'goes through all phases of a turn' do
-      game = Root::Game.default_game(with_computers: true)
-      player = game.players.fetch_player(:birds)
-      allow(player).to receive(:pick_option).and_return(0)
-      game.setup
-
-      expect { player.faction.take_turn(players: game.players) }
-        .to change(player, :inspect)
-    end
-  end
-
   describe '#birdsong' do
     it 'adds a card to the decree' do
       player, faction = build_player_and_faction(:birds)
