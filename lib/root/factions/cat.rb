@@ -113,6 +113,14 @@ module Root
         evening
       end
 
+      def birdsong
+        board.clearings_with(:sawmill).each do |sawmill_clearing|
+          sawmill_clearing.buildings_of_type(:sawmill).count.times do
+            place_wood(sawmill_clearing)
+          end
+        end
+      end
+
       def daylight(players)
         craft_items
         @remaining_actions = 3
@@ -293,20 +301,6 @@ module Root
         discard_card_with_suit(:bird)
         @remaining_actions += 2
         # Because we still technically lose an action if we do this :>
-      end
-
-      def cards_in_hand_with_suit(suit = nil)
-        return hand unless suit
-
-        hand.select { |card| card.suit == suit }
-      end
-
-      def birdsong
-        board.clearings_with(:sawmill).each do |sawmill_clearing|
-          sawmill_clearing.buildings_of_type(:sawmill).count.times do
-            place_wood(sawmill_clearing)
-          end
-        end
       end
 
       def post_battle(battle)

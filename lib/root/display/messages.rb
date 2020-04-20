@@ -124,6 +124,10 @@ module Root
         b_turmoil: {
           prompt: '',
           history: 'Went into turmoil'
+        },
+        m_outrage_card: {
+          prompt: 'Pick card to give to supporters',
+          history: ''
         }
       }.freeze
     end

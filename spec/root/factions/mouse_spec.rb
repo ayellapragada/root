@@ -77,4 +77,72 @@ RSpec.describe Root::Factions::Mouse do
       end
     end
   end
+
+  describe '#outrage' do
+    context 'when other faction moves into clearing with sympathy token' do
+      context 'with matching card in hand' do
+        it 'must give card' do
+          player, faction = build_player_and_faction(:mice)
+          cat_player, cat_faction = build_player_and_faction(:cats)
+          allow(cat_player).to receive(:pick_option).and_return(0)
+          players = Root::Players::List.new(player, cat_player)
+
+          clearings = player.board.clearings
+          cat_faction.hand << Root::Cards::Base.new(suit: :fox)
+          cat_faction.place_meeple(clearings[:five])
+          faction.place_sympathy(clearings[:one])
+
+          expect { cat_faction.move(clearings[:five], players) }
+            .to change(faction.supporters, :count)
+            .by(1)
+            .and change(cat_faction, :hand_size)
+            .by(-1)
+        end
+      end
+
+      context 'without matching card' do
+        it 'lets faction draw to supporters' do
+          player, faction = build_player_and_faction(:mice)
+          cat_player, cat_faction = build_player_and_faction(:cats)
+          allow(cat_player).to receive(:pick_option).and_return(0)
+          players = Root::Players::List.new(player, cat_player)
+
+          clearings = player.board.clearings
+          cat_faction.place_meeple(clearings[:five])
+          faction.place_sympathy(clearings[:one])
+
+          expect { cat_faction.move(clearings[:five], players) }
+            .to change(faction.supporters, :count)
+            .by(1)
+            .and change(faction.deck, :size)
+            .by(-1)
+        end
+      end
+    end
+
+    context 'when other fation moves into clearing without sympathetic token' do
+      it 'does nothing' do
+        player, faction = build_player_and_faction(:mice)
+        allow(player).to receive(:pick_option).and_return(0)
+        cat_player, cat_faction = build_player_and_faction(:cats)
+        allow(cat_player).to receive(:pick_option).and_return(0)
+        players = Root::Players::List.new(player, cat_player)
+
+        clearings = player.board.clearings
+        cat_faction.hand << Root::Cards::Base.new(suit: :fox)
+        cat_faction.place_meeple(clearings[:five])
+        faction.place_meeple(clearings[:one])
+        faction.place_meeple(clearings[:five])
+
+        # This does nothing, just testing outrage doesn't trigger on self
+        faction.move(clearings[:five], players)
+
+        expect { cat_faction.move(clearings[:five], players) }
+          .to change(faction.supporters, :count)
+          .by(0)
+          .and change(cat_faction, :hand_size)
+          .by(0)
+      end
+    end
+  end
 end

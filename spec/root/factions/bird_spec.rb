@@ -314,6 +314,7 @@ RSpec.describe Root::Factions::Bird do
   context 'when in move' do
     it 'must move FROM clearings matching that suit' do
       player, faction = build_player_and_faction(:birds)
+      players = Root::Players::List.new(player)
       allow(player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
 
@@ -323,7 +324,7 @@ RSpec.describe Root::Factions::Bird do
       faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
       faction.decree[:move] << Root::Cards::Base.new(suit: :mouse)
 
-      faction.resolve_decree
+      faction.resolve_decree(players)
 
       expect(clearings[:one].meeples_of_type(:birds).count).to eq(0)
       expect(clearings[:two].meeples_of_type(:birds).count).to eq(0)

@@ -118,6 +118,23 @@ module Root
         base = bases.find { |b| b.suit == suit }
         place_building(base, clearing)
       end
+
+      def pre_move(move_action)
+        return if move_action.faction.faction_symbol == faction_symbol
+        return unless move_action.to_clearing.sympathetic?
+
+        outrage(move_action.faction, move_action.to_clearing.suit)
+      end
+
+      def outrage(other_faction, suit)
+        card_opts = other_faction.cards_in_hand_with_suit(suit)
+        return draw_to_supporters if card_opts.empty?
+
+        choice = other_faction.player.pick_option(:m_outrage_card, card_opts)
+        card = card_opts[choice]
+        other_faction.hand.delete(card)
+        supporters << card
+      end
     end
   end
 end

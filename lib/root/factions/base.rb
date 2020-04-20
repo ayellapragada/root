@@ -254,6 +254,12 @@ module Root
           .select(&:with_spaces?)
       end
 
+      def cards_in_hand_with_suit(suit = nil)
+        return hand unless suit
+
+        hand.select { |card| card.suit == suit }
+      end
+
       def discard_card_with_suit(suit)
         options = cards_in_hand_with_suit(suit)
         choice = player.pick_option(:f_discard_card, options)
@@ -278,6 +284,8 @@ module Root
           clearing: clearing.priority
         )
       end
+
+      def pre_move(move_action); end
 
       def pre_battle(battle); end
 

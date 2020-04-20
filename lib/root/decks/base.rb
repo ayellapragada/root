@@ -35,6 +35,10 @@ module Root
         discard << card
       end
 
+      def size
+        deck.size
+      end
+
       private
 
       def each

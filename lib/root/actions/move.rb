@@ -16,8 +16,20 @@ module Root
       end
 
       def call
+        pre_move
         move_meeples
         add_history
+      end
+
+      def pre_move
+        factions_involved.each { |fac| fac.pre_move(self) }
+      end
+
+      def factions_involved
+        (from_clearing.all_pieces + to_clearing.all_pieces)
+          .map(&:faction)
+          .uniq
+          .map { |fac| players.fetch_player(fac).faction }
       end
 
       def move_meeples

@@ -151,6 +151,10 @@ module Root
         includes_token?(:wood)
       end
 
+      def sympathetic?
+        includes_token?(:sympathy)
+      end
+
       def wood
         tokens.select { |token| token.type == :wood }
       end
