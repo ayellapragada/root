@@ -35,7 +35,7 @@ module Root
 
       def board_title(show_private)
         supporters_text = show_private ? '' : "\n#{supporters.count} Supporters"
-        "Outrage | Guerilla Warfare\n#{officers.count} Officers | #{item_list_for_info}#{supporters_text}"
+        "Outrage | Guerilla Warfare | Martial Law\n#{officers.count} Officers | #{item_list_for_info}#{supporters_text}"
       end
 
       def special_info(show_private)
@@ -46,7 +46,6 @@ module Root
             headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird']
           },
           sympathy: {
-            title: 'Sympathy Track | Martial Law',
             headings: ['   1', '   2', '   3'],
             rows: sympathy_tracker_info
           }
@@ -62,8 +61,8 @@ module Root
         symp = cur.fill('S', cur.length, BUILDINGS - cur.length)
         [
           [
-            " #{symp[0]} #{symp[1]} #{symp[2]}",
-            " #{symp[3]} #{symp[4]} #{symp[5]}",
+            "#{symp[0]} #{symp[1]} #{symp[2]}",
+            "#{symp[3]} #{symp[4]} #{symp[5]}",
             "#{symp[6]} #{symp[7]} #{symp[8]} #{symp[9]}"
           ]
         ]

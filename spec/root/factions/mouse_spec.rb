@@ -41,7 +41,7 @@ RSpec.describe Root::Factions::Mouse do
         expect(faction.special_info(true)).to eq(
           {
             board: {
-              title: "Outrage | Guerilla Warfare\n0 Officers | No items",
+              title: "Outrage | Guerilla Warfare | Martial Law\n0 Officers | No items",
               headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird'],
               rows: [
                 %w[Bases (+1) B B -],
@@ -49,10 +49,9 @@ RSpec.describe Root::Factions::Mouse do
               ]
             },
             sympathy: {
-              title: 'Sympathy Track | Martial Law',
               headings: ['   1', '   2', '   3'],
               rows: [
-                [' 0 1 1', ' 1 2 S', 'S S S S']
+                ['0 1 1', '1 2 S', 'S S S S']
               ]
             }
           }
@@ -74,17 +73,16 @@ RSpec.describe Root::Factions::Mouse do
         expect(faction.special_info(false)).to eq(
           {
             board: {
-              title: "Outrage | Guerilla Warfare\n0 Officers | No items\n4 Supporters",
+              title: "Outrage | Guerilla Warfare | Martial Law\n0 Officers | No items\n4 Supporters",
               headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird'],
               rows: [
                 %w[Bases (+1) B B -]
               ]
             },
             sympathy: {
-              title: 'Sympathy Track | Martial Law',
               headings: ['   1', '   2', '   3'],
               rows: [
-                [' S S S', ' S S S', 'S S S S']
+                ['S S S', 'S S S', 'S S S S']
               ]
             }
           }
