@@ -132,16 +132,20 @@ module Root
           # STILL IN PROGRESS, NOT ACCURATE TO WHAT IS OR IS NOT TESTED
           # :nocov:
           case action
-          when :battle then battle(players)
-          when :march then march(players)
-          when :build then build
-          when :recruit then recruit
-          when :overwork then overwork
+          when :battle then with_action { battle(players) }
+          when :march then with_action { march(players) }
+          when :build then with_action { build }
+          when :recruit then with_action { recruit }
+          when :overwork then with_action { overwork }
           when :discard_bird then discard_bird
           end
           # :nocov:
-          @remaining_actions -= 1
         end
+      end
+
+      def with_action
+        @remaining_actions -= 1
+        yield
       end
 
       def can_battle?
@@ -299,8 +303,7 @@ module Root
 
       def discard_bird
         discard_card_with_suit(:bird)
-        @remaining_actions += 2
-        # Because we still technically lose an action if we do this :>
+        @remaining_actions += 1
       end
 
       def post_battle(battle)
