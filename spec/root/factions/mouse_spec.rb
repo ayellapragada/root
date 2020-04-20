@@ -166,7 +166,7 @@ RSpec.describe Root::Factions::Mouse do
           .by(-1)
       end
 
-      it 'does nothing if meeps removed' do
+      it 'does nothing if only meeples removed' do
         player, faction = build_player_and_faction(:mice)
         cat_player, cats = build_player_and_faction(:cats)
         allow(cat_player).to receive(:pick_option).and_return(0)
@@ -185,6 +185,28 @@ RSpec.describe Root::Factions::Mouse do
           .and change(cats, :hand_size)
           .by(0)
       end
+    end
+  end
+
+  describe '#guerilla warfare' do
+    it 'does nothing if only meeples removed' do
+      player, faction = build_player_and_faction(:mice)
+      cat_player, cats = build_player_and_faction(:cats)
+
+      allow(cat_player).to receive(:pick_option).and_return(0)
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 0)
+
+      clearing = player.board.clearings[:one]
+      cats.place_meeple(clearing)
+      cats.place_meeple(clearing)
+      cats.place_meeple(clearing)
+      faction.place_meeple(clearing)
+      faction.place_meeple(clearing)
+
+      cats.initiate_battle_with_faction(clearing, faction)
+      expect(clearing.meeples_of_type(:cats).count).to eq(1)
+      expect(clearing.meeples_of_type(:mice).count).to eq(2)
     end
   end
 end

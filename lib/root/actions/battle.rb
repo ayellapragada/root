@@ -21,6 +21,11 @@ module Root
 
       def call
         attacker_roll, defender_roll = [dice_roll, dice_roll].sort.reverse
+        # guerilla warfare lmfao
+        # it needs to be before adding points so :spinshrug:
+        if defender.faction_symbol == :mice
+          attacker_roll, defender_roll = defender_roll, attacker_roll
+        end
         attacker.player.add_to_history(
           :f_dice_roll,
           attaacker_roll: attacker_roll,
