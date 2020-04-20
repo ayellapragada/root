@@ -25,11 +25,14 @@ module Root
         vps = VictoryPoints.new(game.players).display.to_s.split("\n")
         items = ItemsInfo.new(game.board.items).display.to_s.split("\n")
         quests = ActiveQuests.new(game.active_quests).display.to_s.split("\n")
+        dominance = Dominance.new([]).display.to_s.split("\n")
+        # THIS MIGHT BE BUGGY IF OTHERS GOES OVER MAP LENGTH
         total_height = map.length + current_player.faction.hand.length
+        # THIS MIGHT BE BUGGY IF OTHERS GOES OVER MAP LENGTH
 
         current_row = Cursor.pos[:row]
         Cursor.move_to_top
-        game_info = vps + items + quests
+        game_info = vps + items + quests + dominance
 
         render_map(map, game_info, other, history)
         clear_out_rest_of_screen(current_row, total_height)
