@@ -37,7 +37,7 @@ RSpec.describe Root::Game do
       game.setup
 
       res = <<~RES
-        M:H3:M10:B03:T08
+        M:H3:M10:B03:T10
         C:H3:M14:B15:T08
         B:H3:M14:B06:T00
         R:H3:M00:B00:T00

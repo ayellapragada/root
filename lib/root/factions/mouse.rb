@@ -46,7 +46,7 @@ module Root
             headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird']
           },
           sympathy: {
-            headings: ['   1', '   2', '   3'],
+            headings: ['Supporters', '   1', '   2', '   3'],
             rows: sympathy_tracker_info
           }
         }
@@ -61,6 +61,7 @@ module Root
         symp = cur.fill('S', cur.length, BUILDINGS - cur.length)
         [
           [
+            'Sympathy',
             "#{symp[0]} #{symp[1]} #{symp[2]}",
             "#{symp[3]} #{symp[4]} #{symp[5]}",
             "#{symp[6]} #{symp[7]} #{symp[8]} #{symp[9]}"

@@ -49,9 +49,9 @@ RSpec.describe Root::Factions::Mouse do
               ]
             },
             sympathy: {
-              headings: ['   1', '   2', '   3'],
+              headings: ['Supporters', '   1', '   2', '   3'],
               rows: [
-                ['0 1 1', '1 2 S', 'S S S S']
+                ['Sympathy', '0 1 1', '1 2 S', 'S S S S']
               ]
             }
           }
@@ -80,9 +80,9 @@ RSpec.describe Root::Factions::Mouse do
               ]
             },
             sympathy: {
-              headings: ['   1', '   2', '   3'],
+              headings: ['Supporters', '   1', '   2', '   3'],
               rows: [
-                ['S S S', 'S S S', 'S S S S']
+                ['Sympathy', 'S S S', 'S S S', 'S S S S']
               ]
             }
           }
