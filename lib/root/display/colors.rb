@@ -8,7 +8,8 @@ module Root
         fox: :crimson,
         mouse: :sandybrown,
         bunny: :gold,
-        bird: :deepskyblue
+        bird: :deepskyblue,
+        forest: :darkgreen
       }.freeze
     end
   end

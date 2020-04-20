@@ -42,16 +42,10 @@ RSpec.describe Root::Factions::Mouse do
           {
             board: {
               title: "Outrage | Guerilla Warfare | Martial Law\n0 Officers | No items",
-              headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird'],
               rows: [
-                %w[Bases (+1) B B -],
-                %w[Supporters 0 1 2 1]
-              ]
-            },
-            sympathy: {
-              headings: ['Supporters', '   1', '   2', '   3'],
-              rows: [
-                ['Sympathy', '0 1 1', '1 2 S', 'S S S S']
+                ['Supporters', 'Fox: 0', 'Bunny: 1', 'Mouse: 2', 'Bird: 1'],
+                ['Bases', '(+1)', 'Bunny', 'Mouse', ' '],
+                ['Sympathy', '(1) 0 1 1', '(2) 1 2 S', '(3) S S S S', ' ']
               ]
             }
           }
@@ -64,7 +58,6 @@ RSpec.describe Root::Factions::Mouse do
         player, faction = build_player_and_faction(:mice)
         clearings = player.board.clearings
 
-        faction.place_base(:fox, clearings[:one])
         faction.supporters << Root::Cards::Base.new(suit: :bunny)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
@@ -73,16 +66,10 @@ RSpec.describe Root::Factions::Mouse do
         expect(faction.special_info(false)).to eq(
           {
             board: {
-              title: "Outrage | Guerilla Warfare | Martial Law\n0 Officers | No items\n4 Supporters",
-              headings: [' ', 'Fox', 'Bunny', 'Mouse', 'Bird'],
+              title: "Outrage | Guerilla Warfare | Martial Law\n4 Supporters | 0 Officers | No items",
               rows: [
-                %w[Bases (+1) B B -]
-              ]
-            },
-            sympathy: {
-              headings: ['Supporters', '   1', '   2', '   3'],
-              rows: [
-                ['Sympathy', 'S S S', 'S S S', 'S S S S']
+                ['Bases', 'Fox', 'Bunny', 'Mouse'],
+                ['Sympathy', '(1) S S S', '(2) S S S', '(3) S S S S']
               ]
             }
           }

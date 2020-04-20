@@ -29,7 +29,7 @@ module Root
 
         current_row = Cursor.pos[:row]
         Cursor.move_to_top
-        game_info = vps + [' '] + items + [' '] + quests
+        game_info = vps + items + quests
 
         render_map(map, game_info, other, history)
         clear_out_rest_of_screen(current_row, total_height)
