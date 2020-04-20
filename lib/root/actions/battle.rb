@@ -40,6 +40,18 @@ module Root
         pieces_removed.flatten!
         attacker.post_battle(self)
         defender.post_battle(self)
+
+        add_history
+      end
+
+      def add_history
+        attacker.player.add_to_history(
+          :f_who_to_battle,
+          damage_done: actual_attack,
+          damage_taken: actual_defend,
+          other_faction: defender.faction_symbol,
+          clearing: clearing.priority
+        )
       end
 
       def deal_damage(number, defender, attacker)

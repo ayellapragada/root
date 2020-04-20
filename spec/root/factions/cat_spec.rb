@@ -231,14 +231,17 @@ RSpec.describe Root::Factions::Cat do
   end
 
   describe '#move' do
-    it 'faction moves any number of units from one clearingto another' do
+    it 'faction moves any number of units from one clearing to another' do
       player, faction = build_player_and_faction(:cats)
+      bird_player, _bird_faction = build_player_and_faction(:birds)
+      players = Root::Players::List.new(player, bird_player)
+
       clearing = player.board.clearings[:one]
       clearing.place_meeple(faction.meeples[0])
       clearing.place_meeple(faction.meeples[1])
       allow(player).to receive(:pick_option).and_return(0)
 
-      faction.move(clearing)
+      faction.move(clearing, players)
 
       # Okay, so this is not ideal, but the idea is that option 0 will be:
       # 1. move (1) meeple
@@ -251,6 +254,8 @@ RSpec.describe Root::Factions::Cat do
   describe '#march' do
     it 'allows faction to move twice' do
       player, faction = build_player_and_faction(:cats)
+      bird_player, _bird_faction = build_player_and_faction(:birds)
+      players = Root::Players::List.new(player, bird_player)
       clearing = player.board.clearings[:one]
       clearing.place_meeple(faction.meeples[0])
       # BIG OOF. Basically just
@@ -262,7 +267,7 @@ RSpec.describe Root::Factions::Cat do
       # 6. Move 1 unit
       allow(player).to receive(:pick_option).and_return(0, 0, 0, 0, 1, 0)
 
-      faction.march
+      faction.march(players)
       expect(player.board.clearings[:one].meeples.count).to be(0)
       expect(player.board.clearings[:two].meeples.count).to be(1)
     end

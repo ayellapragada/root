@@ -208,7 +208,7 @@ module Root
       # So we're letting it be nil for test, but this is DEF needed
       def resolve_decree(players = nil)
         resolve_recruit
-        resolve_move
+        resolve_move(players)
         resolve_battle(players)
         resolve_build
       rescue TurmoilError
@@ -230,8 +230,8 @@ module Root
         end
       end
 
-      def resolve_move
-        resolve(:move, :f_move_from_options) { |cl| move(cl) }
+      def resolve_move(players)
+        resolve(:move, :f_move_from_options) { |cl| move(cl, players) }
       end
 
       def resolve_battle(players)

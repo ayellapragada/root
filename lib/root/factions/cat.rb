@@ -125,7 +125,7 @@ module Root
           # :nocov:
           case action
           when :battle then battle(players)
-          when :march then march
+          when :march then march(players)
           when :build then build
           when :recruit then recruit
           when :overwork then overwork
@@ -225,13 +225,12 @@ module Root
         end
       end
 
-      # ALSO NEEDS PLAYERS FOR OUTRAGE!
-      def march
+      def march(players)
         2.times do
           move_opts = move_options
           move_choice = player.pick_option(:f_move_from_options, move_opts)
           clearing = move_opts[move_choice]
-          move(clearing)
+          move(clearing, players)
         end
       end
 

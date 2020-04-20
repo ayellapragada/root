@@ -205,7 +205,7 @@ module Root
         clearing.ruled_by == faction_symbol
       end
 
-      def move(clearing)
+      def move(clearing, players)
         where_to_opts = clearing_move_options(clearing)
         where_to_choice = player.pick_option(:f_move_to_options, where_to_opts)
         where_to = where_to_opts[where_to_choice]
@@ -215,18 +215,7 @@ module Root
         how_many_choice = player.pick_option(:f_move_number, how_many_opts)
         how_many = how_many_opts[how_many_choice]
 
-        how_many.times do
-          piece = clearing.meeples_of_type(faction_symbol).first
-          clearing.meeples.delete(piece)
-          where_to.meeples << piece
-        end
-
-        player.add_to_history(
-          :f_move_number,
-          num: how_many,
-          from: clearing.priority,
-          to: where_to.priority
-        )
+        Actions::Move.new(clearing, where_to, how_many, self, players).()
       end
 
       def battle_options(suits = [])
@@ -256,17 +245,7 @@ module Root
       end
 
       def initiate_battle_with_faction(clearing, other_faction)
-        battle = Actions::Battle.new(clearing, self, other_faction)
-
-        battle.()
-
-        player.add_to_history(
-          :f_who_to_battle,
-          damage_done: battle.actual_attack,
-          damage_taken: battle.actual_defend,
-          other_faction: other_faction.faction_symbol,
-          clearing: clearing.priority
-        )
+        Actions::Battle.new(clearing, self, other_faction).()
       end
 
       def clearings_ruled_with_space
