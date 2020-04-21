@@ -175,13 +175,14 @@ RSpec.describe Root::Grid::Clearing do
       clearings[:five].place_token(Root::Factions::Cats::Wood.new)
       clearings[:two].place_meeple(Root::Pieces::Meeple.new(:cats))
       clearings[:two].place_token(Root::Factions::Cats::Wood.new)
+      clearings[:two].place_token(Root::Factions::Cats::Wood.new)
 
       # not connected
       clearings[:three].place_meeple(Root::Pieces::Meeple.new(:cats))
       clearings[:three].place_token(Root::Factions::Cats::Wood.new)
 
       expect(clearings[:one].connected_wood)
-        .to match_array([clearings[:one], clearings[:five], clearings[:two]])
+        .to match_array([clearings[:one], clearings[:five], clearings[:two], clearings[:two]])
     end
   end
 end

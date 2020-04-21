@@ -197,7 +197,11 @@ module Root
           connected << adj.connected_wood(already_checked) if adj.ruled_by?(:cats)
         end
 
-        connected.flatten.uniq
+        total_wood = []
+        connected.flatten.uniq.each do |clearing|
+          clearing.wood.count.times { total_wood << clearing }
+        end
+        total_wood
       end
 
       def all_pieces
