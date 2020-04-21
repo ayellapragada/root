@@ -75,10 +75,6 @@ module Root
         bases.map(&:suit).include?(suit) ? suit.to_s.capitalize : '(+1)'
       end
 
-      def supporters_for(suit)
-        supporters.select { |s| s.suit == suit }
-      end
-
       def formatted_supporters
         [
           'Supporters',
@@ -111,6 +107,10 @@ module Root
 
       def draw_to_supporters(num = 1)
         @supporters.concat(deck.draw_from_top(num))
+      end
+
+      def supporters_for(suit)
+        supporters.select { |s| s.suit == suit }
       end
 
       # Overwrites the attr_buildings
@@ -157,6 +157,21 @@ module Root
       end
 
       def revolt(players)
+      end
+
+      def revolt_in_clearing(clearing, players_)
+      end
+
+      def revolt_options
+        unbuilt_base_suits = bases.map(&:suit)
+        board
+          .clearings_with(:sympathy)
+          .select { |c| unbuilt_base_suits.include?(c.suit) }
+          .select { |c| usable_supporters(c.suit).count >= 2 }
+      end
+
+      def usable_supporters(suit)
+        supporters_for(suit) + supporters_for(:bird)
       end
 
       def spread_sympathy; end

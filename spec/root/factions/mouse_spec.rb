@@ -210,6 +210,60 @@ RSpec.describe Root::Factions::Mouse do
     end
   end
 
+  describe '#revolt_options' do
+    it 'picks all unbuilt bases with 2 supporters and sympathy token' do
+      player, faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+
+      faction.place_base(:fox, clearings[:one])
+      faction.place_sympathy(clearings[:one])
+      faction.supporters << Root::Cards::Base.new(suit: :fox)
+      faction.supporters << Root::Cards::Base.new(suit: :fox)
+
+      faction.supporters << Root::Cards::Base.new(suit: :bunny)
+      faction.supporters << Root::Cards::Base.new(suit: :bird)
+      faction.place_sympathy(clearings[:five])
+      faction.place_sympathy(clearings[:two])
+
+      expect(faction.revolt_options).to eq([clearings[:five]])
+    end
+  end
+
   describe '#revolt' do
+    it 'returns all other faction pieces back to owner' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(0)
+      cat_player, cat_faction = build_player_and_faction(:cats)
+      bird_player, bird_faction = build_player_and_faction(:birds)
+      players = Root::Players::List.new(player, cat_player, bird_player)
+      clearings = player.board.clearings
+
+      cat_faction.place_wood(clearings[:one])
+      bird_faction.place_roost(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+      bird_faction.place_meeple(clearings[:one])
+
+      faction.supporters << Root::Cards::Base.new(suit: :fox)
+      faction.supporters << Root::Cards::Base.new(suit: :bird)
+      faction.place_sympathy(clearings[:one])
+
+      faction.revolt(players)
+    end
+
+    it 'does not have to revolt' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(1)
+      cat_player, cat_faction = build_player_and_faction(:cats)
+      players = Root::Players::List.new(player, cat_player)
+      clearings = player.board.clearings
+
+      cat_faction.place_meeple(clearings[:one])
+
+      faction.supporters << Root::Cards::Base.new(suit: :fox)
+      faction.supporters << Root::Cards::Base.new(suit: :bird)
+      faction.place_sympathy(clearings[:one])
+
+      expect { faction.revolt(players) }.not_to change { clearings[:one] }
+    end
   end
 end
