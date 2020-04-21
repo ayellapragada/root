@@ -231,7 +231,7 @@ module Root
         until num_wood_to_remove.zero?
           choice = player.pick_option(:c_wood_removal, accessible_wood)
           clearing_to_remove_from = accessible_wood[choice]
-          accessible_wood.delete(clearing_to_remove_from)
+          accessible_wood.delete_at(accessible_wood.index(clearing_to_remove_from))
           wood << clearing_to_remove_from.remove_wood
           num_wood_to_remove -= 1
         end

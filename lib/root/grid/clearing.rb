@@ -161,7 +161,7 @@ module Root
 
       def remove_wood
         piece = tokens.select { |token| token.type == :wood }.first
-        tokens.delete(piece)
+        tokens.delete_at(tokens.index(piece))
         piece
       end
 
