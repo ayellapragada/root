@@ -252,6 +252,8 @@ RSpec.describe Root::Factions::Mouse do
       expect { faction.revolt(players) }
         .to change { faction.victory_points }
         .by(2)
+        # .and change { faction.supporters_for(:fox) }
+        # .by(-2)
         .and change { clearings[:one].meeples_of_type(:cats).count }
         .by(-2)
         .and change { clearings[:one].meeples_of_type(:birds).count }
@@ -260,6 +262,7 @@ RSpec.describe Root::Factions::Mouse do
         .by(-2)
         .and change { clearings[:one].meeples_of_type(:birds).count }
         .by(-1)
+      expect(clearings[:one].buildings_of_type(:base).count).to eq(1)
     end
 
     it 'does not have to revolt' do
@@ -281,12 +284,50 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#spread_sympathy_options' do
     context 'when no sympathy is currently on the board' do
-      it 'can be placed anywhere'
+      it 'can be placed anywhere' do
+        player, faction = build_player_and_faction(:mice)
+        clearings = player.board.clearings
+        expect(faction.spread_sympathy_options).to match_array(clearings.values)
+      end
     end
 
     context 'when sympathy exists' do
-      it 'must be placed adjacent with valid number of supporters'
-      it 'must account for martial law'
+      it 'must be placed adjacent with valid number of supporters' do
+        player, faction = build_player_and_faction(:mice)
+        clearings = player.board.clearings
+
+        faction.supporters << Root::Cards::Base.new(suit: :fox)
+
+        faction.place_sympathy(clearings[:five])
+        expect(faction.spread_sympathy_options).to match_array([clearings[:one]])
+      end
+
+      it 'handles multiple adjacencies' do
+        player, faction = build_player_and_faction(:mice)
+        clearings = player.board.clearings
+
+        faction.supporters << Root::Cards::Base.new(suit: :fox)
+        faction.supporters << Root::Cards::Base.new(suit: :bunny)
+
+        faction.place_sympathy(clearings[:five])
+        faction.place_sympathy(clearings[:two])
+        expect(faction.spread_sympathy_options)
+          .to match_array([clearings[:one], clearings[:ten], clearings[:six]])
+      end
+
+      it 'must account for martial law' do
+        player, faction = build_player_and_faction(:mice)
+        _cat_player, cat_faction = build_player_and_faction(:cats)
+        clearings = player.board.clearings
+
+        faction.supporters << Root::Cards::Base.new(suit: :fox)
+        faction.supporters << Root::Cards::Base.new(suit: :mouse)
+        faction.supporters << Root::Cards::Base.new(suit: :mouse)
+
+        3.times { cat_faction.place_meeple(clearings[:one]) }
+        faction.place_sympathy(clearings[:five])
+        expect(faction.spread_sympathy_options).to match_array([clearings[:two]])
+      end
     end
   end
 end

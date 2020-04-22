@@ -51,6 +51,10 @@ module Root
         sympathy: [0, 1, 1, 1, 2, 2, 3, 4, 4, 4]
       }.freeze
 
+      COSTS = {
+        sympathy: [1, 1, 1, 2, 2, 2, 3, 3, 3, 3]
+      }.freeze
+
       def sympathy_tracker_info(show_private)
         cur = VICTORY_POINTS[:sympathy][0...current_number_out(:sympathy)]
         symp = cur.fill('S', cur.length, BUILDINGS - cur.length)
@@ -157,12 +161,19 @@ module Root
       end
 
       def revolt(players)
-        opts = revolt_options + [:none]
-        choice = player.pick_option(:m_revolt, opts)
-        clearing = opts[choice]
-        return if clearing == :none
+        until revolt_options.empty?
+          opts = revolt_options + [:none]
+          choice = player.pick_option(:m_revolt, opts)
+          clearing = opts[choice]
+          return if clearing == :none
 
-        revolt_in_clearing(clearing, players)
+          remove_supporters(2, clearing.suit)
+          revolt_in_clearing(clearing, players)
+        end
+      end
+
+      # TODO
+      def remove_supporters(num, suit)
       end
 
       def revolt_in_clearing(clearing, players)
@@ -175,6 +186,7 @@ module Root
           clearing.send(plural_form).delete(piece)
           self.victory_points += 1 if %i[building token].include?(type)
         end
+        place_base(clearing.suit, clearing)
       end
 
       def revolt_options
@@ -191,7 +203,41 @@ module Root
 
       def spread_sympathy; end
 
-      def spread_sympathy_options; end
+      def spread_sympathy_options
+        sympathetic = board.clearings_with(:sympathy)
+        return board.clearings.values if sympathetic.empty?
+
+        total_opts = []
+
+        sympathetic.each do |clearing|
+          clearing.adjacents.each do |adj|
+            next if adj.sympathetic? || total_opts.include?(adj)
+
+            total_opts << adj if enough_supporters?(adj)
+          end
+        end
+
+        total_opts
+      end
+
+      def enough_supporters?(clearing)
+        usable_supporters(clearing.suit).count >= total_supporter_cost(clearing)
+      end
+
+      def total_supporter_cost(clearing)
+        extra_cost = martial_law_applied?(clearing) ? 1 : 0
+        cost_for_next_sympathy + extra_cost
+      end
+
+      def martial_law_applied?(clearing)
+        clearing.other_attackable_factions(faction_symbol).any? do |fac|
+          clearing.meeples_of_type(fac).count >= 3
+        end
+      end
+
+      def cost_for_next_sympathy
+        COSTS[:sympathy][10 - sympathy.length]
+      end
 
       def daylight; end
 
