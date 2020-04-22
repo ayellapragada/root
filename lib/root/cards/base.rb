@@ -12,8 +12,9 @@ module Root
     class Base
       attr_accessor :suit
 
-      def initialize(suit:)
+      def initialize(suit:, name: 'Untitled')
         @suit = suit
+        @name = name
       end
 
       def craft

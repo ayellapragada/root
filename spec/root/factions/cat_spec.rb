@@ -533,6 +533,27 @@ RSpec.describe Root::Factions::Cat do
       expect(faction.victory_points).to be(2)
       expect(faction.items).to include(:tea)
     end
+
+    it 'does not have to craft items' do
+      player, faction = build_player_and_faction(:cats)
+      allow(player).to receive(:pick_option).and_return(1)
+
+      faction.place_workshop(player.board.clearings[:five])
+
+      item_card = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[bunny],
+        item: :tea,
+        vp: 2
+      )
+
+      faction.hand << item_card
+
+      faction.craft_items
+      expect(faction.hand).to include(item_card)
+      expect(faction.victory_points).to be(0)
+      expect(faction.items).not_to include(:tea)
+    end
   end
 
   describe 'craftable_items' do

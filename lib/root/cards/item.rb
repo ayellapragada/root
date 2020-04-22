@@ -13,8 +13,8 @@ module Root
     class Item < Base
       attr_reader :craft, :item, :vp
 
-      def initialize(suit:, craft: nil, item:, vp:)
-        super(suit: suit)
+      def initialize(suit:, name: 'Item', craft: nil, item:, vp:)
+        super(suit: suit, name: name)
         @craft = craft
         @item = item
         @vp = vp

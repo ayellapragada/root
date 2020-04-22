@@ -142,9 +142,10 @@ module Root
       def craft_items
         @crafted_suits = []
         until craftable_items.empty?
-          options = craftable_items
+          options = craftable_items + [:none]
           choice = player.pick_option(:f_item_select, options)
           item = options[choice]
+          return if item == :none
           @crafted_suits.concat(item.craft)
           craft_item(item)
         end
@@ -156,6 +157,7 @@ module Root
         hand.delete(choice)
         self.victory_points += handle_item_vp(choice)
         items << choice.item
+        player.add_to_history(:f_item_select, item: choice.item, vp: choice.vp)
       end
 
       def handle_item_vp(item)

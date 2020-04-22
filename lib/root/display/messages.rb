@@ -49,7 +49,7 @@ module Root
           prompt: 'Use Field Hospital for 1 card of matching clearing?',
           history: 'Used Field Hospital in %s to recover %s meeples'
         },
-        f_item_selet: {
+        f_item_select: {
           prompt: 'Pick an item to craft',
           history: 'Crafted %s for %s victory point(s)'
         },
