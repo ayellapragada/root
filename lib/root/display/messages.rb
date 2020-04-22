@@ -97,6 +97,10 @@ module Root
           prompt: '',
           history: 'Rolled a %s and %s'
         },
+        f_remove_piece: {
+          prompt: 'Pick which piece to remove',
+          history: ''
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'
@@ -129,8 +133,16 @@ module Root
           prompt: 'Pick card to give to supporters',
           history: ''
         },
+        m_revolt_check: {
+          prompt: 'Do you want to revolt?',
+          history: ''
+        },
         m_revolt: {
           prompt: 'Pick clearing to revolt in',
+          history: ''
+        },
+        m_spread_sympathy_check: {
+          prompt: 'Do you want to spread sympathy?',
           history: ''
         },
         m_spread_sympathy: {

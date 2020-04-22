@@ -3,4 +3,4 @@ This is a single player version of Root
 
 "help" or "?" to open this current menu.
 "discard" to see the Discarded Cards menu.
-"screen_clear" to reset the screen in case of terminal weirdness.
+"clear" to reset the screen in case of terminal weirdness.

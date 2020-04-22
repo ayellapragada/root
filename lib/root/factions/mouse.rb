@@ -162,10 +162,11 @@ module Root
 
       def revolt(players)
         until revolt_options.empty?
-          opts = revolt_options + [:none]
+          return unless prompt_for_action(:m_revolt_check)
+
+          opts = revolt_options
           choice = player.pick_option(:m_revolt, opts)
           clearing = opts[choice]
-          return if clearing == :none
 
           remove_supporters(2, clearing.suit)
           revolt_in_clearing(clearing, players)
@@ -203,10 +204,11 @@ module Root
 
       def spread_sympathy
         until spread_sympathy_options.empty?
-          opts = spread_sympathy_options + [:none]
+          return unless prompt_for_action(:m_spread_sympathy_check)
+
+          opts = spread_sympathy_options
           choice = player.pick_option(:m_spread_sympathy, opts)
           clearing = opts[choice]
-          return if clearing == :none
 
           remove_supporters(total_supporter_cost(clearing), clearing.suit)
           spread_sympathy_in_clearing(clearing)

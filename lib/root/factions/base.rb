@@ -291,6 +291,12 @@ module Root
         )
       end
 
+      def prompt_for_action(key)
+        opts = %w[Yes No]
+        choice = player.pick_option(key, opts)
+        choice.zero?
+      end
+
       def pre_move(move_action); end
 
       def pre_battle(battle); end

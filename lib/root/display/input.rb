@@ -19,7 +19,6 @@ module Root
       end
 
       def display_pick_option_message
-        puts ''
         puts Messages::LIST[key][:prompt]
       end
 
@@ -93,7 +92,7 @@ module Root
       end
 
       def handle_getting_input
-        menu_opts = %w[? help discard screen_clear]
+        menu_opts = %w[? help discard clear]
         loop do
           option = gets.chomp
           return option unless menu_opts.include?(option)
@@ -107,7 +106,7 @@ module Root
         help_opts = %w[? help]
         render_help if help_opts.include?(option)
         render_discard if option == 'discard'
-        system('clear') || system('cls') if option == 'screen_clear'
+        system('clear') || system('cls') if option == 'clear'
       end
 
       def render_help
