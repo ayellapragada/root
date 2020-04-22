@@ -191,6 +191,8 @@ module Root
 
       def spread_sympathy; end
 
+      def spread_sympathy_options; end
+
       def daylight; end
 
       def evening(players); end

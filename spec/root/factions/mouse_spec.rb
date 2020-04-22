@@ -278,4 +278,15 @@ RSpec.describe Root::Factions::Mouse do
       expect { faction.revolt(players) }.not_to change { clearings[:one] }
     end
   end
+
+  describe '#spread_sympathy_options' do
+    context 'when no sympathy is currently on the board' do
+      it 'can be placed anywhere'
+    end
+
+    context 'when sympathy exists' do
+      it 'must be placed adjacent with valid number of supporters'
+      it 'must account for martial law'
+    end
+  end
 end
