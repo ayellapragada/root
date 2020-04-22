@@ -173,8 +173,16 @@ module Root
         end
       end
 
-      # TODO
       def remove_supporters(num, suit)
+        num.times { remove_supporter(suit) }
+      end
+
+      def remove_supporter(suit)
+        opts = usable_supporters(suit)
+        choice = player.pick_option(:m_supporter_to_use, opts)
+        supporter = opts[choice]
+        deck.discard_card(supporter)
+        supporters.delete(supporter)
       end
 
       def revolt_in_clearing(clearing, players)

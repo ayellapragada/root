@@ -252,8 +252,8 @@ RSpec.describe Root::Factions::Mouse do
       expect { faction.revolt(players) }
         .to change { faction.victory_points }
         .by(2)
-        # .and change { faction.supporters_for(:fox) }
-        # .by(-2)
+        .and change { faction.usable_supporters(:fox).count }
+        .by(-2)
         .and change { clearings[:one].meeples_of_type(:cats).count }
         .by(-2)
         .and change { clearings[:one].meeples_of_type(:birds).count }

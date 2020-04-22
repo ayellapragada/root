@@ -133,6 +133,10 @@ module Root
           prompt: 'Pick card to give to supporters',
           history: ''
         },
+        m_supporter_to_use: {
+          prompt: 'Pick which supporter to use',
+          history: ''
+        },
         m_revolt_check: {
           prompt: 'Do you want to revolt?',
           history: ''
