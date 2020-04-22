@@ -78,6 +78,10 @@ module Root
         !!corner_with_keep
       end
 
+      def clearings_without_keep
+        clearings.values.reject(&:keep?)
+      end
+
       def clearing_across_from_keep
         clearings[DIAGANOLS[corner_with_keep.priority]]
       end

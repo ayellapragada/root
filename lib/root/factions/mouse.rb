@@ -13,7 +13,6 @@ module Root
 
       SETUP_PRIORITY = 'C'
 
-      # Actually tokens but ya feel me
       BUILDINGS = 3
       TOKENS = 10
 
@@ -59,6 +58,14 @@ module Root
       COSTS = {
         sympathy: [1, 1, 1, 2, 2, 2, 3, 3, 3, 3]
       }.freeze
+
+      def current_number_out(type)
+        if type == :bases
+          BUILDINGS - bases.count
+        else
+          TOKENS - sympathy.count
+        end
+      end
 
       def sympathy_tracker_info(show_private)
         cur = VICTORY_POINTS[:sympathy][0...current_number_out(:sympathy)]
@@ -236,13 +243,13 @@ module Root
 
       def spread_sympathy_options
         sympathetic = board.clearings_with(:sympathy)
-        return board.clearings.values if sympathetic.empty?
+        return board.clearings_without_keep if sympathetic.empty?
 
         total_opts = []
 
         sympathetic.each do |clearing|
           clearing.adjacents.each do |adj|
-            next if adj.sympathetic? || total_opts.include?(adj)
+            next if adj.sympathetic? || total_opts.include?(adj) || adj.keep?
 
             total_opts << adj if enough_supporters?(adj)
           end
@@ -268,14 +275,6 @@ module Root
 
       def cost_for_next_sympathy
         COSTS[:sympathy][10 - sympathy.length]
-      end
-
-      def current_number_out(type)
-        if type == :bases
-          BUILDINGS - bases.count
-        elsif type == :sympathy
-          TOKENS - sympathy.count
-        end
       end
 
       def daylight; end

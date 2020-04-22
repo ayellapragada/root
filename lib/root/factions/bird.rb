@@ -250,6 +250,7 @@ module Root
 
       def build_options(suits = [])
         clearings_ruled_with_space
+          .reject(&:keep?)
           .select { |cl| suits.include?(cl.suit) }
           .select { |cl| cl.buildings_of_type(:roost).empty? }
       end

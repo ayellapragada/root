@@ -155,6 +155,10 @@ module Root
         includes_token?(:wood)
       end
 
+      def keep?
+        includes_token?(:keep)
+      end
+
       def sympathetic?
         includes_token?(:sympathy)
       end
