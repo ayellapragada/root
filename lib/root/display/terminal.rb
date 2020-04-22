@@ -26,16 +26,12 @@ module Root
         items = ItemsInfo.new(game.board.items).display.to_s.split("\n")
         quests = ActiveQuests.new(game.active_quests).display.to_s.split("\n")
         dominance = Dominance.new([]).display.to_s.split("\n")
-        # THIS MIGHT BE BUGGY IF OTHERS GOES OVER MAP LENGTH
-        total_height = map.length + current_player.faction.hand.length
-        # THIS MIGHT BE BUGGY IF OTHERS GOES OVER MAP LENGTH
 
-        current_row = Cursor.pos[:row]
         Cursor.move_to_top
         game_info = vps + items + quests + dominance
 
         render_map(map, game_info, other, history)
-        clear_out_rest_of_screen(current_row, total_height)
+        clear_out_rest_of_screen
         render_current_info(current_player)
         render_hand(current_player)
         Cursor.show_cursor
@@ -84,11 +80,8 @@ module Root
         end
       end
 
-      def clear_out_rest_of_screen(current_row, total_rows)
-        Cursor.save_position
-        remaining = current_row - total_rows
-        remaining.times { Cursor.clear_line }
-        Cursor.restore_position
+      def clear_out_rest_of_screen
+        puts "\e[0J"
       end
       #:nocov:
     end
