@@ -38,6 +38,10 @@ module Root
       def points_for_removing?
         false
       end
+
+      def piece_type
+        :meeple
+      end
     end
   end
 end

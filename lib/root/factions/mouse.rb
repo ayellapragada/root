@@ -157,9 +157,24 @@ module Root
       end
 
       def revolt(players)
+        opts = revolt_options + [:none]
+        choice = player.pick_option(:m_revolt, opts)
+        clearing = opts[choice]
+        return if clearing == :none
+
+        revolt_in_clearing(clearing, players)
       end
 
-      def revolt_in_clearing(clearing, players_)
+      def revolt_in_clearing(clearing, players)
+        pieces = clearing.all_other_pieces(faction_symbol)
+        pieces.each do |piece|
+          type = piece.piece_type
+          plural_form = type.pluralize
+          other_faction = players.fetch_player(piece.faction).faction
+          other_faction.send(plural_form) << piece
+          clearing.send(plural_form).delete(piece)
+          self.victory_points += 1 if %i[building token].include?(type)
+        end
       end
 
       def revolt_options

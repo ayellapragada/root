@@ -241,13 +241,25 @@ RSpec.describe Root::Factions::Mouse do
       cat_faction.place_wood(clearings[:one])
       bird_faction.place_roost(clearings[:one])
       cat_faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
       bird_faction.place_meeple(clearings[:one])
 
       faction.supporters << Root::Cards::Base.new(suit: :fox)
       faction.supporters << Root::Cards::Base.new(suit: :bird)
       faction.place_sympathy(clearings[:one])
+      faction.place_meeple(clearings[:one])
 
-      faction.revolt(players)
+      expect { faction.revolt(players) }
+        .to change { faction.victory_points }
+        .by(2)
+        .and change { clearings[:one].meeples_of_type(:cats).count }
+        .by(-2)
+        .and change { clearings[:one].meeples_of_type(:birds).count }
+        .by(-1)
+        .and change { clearings[:one].meeples_of_type(:cats).count }
+        .by(-2)
+        .and change { clearings[:one].meeples_of_type(:birds).count }
+        .by(-1)
     end
 
     it 'does not have to revolt' do

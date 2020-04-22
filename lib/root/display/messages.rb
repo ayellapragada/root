@@ -128,6 +128,10 @@ module Root
         m_outrage_card: {
           prompt: 'Pick card to give to supporters',
           history: ''
+        },
+        m_revolt: {
+          prompt: 'Pick clearing to revolt in',
+          history: ''
         }
       }.freeze
     end

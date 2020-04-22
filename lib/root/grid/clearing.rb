@@ -95,6 +95,14 @@ module Root
         meeples << meeple
       end
 
+      def all_pieces
+        (meeples + buildings + tokens).select(&:attackable?)
+      end
+
+      def all_other_pieces(faction)
+        all_pieces.reject { |piece| piece.faction == faction }
+      end
+
       def includes_building?(type)
         buildings.any? { |building| building.type == type }
       end
@@ -128,15 +136,11 @@ module Root
       end
 
       def includes_any_other_attackable_faction?(faction)
-        meeples.any? { |m| m.faction != faction && m.attackable? } ||
-          buildings.any? { |b| b.faction != faction && b.attackable? } ||
-          tokens.any? { |t| t.faction != faction && t.attackable? }
+        !all_other_pieces(faction).empty?
       end
 
       def other_attackable_factions(faction)
-        (meeples + buildings + tokens).select do |piece|
-          piece.faction != faction && piece.attackable?
-        end.map(&:faction).uniq
+        all_other_pieces(faction).map(&:faction).uniq
       end
 
       def forest?
@@ -202,10 +206,6 @@ module Root
           clearing.wood.count.times { total_wood << clearing }
         end
         total_wood
-      end
-
-      def all_pieces
-        (meeples + buildings + tokens).select(&:attackable?)
       end
 
       private
