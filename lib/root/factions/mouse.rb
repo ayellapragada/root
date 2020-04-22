@@ -201,7 +201,23 @@ module Root
         supporters_for(suit) + supporters_for(:bird)
       end
 
-      def spread_sympathy; end
+      def spread_sympathy
+        until spread_sympathy_options.empty?
+          opts = spread_sympathy_options + [:none]
+          choice = player.pick_option(:m_spread_sympathy, opts)
+          clearing = opts[choice]
+          return if clearing == :none
+
+          remove_supporters(total_supporter_cost(clearing), clearing.suit)
+          spread_sympathy_in_clearing(clearing)
+        end
+      end
+
+      def spread_sympathy_in_clearing(clearing)
+        place_sympathy(clearing)
+        vps = VICTORY_POINTS[:sympathy][current_number_out(:sympathy) - 1]
+        self.victory_points += vps
+      end
 
       def spread_sympathy_options
         sympathetic = board.clearings_with(:sympathy)

@@ -132,6 +132,10 @@ module Root
         m_revolt: {
           prompt: 'Pick clearing to revolt in',
           history: ''
+        },
+        m_spread_sympathy: {
+          prompt: 'Pick clearing to spread sympathy to',
+          history: ''
         }
       }.freeze
     end

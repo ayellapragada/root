@@ -330,4 +330,34 @@ RSpec.describe Root::Factions::Mouse do
       end
     end
   end
+
+  describe '#spread_sympathy' do
+    it 'places a sympathy token' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(0)
+      clearings = player.board.clearings
+
+      faction.supporters << Root::Cards::Base.new(suit: :fox)
+      faction.place_sympathy(clearings[:five])
+
+      expect(faction.spread_sympathy_options).to eq([clearings[:one]])
+      expect { faction.spread_sympathy }
+        .to change { faction.sympathy.count }
+        .by(-1)
+        .and change { faction.victory_points }
+        .by(1)
+    end
+
+    it 'does not have to spread sympathy' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(1)
+      clearings = player.board.clearings
+
+      faction.supporters << Root::Cards::Base.new(suit: :fox)
+      faction.place_sympathy(clearings[:five])
+
+      expect(faction.spread_sympathy_options).to eq([clearings[:one]])
+      expect { faction.spread_sympathy }.not_to change { faction.sympathy }
+    end
+  end
 end
