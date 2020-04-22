@@ -14,7 +14,8 @@ module Root
       SETUP_PRIORITY = 'C'
 
       # Actually tokens but ya feel me
-      BUILDINGS = 10
+      BUILDINGS = 3
+      TOKENS = 10
 
       attr_reader :supporters, :officers
 
@@ -47,6 +48,10 @@ module Root
         }
       end
 
+      DRAW_BONUSES = {
+        bases: [1, 1, 1]
+      }.freeze
+
       VICTORY_POINTS = {
         sympathy: [0, 1, 1, 1, 2, 2, 3, 4, 4, 4]
       }.freeze
@@ -57,7 +62,7 @@ module Root
 
       def sympathy_tracker_info(show_private)
         cur = VICTORY_POINTS[:sympathy][0...current_number_out(:sympathy)]
-        symp = cur.fill('S', cur.length, BUILDINGS - cur.length)
+        symp = cur.fill('S', cur.length, TOKENS - cur.length)
         [
           'Sympathy',
           "(1) #{symp[0]} #{symp[1]} #{symp[2]}",
@@ -265,9 +270,24 @@ module Root
         COSTS[:sympathy][10 - sympathy.length]
       end
 
+      def current_number_out(type)
+        if type == :bases
+          BUILDINGS - bases.count
+        elsif type == :sympathy
+          TOKENS - sympathy.count
+        end
+      end
+
       def daylight; end
 
-      def evening(players); end
+      def evening(_players)
+        # military_operations
+        draw_cards
+      end
+
+      def draw_bonuses
+        DRAW_BONUSES[:bases][0...current_number_out(:bases)].sum
+      end
     end
   end
 end

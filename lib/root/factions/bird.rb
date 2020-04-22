@@ -199,10 +199,6 @@ module Root
         DRAW_BONUSES[:roost][0...current_number_out(:roost)].sum
       end
 
-      def current_number_out(type)
-        7 - send(type.pluralize).count
-      end
-
       # Resolve decree only needs players for battle and move!
       # MOVE IS OUTRAGE :yikes:
       # So we're letting it be nil for test, but this is DEF needed
