@@ -216,6 +216,7 @@ module Root
           .clearings_with(:sympathy)
           .count { |cl| cl.suit == clearing.suit }
           .times { place_meeple(clearing) }
+        promote_officer
         place_base(clearing)
       end
 
