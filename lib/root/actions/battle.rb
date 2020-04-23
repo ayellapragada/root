@@ -29,7 +29,8 @@ module Root
         attacker.player.add_to_history(
           :f_dice_roll,
           attaacker_roll: attacker_roll,
-          defender_roll: defender_roll
+          defender_roll: defender_roll,
+          clearing: clearing.priority
         )
         attacker_meeples = clearing.meeples_of_type(attacker.faction_symbol)
         defender_meeples = clearing.meeples_of_type(defender.faction_symbol)

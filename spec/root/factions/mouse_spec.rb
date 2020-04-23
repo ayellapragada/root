@@ -254,6 +254,8 @@ RSpec.describe Root::Factions::Mouse do
         .by(2)
         .and change { faction.usable_supporters(:fox).count }
         .by(-2)
+        .and change { clearings[:one].meeples_of_type(:mice).count }
+        .by(1)
         .and change { clearings[:one].meeples_of_type(:cats).count }
         .by(-2)
         .and change { clearings[:one].meeples_of_type(:birds).count }
@@ -284,10 +286,16 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#spread_sympathy_options' do
     context 'when no sympathy is currently on the board' do
-      it 'can be placed anywhere' do
+      it 'can be placed anywhere with the valid supporters' do
         player, faction = build_player_and_faction(:mice)
         clearings = player.board.clearings
-        expect(faction.spread_sympathy_options).to match_array(clearings.values)
+        faction.supporters << Root::Cards::Base.new(suit: :fox)
+        faction.supporters << Root::Cards::Base.new(suit: :bunny)
+
+        expect(faction.spread_sympathy_options).to match_array([
+          clearings[:one], clearings[:six], clearings[:eight], clearings[:twelve],
+          clearings[:three], clearings[:four], clearings[:five], clearings[:ten]
+        ])
       end
     end
 
@@ -358,6 +366,95 @@ RSpec.describe Root::Factions::Mouse do
 
       expect(faction.spread_sympathy_options).to eq([clearings[:one]])
       expect { faction.spread_sympathy }.not_to change { faction.sympathy }
+    end
+  end
+
+  describe '#currently_available_options' do
+    it 'returns valid move options' do
+      _player, faction = build_player_and_faction(:mice)
+      allow(faction).to receive(:can_craft?).and_return(true)
+      allow(faction).to receive(:can_mobilize?).and_return(false)
+      allow(faction).to receive(:can_train?).and_return(true)
+
+      expect(faction.currently_available_options).to match_array(
+        %i[craft train]
+      )
+    end
+  end
+
+  describe '#built_base_suits' do
+    it 'returns all suits of built bases' do
+      player, faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+
+      faction.place_base(:fox, clearings[:one])
+
+      expect(faction.built_base_suits).to eq([:fox])
+    end
+  end
+
+  describe '#train_options' do
+    it 'returns all suits of built bases' do
+      player, faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+
+      fox_card = Root::Cards::Base.new(suit: :fox)
+      bunny_card = Root::Cards::Base.new(suit: :bunny)
+      faction.hand << fox_card
+      faction.hand << bunny_card
+
+      expect(faction.can_train?).to be false
+      faction.place_base(:fox, clearings[:one])
+
+      expect(faction.train_options).to eq([fox_card])
+      expect(faction.can_train?).to be true
+    end
+  end
+
+  describe '#mobilize' do
+    it 'adds a card from hand to supporters' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.hand << Root::Cards::Base.new(suit: :fox)
+      expect { faction.mobilize }
+        .to change { faction.usable_supporters(:fox).count }
+        .by(1)
+        .and change { faction.hand_size }
+        .by(-1)
+    end
+  end
+
+  describe '#train' do
+    it 'adds a card from hand to supporters' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.hand << Root::Cards::Base.new(suit: :fox)
+      faction.place_base(:fox, player.board.clearings[:one])
+      expect { faction.train }
+        .to change { faction.officers.count }
+        .by(1)
+        .and change { faction.hand_size }
+        .by(-1)
+        .and change { faction.meeples.count }
+        .by(-1)
+    end
+  end
+
+  describe '#can_train?' do
+    it 'can train with a base and meeples' do
+      player, faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+
+      faction.hand << Root::Cards::Base.new(suit: :fox)
+      expect(faction.can_train?).to be false
+
+      faction.place_base(:fox, player.board.clearings[:one])
+      expect(faction.can_train?).to be true
+
+      10.times { faction.place_meeple(clearings[:one]) }
+      expect(faction.can_train?).to be false
     end
   end
 end

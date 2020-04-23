@@ -146,6 +146,7 @@ module Root
           choice = player.pick_option(:f_item_select, options)
           item = options[choice]
           return if item == :none
+
           @crafted_suits.concat(item.craft)
           craft_item(item)
         end

@@ -95,7 +95,7 @@ module Root
         },
         f_dice_roll: {
           prompt: '',
-          history: 'Rolled a %s and %s'
+          history: 'Rolled a %s and %s in clearing %s'
         },
         f_remove_piece: {
           prompt: 'Pick which piece to remove',
@@ -151,6 +151,14 @@ module Root
         },
         m_spread_sympathy: {
           prompt: 'Pick clearing to spread sympathy to',
+          history: ''
+        },
+        m_mobilize: {
+          prompt: 'Pick a card to mobilize into supporters',
+          history: ''
+        },
+        m_train: {
+          prompt: 'Pick a card to use to train an officer',
           history: ''
         }
       }.freeze

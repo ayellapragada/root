@@ -122,7 +122,11 @@ module Root
       end
 
       def draw_to_supporters(num = 1)
-        @supporters.concat(deck.draw_from_top(num))
+        add_to_supporters(deck.draw_from_top(num))
+      end
+
+      def add_to_supporters(supporters)
+        @supporters.concat(supporters)
       end
 
       def supporters_for(suit)
@@ -207,6 +211,10 @@ module Root
           clearing.send(plural_form).delete(piece)
           self.victory_points += 1 if %i[building token].include?(type)
         end
+        board
+          .clearings_with(:sympathy)
+          .count { |cl| cl.suit == clearing.suit }
+          .times { place_meeple(clearing) }
         place_base(clearing.suit, clearing)
       end
 
@@ -216,6 +224,11 @@ module Root
           .clearings_with(:sympathy)
           .select { |c| unbuilt_base_suits.include?(c.suit) }
           .select { |c| usable_supporters(c.suit).count >= 2 }
+      end
+
+      def built_base_suits
+        unbuilt_base_suits = bases.map(&:suit)
+        %i[fox bunny mouse] - unbuilt_base_suits
       end
 
       def usable_supporters(suit)
@@ -243,7 +256,9 @@ module Root
 
       def spread_sympathy_options
         sympathetic = board.clearings_with(:sympathy)
-        return board.clearings_without_keep if sympathetic.empty?
+        if sympathetic.empty?
+          return board.clearings_without_keep.select { |cl| enough_supporters?(cl) }
+        end
 
         total_opts = []
 
@@ -277,7 +292,66 @@ module Root
         COSTS[:sympathy][10 - sympathy.length]
       end
 
-      def daylight; end
+      def daylight
+        until currently_available_options.empty?
+          opts = currently_available_options + [:none]
+          choice = player.pick_option(:f_pick_action, opts)
+          action = opts[choice]
+
+          # :nocov:
+          case action
+          when :craft then craft_items
+          when :mobilize then mobilize
+          when :train then train
+          when :none then return
+          end
+          # :nocov:
+        end
+      end
+
+      def currently_available_options
+        [].tap do |options|
+          options << :craft if can_craft?
+          options << :mobilize if can_mobilize?
+          options << :train if can_train?
+        end
+      end
+
+      def can_craft?
+        !craftable_items.empty?
+      end
+
+      def can_mobilize?
+        !hand.empty?
+      end
+
+      def can_train?
+        !train_options.empty? && !meeples.count.zero?
+      end
+
+      def train_options
+        hand.select { |card| built_base_suits.include?(card.suit) }
+      end
+
+      def mobilize
+        opts = hand
+        choice = player.pick_option(:m_mobilize, opts)
+        card = opts[choice]
+        add_to_supporters([card])
+        hand.delete(card)
+      end
+
+      def train
+        opts = train_options
+        choice = player.pick_option(:m_train, opts)
+        card = opts[choice]
+        discard_card(card)
+        officers << meeples.pop
+      end
+
+      def suits_to_craft_with
+        board.clearings_with(:sympathy).map(&:suit)
+      end
 
       def evening(_players)
         # military_operations
