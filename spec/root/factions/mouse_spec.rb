@@ -27,7 +27,7 @@ RSpec.describe Root::Factions::Mouse do
         player, faction = build_player_and_faction(:mice)
         clearings = player.board.clearings
 
-        faction.place_base(:fox, clearings[:one])
+        faction.place_base(clearings[:one])
         faction.supporters << Root::Cards::Base.new(suit: :bunny)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
@@ -215,7 +215,7 @@ RSpec.describe Root::Factions::Mouse do
       player, faction = build_player_and_faction(:mice)
       clearings = player.board.clearings
 
-      faction.place_base(:fox, clearings[:one])
+      faction.place_base(clearings[:one])
       faction.place_sympathy(clearings[:one])
       faction.supporters << Root::Cards::Base.new(suit: :fox)
       faction.supporters << Root::Cards::Base.new(suit: :fox)
@@ -369,14 +369,14 @@ RSpec.describe Root::Factions::Mouse do
     end
   end
 
-  describe '#currently_available_options' do
-    it 'returns valid move options' do
+  describe '#daylight_options' do
+    it 'returns options' do
       _player, faction = build_player_and_faction(:mice)
       allow(faction).to receive(:can_craft?).and_return(true)
       allow(faction).to receive(:can_mobilize?).and_return(false)
       allow(faction).to receive(:can_train?).and_return(true)
 
-      expect(faction.currently_available_options).to match_array(
+      expect(faction.daylight_options).to match_array(
         %i[craft train]
       )
     end
@@ -387,7 +387,7 @@ RSpec.describe Root::Factions::Mouse do
       player, faction = build_player_and_faction(:mice)
       clearings = player.board.clearings
 
-      faction.place_base(:fox, clearings[:one])
+      faction.place_base(clearings[:one])
 
       expect(faction.built_base_suits).to eq([:fox])
     end
@@ -404,7 +404,7 @@ RSpec.describe Root::Factions::Mouse do
       faction.hand << bunny_card
 
       expect(faction.can_train?).to be false
-      faction.place_base(:fox, clearings[:one])
+      faction.place_base(clearings[:one])
 
       expect(faction.train_options).to eq([fox_card])
       expect(faction.can_train?).to be true
@@ -416,9 +416,18 @@ RSpec.describe Root::Factions::Mouse do
 
       bird_card = Root::Cards::Base.new(suit: :bird)
       faction.hand << bird_card
-      faction.place_base(:fox, clearings[:one])
+      faction.place_base(clearings[:one])
 
       expect(faction.train_options).to eq([bird_card])
+    end
+
+    it 'does not override everything with 1 bird' do
+      _player, faction = build_player_and_faction(:mice)
+
+      bird_card = Root::Cards::Base.new(suit: :bird)
+      faction.hand << bird_card
+
+      expect(faction.train_options).to eq([])
     end
   end
 
@@ -442,7 +451,7 @@ RSpec.describe Root::Factions::Mouse do
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.hand << Root::Cards::Base.new(suit: :fox)
-      faction.place_base(:fox, player.board.clearings[:one])
+      faction.place_base(player.board.clearings[:one])
       expect { faction.train }
         .to change { faction.officers.count }
         .by(1)
@@ -461,11 +470,122 @@ RSpec.describe Root::Factions::Mouse do
       faction.hand << Root::Cards::Base.new(suit: :fox)
       expect(faction.can_train?).to be false
 
-      faction.place_base(:fox, player.board.clearings[:one])
+      faction.place_base(clearings[:one])
       expect(faction.can_train?).to be true
 
       10.times { faction.place_meeple(clearings[:one]) }
       expect(faction.can_train?).to be false
+    end
+  end
+
+  describe '#evening_options' do
+    it 'returns options' do
+      _player, faction = build_player_and_faction(:mice)
+      allow(faction).to receive(:can_move?).and_return(true)
+      allow(faction).to receive(:can_recruit?).and_return(true)
+      allow(faction).to receive(:can_battle?).and_return(true)
+      allow(faction).to receive(:can_organize?).and_return(true)
+
+      expect(faction.evening_options).to match_array(
+        %i[move recruit battle organize]
+      )
+    end
+  end
+
+  describe '#recruit_options' do
+    it 'returns places where faction has a base' do
+      player, faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+      expect(faction.can_recruit?).to be false
+
+      faction.place_base(clearings[:one])
+
+      expect(faction.can_recruit?).to be true
+      expect(faction.recruit_options).to eq([clearings[:one]])
+
+      10.times { faction.place_meeple(clearings[:one]) }
+
+      expect(faction.can_recruit?).to be false
+    end
+  end
+
+  describe '#organize_options' do
+    it 'returns places where a faction could organize' do
+      player, faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+
+      expect(faction.can_organize?).to be false
+
+      faction.place_meeple(clearings[:one])
+
+      expect(faction.organize_options).to match_array([clearings[:one]])
+      expect(faction.can_organize?).to be true
+
+      faction.place_sympathy(clearings[:one])
+
+      expect(faction.can_organize?).to be false
+    end
+  end
+
+  describe '#promote_officer' do
+    it 'makes one meeple an officer' do
+      _player, faction = build_player_and_faction(:mice)
+
+      expect { faction.promote_officer }
+        .to change { faction.meeples.count }
+        .by(-1)
+        .and change { faction.officers.count }
+        .by(1)
+    end
+  end
+
+  describe '#military_operations' do
+    it 'allows as many actions as officers' do
+      player, faction = build_player_and_faction(:mice)
+      # Pick Recruit as an option
+      allow(player).to receive(:pick_option).and_return(0)
+      clearings = player.board.clearings
+      players = Root::Players::List.new(player)
+
+      faction.promote_officer
+      faction.place_base(clearings[:one])
+
+      expect { faction.military_operations(players) }
+        .to change { clearings[:one].meeples_of_type(:mice).count }.by(1)
+    end
+  end
+
+  describe '#recruit' do
+    it 'places a warrior at a base' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(0)
+      clearings = player.board.clearings
+
+      faction.place_base(clearings[:one])
+      faction.place_base(clearings[:five])
+
+      expect { faction.recruit }
+        .to change { clearings[:one].meeples_of_type(:mice).count }
+        .by(1)
+        .and change { faction.meeples.count }
+        .by(-1)
+    end
+  end
+
+  describe '#organize' do
+    it 'replaces a warrior with a sympathy token' do
+      player, faction = build_player_and_faction(:mice)
+      allow(player).to receive(:pick_option).and_return(0)
+      clearings = player.board.clearings
+
+      faction.place_meeple(clearings[:one])
+      expect { faction.organize }
+        .to change { clearings[:one].meeples_of_type(:mice).count }
+        .by(-1)
+        .and change { clearings[:one].sympathetic? }
+        .from(false).to(true)
+        .and change { faction.meeples.count }
+        .by(1)
     end
   end
 end

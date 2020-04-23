@@ -212,17 +212,12 @@ module Root
       end
 
       def resolve_recruit
-        resolve(:recruit, :b_recruit_clearing) do |cl|
-          # So technically this isn't an issue yet.
-          # It certainly is a bug, in a few ways, but that's ok.
-          # This will get tested with charismatic leader intro.
-          # raise TurmoilError if meeples.count.zero?
-
+        resolve(:recruit, :f_recruit_clearing) do |cl|
           num_to_recruit = current_leader?(:charismatic) ? 2 : 1
           raise TurmoilError if meeples.count < num_to_recruit
 
           num_to_recruit.times { place_meeple(cl) }
-          player.add_to_history(:b_recruit_clearing, clearing: cl.priority)
+          player.add_to_history(:f_recruit_clearing, clearing: cl.priority)
         end
       end
 

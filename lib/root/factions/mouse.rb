@@ -30,6 +30,7 @@ module Root
         @tokens = Array.new(10) { Mice::Sympathy.new }
         @supporters = []
         @officers = []
+        @remaining_actions = 0
         handle_base_building
       end
 
@@ -134,8 +135,8 @@ module Root
       end
 
       # Overwrites the attr_buildings
-      def place_base(suit, clearing)
-        base = bases.find { |b| b.suit == suit }
+      def place_base(clearing)
+        base = bases.find { |b| b.suit == clearing.suit }
         place_building(base, clearing)
       end
 
@@ -215,7 +216,7 @@ module Root
           .clearings_with(:sympathy)
           .count { |cl| cl.suit == clearing.suit }
           .times { place_meeple(clearing) }
-        place_base(clearing.suit, clearing)
+        place_base(clearing)
       end
 
       def revolt_options
@@ -293,8 +294,8 @@ module Root
       end
 
       def daylight
-        until currently_available_options.empty?
-          opts = currently_available_options + [:none]
+        until daylight_options.empty?
+          opts = daylight_options + [:none]
           choice = player.pick_option(:f_pick_action, opts)
           action = opts[choice]
 
@@ -309,7 +310,7 @@ module Root
         end
       end
 
-      def currently_available_options
+      def daylight_options
         [].tap do |options|
           options << :craft if can_craft?
           options << :mobilize if can_mobilize?
@@ -329,7 +330,11 @@ module Root
         !train_options.empty? && !meeples.count.zero?
       end
 
+      # Maybe there's a better way for this.
+      # There needs to be something like hand.matches_suit?(suit)
       def train_options
+        return [] if built_base_suits.empty?
+
         hand.select do |card|
           built_base_suits.include?(card.suit) || card.suit == :bird
         end
@@ -347,7 +352,11 @@ module Root
         opts = train_options
         choice = player.pick_option(:m_train, opts)
         card = opts[choice]
+        promote_officer
         discard_card(card)
+      end
+
+      def promote_officer
         officers << meeples.pop
       end
 
@@ -355,9 +364,73 @@ module Root
         board.clearings_with(:sympathy).map(&:suit)
       end
 
-      def evening(_players)
-        # military_operations
+      def evening(players)
+        military_operations(players)
         draw_cards
+      end
+
+      def military_operations(players)
+        @remaining_actions = officers.count
+        until evening_options.empty? || @remaining_actions.zero?
+          opts = evening_options + [:none]
+          choice = player.pick_option(:f_pick_action, opts)
+          action = opts[choice]
+
+          # :nocov:
+          case action
+          when :move then with_action { make_move(players) }
+          when :recruit then with_action { recruit }
+          when :battle then with_action { battle(players) }
+          when :organize then with_action { organize }
+          when :none then return
+          end
+          # :nocov:
+        end
+      end
+
+      def evening_options
+        [].tap do |options|
+          options << :move if can_move?
+          options << :recruit if can_recruit?
+          options << :battle if can_battle?
+          options << :organize if can_organize?
+        end
+      end
+
+      def can_recruit?
+        !recruit_options.empty? && !meeples.count.zero?
+      end
+
+      def recruit_options
+        board.clearings_with(:base)
+      end
+
+      def recruit
+        opts = recruit_options
+        choice = player.pick_option(:f_recruit_clearing, opts)
+        clearing = opts[choice]
+        place_meeple(clearing)
+        player.add_to_history(:f_recruit_clearing, clearing: clearing.priority)
+      end
+
+      def can_organize?
+        !organize_options.empty?
+      end
+
+      def organize_options
+        board.clearings_with_meeples(:mice).reject(&:sympathetic?)
+      end
+
+      def organize
+        opts = organize_options
+        choice = player.pick_option(:m_organize_clearing, opts)
+        clearing = opts[choice]
+
+        meeple = clearing.meeples_of_type(:mice).first
+        meeples << meeple
+        clearing.meeples.delete(meeple)
+
+        spread_sympathy_in_clearing(clearing)
       end
 
       def draw_bonuses

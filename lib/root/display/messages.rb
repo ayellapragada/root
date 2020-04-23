@@ -101,6 +101,10 @@ module Root
           prompt: 'Pick which piece to remove',
           history: ''
         },
+        f_recruit_clearing: {
+          prompt: 'Pick which clearing to recruit in',
+          history: 'Recruited in clearing %s'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'
@@ -120,10 +124,6 @@ module Root
         b_comeback_roost: {
           prompt: 'Pick where to place your new first Roost with 3 Warriors',
           history: 'Setup comeback roost in clearing %s'
-        },
-        b_recruit_clearing: {
-          prompt: 'Pick which clearing to recruit in',
-          history: 'Recruited in clearing %s'
         },
         b_turmoil: {
           prompt: '',
@@ -159,6 +159,10 @@ module Root
         },
         m_train: {
           prompt: 'Pick a card to use to train an officer',
+          history: ''
+        },
+        m_organize_clearing: {
+          prompt: 'Pick a clearing to revolt in',
           history: ''
         }
       }.freeze

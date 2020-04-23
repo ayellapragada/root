@@ -181,6 +181,17 @@ module Root
         end
       end
 
+      def pick_where_to_move_from
+        move_opts = move_options
+        move_choice = player.pick_option(:f_move_from_options, move_opts)
+        move_opts[move_choice]
+      end
+
+      def make_move(players)
+        clearing = pick_where_to_move_from
+        move(clearing, players)
+      end
+
       def move_options(suits = [])
         possible_options = []
         clearings = board.clearings_with_meeples(faction_symbol)
@@ -208,6 +219,10 @@ module Root
         clearing.ruled_by == faction_symbol
       end
 
+      def can_move?
+        !move_options.empty?
+      end
+
       def move(clearing, players)
         where_to_opts = clearing_move_options(clearing)
         where_to_choice = player.pick_option(:f_move_to_options, where_to_opts)
@@ -219,6 +234,10 @@ module Root
         how_many = how_many_opts[how_many_choice]
 
         Actions::Move.new(clearing, where_to, how_many, self, players).()
+      end
+
+      def can_battle?
+        !battle_options.empty?
       end
 
       def battle_options(suits = [])
@@ -298,6 +317,11 @@ module Root
         opts = %w[Yes No]
         choice = player.pick_option(key, opts)
         choice.zero?
+      end
+
+      def with_action
+        @remaining_actions -= 1
+        yield
       end
 
       def pre_move(move_action); end

@@ -143,21 +143,10 @@ module Root
         end
       end
 
-      def with_action
-        @remaining_actions -= 1
-        yield
-      end
-
-      def can_battle?
-        !battle_options.empty?
-      end
-
-      def can_move?
-        !move_options.empty?
-      end
-
       def can_recruit?
-        !@recruited && !board.clearings_with(:recruiter).empty?
+        !@recruited &&
+          !board.clearings_with(:recruiter).empty? &&
+          !meeples.count.zero?
       end
 
       def can_overwork?
@@ -238,12 +227,7 @@ module Root
       end
 
       def march(players)
-        2.times do
-          move_opts = move_options
-          move_choice = player.pick_option(:f_move_from_options, move_opts)
-          clearing = move_opts[move_choice]
-          move(clearing, players)
-        end
+        2.times { make_move(players) }
       end
 
       def build_options(*)
