@@ -330,7 +330,9 @@ module Root
       end
 
       def train_options
-        hand.select { |card| built_base_suits.include?(card.suit) }
+        hand.select do |card|
+          built_base_suits.include?(card.suit) || card.suit == :bird
+        end
       end
 
       def mobilize

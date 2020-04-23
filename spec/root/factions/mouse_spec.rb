@@ -409,6 +409,17 @@ RSpec.describe Root::Factions::Mouse do
       expect(faction.train_options).to eq([fox_card])
       expect(faction.can_train?).to be true
     end
+
+    it 'works with birds' do
+      player, faction = build_player_and_faction(:mice)
+      clearings = player.board.clearings
+
+      bird_card = Root::Cards::Base.new(suit: :bird)
+      faction.hand << bird_card
+      faction.place_base(:fox, clearings[:one])
+
+      expect(faction.train_options).to eq([bird_card])
+    end
   end
 
   describe '#mobilize' do
