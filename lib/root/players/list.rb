@@ -25,18 +25,10 @@ module Root
       end
 
       # :nocov:
-      def self.for_faction_for_play
-        new(
-          Root::Players::Human.for('Hal', :mice),
-          # Root::Players::Human.for('Akshith', :cats),
-          # Root::Players::Human.for('Tron', :birds),
-          # Root::Players::Human.for('Hal', :racoon),
-
-          # Root::Players::Computer.for('Hal', :mice),
-          Root::Players::Computer.for('Akshith', :cats),
-          Root::Players::Computer.for('Tron', :birds),
-          Root::Players::Computer.for('Ultron', :racoon)
-        )
+      def self.for_faction_for_play(faction)
+        cpus = %i[cats birds mice racoon] - [faction]
+        comps = cpus.map { |fac| Root::Players::Computer.for(fac.to_s, fac) }
+        new(Root::Players::Human.for('Hal', faction), *comps)
       end
 
       def self.human_list

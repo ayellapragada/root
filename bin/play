@@ -6,4 +6,6 @@ require 'root'
 require 'pry'
 
 system('clear') || system('cls')
-Root::Game.start_and_play_game
+faction = (ARGV[0] || :mice).to_sym
+ARGV.clear
+Root::Game.start_and_play_game(faction: faction)
