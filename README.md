@@ -47,4 +47,5 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 ## Ideas For Next
 
-- Refactor code and tests to Daylight() type structure for everyone.
+- Refactor all opts to have a :none, to go back and reselect.
+- This also makes everything feel slightly better for QoL.
