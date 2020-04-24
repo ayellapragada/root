@@ -20,7 +20,11 @@ module Root
       end
 
       def rows
-        players.victory_points.map do |player|
+        players
+          .victory_points
+          .sort_by { |p| p[:victory_points] }
+          .reverse
+          .map do |player|
           [
             Rainbow(player[:faction].to_s.capitalize).fg(player[:color]),
             Rainbow(player[:victory_points]).fg(player[:color])

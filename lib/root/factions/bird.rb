@@ -139,6 +139,7 @@ module Root
         draw_card if hand.empty?
         2.times do |i|
           next if hand.empty?
+
           is_first_time = i.zero?
           card_opts = get_decree_hand_opts(is_first_time)
           card_choice = player.pick_option(:b_card_for_decree, card_opts)
