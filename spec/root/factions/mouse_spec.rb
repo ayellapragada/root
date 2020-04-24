@@ -590,4 +590,52 @@ RSpec.describe Root::Factions::Mouse do
         .by(1)
     end
   end
+
+  describe '#base_removed' do
+    it 'discard all supporter of suit + birds, and half officers rounded up' do
+      player, faction = build_player_and_faction(:mice)
+      _cat_player, cats = build_player_and_faction(:cats)
+      clearings = player.board.clearings
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(1, 0)
+
+      faction.supporters << Root::Cards::Base.new(suit: :fox)
+      faction.supporters << Root::Cards::Base.new(suit: :bird)
+      cats.place_meeple(clearings[:one])
+      faction.place_base(clearings[:one])
+      faction.place_base(clearings[:five])
+      5.times { faction.promote_officer }
+
+      expect { cats.initiate_battle_with_faction(clearings[:one], faction) }
+        .to change { faction.usable_supporters(:fox).count }
+        .by(-2)
+        .and change { faction.officers.count }
+        .by(-3)
+        .and change { faction.meeples.count }
+        .by(3)
+        .and change { faction.deck.discard.count }
+        .by(2)
+    end
+
+    it 'if no more remaining bases, max 5 supporters' do
+      player, faction = build_player_and_faction(:mice)
+      _cat_player, cats = build_player_and_faction(:cats)
+      clearings = player.board.clearings
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(1, 0)
+
+      cats.place_meeple(clearings[:one])
+      faction.place_base(clearings[:one])
+
+      6.times { faction.supporters << Root::Cards::Base.new(suit: :bunny) }
+
+      expect { cats.initiate_battle_with_faction(clearings[:one], faction) }
+        .to change { faction.usable_supporters(:bunny).count }
+        .by(-1)
+        .and change { faction.deck.discard.count }
+        .by(1)
+    end
+  end
 end

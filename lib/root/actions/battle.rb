@@ -97,6 +97,10 @@ module Root
       def dice_roll
         [0, 1, 2, 3].sample
       end
+
+      def removed?(type)
+        pieces_removed.map(&:type).include?(type)
+      end
     end
   end
 end

@@ -147,13 +147,30 @@ module Root
         outrage(move_action.faction, move_action.to_clearing.suit)
       end
 
-      # If Sympathy removed
-      # If Base removed
-      # Easy hook for bases later
       def post_battle(battle)
-        if battle.pieces_removed.map(&:type).include?(:sympathy)
-          outrage(battle.other_faction(self), battle.clearing.suit)
+        suit = battle.clearing.suit
+
+        outrage(battle.other_faction(self), suit) if battle.removed?(:sympathy)
+        base_removed(suit) if battle.removed?(:base)
+      end
+
+      def base_removed(suit)
+        usable_supporters(suit).each do |card|
+          discard_card(card)
+          supporters.delete(card)
         end
+
+        discard_down_to_five_supporters
+        lose_half_officers
+      end
+
+      def discard_down_to_five_supporters
+        remove_supporter until supporters.count <= 5
+      end
+
+      def lose_half_officers
+        num_officers_to_lose = (officers.count / 2.0).ceil
+        num_officers_to_lose.times { meeples << officers.pop }
       end
 
       def outrage(other_faction, suit)
@@ -194,7 +211,7 @@ module Root
         num.times { remove_supporter(suit) }
       end
 
-      def remove_supporter(suit)
+      def remove_supporter(suit = nil)
         opts = usable_supporters(suit)
         choice = player.pick_option(:m_supporter_to_use, opts)
         supporter = opts[choice]
@@ -234,6 +251,7 @@ module Root
       end
 
       def usable_supporters(suit)
+        return supporters unless suit
         supporters_for(suit) + supporters_for(:bird)
       end
 
