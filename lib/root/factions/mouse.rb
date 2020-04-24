@@ -126,8 +126,14 @@ module Root
         add_to_supporters(deck.draw_from_top(num))
       end
 
-      def add_to_supporters(supporters)
-        @supporters.concat(supporters)
+      def add_to_supporters(cards)
+        cards.each do |card|
+          if bases.count == 3 && supporters.count >= 5
+            deck.discard_card(card)
+          else
+            @supporters.concat([card])
+          end
+        end
       end
 
       def supporters_for(suit)

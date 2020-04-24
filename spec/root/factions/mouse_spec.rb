@@ -78,6 +78,7 @@ RSpec.describe Root::Factions::Mouse do
     end
   end
 
+
   describe '#outrage' do
     context 'when other faction moves into clearing with sympathy token' do
       context 'with matching card in hand' do
@@ -207,6 +208,44 @@ RSpec.describe Root::Factions::Mouse do
       cats.initiate_battle_with_faction(clearing, faction)
       expect(clearing.meeples_of_type(:cats).count).to eq(1)
       expect(clearing.meeples_of_type(:mice).count).to eq(2)
+    end
+  end
+
+  describe '#add_to_supporters' do
+    context 'with no bases built' do
+      it 'can only have up to 5 supporters at once' do
+        _player, faction = build_player_and_faction(:mice)
+
+        4.times { faction.supporters << Root::Cards::Base.new(suit: :bird) }
+
+        card1 = Root::Cards::Base.new(suit: :fox)
+        card2 = Root::Cards::Base.new(suit: :fox)
+
+        expect { faction.add_to_supporters([card1, card2]) }
+          .to change { faction.supporters.count }
+          .by(1)
+          .and change { faction.deck.discard.count }
+          .by(1)
+      end
+    end
+
+    context 'with any bases built' do
+      it 'can have any number of supporters' do
+        player, faction = build_player_and_faction(:mice)
+        clearings = player.board.clearings
+        faction.place_base(clearings[:one])
+
+        4.times { faction.supporters << Root::Cards::Base.new(suit: :bird) }
+
+        card1 = Root::Cards::Base.new(suit: :fox)
+        card2 = Root::Cards::Base.new(suit: :fox)
+
+        expect { faction.add_to_supporters([card1, card2]) }
+          .to change { faction.supporters.count }
+          .by(2)
+          .and change { faction.deck.discard.count }
+          .by(0)
+      end
     end
   end
 
