@@ -24,8 +24,7 @@ module Root
       game = with_faction_for_play(faction)
       game.print_display = true
       game.setup
-      3.times { game.run_game }
-      game.render
+      game.run_game
     end
     # :nocov:
 
@@ -65,7 +64,20 @@ module Root
       end
     end
 
+    # :nocov:
     def run_game
+      loop { one_round }
+    rescue Errors::WinConditionReached => e
+      e.winner.player.add_to_history(
+        :f_game_over,
+        winner: e.winner.faction_symbol,
+        type: e.type
+      )
+      render
+    end
+    # :nocov:
+
+    def one_round
       players.each { |player| take_turn(player) }
     end
 

@@ -105,6 +105,10 @@ module Root
           prompt: 'Pick which clearing to recruit in',
           history: 'Recruited in clearing %s'
         },
+        f_game_over: {
+          prompt: '',
+          history: 'Game over! Winner is %s with type of victory %s'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'

@@ -667,6 +667,26 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  describe '#victory_points=' do
+    context 'when below 30 and will not be at 30' do
+      it 'just bumps it up' do
+        faction.victory_points = 0
+        faction.victory_points += 2
+
+        expect(faction.victory_points).to eq(2)
+      end
+    end
+
+    context 'when below 30 and will go to 30 or higher' do
+      it 'raises an "error" to end the game' do
+        faction.victory_points = 29
+
+        expect { faction.victory_points += 2 }
+          .to raise_error(Root::Errors::WinConditionReached)
+      end
+    end
+  end
+
   def clearing_has_building(clearing, type)
     clearing.includes_building?(type) ||
       clearing.adjacents.one? { |adj| adj.includes_building?(type) }

@@ -48,7 +48,7 @@ module Root
         end
       end
 
-      attr_accessor :victory_points
+      attr_reader :victory_points
 
       attr_reader :hand, :player, :meeples, :buildings, :tokens, :items
       attr_writer :board
@@ -67,6 +67,13 @@ module Root
 
       def deck
         player.deck
+      end
+
+      def victory_points=(value)
+        @victory_points = value
+        return if @victory_points < 30
+
+        raise Errors::WinConditionReached.new(self, :vps)
       end
 
       def set_base_pieces
