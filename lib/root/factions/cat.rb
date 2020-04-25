@@ -125,7 +125,7 @@ module Root
         craft_items
         @remaining_actions = 3
         until remaining_actions.zero?
-          opts = currently_available_options
+          opts = currently_available_options + [:none]
           choice = player.pick_option(:f_pick_action, opts)
           action = opts[choice]
 
@@ -138,6 +138,7 @@ module Root
           when :recruit then with_action { recruit }
           when :overwork then with_action { overwork }
           when :discard_bird then discard_bird
+          when :none then return
           end
           # :nocov:
         end
@@ -150,7 +151,7 @@ module Root
       end
 
       def can_overwork?
-        !overwork_options.empty?
+        !overwork_options.empty? && !wood.count.zero?
       end
 
       def can_build?
