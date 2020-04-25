@@ -1,39 +1,38 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Factions::Cat do
+  let(:player) { Root::Players::Computer.for('Sneak', :cats) }
+  let(:faction) { player.faction }
+  let(:board) { player.board }
+  let(:clearings) { board.clearings }
+  let(:bird_player) { Root::Players::Computer.for('Sneak', :birds) }
+  let(:bird_faction) { bird_player.faction }
+
   describe '#handle_faction_token_setup' do
     it 'gives faction 25 meeples, and then 6 buildings of each type' do
-      player = Root::Players::Human.for('Sneak', :cats)
-      cats = player.faction
+      expect(faction.meeples.count).to eq(25)
 
-      expect(cats.meeples.count).to eq(25)
+      expect(faction.recruiters.count).to eq(6)
+      expect(faction.sawmills.count).to eq(6)
+      expect(faction.workshops.count).to eq(6)
 
-      expect(cats.recruiters.count).to eq(6)
-      expect(cats.sawmills.count).to eq(6)
-      expect(cats.workshops.count).to eq(6)
-
-      expect(cats.wood.count).to eq(8)
+      expect(faction.wood.count).to eq(8)
     end
   end
 
   describe '#setup' do
     it 'sets a keep in the corner' do
-      player = Root::Players::Human.for('Sneak', :cats)
-      cats = player.faction
-      board = player.board
       allow(player).to receive(:pick_option).and_return(0)
+
       expect(board.keep_in_corner?).to be false
 
       player.setup
 
       expect(board.keep_in_corner?).to be true
-      expect(cats.keep).to be_empty
+      expect(faction.keep).to be_empty
     end
 
     it 'sets a sawmill, recruiter, and workshop in adjacent clearing' do
-      player = Root::Players::Human.for('Sneak', :cats)
-      cats = player.faction
-      board = player.board
       allow(player).to receive(:pick_option).and_return(0)
 
       player.setup
@@ -42,15 +41,12 @@ RSpec.describe Root::Factions::Cat do
       expect(clearing_has_building(clearing, :recruiter)).to be true
       expect(clearing_has_building(clearing, :sawmill)).to be true
       expect(clearing_has_building(clearing, :workshop)).to be true
-      expect(cats.recruiters.count).to be(5)
-      expect(cats.sawmills.count).to be(5)
-      expect(cats.workshops.count).to be(5)
+      expect(faction.recruiters.count).to be(5)
+      expect(faction.sawmills.count).to be(5)
+      expect(faction.workshops.count).to be(5)
     end
 
     it 'sets 11 warrior in all clearings except directly across' do
-      player = Root::Players::Human.for('Sneak', :cats)
-      cats = player.faction
-      board = player.board
       allow(player).to receive(:pick_option).and_return(0)
 
       player.setup
@@ -58,7 +54,7 @@ RSpec.describe Root::Factions::Cat do
       keep_clearing = board.clearing_across_from_keep
       other_clearings = board.clearings_other_than(keep_clearing)
       expect(clearings_have_one_cat_meeple?(other_clearings)).to be true
-      expect(cats.meeples.count).to eq(14)
+      expect(faction.meeples.count).to eq(14)
       expect(keep_clearing.meeples.count).to eq(0)
     end
   end
@@ -77,11 +73,9 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#birdsong' do
     it 'gives all sawmills wood' do
-      player, faction = build_player_and_faction(:cats)
-      clearings = player.board.clearings
-      faction.place_building(faction.sawmills.first, clearings[:nine])
-      faction.place_building(faction.sawmills.first, clearings[:nine])
-      faction.place_building(faction.sawmills.first, clearings[:one])
+      faction.place_sawmill(clearings[:nine])
+      faction.place_sawmill(clearings[:nine])
+      faction.place_sawmill(clearings[:one])
 
       expect { faction.birdsong }
         .to change { faction.wood.count }
@@ -95,8 +89,6 @@ RSpec.describe Root::Factions::Cat do
   describe '#currently_available_options' do
     context 'when able to do everything' do
       it 'has 6 options' do
-        player, faction = build_player_and_faction(:cats)
-        player.setup
         allow(faction).to receive(:can_battle?).and_return(true)
         allow(faction).to receive(:can_move?).and_return(true)
         allow(faction).to receive(:can_build?).and_return(true)
@@ -114,8 +106,6 @@ RSpec.describe Root::Factions::Cat do
   # battle only if meeple somewhere with another factions piece
   describe '#battle_options' do
     it 'finds everywhere the cats can battle in' do
-      player, faction = build_player_and_faction(:cats)
-      board = player.board
       player.setup
 
       c1 = board.clearings_with_meeples(:cats).select(&:with_spaces?).first
@@ -131,14 +121,11 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#battle' do
     it 'removes units after battle' do
-      player, faction = build_player_and_faction(:cats)
-      bird_player = Root::Players::Computer.for('Hal', :birds)
       players = Root::Players::List.new(player, bird_player)
       allow(player).to receive(:pick_option).and_return(0)
-      clearings = player.board.clearings
 
-      clearings[:five].place_meeple(faction.meeples.first)
-      clearings[:five].create_building(Root::Factions::Birds::Roost.new)
+      faction.place_meeple(clearings[:five])
+      bird_faction.place_roost(clearings[:five])
 
       # We're using a defenseless building to avoid needing mocks
       # removing a cardboard piece is one VP
@@ -151,9 +138,6 @@ RSpec.describe Root::Factions::Cat do
   describe '#move_options' do
     context 'with rule in a clearing' do
       it 'finds everywhere that can be moved from' do
-        player, faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
-
         faction.place_meeple(clearings[:five])
 
         expect(faction.move_options).to eq([clearings[:five]])
@@ -164,15 +148,11 @@ RSpec.describe Root::Factions::Cat do
 
     context 'without rule in the from or to of a clearing' do
       it 'does not have any move locations' do
-        player, faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
-        bird_faction = Root::Players::Computer.for('Hal', :birds).faction
+        faction.place_meeple(clearings[:five])
 
-        clearings[:five].place_meeple(faction.meeples.first)
-
-        clearings[:five].place_meeple(bird_faction.meeples.first)
-        clearings[:one].place_meeple(bird_faction.meeples.first)
-        clearings[:two].place_meeple(bird_faction.meeples.first)
+        bird_faction.place_meeple(clearings[:five])
+        bird_faction.place_meeple(clearings[:one])
+        bird_faction.place_meeple(clearings[:two])
 
         expect(faction.move_options).to eq([])
         expect(faction.can_move?).to be false
@@ -184,10 +164,7 @@ RSpec.describe Root::Factions::Cat do
   describe '#clearing_move_options' do
     context 'when faction rules the from' do
       it 'is able to move to the other clearing' do
-        player, faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
-
-        clearings[:five].place_meeple(faction.meeples.first)
+        faction.place_meeple(clearings[:five])
 
         expect(faction.clearing_move_options(clearings[:five]))
           .to match_array([clearings[:one], clearings[:two]])
@@ -196,16 +173,12 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when faction rules the to' do
       it 'is able to move to the other clearing' do
-        player, faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
+        bird_faction.place_meeple(clearings[:one])
+        bird_faction.place_meeple(clearings[:nine])
+        bird_faction.place_meeple(clearings[:ten])
 
-        bird_faction = Root::Players::Computer.for('Hal', :birds).faction
-        clearings[:one].place_meeple(bird_faction.meeples.first)
-        clearings[:nine].place_meeple(bird_faction.meeples.first)
-        clearings[:ten].place_meeple(bird_faction.meeples.first)
-
-        clearings[:five].place_meeple(faction.meeples.first)
-        clearings[:one].place_meeple(faction.meeples.first)
+        faction.place_meeple(clearings[:one])
+        faction.place_meeple(clearings[:five])
 
         expect(faction.clearing_move_options(clearings[:one]))
           .to match_array([clearings[:five]])
@@ -214,10 +187,6 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when faction rules neither' do
       it 'is unable to move to the other clearing' do
-        player, faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
-
-        bird_faction = Root::Players::Computer.for('Hal', :birds).faction
         clearings[:one].place_meeple(bird_faction.meeples.first)
         clearings[:two].place_meeple(bird_faction.meeples.first)
         clearings[:five].place_meeple(bird_faction.meeples.first)
@@ -232,8 +201,6 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#move' do
     it 'faction moves any number of units from one clearing to another' do
-      player, faction = build_player_and_faction(:cats)
-      bird_player, _bird_faction = build_player_and_faction(:birds)
       players = Root::Players::List.new(player, bird_player)
 
       clearing = player.board.clearings[:one]
@@ -253,8 +220,6 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#march' do
     it 'allows faction to move twice' do
-      player, faction = build_player_and_faction(:cats)
-      bird_player, _bird_faction = build_player_and_faction(:birds)
       players = Root::Players::List.new(player, bird_player)
       clearing = player.board.clearings[:one]
       clearing.place_meeple(faction.meeples[0])
@@ -276,7 +241,6 @@ RSpec.describe Root::Factions::Cat do
   describe '#overwork_options' do
     context 'without sawmills' do
       it 'does not have the ability to overwork' do
-        player, faction = build_player_and_faction(:cats)
         player.setup
 
         expect(faction.overwork_options).to be_empty
@@ -286,9 +250,6 @@ RSpec.describe Root::Factions::Cat do
 
     context 'with sawmills and valid cards' do
       it 'finds all locations faction can overwork in' do
-        player, faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
-
         clearings[:one].create_building(faction.sawmills[0])
         clearings[:two].create_building(faction.sawmills[1])
 
@@ -302,7 +263,6 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#overwork' do
     it 'places a wood at a workshop after discarding a card of that suit' do
-      player, faction = build_player_and_faction(:cats)
       player.setup
       clearing = player.board.clearings_with(:sawmill).first
       faction.hand << Root::Cards::Base.new(suit: clearing.suit)
@@ -316,24 +276,21 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#cost_for_next_building' do
     it 'finds next wood total needed to build another building' do
-      player, faction = build_player_and_faction(:cats)
-
       expect(faction.cost_for_next_building(:sawmill)).to be(0)
       expect(faction.cost_for_next_building(:recruiter)).to be(0)
       expect(faction.cost_for_next_building(:workshop)).to be(0)
 
-      clearings = player.board.clearings
-      faction.place_building(faction.sawmills.first, clearings[:one])
-      faction.place_building(faction.recruiters.first, clearings[:two])
-      faction.place_building(faction.workshops.first, clearings[:three])
+      faction.place_sawmill(clearings[:one])
+      faction.place_recruiter(clearings[:two])
+      faction.place_workshop(clearings[:three])
 
       expect(faction.cost_for_next_building(:sawmill)).to be(1)
       expect(faction.cost_for_next_building(:recruiter)).to be(1)
       expect(faction.cost_for_next_building(:workshop)).to be(1)
 
-      faction.place_building(faction.sawmills.first, clearings[:four])
-      faction.place_building(faction.recruiters.first, clearings[:five])
-      faction.place_building(faction.workshops.first, clearings[:six])
+      faction.place_sawmill(clearings[:four])
+      faction.place_recruiter(clearings[:five])
+      faction.place_workshop(clearings[:six])
 
       expect(faction.cost_for_next_building(:sawmill)).to be(2)
       expect(faction.cost_for_next_building(:recruiter)).to be(2)
@@ -344,21 +301,16 @@ RSpec.describe Root::Factions::Cat do
   describe 'build_options' do
     context 'when wood is in clearing' do
       it 'can craft new building' do
-        player, faction = build_player_and_faction(:cats)
-        clearing = player.board.clearings[:two]
+        faction.place_wood(clearings[:two])
+        faction.place_meeple(clearings[:two])
 
-        faction.place_wood(clearing)
-        faction.place_meeple(clearing)
-
-        expect(faction.build_options).to eq([clearing])
+        expect(faction.build_options).to eq([clearings[:two]])
         expect(faction.can_build?).to be true
       end
     end
 
     context 'when wood is in connected clearing' do
       it 'can craft new building' do
-        player, faction = build_player_and_faction(:cats)
-
         clearing_to_build_in = player.board.clearings[:one]
         clearing_with_wood = player.board.clearings[:five]
 
@@ -366,8 +318,8 @@ RSpec.describe Root::Factions::Cat do
         faction.place_meeple(clearing_with_wood)
         faction.place_meeple(clearing_to_build_in)
         # Fill up clearing with wood to force to build somewhere else
-        faction.place_building(faction.sawmills.first, clearing_with_wood)
-        faction.place_building(faction.sawmills.first, clearing_with_wood)
+        faction.place_sawmill(clearing_with_wood)
+        faction.place_sawmill(clearing_with_wood)
 
         expect(faction.build_options).to eq([clearing_to_build_in])
         expect(faction.can_build?).to be true
@@ -376,9 +328,6 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when wood is not connected to clearing' do
       it 'can not craft' do
-        player, faction = build_player_and_faction(:cats)
-
-        clearings = player.board.clearings
         clearing_to_build_in = clearings[:one]
         clearing_with_wood = clearings[:two]
 
@@ -391,12 +340,12 @@ RSpec.describe Root::Factions::Cat do
 
         # Fill up clearing with wood to force to build somewhere else
         # Also raise the cost_for_next_building away from 1
-        faction.place_building(faction.sawmills.first, clearings[:eight])
-        faction.place_building(faction.sawmills.first, clearings[:eight])
-        faction.place_building(faction.recruiters.first, clearings[:four])
-        faction.place_building(faction.recruiters.first, clearings[:four])
-        faction.place_building(faction.workshops.first, clearings[:seven])
-        faction.place_building(faction.workshops.first, clearings[:seven])
+        faction.place_sawmill(clearings[:eight])
+        faction.place_sawmill(clearings[:eight])
+        faction.place_recruiter(clearings[:four])
+        faction.place_recruiter(clearings[:four])
+        faction.place_workshop(clearings[:seven])
+        faction.place_workshop(clearings[:seven])
 
         expect(faction.build_options).to eq([])
         expect(faction.can_build?).to be false
@@ -406,11 +355,11 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#build' do
     it 'builds in valid clearing and removes wood' do
-      player, faction = build_player_and_faction(:cats)
       allow(player).to receive(:pick_option).and_return(0)
       clearing = player.board.clearings[:two]
+
       faction.place_wood(clearing)
-      faction.place_building(faction.sawmills.first, clearing)
+      faction.place_sawmill(clearing)
 
       faction.build
 
@@ -421,11 +370,10 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#build_in_clearing' do
     it 'gives player options to build in a clearing' do
-      player, faction = build_player_and_faction(:cats)
       allow(player).to receive(:pick_option).and_return(0)
       clearing = player.board.clearings[:two]
       faction.place_wood(clearing)
-      faction.place_building(faction.sawmills.first, clearing)
+      faction.place_sawmill(clearing)
 
       faction.build_in_clearing(clearing)
 
@@ -437,13 +385,12 @@ RSpec.describe Root::Factions::Cat do
   end
 
   describe '#can_recruit?' do
-    context 'without any recruiters' do
+    context 'without any recruiters placed' do
       it 'can not recruit' do
-        player, faction = build_player_and_faction(:cats)
-        board = player.board
-
         expect(faction.can_recruit?).to be false
-        board.clearings[:one].create_building(faction.recruiters.first)
+
+        faction.place_recruiter(clearings[:one])
+
         expect(faction.can_recruit?).to be true
       end
     end
@@ -451,12 +398,9 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#recruit' do
     it 'places a meeple at every clearing with a recruiter' do
-      player, faction = build_player_and_faction(:cats)
-      clearings = player.board.clearings
-
-      faction.place_building(faction.recruiters.first, clearings[:nine])
-      faction.place_building(faction.recruiters.first, clearings[:nine])
-      faction.place_building(faction.recruiters.first, clearings[:one])
+      faction.place_recruiter(clearings[:nine])
+      faction.place_recruiter(clearings[:nine])
+      faction.place_recruiter(clearings[:one])
 
       expect { faction.recruit }
         .to change { faction.meeples.count }
@@ -469,8 +413,6 @@ RSpec.describe Root::Factions::Cat do
   describe '#can_discard_bird?' do
     context 'when bird in hand' do
       it 'discards a bird card in hand to get an extra action' do
-        player, faction = build_player_and_faction(:cats)
-
         card = Root::Cards::Base.new(suit: :bird)
         faction.hand << card
         expect(faction.can_discard_bird?).to be true
@@ -479,8 +421,6 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when no bird in hand' do
       it 'discards a bird card in hand to get an extra action' do
-        player, faction = build_player_and_faction(:cats)
-
         card = Root::Cards::Base.new(suit: :fox)
         faction.hand << card
         expect(faction.can_discard_bird?).to be false
@@ -490,7 +430,6 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#discard_bird' do
     it 'discards a bird card in hand to get an extra action' do
-      player, faction = build_player_and_faction(:cats)
       player.setup
 
       card = Root::Cards::Base.new(suit: :bird)
@@ -506,7 +445,6 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do
-      player, faction = build_player_and_faction(:cats)
       allow(player).to receive(:pick_option).and_return(0)
 
       player.setup
@@ -535,7 +473,6 @@ RSpec.describe Root::Factions::Cat do
     end
 
     it 'does not have to craft items' do
-      player, faction = build_player_and_faction(:cats)
       allow(player).to receive(:pick_option).and_return(1)
 
       faction.place_workshop(player.board.clearings[:five])
@@ -559,7 +496,6 @@ RSpec.describe Root::Factions::Cat do
   describe 'craftable_items' do
     context 'when you have item card in hand that is available' do
       it 'is craftable' do
-        player, faction = build_player_and_faction(:cats)
         allow(player).to receive(:pick_option).and_return(0)
         player.setup
 
@@ -578,7 +514,6 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when you have no workshops out' do
       it 'does not allow for crafting anything' do
-        _player, faction = build_player_and_faction(:cats)
         card = Root::Cards::Item.new(
           suit: :fox,
           craft: %i[bunny],
@@ -593,7 +528,6 @@ RSpec.describe Root::Factions::Cat do
     context 'when you have item card that is craftable but not available' do
       it 'is not craftable' do
         board = Root::Boards::Base.new(items: [])
-        player, faction = build_player_and_faction(:cats)
         player.board = board
         allow(player).to receive(:pick_option).and_return(0)
         player.setup
@@ -612,7 +546,6 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when you have item card in hand different from clearing suit' do
       it 'is not craftable' do
-        player, faction = build_player_and_faction(:cats)
         allow(player).to receive(:pick_option).and_return(0)
         player.setup
 
@@ -632,7 +565,6 @@ RSpec.describe Root::Factions::Cat do
   describe '#evening' do
     context 'with no draw bonuses' do
       it 'draw one card' do
-        player, faction = build_player_and_faction(:cats)
         player.setup
 
         expect { faction.evening }.to change(faction, :hand_size).by(1)
@@ -641,11 +573,9 @@ RSpec.describe Root::Factions::Cat do
 
     context 'with draw bonuses' do
       it 'draw one card plus one per bonus' do
-        player, faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
-        faction.place_building(faction.recruiters.first, clearings[:two])
-        faction.place_building(faction.recruiters.first, clearings[:two])
-        faction.place_building(faction.recruiters.first, clearings[:two])
+        faction.place_recruiter(clearings[:two])
+        faction.place_recruiter(clearings[:two])
+        faction.place_recruiter(clearings[:two])
 
         expect { faction.evening }.to change(faction, :hand_size).by(2)
       end
@@ -653,9 +583,7 @@ RSpec.describe Root::Factions::Cat do
 
     context 'when over 5 cards' do
       it 'discards down to 5 cards' do
-        player, faction = build_player_and_faction(:cats)
         allow(player).to receive(:pick_option).and_return(0)
-        allow(player.deck)
         5.times { faction.hand << Root::Cards::Base.new(suit: :bird) }
 
         expect { faction.evening }.to change { faction.hand }
@@ -665,9 +593,6 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#special_info' do
     it 'returns number of VP and draw bonuses, or else building tyoe' do
-      player, faction = build_player_and_faction(:cats)
-      clearings = player.board.clearings
-
       faction.place_recruiter(clearings[:twelve])
       faction.place_recruiter(clearings[:twelve])
       faction.place_recruiter(clearings[:eight])
@@ -703,11 +628,8 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#field_hospital' do
     it 'allows player to return units lost in battle to keep' do
-      player, faction = build_player_and_faction(:cats)
-      bird_player, bird_faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       allow(bird_player).to receive(:pick_option).and_return(0)
-      clearings = player.board.clearings
 
       faction.place_keep(clearings[:one])
       faction.place_meeple(clearings[:five])
@@ -726,10 +648,7 @@ RSpec.describe Root::Factions::Cat do
     end
 
     it 'allows players to say :no:' do
-      player, faction = build_player_and_faction(:cats)
-      _bird_player, bird_faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(1)
-      clearings = player.board.clearings
 
       faction.place_keep(clearings[:one])
       faction.place_meeple(clearings[:five])

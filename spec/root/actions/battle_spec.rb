@@ -1,14 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Actions::Battle do
+  let(:player) { Root::Players::Computer.for('Sneak', :cats) }
+  let(:faction) { player.faction }
+  let(:board) { player.board }
+  let(:clearings) { board.clearings }
+  let(:bird_player) { Root::Players::Computer.for('Bird', :birds) }
+  let(:bird_faction) { bird_player.faction }
+  let(:mouse_player) { Root::Players::Computer.for('Mouse', :mice) }
+  let(:mouse_faction) { mouse_player.faction }
+
   describe 'initiate_battle_with_faction' do
     it 'rolls 2 dice and gives higher to attacker' do
-      player, faction = build_player_and_faction(:cats)
-      bird_player, bird_faction = build_player_and_faction(:birds)
       players = Root::Players::List.new(player, bird_player)
       allow(player).to receive(:pick_option).and_return(0)
       allow(bird_player).to receive(:pick_option).and_return(0)
-      clearings = player.board.clearings
 
       clearings[:five].place_meeple(faction.meeples.pop)
       clearings[:five].place_meeple(faction.meeples.pop)
@@ -26,15 +32,12 @@ RSpec.describe Root::Actions::Battle do
 
     context 'when defender has no meeples' do
       it 'gives an extra hit to the attackers' do
-        player, faction = build_player_and_faction(:cats)
-        mice_player, mice_faction = build_player_and_faction(:mice)
-        players = Root::Players::List.new(player, mice_player)
+        players = Root::Players::List.new(player, mouse_player)
 
         allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
 
         clearings[:five].place_meeple(faction.meeples.pop)
-        clearings[:five].place_token(mice_faction.sympathy.pop)
+        clearings[:five].place_token(mouse_faction.sympathy.pop)
 
         expect { faction.battle(players) }
           .to change(faction, :victory_points).by(1)
@@ -45,14 +48,10 @@ RSpec.describe Root::Actions::Battle do
 
   describe '#other_faction' do
     it 'returns the other faction that is not self' do
-      player, faction = build_player_and_faction(:cats)
-      _mice_player, mice_faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
+      battle = Root::Actions::Battle.new(clearings[:one], faction, mouse_faction)
 
-      battle = Root::Actions::Battle.new(clearings[:one], faction, mice_faction)
-
-      expect(battle.other_faction(faction)).to eq(mice_faction)
-      expect(battle.other_faction(mice_faction)).to eq(faction)
+      expect(battle.other_faction(faction)).to eq(mouse_faction)
+      expect(battle.other_faction(mouse_faction)).to eq(faction)
     end
   end
 end

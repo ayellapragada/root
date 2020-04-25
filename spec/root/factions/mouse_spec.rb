@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Factions::Mouse do
+  let(:player) { Root::Players::Computer.for('Sneak', :mice) }
+  let(:faction) { player.faction }
+  let(:board) { player.board }
+  let(:clearings) { board.clearings }
+  let(:bird_player) { Root::Players::Computer.for('Bird', :birds) }
+  let(:bird_faction) { bird_player.faction }
+  let(:cat_player) { Root::Players::Computer.for('Cat', :cats) }
+  let(:cat_faction) { cat_player.faction }
+
   describe '#handle_faction_token_setup' do
     it 'gives faction 10 meeples, 3 bases, and 10 sympathy' do
-      _player, faction = build_player_and_faction(:mice)
-
       expect(faction.meeples.count).to eq(10)
       expect(faction.bases.count).to eq(3)
       expect(faction.sympathy.count).to eq(10)
@@ -15,8 +22,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#setup' do
     it 'draws 3 supporters from deck' do
-      player, faction = build_player_and_faction(:mice)
-
       expect { player.setup }.to change(faction.supporters, :count).by(3)
     end
   end
@@ -24,9 +29,6 @@ RSpec.describe Root::Factions::Mouse do
   describe '#special_info' do
     context 'when for current player' do
       it 'shows the number and types of supporters' do
-        player, faction = build_player_and_faction(:mice)
-        clearings = player.board.clearings
-
         faction.place_base(clearings[:one])
         faction.supporters << Root::Cards::Base.new(suit: :bunny)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
@@ -55,9 +57,6 @@ RSpec.describe Root::Factions::Mouse do
 
     context 'when for other players' do
       it 'shows the number of supporters only' do
-        player, faction = build_player_and_faction(:mice)
-        clearings = player.board.clearings
-
         faction.supporters << Root::Cards::Base.new(suit: :bunny)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
@@ -78,13 +77,10 @@ RSpec.describe Root::Factions::Mouse do
     end
   end
 
-
   describe '#outrage' do
     context 'when other faction moves into clearing with sympathy token' do
       context 'with matching card in hand' do
         it 'must give card' do
-          player, faction = build_player_and_faction(:mice)
-          cat_player, cat_faction = build_player_and_faction(:cats)
           allow(cat_player).to receive(:pick_option).and_return(0)
           players = Root::Players::List.new(player, cat_player)
 
@@ -103,8 +99,6 @@ RSpec.describe Root::Factions::Mouse do
 
       context 'without matching card' do
         it 'lets faction draw to supporters' do
-          player, faction = build_player_and_faction(:mice)
-          cat_player, cat_faction = build_player_and_faction(:cats)
           allow(cat_player).to receive(:pick_option).and_return(0)
           players = Root::Players::List.new(player, cat_player)
 
@@ -123,9 +117,7 @@ RSpec.describe Root::Factions::Mouse do
 
     context 'when other fation moves into clearing without sympathetic token' do
       it 'does nothing' do
-        player, faction = build_player_and_faction(:mice)
         allow(player).to receive(:pick_option).and_return(0)
-        cat_player, cat_faction = build_player_and_faction(:cats)
         allow(cat_player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player)
 
@@ -148,64 +140,58 @@ RSpec.describe Root::Factions::Mouse do
 
     context 'when other faction removes sympathy token' do
       it 'must give card' do
-        player, faction = build_player_and_faction(:mice)
-        cat_player, cats = build_player_and_faction(:cats)
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         allow_any_instance_of(Root::Actions::Battle).
           to receive(:dice_roll).and_return(2, 1)
 
         clearings = player.board.clearings
-        cats.hand << Root::Cards::Base.new(suit: :fox)
-        cats.place_meeple(clearings[:one])
+        cat_faction.hand << Root::Cards::Base.new(suit: :fox)
+        cat_faction.place_meeple(clearings[:one])
         faction.place_sympathy(clearings[:one])
 
-        expect { cats.initiate_battle_with_faction(clearings[:one], faction) }
+        expect { cat_faction.initiate_battle_with_faction(clearings[:one], faction) }
           .to change(faction.supporters, :count)
           .by(1)
-          .and change(cats, :hand_size)
+          .and change(cat_faction, :hand_size)
           .by(-1)
       end
 
       it 'does nothing if only meeples removed' do
-        player, faction = build_player_and_faction(:mice)
-        cat_player, cats = build_player_and_faction(:cats)
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         allow_any_instance_of(Root::Actions::Battle).
           to receive(:dice_roll).and_return(1, 1)
 
         clearings = player.board.clearings
-        cats.hand << Root::Cards::Base.new(suit: :fox)
-        cats.place_meeple(clearings[:one])
+        cat_faction.hand << Root::Cards::Base.new(suit: :fox)
+        cat_faction.place_meeple(clearings[:one])
         faction.place_meeple(clearings[:one])
 
-        expect { faction.initiate_battle_with_faction(clearings[:one], cats) }
+        expect { faction.initiate_battle_with_faction(clearings[:one], cat_faction) }
           .to change(faction.supporters, :count)
           .by(0)
-          .and change(cats, :hand_size)
+          .and change(cat_faction, :hand_size)
           .by(0)
       end
     end
   end
 
   describe '#guerilla warfare' do
-    it 'does nothing if only meeples removed' do
-      player, faction = build_player_and_faction(:mice)
-      cat_player, cats = build_player_and_faction(:cats)
-
+    it 'gives defender the higher die roll' do
       allow(cat_player).to receive(:pick_option).and_return(0)
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(2, 0)
 
       clearing = player.board.clearings[:one]
-      cats.place_meeple(clearing)
-      cats.place_meeple(clearing)
-      cats.place_meeple(clearing)
+      cat_faction.place_meeple(clearing)
+      cat_faction.place_meeple(clearing)
+      cat_faction.place_meeple(clearing)
+
       faction.place_meeple(clearing)
       faction.place_meeple(clearing)
 
-      cats.initiate_battle_with_faction(clearing, faction)
+      cat_faction.initiate_battle_with_faction(clearing, faction)
       expect(clearing.meeples_of_type(:cats).count).to eq(1)
       expect(clearing.meeples_of_type(:mice).count).to eq(2)
     end
@@ -214,8 +200,6 @@ RSpec.describe Root::Factions::Mouse do
   describe '#add_to_supporters' do
     context 'with no bases built' do
       it 'can only have up to 5 supporters at once' do
-        _player, faction = build_player_and_faction(:mice)
-
         4.times { faction.supporters << Root::Cards::Base.new(suit: :bird) }
 
         card1 = Root::Cards::Base.new(suit: :fox)
@@ -231,8 +215,6 @@ RSpec.describe Root::Factions::Mouse do
 
     context 'with any bases built' do
       it 'can have any number of supporters' do
-        player, faction = build_player_and_faction(:mice)
-        clearings = player.board.clearings
         faction.place_base(clearings[:one])
 
         4.times { faction.supporters << Root::Cards::Base.new(suit: :bird) }
@@ -251,9 +233,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#revolt_options' do
     it 'picks all unbuilt bases with 2 supporters and sympathy token' do
-      player, faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
-
       faction.place_base(clearings[:one])
       faction.place_sympathy(clearings[:one])
       faction.supporters << Root::Cards::Base.new(suit: :fox)
@@ -270,12 +249,8 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#revolt' do
     it 'returns all other faction pieces back to owner' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(0)
-      cat_player, cat_faction = build_player_and_faction(:cats)
-      bird_player, bird_faction = build_player_and_faction(:birds)
       players = Root::Players::List.new(player, cat_player, bird_player)
-      clearings = player.board.clearings
 
       cat_faction.place_wood(clearings[:one])
       bird_faction.place_roost(clearings[:one])
@@ -309,9 +284,7 @@ RSpec.describe Root::Factions::Mouse do
     end
 
     it 'does not have to revolt' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(1)
-      cat_player, cat_faction = build_player_and_faction(:cats)
       players = Root::Players::List.new(player, cat_player)
       clearings = player.board.clearings
 
@@ -328,8 +301,6 @@ RSpec.describe Root::Factions::Mouse do
   describe '#spread_sympathy_options' do
     context 'when no sympathy is currently on the board' do
       it 'can be placed anywhere with the valid supporters' do
-        player, faction = build_player_and_faction(:mice)
-        clearings = player.board.clearings
         faction.supporters << Root::Cards::Base.new(suit: :fox)
         faction.supporters << Root::Cards::Base.new(suit: :bunny)
 
@@ -342,9 +313,6 @@ RSpec.describe Root::Factions::Mouse do
 
     context 'when sympathy exists' do
       it 'must be placed adjacent with valid number of supporters' do
-        player, faction = build_player_and_faction(:mice)
-        clearings = player.board.clearings
-
         faction.supporters << Root::Cards::Base.new(suit: :fox)
 
         faction.place_sympathy(clearings[:five])
@@ -352,7 +320,6 @@ RSpec.describe Root::Factions::Mouse do
       end
 
       it 'handles multiple adjacencies' do
-        player, faction = build_player_and_faction(:mice)
         clearings = player.board.clearings
 
         faction.supporters << Root::Cards::Base.new(suit: :fox)
@@ -365,10 +332,6 @@ RSpec.describe Root::Factions::Mouse do
       end
 
       it 'must account for martial law' do
-        player, faction = build_player_and_faction(:mice)
-        _cat_player, cat_faction = build_player_and_faction(:cats)
-        clearings = player.board.clearings
-
         faction.supporters << Root::Cards::Base.new(suit: :fox)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
@@ -382,9 +345,7 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#spread_sympathy' do
     it 'places a sympathy token' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(0)
-      clearings = player.board.clearings
 
       faction.supporters << Root::Cards::Base.new(suit: :fox)
       faction.place_sympathy(clearings[:five])
@@ -398,9 +359,7 @@ RSpec.describe Root::Factions::Mouse do
     end
 
     it 'does not have to spread sympathy' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(1)
-      clearings = player.board.clearings
 
       faction.supporters << Root::Cards::Base.new(suit: :fox)
       faction.place_sympathy(clearings[:five])
@@ -412,7 +371,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#daylight_options' do
     it 'returns options' do
-      _player, faction = build_player_and_faction(:mice)
       allow(faction).to receive(:can_craft?).and_return(true)
       allow(faction).to receive(:can_mobilize?).and_return(false)
       allow(faction).to receive(:can_train?).and_return(true)
@@ -425,9 +383,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#built_base_suits' do
     it 'returns all suits of built bases' do
-      player, faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
-
       faction.place_base(clearings[:one])
 
       expect(faction.built_base_suits).to eq([:fox])
@@ -436,9 +391,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#train_options' do
     it 'returns all suits of built bases' do
-      player, faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
-
       fox_card = Root::Cards::Base.new(suit: :fox)
       bunny_card = Root::Cards::Base.new(suit: :bunny)
       faction.hand << fox_card
@@ -452,9 +404,6 @@ RSpec.describe Root::Factions::Mouse do
     end
 
     it 'works with birds' do
-      player, faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
-
       bird_card = Root::Cards::Base.new(suit: :bird)
       faction.hand << bird_card
       faction.place_base(clearings[:one])
@@ -463,8 +412,6 @@ RSpec.describe Root::Factions::Mouse do
     end
 
     it 'does not override everything with 1 bird' do
-      _player, faction = build_player_and_faction(:mice)
-
       bird_card = Root::Cards::Base.new(suit: :bird)
       faction.hand << bird_card
 
@@ -474,7 +421,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#mobilize' do
     it 'adds a card from hand to supporters' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.hand << Root::Cards::Base.new(suit: :fox)
@@ -488,7 +434,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#train' do
     it 'adds a card from hand to supporters' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.hand << Root::Cards::Base.new(suit: :fox)
@@ -505,9 +450,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#can_train?' do
     it 'can train with a base and meeples' do
-      player, faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
-
       faction.hand << Root::Cards::Base.new(suit: :fox)
       expect(faction.can_train?).to be false
 
@@ -521,7 +463,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#evening_options' do
     it 'returns options' do
-      _player, faction = build_player_and_faction(:mice)
       allow(faction).to receive(:can_move?).and_return(true)
       allow(faction).to receive(:can_recruit?).and_return(true)
       allow(faction).to receive(:can_battle?).and_return(true)
@@ -535,8 +476,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#recruit_options' do
     it 'returns places where faction has a base' do
-      player, faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
       expect(faction.can_recruit?).to be false
 
       faction.place_base(clearings[:one])
@@ -552,9 +491,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#organize_options' do
     it 'returns places where a faction could organize' do
-      player, faction = build_player_and_faction(:mice)
-      clearings = player.board.clearings
-
       expect(faction.can_organize?).to be false
 
       faction.place_meeple(clearings[:one])
@@ -570,8 +506,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#promote_officer' do
     it 'makes one meeple an officer' do
-      _player, faction = build_player_and_faction(:mice)
-
       expect { faction.promote_officer }
         .to change { faction.meeples.count }
         .by(-1)
@@ -582,7 +516,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#military_operations' do
     it 'allows as many actions as officers' do
-      player, faction = build_player_and_faction(:mice)
       # Pick Recruit as an option
       allow(player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
@@ -598,7 +531,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#recruit' do
     it 'places a warrior at a base' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
 
@@ -615,7 +547,6 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#organize' do
     it 'replaces a warrior with a sympathy token' do
-      player, faction = build_player_and_faction(:mice)
       allow(player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
 
@@ -632,21 +563,17 @@ RSpec.describe Root::Factions::Mouse do
 
   describe '#base_removed' do
     it 'discard all supporter of suit + birds, and half officers rounded up' do
-      player, faction = build_player_and_faction(:mice)
-      _cat_player, cats = build_player_and_faction(:cats)
-      clearings = player.board.clearings
-
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(1, 0)
 
       faction.supporters << Root::Cards::Base.new(suit: :fox)
       faction.supporters << Root::Cards::Base.new(suit: :bird)
-      cats.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
       faction.place_base(clearings[:one])
       faction.place_base(clearings[:five])
       5.times { faction.promote_officer }
 
-      expect { cats.initiate_battle_with_faction(clearings[:one], faction) }
+      expect { cat_faction.initiate_battle_with_faction(clearings[:one], faction) }
         .to change { faction.usable_supporters(:fox).count }
         .by(-2)
         .and change { faction.officers.count }
@@ -658,19 +585,15 @@ RSpec.describe Root::Factions::Mouse do
     end
 
     it 'if no more remaining bases, max 5 supporters' do
-      player, faction = build_player_and_faction(:mice)
-      _cat_player, cats = build_player_and_faction(:cats)
-      clearings = player.board.clearings
-
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(1, 0)
 
-      cats.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
       faction.place_base(clearings[:one])
 
       6.times { faction.supporters << Root::Cards::Base.new(suit: :bunny) }
 
-      expect { cats.initiate_battle_with_faction(clearings[:one], faction) }
+      expect { cat_faction.initiate_battle_with_faction(clearings[:one], faction) }
         .to change { faction.usable_supporters(:bunny).count }
         .by(-1)
         .and change { faction.deck.discard.count }

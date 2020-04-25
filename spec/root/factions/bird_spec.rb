@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Factions::Bird do
+  let(:player) { Root::Players::Computer.for('Sneak', :birds) }
+  let(:faction) { player.faction }
+  let(:board) { player.board }
+  let(:clearings) { board.clearings }
+  let(:cat_player) { Root::Players::Computer.for('Sneak', :cats) }
+  let(:cat_faction) { cat_player.faction }
+
   describe '#handle_faction_token_setup' do
     it 'gives faction 20 meeples, 7 roosts, 2 loyal viziers, and 4 leaders' do
-      player = Root::Players::Human.for('Sneak', :birds)
-      birds = player.faction
-
-      expect(birds.meeples.count).to eq(20)
-      expect(birds.roosts.count).to eq(7)
-      expect(birds.viziers.count).to eq(2)
-      leaders = birds.leaders.map(&:leader)
+      expect(faction.meeples.count).to eq(20)
+      expect(faction.roosts.count).to eq(7)
+      expect(faction.viziers.count).to eq(2)
+      leaders = faction.leaders.map(&:leader)
       expect(leaders).to match_array(%i[builder charismatic commander despot])
     end
   end
@@ -17,37 +21,25 @@ RSpec.describe Root::Factions::Bird do
   describe '#setup' do
     context 'when there is a keep on the board' do
       it 'sets up opposite to keep' do
-        board = Root::Boards::Base.new
-        cat_player = Root::Players::Human.for('Other', :cats)
-        cat_player.board = board
-        cat_faction = cat_player.faction
-        allow(cat_player).to receive(:pick_option).and_return(0)
-        cat_faction.build_keep
-
-        player = Root::Players::Human.for('Sneak', :birds)
-        player.board = board
         allow(player).to receive(:pick_option).and_return(0)
+        cat_faction.place_keep(clearings[:one])
+
         player.setup
 
-        initial_bird_clearing = board.clearing_across_from_keep
-        initial_meeples = initial_bird_clearing.meeples
-        expect(initial_bird_clearing.includes_building?(:roost)).to be true
-        expect(has_only_six_bird_warriors(initial_meeples)).to be true
+        expect(clearings[:three].includes_building?(:roost)).to be true
+        expect(clearings[:three].meeples_of_type(:birds).count).to eq(6)
       end
     end
 
     context 'when there is not a keep on the board' do
       it 'sets up in a corner it chooses' do
-        player = Root::Players::Human.for('Sneak', :birds)
-        board = player.board
         allow(player).to receive(:pick_option).and_return(0)
 
         player.setup
 
         initial_bird_clearing = board.corner_with_roost
-        initial_meeples = initial_bird_clearing.meeples
         expect(initial_bird_clearing.includes_building?(:roost)).to be true
-        expect(has_only_six_bird_warriors(initial_meeples)).to be true
+        expect(initial_bird_clearing.meeples_of_type(:birds).count).to eq(6)
       end
     end
 
@@ -57,11 +49,11 @@ RSpec.describe Root::Factions::Bird do
 
       player = Root::Players::Human.for('Sneak', :birds)
       allow(player).to receive(:pick_option).and_return(0)
-      birds = player.faction
+      faction = player.faction
 
-      expect(birds.current_leader).to be_nil
+      expect(faction.current_leader).to be_nil
       player.setup
-      expect(birds.current_leader).not_to be nil
+      expect(faction.current_leader).not_to be nil
     end
 
     it 'starts initial decree for player with viziers' do
@@ -69,14 +61,14 @@ RSpec.describe Root::Factions::Bird do
       cat_faction.build_keep
 
       player = Root::Players::Human.for('Sneak', :birds)
-      birds = player.faction
+      faction = player.faction
       allow(player).to receive(:pick_option).and_return(0)
-      expect(birds.decree).to be_empty
+      expect(faction.decree).to be_empty
 
       player.setup
 
-      expect(birds.decree.suits_in(:recruit)).to eq([:bird])
-      expect(birds.decree.suits_in(:move)).to eq([:bird])
+      expect(faction.decree.suits_in(:recruit)).to eq([:bird])
+      expect(faction.decree.suits_in(:move)).to eq([:bird])
     end
   end
 
@@ -86,45 +78,45 @@ RSpec.describe Root::Factions::Bird do
         player = Root::Players::Human.for('Sneak', :birds)
         birds = player.faction
         allow(player).to receive(:pick_option).and_return(0)
-        expect(birds.current_leader).to be nil
+        expect(faction.current_leader).to be nil
 
-        birds.change_current_leader
-        expect(birds.current_leader).not_to be nil
-        old_leader = birds.current_leader
-        birds.change_current_leader
-        expect(birds.current_leader).not_to be old_leader
-        expect(birds.used_leaders).to match_array([old_leader])
-        birds.change_current_leader
-        birds.change_current_leader
-        expect(birds.used_leaders.count).to eq(3)
-        birds.change_current_leader
-        expect(birds.used_leaders.count).to eq(0)
+        faction.change_current_leader
+        expect(faction.current_leader).not_to be nil
+        old_leader = faction.current_leader
+        faction.change_current_leader
+        expect(faction.current_leader).not_to be old_leader
+        expect(faction.used_leaders).to match_array([old_leader])
+        faction.change_current_leader
+        faction.change_current_leader
+        expect(faction.used_leaders.count).to eq(3)
+        faction.change_current_leader
+        expect(faction.used_leaders.count).to eq(0)
       end
     end
 
     context 'when given a leader to switch to' do
       it 'switches current leader to given one' do
         birds = Root::Players::Computer.for('Sneak', :birds).faction
-        expect(birds.current_leader).to be nil
+        expect(faction.current_leader).to be nil
 
-        birds.change_current_leader(:despot)
-        expect(birds.current_leader.leader).to eq(:despot)
-        birds.change_current_leader(:builder)
+        faction.change_current_leader(:despot)
+        expect(faction.current_leader.leader).to eq(:despot)
+        faction.change_current_leader(:builder)
 
-        expect(birds.current_leader.leader).to eq(:builder)
-        expect(birds.used_leaders.first.leader).to eq(:despot)
+        expect(faction.current_leader.leader).to eq(:builder)
+        expect(faction.used_leaders.first.leader).to eq(:despot)
       end
     end
   end
 
   describe '#change_viziers_with_leader' do
     it 'sets the viziers into the decree based off leader' do
-      birds = Root::Players::Computer.for('Sneak', :birds).faction
-      birds.change_current_leader(:despot)
+      faction = Root::Players::Computer.for('Sneak', :birds).faction
+      faction.change_current_leader(:despot)
 
-      birds.change_viziers_with_leader
+      faction.change_viziers_with_leader
 
-      expect(birds.decree.suits_in_decree).to eq(
+      expect(faction.decree.suits_in_decree).to eq(
         recruit: [],
         move: [:bird],
         battle: [],
@@ -135,7 +127,6 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#birdsong' do
     it 'adds a card to the decree' do
-      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       card = Root::Cards::Base.new(suit: :fox)
       faction.hand << card
@@ -149,7 +140,6 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when adding two cards to the decree' do
       it 'only allows one card added to be a bird' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
         card1 = Root::Cards::Base.new(suit: :bird)
         card2 = Root::Cards::Base.new(suit: :bird)
@@ -167,7 +157,6 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when able to add 2, but only adding 1' do
       it 'skips second step of adding to decree' do
-        player, faction = build_player_and_faction(:birds)
         # Pick first card, pick recruit, then pick none
         allow(player).to receive(:pick_option).and_return(0, 0, 1)
         card1 = Root::Cards::Base.new(suit: :fox)
@@ -185,7 +174,6 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when hand is empty' do
       it 'draws a card' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
 
         expect { faction.birdsong }.to change(faction.decree, :size).by(1)
@@ -194,10 +182,6 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when no roosts on the board' do
       it 'places roost and 3 warriors into clearing with fewest pieces' do
-        player, faction = build_player_and_faction(:birds)
-        cat_faction = Root::Players::Computer.for('Hal', :cats).faction
-        clearings = player.board.clearings
-
         cat_faction.place_meeple(clearings[:one])
         cat_faction.place_meeple(clearings[:two])
         cat_faction.place_meeple(clearings[:three])
@@ -213,9 +197,6 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#evening' do
     it 'gains victory points and draws cards' do
-      player, faction = build_player_and_faction(:birds)
-      clearings = player.board.clearings
-
       faction.place_roost(clearings[:one])
       faction.place_roost(clearings[:two])
       faction.place_roost(clearings[:three])
@@ -230,9 +211,7 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in recruit' do
     it 'recruits in any valid roosts any number of times' do
-      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
-      clearings = player.board.clearings
 
       faction.place_roost(clearings[:one])
       faction.place_roost(clearings[:five])
@@ -250,9 +229,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when hand has a bird card' do
       it 'uses the bird card as a wild card' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
 
         faction.place_roost(clearings[:one])
 
@@ -266,9 +243,7 @@ RSpec.describe Root::Factions::Bird do
     # This is for charismatic leader and recruit with 1 meeple left
     context 'when unable to recruit' do
       it 'goes into turmoil' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
 
         faction.place_meeple(clearings[:one])
 
@@ -279,10 +254,7 @@ RSpec.describe Root::Factions::Bird do
       end
 
       it 'goes into turmoil if not able to complete completely' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
-
         faction.place_roost(clearings[:one])
         19.times { faction.place_meeple(clearings[:one]) }
         faction.change_current_leader(:charismatic)
@@ -296,9 +268,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when leader is charismatic' do
       it 'recruits twice' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
 
         faction.place_roost(clearings[:one])
 
@@ -313,10 +283,8 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in move' do
     it 'must move FROM clearings matching that suit' do
-      player, faction = build_player_and_faction(:birds)
       players = Root::Players::List.new(player)
       allow(player).to receive(:pick_option).and_return(0)
-      clearings = player.board.clearings
 
       faction.place_meeple(clearings[:one])
       faction.place_meeple(clearings[:two])
@@ -333,13 +301,8 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in build' do
     it 'must build in ruled clearings without a roost' do
-      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
-      cat_player = Root::Players::Computer.for('Other', :cats)
-      cat_player.board = player.board
-      cat_faction = cat_player.faction
 
-      clearings = player.board.clearings
       faction.place_meeple(clearings[:one])
       cat_faction.place_meeple(clearings[:one])
 
@@ -355,9 +318,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when roost is already there' do
       it 'goes into turmoil' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
 
         faction.place_roost(clearings[:one])
 
@@ -370,9 +331,7 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when out of buildings to build' do
       it 'goes into turmoil' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
-        clearings = player.board.clearings
 
         faction.place_roost(clearings[:one])
         faction.place_roost(clearings[:two])
@@ -393,17 +352,12 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in battle' do
     it 'must battle in clearings that match the suit' do
-      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(2, 1)
 
-      cat_player = Root::Players::Human.for('Other', :cats)
-      cat_player.board = player.board
-      cat_faction = cat_player.faction
       players = Root::Players::List.new(player, cat_player)
 
-      clearings = player.board.clearings
       battle_cl = clearings[:one]
       faction.place_meeple(battle_cl)
       cat_faction.place_meeple(battle_cl)
@@ -421,15 +375,9 @@ RSpec.describe Root::Factions::Bird do
 
     context 'with commander as leader' do
       it 'does one extra damage as attacker' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
 
-        cat_player = Root::Players::Human.for('Other', :cats)
-        cat_player.board = player.board
-        cat_faction = cat_player.faction
         players = Root::Players::List.new(player, cat_player)
-
-        clearings = player.board.clearings
 
         battle_cl = clearings[:one]
 
@@ -452,15 +400,10 @@ RSpec.describe Root::Factions::Bird do
 
     context 'with despot as leader' do
       it 'score one extra point on removing building' do
-        player, faction = build_player_and_faction(:birds)
-        cat_player, cat_faction = build_player_and_faction(:cats)
-        cat_player.board = player.board
         allow(player).to receive(:pick_option).and_return(0)
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         players = Root::Players::List.new(player, cat_player)
-
-        clearings = player.board.clearings
 
         battle_cl = clearings[:one]
 
@@ -478,15 +421,10 @@ RSpec.describe Root::Factions::Bird do
       end
 
       it 'score one extra point on removing token' do
-        player, faction = build_player_and_faction(:birds)
-        cat_player, cat_faction = build_player_and_faction(:cats)
-        cat_player.board = player.board
         allow(player).to receive(:pick_option).and_return(0)
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         players = Root::Players::List.new(player, cat_player)
-
-        clearings = player.board.clearings
 
         battle_cl = clearings[:one]
 
@@ -504,16 +442,10 @@ RSpec.describe Root::Factions::Bird do
       end
 
       it 'does not score one extra point on removing meeple' do
-        player, faction = build_player_and_faction(:birds)
-        cat_player, cat_faction = build_player_and_faction(:cats)
-        cat_player.board = player.board
         allow(player).to receive(:pick_option).and_return(0)
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         players = Root::Players::List.new(player, cat_player)
-
-        clearings = player.board.clearings
-
         battle_cl = clearings[:one]
 
         faction.place_meeple(battle_cl)
@@ -533,7 +465,6 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#turmoil!' do
     it 'reduces victory_points, clears decree, and resets leader + viziers' do
-      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.victory_points = 5
@@ -550,7 +481,6 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when points lost is greater than current points' do
       it 'does not go below zero' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
 
         faction.victory_points = 0
@@ -566,7 +496,6 @@ RSpec.describe Root::Factions::Bird do
   describe '#craft_items' do
     # DISDAIN FOR TRADE WOO
     it 'crafts card, removes from board and adds victory points' do
-      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.place_roost(player.board.clearings[:one])
@@ -596,7 +525,6 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when builder is leader' do
       it 'actually uses the items VP' do
-        player, faction = build_player_and_faction(:birds)
         allow(player).to receive(:pick_option).and_return(0)
 
         faction.change_current_leader(:builder)
@@ -629,7 +557,6 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#discard_from_decree' do
     it 'discards cards to the decks discard pile' do
-      player, faction = build_player_and_faction(:birds)
       allow(player).to receive(:pick_option).and_return(0)
 
       vizier = Root::Factions::Birds::Vizier.new
@@ -647,9 +574,6 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#special_info' do
     it 'shows the roosts board and decree' do
-      player, faction = build_player_and_faction(:birds)
-      clearings = player.board.clearings
-
       faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
       faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
       faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
@@ -677,8 +601,6 @@ RSpec.describe Root::Factions::Bird do
     end
 
     it 'shows current leader' do
-      player, faction = build_player_and_faction(:birds)
-
       faction.change_current_leader(:despot)
 
       expect(faction.special_info(true)).to eq(
@@ -692,9 +614,5 @@ RSpec.describe Root::Factions::Bird do
         },
       )
     end
-  end
-
-  def has_only_six_bird_warriors(meeples)
-    meeples.count == 6 && meeples.all? { |w| w.faction == :birds }
   end
 end

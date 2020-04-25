@@ -60,9 +60,9 @@ RSpec.describe Root::Grid::Clearing do
           slots: 1
         )
 
-        building = Root::Factions::Cats::Workshop.new
+        faction = Root::Players::Computer.for('Sneak', :cats).faction
 
-        clearing.create_building(building)
+        faction.place_workshop(clearing)
         expect(clearing.includes_building?(:workshop)).to be true
       end
     end
@@ -76,9 +76,9 @@ RSpec.describe Root::Grid::Clearing do
           ruin: true
         )
 
-        building = Root::Factions::Cats::Workshop.new
+        faction = Root::Players::Computer.for('Sneak', :cats).faction
 
-        clearing.create_building(building)
+        faction.place_workshop(clearing)
         expect(clearing.includes_building?(:workshop)).to be false
       end
     end
@@ -107,10 +107,13 @@ RSpec.describe Root::Grid::Clearing do
           suit: :bunny,
           slots: 3
         )
-        clearing.create_building(Root::Factions::Cats::Sawmill.new)
-        clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
-        clearing.place_meeple(Root::Pieces::Meeple.new(:birds))
 
+        faction = Root::Players::Computer.for('Sneak', :cats).faction
+        faction.place_sawmill(clearing)
+        faction.place_meeple(clearing)
+
+        bird_faction = Root::Players::Computer.for('Sneak', :birds).faction
+        bird_faction.place_meeple(clearing)
         expect(clearing.ruled_by).to eq(:cats)
       end
 
@@ -124,6 +127,12 @@ RSpec.describe Root::Grid::Clearing do
           clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
           clearing.place_meeple(Root::Factions::Mice::Base.new(:mice))
 
+          faction = Root::Players::Computer.for('Sneak', :cats).faction
+          faction.place_meeple(clearing)
+
+          mouse_faction = Root::Players::Computer.for('Sneak', :mice).faction
+          mouse_faction.place_meeple(clearing)
+
           expect(clearing.ruled_by).to eq(nil)
         end
       end
@@ -136,10 +145,14 @@ RSpec.describe Root::Grid::Clearing do
           suit: :bunny,
           slots: 3
         )
-        clearing.create_building(Root::Factions::Cats::Sawmill.new)
-        clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
-        clearing.create_building(Root::Factions::Birds::Roost.new)
-        clearing.place_meeple(Root::Pieces::Meeple.new(:birds))
+
+        faction = Root::Players::Computer.for('Sneak', :cats).faction
+        faction.place_sawmill(clearing)
+        faction.place_meeple(clearing)
+
+        bird_faction = Root::Players::Computer.for('Sneak', :birds).faction
+        bird_faction.place_roost(clearing)
+        bird_faction.place_meeple(clearing)
 
         expect(clearing.ruled_by).to eq(:birds)
       end
@@ -153,7 +166,8 @@ RSpec.describe Root::Grid::Clearing do
           slots: 3,
           ruin: true
         )
-        clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
+        faction = Root::Players::Computer.for('Sneak', :cats).faction
+        faction.place_sawmill(clearing)
 
         expect(clearing.ruled_by).to eq(:cats)
       end
@@ -161,28 +175,37 @@ RSpec.describe Root::Grid::Clearing do
 
     # ohoho for future me
     # context 'when lizards are involved' do
-    #   it 'gives it to the lizardos over all else'
+    #   it 'gives it to the lizardos over all else with a garden'
     # end
   end
 
   describe '#connected_wood' do
     it 'checks adjacents and then some to find all connected paths' do
       clearings = Root::Boards::Base.new.clearings
-      # connected
-      clearings[:one].place_meeple(Root::Pieces::Meeple.new(:cats))
-      clearings[:one].place_token(Root::Factions::Cats::Wood.new)
-      clearings[:five].place_meeple(Root::Pieces::Meeple.new(:cats))
-      clearings[:five].place_token(Root::Factions::Cats::Wood.new)
-      clearings[:two].place_meeple(Root::Pieces::Meeple.new(:cats))
-      clearings[:two].place_token(Root::Factions::Cats::Wood.new)
-      clearings[:two].place_token(Root::Factions::Cats::Wood.new)
 
-      # not connected
-      clearings[:three].place_meeple(Root::Pieces::Meeple.new(:cats))
-      clearings[:three].place_token(Root::Factions::Cats::Wood.new)
+      faction = Root::Players::Computer.for('Sneak', :cats).faction
+
+      # connected
+      faction.place_meeple(clearings[:one])
+      faction.place_wood(clearings[:one])
+      faction.place_meeple(clearings[:five])
+      faction.place_wood(clearings[:five])
+      faction.place_meeple(clearings[:two])
+      faction.place_wood(clearings[:two])
+      faction.place_wood(clearings[:two])
+
+      faction.place_meeple(clearings[:three])
+      faction.place_wood(clearings[:three])
 
       expect(clearings[:one].connected_wood)
-        .to match_array([clearings[:one], clearings[:five], clearings[:two], clearings[:two]])
+        .to match_array(
+          [
+            clearings[:one],
+            clearings[:five],
+            clearings[:two],
+            clearings[:two]
+          ]
+        )
     end
   end
 end
