@@ -6,7 +6,7 @@ module Root
   module Display
     # Handle the display logic for the history object
     class History
-      MAX_NUMBER_OF_MAP_LINES = 32
+      MAX_NUMBER_OF_MAP_LINES = 33
       # MAX_NUMBER_OF_MAP_LINES = 7
       def initialize(history)
         @history = history
