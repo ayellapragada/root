@@ -83,6 +83,21 @@ RSpec.describe Root::Factions::Cat do
       expect(clearings[:nine].wood.count).to be(2)
       expect(clearings[:one].wood.count).to be(1)
     end
+
+    context 'when not enough wood for all sawmills' do
+      it 'selects which sawmills to place wood at' do
+        allow(player).to receive(:pick_option).and_return(0)
+        6.times { faction.place_wood(clearings[:one]) }
+        faction.place_sawmill(clearings[:two])
+        faction.place_sawmill(clearings[:three])
+        faction.place_sawmill(clearings[:four])
+
+        faction.birdsong
+        expect(clearings[:two].wood.count).to eq(1)
+        expect(clearings[:three].wood.count).to eq(1)
+        expect(clearings[:four].wood.count).to eq(0)
+      end
+    end
   end
 
   # Little bit silly, but each method should reaally be tested correctly alone.
@@ -235,6 +250,16 @@ RSpec.describe Root::Factions::Cat do
       faction.march(players)
       expect(player.board.clearings[:one].meeples.count).to be(0)
       expect(player.board.clearings[:two].meeples.count).to be(1)
+    end
+
+    it 'does not have to move' do
+      allow(player).to receive(:pick_option).and_return(1)
+      players = Root::Players::List.new(player, bird_player)
+
+      faction.place_meeple(clearings[:one])
+
+      faction.march(players)
+      expect(player.board.clearings[:one].meeples.count).to be(1)
     end
   end
 
@@ -411,6 +436,21 @@ RSpec.describe Root::Factions::Cat do
       expect(clearings[:nine].meeples_of_type(:cats).count).to be(2)
       expect(clearings[:one].meeples_of_type(:cats).count).to be(1)
     end
+
+    context 'when not enough warriors for all recruiters' do
+      it 'allows to select where warriors go' do
+        allow(player).to receive(:pick_option).and_return(0)
+        23.times { faction.place_meeple(clearings[:one]) }
+        faction.place_recruiter(clearings[:two])
+        faction.place_recruiter(clearings[:three])
+        faction.place_recruiter(clearings[:four])
+
+        faction.recruit
+        expect(clearings[:two].meeples_of_type(:cats).count).to eq(1)
+        expect(clearings[:three].meeples_of_type(:cats).count).to eq(1)
+        expect(clearings[:four].meeples_of_type(:cats).count).to eq(0)
+      end
+    end
   end
 
   describe '#can_discard_bird?' do
@@ -434,7 +474,6 @@ RSpec.describe Root::Factions::Cat do
   describe '#discard_bird' do
     it 'discards a bird card in hand to get an extra action' do
       allow(player).to receive(:pick_option).and_return(0)
-      player.setup
 
       card = Root::Cards::Base.new(suit: :bird)
       faction.hand << card
@@ -444,6 +483,19 @@ RSpec.describe Root::Factions::Cat do
         .by(1)
 
       expect(faction.hand).not_to include(card)
+    end
+
+    it 'is able to be cancelled' do
+      allow(player).to receive(:pick_option).and_return(1)
+
+      card = Root::Cards::Base.new(suit: :bird)
+      faction.hand << card
+
+      expect { faction.discard_bird }
+        .to change(faction, :remaining_actions)
+        .by(0)
+
+      expect(faction.hand).to include(card)
     end
   end
 

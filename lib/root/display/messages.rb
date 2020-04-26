@@ -26,11 +26,11 @@ module Root
           history: ''
         },
         c_overwork: {
-          prompt: 'Pick a clearing to get an extra wood in',
+          prompt: 'Pick a clearing to get a wood in',
           history: 'Overworked in clearing %s'
         },
         c_recruit: {
-          prompt: '',
+          prompt: 'Pick clearing to recruit in',
           history: 'Recruited in clearing(s) %s'
         },
         c_wood_removal: {

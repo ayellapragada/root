@@ -151,7 +151,7 @@ module Root
       def craft_items
         @crafted_suits = []
         until craftable_items.empty?
-          player.choose(:f_item_select, craftable_items) do |item|
+          player.choose(:f_item_select, craftable_items, yield_anyway: true) do |item|
             return if item == :none
 
             @crafted_suits.concat(item.craft)
@@ -195,10 +195,7 @@ module Root
           move_options,
           required: required
         ) do |cl|
-          return false if cl == :none
-
           move(cl, players)
-          true
         end
       end
 
@@ -262,8 +259,6 @@ module Root
 
       def battle(players)
         player.choose(:f_battle_options, battle_options, required: false) do |cl|
-          return false if cl == :none
-
           battle_in_clearing(cl, players)
         end
       end
@@ -302,8 +297,6 @@ module Root
       def discard_card_with_suit(suit, bird: true, required: true)
         options = cards_in_hand_with_suit(suit, bird: bird)
         player.choose(:f_discard_card, options, required: required) do |card|
-          return false if card == :none
-
           discard_card(card)
           player.add_to_history(:f_discard_card, suit: card.suit)
           true

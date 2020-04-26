@@ -119,10 +119,22 @@ module Root
       # the player should be on prompted where to place it.
       def birdsong
         sawmill_clearings = board.clearings_with(:sawmill)
-
-        sawmill_clearings.each do |cl|
-          cl.buildings_of_type(:sawmill).count.times do
-            place_wood(cl) unless wood.count.zero?
+        if wood.count > sawmill_clearings.count
+          sawmill_clearings.each do |cl|
+            cl.buildings_of_type(:sawmill).count.times do
+              place_wood(cl)
+            end
+          end
+        else
+          sawmill_opts = []
+          sawmill_clearings.each do |cl|
+            cl.buildings_of_type(:sawmill).each { sawmill_opts << cl }
+          end
+          until wood.count.zero?
+            player.choose(:c_overwork, sawmill_opts, required: true) do |cl|
+              sawmill_opts.delete_first(cl)
+              place_wood(cl)
+            end
           end
         end
       end
@@ -135,6 +147,7 @@ module Root
           player.choose(
             :f_pick_action,
             currently_available_options,
+            yield_anyway: true,
             info: { actions: "(#{@remaining_actions} actions remaining) " }
           ) do |action|
             # :nocov:
@@ -197,8 +210,6 @@ module Root
 
       def build
         player.choose(:f_build_options, build_options) do |cl|
-          return false if cl == :none
-
           build_in_clearing(cl)
         end
       end
@@ -272,12 +283,28 @@ module Root
       def recruit
         @recruited = true
         recuitable_clearings = board.clearings_with(:recruiter)
+        clearings_recruited_in = []
 
-        recuitable_clearings.each do |cl|
-          cl.buildings_of_type(:recruiter).count.times do
-            place_meeple(cl) unless meeples.count.zero?
+        if meeples.count > recuitable_clearings.count
+          recuitable_clearings.each do |cl|
+            clearings_recruited_in << cl
+            cl.buildings_of_type(:recruiter).count.times do
+              place_meeple(cl)
+            end
+          end
+        else
+          recruit_opts = []
+          recuitable_clearings.each do |cl|
+            cl.buildings_of_type(:recruiter).each { recruit_opts << cl }
+          end
+          until meeples.count.zero?
+            player.choose(:c_recruit, recruit_opts, required: true) do |cl|
+              recruit_opts.delete_first(cl)
+              place_meeple(cl)
+            end
           end
         end
+
         player.add_to_history(
           :c_recruit,
           clearings: recuitable_clearings.map(&:priority).join(', ')
@@ -293,8 +320,6 @@ module Root
 
       def overwork
         player.choose(:c_overwork, overwork_options, required: false) do |cl|
-          return false if cl == :none
-
           discard_card_with_suit(cl.suit)
           place_wood(cl)
           player.add_to_history(:c_overwork, clearing: cl.priority)
@@ -302,9 +327,9 @@ module Root
       end
 
       def discard_bird
-        if discard_card_with_suit(:bird, required: false)
-          @remaining_actions += 1
-        end
+        return unless discard_card_with_suit(:bird, required: false)
+
+        @remaining_actions += 1
       end
 
       def post_battle(battle)
@@ -332,7 +357,6 @@ module Root
 
       private
 
-      # EXPERIMENTAL LETS SEE HOW THIS WORKS
       def with_action
         @remaining_actions -= 1 if yield
       end

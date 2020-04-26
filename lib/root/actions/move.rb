@@ -47,6 +47,7 @@ module Root
           from: from_clearing.priority,
           to: to_clearing.priority
         )
+        true
       end
     end
   end
