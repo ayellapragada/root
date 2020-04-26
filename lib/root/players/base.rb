@@ -99,8 +99,6 @@ module Root
         choice = pick_option(key, total_options, info: info)
         selected = total_options[choice]
 
-        return false if selected == :none
-
         yield(selected)
       end
     end

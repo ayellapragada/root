@@ -32,6 +32,7 @@ module Root
 
         render_map(map, game_info, other, history)
         clear_out_rest_of_screen
+        Cursor.move_up(2)
         render_current_info(current_player)
         render_hand(current_player)
         Cursor.show_cursor

@@ -146,7 +146,7 @@ module Root
             when :recruit then with_action { recruit }
             when :overwork then with_action { overwork }
             when :discard_bird then discard_bird
-            when :none then break
+            when :none then @remaining_actions = 0
             end
             # :nocov:
           end
@@ -197,8 +197,10 @@ module Root
       end
 
       def build
-        player.choose(:f_build_options, build_options, required: true) do |clearing|
-          build_in_clearing(clearing)
+        player.choose(:f_build_options, build_options, required: false) do |cl|
+          return false if cl == :none
+
+          build_in_clearing(cl)
         end
       end
 
@@ -325,6 +327,11 @@ module Root
       end
 
       private
+
+      # EXPERIMENTAL LETS SEE HOW THIS WORKS
+      def with_action
+        @remaining_actions -= 1 if yield
+      end
 
       def suits_to_craft_with
         board.clearings_with(:workshop).map(&:suit)

@@ -36,34 +36,43 @@ module Root
       end
 
       def handle_with_clearings
-        display_clearing_options
+        puts format_options_with_clearings
         receive_and_map_choice
       end
 
       def handle_with_regular
-        display_options
-        input_for_options
-      end
-
-      def display_options
         puts format_options_with_numbers
-      end
-
-      def display_clearing_options
-        puts format_options_with_clearings
+        input_for_options
       end
 
       def format_options_with_numbers
         options
           .map
-          .with_index { |option, i| format_with_color("(#{i + 1}) #{option.inspect}", option) }
+          .with_index do |option, i|
+          format_with_none(option) do
+            format_with_color("(#{i + 1}) #{option.inspect}", option)
+          end
+        end
           .join("\n")
       end
 
       def format_options_with_clearings
         options
-          .map { |option| format_with_color("(#{option.priority}) #{option.inspect}", option) }
+          .map do |option|
+          format_with_none(option) do
+            cl_text = "(#{option.priority}) #{option.inspect}"
+            format_with_color(cl_text, option)
+          end
+        end
           .join("\n")
+      end
+
+      def format_with_none(option)
+        if option == :none
+          '(0) :none'
+        else
+          yield
+        end
       end
 
       def format_with_color(string, option)
@@ -76,6 +85,7 @@ module Root
 
       def receive_and_map_choice
         option = handle_getting_input
+        return options.length - 1 if handle_none?(option)
 
         options.find_index do |o|
           o.priority == option.to_i ||
@@ -85,8 +95,14 @@ module Root
         end
       end
 
+      def handle_none?(option)
+        options.include?(:none) && option.to_i.zero?
+      end
+
       def input_for_options
         option = handle_getting_input
+        return options.length - 1 if handle_none?(option)
+
         (option.to_i - 1).tap do |res|
           raise InputError if res <= -1 || res >= options.count
         end

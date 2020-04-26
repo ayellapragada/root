@@ -255,7 +255,7 @@ module Root
       end
 
       def battle(players)
-        player.choose(:f_battle_options, battle_options) do |clearing|
+        player.choose(:f_battle_options, battle_options, required: false) do |clearing|
           battle_in_clearing(clearing, players)
         end
       end
