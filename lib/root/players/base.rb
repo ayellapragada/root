@@ -92,6 +92,17 @@ module Root
           opts: opts
         }
       end
+
+      def choose(key, choices, required: false, info: {})
+        extra_keys = required ? [] : [:none]
+        total_options = choices + extra_keys
+        choice = pick_option(key, total_options, info: info)
+        selected = total_options[choice]
+
+        return false if selected == :none
+
+        yield(selected)
+      end
     end
   end
 end

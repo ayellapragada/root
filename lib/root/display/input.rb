@@ -9,17 +9,18 @@ module Root
       class InputError < StandardError; end
       class ShowMenu < StandardError; end
 
-      attr_reader :key, :options, :discard
+      attr_reader :key, :options, :discard, :info
 
       # :nocov:
-      def initialize(key, options, discard:)
+      def initialize(key, options, discard:, info:)
         @key = key
         @options = options
         @discard = discard
+        @info = info
       end
 
       def display_pick_option_message
-        puts Messages::LIST[key][:prompt]
+        puts Messages::LIST[key][:prompt] % info.values
       end
 
       def handle_input

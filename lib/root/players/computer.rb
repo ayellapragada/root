@@ -7,10 +7,10 @@ module Root
     # Handles Computer logic for this.
     class Computer < Base
       # This is silly but I just want a random valid index.
-      def pick_option(_key, options)
-        @game&.render(clearings: options)
-        choice = options.sample
-        options.find_index(choice)
+      def pick_option(_key, choices, **)
+        @game&.render(clearings: choices)
+        choice = choices.sample
+        choices.find_index(choice)
       end
 
       # Easier "SMART" mode:

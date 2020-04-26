@@ -75,10 +75,9 @@ module Root
 
       def build_keep
         options = board.available_corners
-        choice = player.pick_option(:c_initial_keep, options)
-        clearing = options[choice]
-
-        place_keep(clearing)
+        player.choose(:c_initial_keep, options, required: true) do |clearing|
+          place_keep(clearing)
+        end
       end
 
       def build_initial_buildings
@@ -89,14 +88,17 @@ module Root
       end
 
       def player_places_building(building)
-        options_for_building = find_initial_options
-        key = "c_initial_#{building.type}".to_sym
-        choice = player.pick_option(key, options_for_building)
-        clearing = options_for_building[choice]
-        place_building(building, clearing)
+        player.choose(
+          :c_initial_building,
+          initial_building_opts,
+          required: true,
+          info: { building: building.type.capitalize }
+        ) do |clearing|
+          place_building(building, clearing)
+        end
       end
 
-      def find_initial_options
+      def initial_building_opts
         keep_clearing = board.corner_with_keep
         [keep_clearing, *keep_clearing.adjacents].select(&:with_spaces?)
       end
@@ -128,23 +130,26 @@ module Root
       def daylight(players)
         craft_items
         @remaining_actions = 3
-        until remaining_actions.zero?
-          opts = currently_available_options + [:none]
-          choice = player.pick_option(:f_pick_action, opts)
-          action = opts[choice]
 
-          # STILL IN PROGRESS, NOT ACCURATE TO WHAT IS OR IS NOT TESTED
-          # :nocov:
-          case action
-          when :battle then with_action { battle(players) }
-          when :march then with_action { march(players) }
-          when :build then with_action { build }
-          when :recruit then with_action { recruit }
-          when :overwork then with_action { overwork }
-          when :discard_bird then discard_bird
-          when :none then return
+        until currently_available_options.empty? || remaining_actions.zero?
+          player.choose(
+            :f_pick_action,
+            currently_available_options,
+            required: false,
+            info: { actions: "(#{@remaining_actions} actions remaining) " }
+          ) do |action|
+            # :nocov:
+            case action
+            when :battle then with_action { battle(players) }
+            when :march then with_action { march(players) }
+            when :build then with_action { build }
+            when :recruit then with_action { recruit }
+            when :overwork then with_action { overwork }
+            when :discard_bird then discard_bird
+            when :none then break
+            end
+            # :nocov:
           end
-          # :nocov:
         end
       end
 

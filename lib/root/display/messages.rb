@@ -21,16 +21,8 @@ module Root
           prompt: 'Pick where to place the Keep',
           history: ''
         },
-        c_initial_sawmill: {
-          prompt: 'Pick where to place first Sawmill',
-          history: ''
-        },
-        c_initial_workshop: {
-          prompt: 'Pick where to place first Workshop',
-          history: ''
-        },
-        c_initial_recruiter: {
-          prompt: 'Pick where to place first Recruiter',
+        c_initial_building: {
+          prompt: 'Pick where to place first %s',
           history: ''
         },
         c_overwork: {
@@ -86,7 +78,7 @@ module Root
           history: 'Moved %s warrior(s) from clearing %s to clearing %s'
         },
         f_pick_action: {
-          prompt: 'Pick an action to take',
+          prompt: 'Pick an action to take %s',
           history: ''
         },
         f_draw_cards: {
