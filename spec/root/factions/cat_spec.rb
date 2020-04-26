@@ -379,6 +379,7 @@ RSpec.describe Root::Factions::Cat do
 
       expect(faction.victory_points).to be(1)
       expect(faction.sawmills.count).to be(4)
+      expect(faction.wood.count).to be(8)
       expect(clearing.buildings.count).to be(2)
       expect(clearing.wood?).to be false
     end

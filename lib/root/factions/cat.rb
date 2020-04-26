@@ -113,12 +113,14 @@ module Root
         evening
       end
 
+      # Same issue as recruit. If there isn't enough,
+      # the player should be on prompted where to place it.
       def birdsong
         sawmill_clearings = board.clearings_with(:sawmill)
 
         sawmill_clearings.each do |cl|
           cl.buildings_of_type(:sawmill).count.times do
-            place_wood(cl)
+            place_wood(cl) unless wood.count.zero?
           end
         end
       end
@@ -224,7 +226,7 @@ module Root
           choice = player.pick_option(:c_wood_removal, accessible_wood)
           clearing_to_remove_from = accessible_wood[choice]
           accessible_wood.delete_at(accessible_wood.index(clearing_to_remove_from))
-          wood << clearing_to_remove_from.remove_wood
+          tokens << clearing_to_remove_from.remove_wood
           num_wood_to_remove -= 1
         end
       end
@@ -258,13 +260,15 @@ module Root
         recruiter: [0, 1, 2, 3, 3, 4]
       }.freeze
 
+      # Same issue as birdsong. If there isn't enough,
+      # the player should be prompted on where to place it.
       def recruit
         @recruited = true
         recuitable_clearings = board.clearings_with(:recruiter)
 
         recuitable_clearings.each do |cl|
           cl.buildings_of_type(:recruiter).count.times do
-            place_meeple(cl)
+            place_meeple(cl) unless meeples.count.zero?
           end
         end
         player.add_to_history(
