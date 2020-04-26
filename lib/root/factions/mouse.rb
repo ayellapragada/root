@@ -258,11 +258,12 @@ module Root
 
       def usable_supporters(suit)
         return supporters unless suit
+
         supporters_for(suit) + supporters_for(:bird)
       end
 
       def spread_sympathy
-        until spread_sympathy_options.empty?
+        until spread_sympathy_options.empty? || sympathy.count.zero?
           return unless prompt_for_action(:m_spread_sympathy_check)
 
           opts = spread_sympathy_options
