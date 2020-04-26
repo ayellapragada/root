@@ -49,3 +49,7 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 - Refactor all opts to have a :none, to go back and reselect.
 - This also makes everything feel slightly better for QoL.
+- Bug when you just _literally_ can't build anymore of them, especially for cats.
+- The inequality operator just goofs on that one.
+- Hand refactor that allows to just ask the hand if anything matches, as opposed to the
+  "oh ok i'll check if a card matches and then also another card".
