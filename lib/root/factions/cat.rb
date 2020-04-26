@@ -135,7 +135,6 @@ module Root
           player.choose(
             :f_pick_action,
             currently_available_options,
-            required: false,
             info: { actions: "(#{@remaining_actions} actions remaining) " }
           ) do |action|
             # :nocov:
@@ -197,7 +196,7 @@ module Root
       end
 
       def build
-        player.choose(:f_build_options, build_options, required: false) do |cl|
+        player.choose(:f_build_options, build_options) do |cl|
           return false if cl == :none
 
           build_in_clearing(cl)
@@ -238,7 +237,9 @@ module Root
       end
 
       def march(players)
-        2.times { make_move(players) }
+        if make_move(players)
+          make_move(players, required: true)
+        end
       end
 
       def build_options(*)
@@ -291,16 +292,19 @@ module Root
       end
 
       def overwork
-        player.choose(:c_overwork, overwork_options, required: true) do |clearing|
-          discard_card_with_suit(clearing.suit)
-          place_wood(clearing)
-          player.add_to_history(:c_overwork, clearing: clearing.priority)
+        player.choose(:c_overwork, overwork_options, required: false) do |cl|
+          return false if cl == :none
+
+          discard_card_with_suit(cl.suit)
+          place_wood(cl)
+          player.add_to_history(:c_overwork, clearing: cl.priority)
         end
       end
 
       def discard_bird
-        discard_card_with_suit(:bird)
-        @remaining_actions += 1
+        if discard_card_with_suit(:bird, required: false)
+          @remaining_actions += 1
+        end
       end
 
       def post_battle(battle)

@@ -19,8 +19,13 @@ module Root
         @info = info
       end
 
-      def display_pick_option_message
-        puts Messages::LIST[key][:prompt] % info.values
+      def display_pick_option_message(error: false)
+        str = Messages::LIST[key][:prompt] % info.values
+        if error
+          puts "(Invalid Choice, Try Again) #{str}"
+        else
+          puts str
+        end
       end
 
       def handle_input
@@ -31,7 +36,7 @@ module Root
         end
       rescue Root::Display::Input::InputError
         (1 + options.length).times { Cursor.clear_previous_line }
-        puts 'Invalid Choice, try again'
+        display_pick_option_message(error: true)
         retry
       end
 
@@ -96,7 +101,7 @@ module Root
       end
 
       def handle_none?(option)
-        options.include?(:none) && option.to_i.zero?
+        options.include?(:none) && option == '0'
       end
 
       def input_for_options
@@ -112,10 +117,10 @@ module Root
         menu_opts = %w[? help discard clear]
         loop do
           option = gets.chomp
+          Cursor.clear_previous_line
           return option unless menu_opts.include?(option)
 
           handle_showing_menu(option)
-          Cursor.clear_previous_line
         end
       end
 

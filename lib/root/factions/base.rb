@@ -151,13 +151,12 @@ module Root
       def craft_items
         @crafted_suits = []
         until craftable_items.empty?
-          options = craftable_items + [:none]
-          choice = player.pick_option(:f_item_select, options)
-          item = options[choice]
-          return if item == :none
+          player.choose(:f_item_select, craftable_items) do |item|
+            return if item == :none
 
-          @crafted_suits.concat(item.craft)
-          craft_item(item)
+            @crafted_suits.concat(item.craft)
+            craft_item(item)
+          end
         end
       end
 
@@ -190,9 +189,16 @@ module Root
         end
       end
 
-      def make_move(players)
-        player.choose(:f_move_from_options, move_options) do |clearing|
-          move(clearing, players)
+      def make_move(players, required: false)
+        player.choose(
+          :f_move_from_options,
+          move_options,
+          required: required
+        ) do |cl|
+          return false if cl == :none
+
+          move(cl, players)
+          true
         end
       end
 
@@ -255,8 +261,10 @@ module Root
       end
 
       def battle(players)
-        player.choose(:f_battle_options, battle_options, required: false) do |clearing|
-          battle_in_clearing(clearing, players)
+        player.choose(:f_battle_options, battle_options, required: false) do |cl|
+          return false if cl == :none
+
+          battle_in_clearing(cl, players)
         end
       end
 
@@ -291,11 +299,14 @@ module Root
         end
       end
 
-      def discard_card_with_suit(suit, bird: true)
+      def discard_card_with_suit(suit, bird: true, required: true)
         options = cards_in_hand_with_suit(suit, bird: bird)
-        player.choose(:f_discard_card, options, required: true) do |card|
+        player.choose(:f_discard_card, options, required: required) do |card|
+          return false if card == :none
+
           discard_card(card)
           player.add_to_history(:f_discard_card, suit: card.suit)
+          true
         end
       end
 

@@ -263,7 +263,9 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#overwork' do
     it 'places a wood at a workshop after discarding a card of that suit' do
+      allow(player).to receive(:pick_option).and_return(0)
       player.setup
+
       clearing = player.board.clearings_with(:sawmill).first
       faction.hand << Root::Cards::Base.new(suit: clearing.suit)
 
@@ -431,13 +433,14 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#discard_bird' do
     it 'discards a bird card in hand to get an extra action' do
+      allow(player).to receive(:pick_option).and_return(0)
       player.setup
 
       card = Root::Cards::Base.new(suit: :bird)
       faction.hand << card
 
       expect { faction.discard_bird }
-        .to change { faction.remaining_actions }
+        .to change(faction, :remaining_actions)
         .by(1)
 
       expect(faction.hand).not_to include(card)
