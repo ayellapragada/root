@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require_relative '../core_extensions/symbol/pluralize'
+require_relative '../core_extensions/array/delete_first'
 
 module Root
   module Factions
     # Interface for basic faction logic
     class Base
       Symbol.include CoreExtensions::Symbol::Pluralize
+      Array.include CoreExtensions::Array::DeleteFirst
 
       SETUP_PRIORITY = 'ZZZ'
 
@@ -188,15 +190,10 @@ module Root
         end
       end
 
-      def pick_where_to_move_from
-        move_opts = move_options
-        move_choice = player.pick_option(:f_move_from_options, move_opts)
-        move_opts[move_choice]
-      end
-
       def make_move(players)
-        clearing = pick_where_to_move_from
-        move(clearing, players)
+        player.choose(:f_move_from_options, move_options) do |clearing|
+          move(clearing, players)
+        end
       end
 
       def move_options(suits = [])
@@ -258,10 +255,9 @@ module Root
       end
 
       def battle(players)
-        opts = battle_options
-        choice = player.pick_option(:f_battle_options, opts)
-        clearing = opts[choice]
-        battle_in_clearing(clearing, players)
+        player.choose(:f_battle_options, battle_options) do |clearing|
+          battle_in_clearing(clearing, players)
+        end
       end
 
       def battle_in_clearing(clearing, players)
@@ -297,10 +293,10 @@ module Root
 
       def discard_card_with_suit(suit, bird: true)
         options = cards_in_hand_with_suit(suit, bird: bird)
-        choice = player.pick_option(:f_discard_card, options)
-        card = options[choice]
-        discard_card(card)
-        player.add_to_history(:f_discard_card, suit: card.suit)
+        player.choose(:f_discard_card, options, required: true) do |card|
+          discard_card(card)
+          player.add_to_history(:f_discard_card, suit: card.suit)
+        end
       end
 
       def draw_cards

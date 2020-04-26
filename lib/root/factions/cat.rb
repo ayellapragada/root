@@ -197,27 +197,26 @@ module Root
       end
 
       def build
-        build_opts = build_options
-        build_opts_choice = player.pick_option(:f_build_options, build_opts)
-        clearing_to_build_in = build_options[build_opts_choice]
-        build_in_clearing(clearing_to_build_in)
+        player.choose(:f_build_options, build_options, required: true) do |clearing|
+          build_in_clearing(clearing)
+        end
       end
 
       def build_in_clearing(clearing)
         accessible_wood = clearing.connected_wood
         options_for_building = %i[sawmill recruiter workshop].select do |type|
-          accessible_wood.count >= cost_for_next_building(type)
+          !send(type.pluralize).count.zero? &&
+            (accessible_wood.count >= cost_for_next_building(type))
         end
-        choice = player.pick_option(:f_pick_building, options_for_building)
-        building_type = options_for_building[choice]
 
-        wood_to_remove = cost_for_next_building(building_type)
+        player.choose(:f_pick_building, options_for_building, required: true) do |building_type|
+          wood_to_remove = cost_for_next_building(building_type)
+          piece = send(building_type.pluralize).first
 
-        piece = send(building_type.pluralize).first
-
-        self.victory_points += vp_for_next(building_type)
-        place_building(piece, clearing)
-        remove_wood(accessible_wood, wood_to_remove)
+          self.victory_points += vp_for_next(building_type)
+          place_building(piece, clearing)
+          remove_wood(accessible_wood, wood_to_remove)
+        end
       end
 
       VICTORY_POINTS = {
@@ -228,11 +227,11 @@ module Root
 
       def remove_wood(accessible_wood, num_wood_to_remove)
         until num_wood_to_remove.zero?
-          choice = player.pick_option(:c_wood_removal, accessible_wood)
-          clearing_to_remove_from = accessible_wood[choice]
-          accessible_wood.delete_at(accessible_wood.index(clearing_to_remove_from))
-          tokens << clearing_to_remove_from.remove_wood
-          num_wood_to_remove -= 1
+          player.choose(:c_wood_removal, accessible_wood, required: true) do |clearing|
+            accessible_wood.delete_first(clearing)
+            tokens << clearing.remove_wood
+            num_wood_to_remove -= 1
+          end
         end
       end
 
@@ -290,12 +289,11 @@ module Root
       end
 
       def overwork
-        options = overwork_options
-        choice = player.pick_option(:c_overwork, options)
-        sawmill_clearing = options[choice]
-        discard_card_with_suit(sawmill_clearing.suit)
-        place_wood(sawmill_clearing)
-        player.add_to_history(:c_overwork, clearing: sawmill_clearing.priority)
+        player.choose(:c_overwork, overwork_options, required: true) do |clearing|
+          discard_card_with_suit(clearing.suit)
+          place_wood(clearing)
+          player.add_to_history(:c_overwork, clearing: clearing.priority)
+        end
       end
 
       def discard_bird
@@ -312,8 +310,7 @@ module Root
       end
 
       def field_hospital(meeps, suit)
-        opt = player.pick_option(:c_field_hospital, %i[yes no])
-        return if opt == 1
+        return unless prompt_for_action(:c_field_hospital)
 
         discard_card_with_suit(suit)
         meeps.length.times do
