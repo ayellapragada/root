@@ -162,7 +162,7 @@ module Root
       end
 
       def craft_item(choice)
-        board.items.delete_at(board.items.index(choice.item))
+        board.items.delete_first(choice.item)
         deck.discard_card(choice)
         hand.delete(choice)
         self.victory_points += handle_item_vp(choice)

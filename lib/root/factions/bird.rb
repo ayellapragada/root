@@ -260,7 +260,7 @@ module Root
           clearing = opts[choice]
 
           suit = resolve_bird_in_decree(needed_suits, clearing)
-          needed_suits.delete_at(needed_suits.index(suit))
+          needed_suits.delete_first(suit)
           yield(clearing)
         end
       end
