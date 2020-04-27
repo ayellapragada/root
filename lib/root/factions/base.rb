@@ -47,6 +47,7 @@ module Root
             type: piece.type,
             clearing: clearing.priority
           )
+          piece
         end
       end
 
@@ -238,16 +239,16 @@ module Root
       end
 
       def move(clearing, players)
-        where_to_opts = clearing_move_options(clearing)
-        where_to_choice = player.pick_option(:f_move_to_options, where_to_opts)
-        where_to = where_to_opts[where_to_choice]
+        opts = clearing_move_options(clearing)
 
-        max_choice = clearing.meeples_of_type(faction_symbol).count
-        how_many_opts = [*1.upto(max_choice)]
-        how_many_choice = player.pick_option(:f_move_number, how_many_opts)
-        how_many = how_many_opts[how_many_choice]
+        player.choose(:f_move_to_options, opts) do |where_to|
+          max_choice = clearing.meeples_of_type(faction_symbol).count
+          how_many_opts = [*1.upto(max_choice)]
 
-        Actions::Move.new(clearing, where_to, how_many, self, players).()
+          player.choose(:f_move_number, how_many_opts) do |how_many|
+            Actions::Move.new(clearing, where_to, how_many, self, players).()
+          end
+        end
       end
 
       def can_battle?

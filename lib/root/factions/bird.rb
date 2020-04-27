@@ -217,8 +217,8 @@ module Root
           num_to_recruit = current_leader?(:charismatic) ? 2 : 1
           raise TurmoilError if meeples.count < num_to_recruit
 
-          num_to_recruit.times { place_meeple(cl) }
           player.add_to_history(:f_recruit_clearing, clearing: cl.priority)
+          num_to_recruit.times { place_meeple(cl) }
         end
       end
 
@@ -260,8 +260,7 @@ module Root
           clearing = opts[choice]
 
           suit = resolve_bird_in_decree(needed_suits, clearing)
-          needed_suits.delete_first(suit)
-          yield(clearing)
+          needed_suits.delete_first(suit) if yield(clearing)
         end
       end
 
