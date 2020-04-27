@@ -499,6 +499,21 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
+  describe '#with_action' do
+    it 'does not change remaining actions if nothing happens' do
+      faction.place_meeple(clearings[:one])
+      # 1. march
+      # 2. none / cancel march
+      # 3. none / end daylight
+      allow(player).to receive(:pick_option).and_return(0, 1, 2)
+      players = Root::Players::List.new(player)
+
+      faction.daylight(players)
+
+      expect(faction.remaining_actions).to eq(0)
+    end
+  end
+
   describe '#craft_items' do
     it 'crafts card, removes from board and adds victory points' do
       allow(player).to receive(:pick_option).and_return(0)

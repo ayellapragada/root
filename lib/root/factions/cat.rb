@@ -320,7 +320,7 @@ module Root
 
       def overwork
         player.choose(:c_overwork, overwork_options, required: false) do |cl|
-          if discard_card_with_suit(cl.suit, required: false)
+          discard_card_with_suit(cl.suit, required: false) do
             place_wood(cl)
             player.add_to_history(:c_overwork, clearing: cl.priority)
           end
@@ -328,9 +328,9 @@ module Root
       end
 
       def discard_bird
-        return unless discard_card_with_suit(:bird, required: false)
-
-        @remaining_actions += 1
+        discard_card_with_suit(:bird, required: false) do
+          @remaining_actions += 1
+        end
       end
 
       def post_battle(battle)
@@ -347,9 +347,10 @@ module Root
           info: { suit: suit, num: meeps.count }
         )
 
-        discard_card_with_suit(suit)
-        meeps.length.times do
-          place_meeple(board.corner_with_keep)
+        discard_card_with_suit(suit) do
+          meeps.length.times do
+            place_meeple(board.corner_with_keep)
+          end
         end
 
         player.add_to_history(

@@ -306,7 +306,7 @@ module Root
         player.choose(:f_discard_card, options, required: required) do |card|
           discard_card(card)
           player.add_to_history(:f_discard_card, suit: card.suit)
-          true
+          yield if block_given?
         end
       end
 
