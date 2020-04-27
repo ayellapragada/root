@@ -71,16 +71,21 @@ module Root
             piece = meeples.first
             clearing.meeples.delete(piece)
             defender.meeples << piece
+            pieces_removed << piece
           elsif !cardboard_pieces.empty?
-            opts = cardboard_pieces
-            choice = defender.player.pick_option(:f_remove_piece, opts)
-            piece = opts[choice]
-            plural_form = piece.piece_type.pluralize
-            defender.send(plural_form) << piece
-            clearing.send(plural_form).delete(piece)
-            attacker.victory_points += 1
+            defender.player.choose(
+              :f_remove_piece,
+              cardboard_pieces,
+              required: true,
+              info: { clearing: clearing.priority }
+            ) do |token|
+              plural_form = token.piece_type.pluralize
+              defender.send(plural_form) << token
+              clearing.send(plural_form).delete(token)
+              attacker.victory_points += 1
+              pieces_removed << token
+            end
           end
-          pieces_removed << piece
           number -= 1
         end
         pieces_removed
