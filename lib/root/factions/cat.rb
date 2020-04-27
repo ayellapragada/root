@@ -221,13 +221,13 @@ module Root
             (accessible_wood.count >= cost_for_next_building(type))
         end
 
-        player.choose(:f_pick_building, options_for_building, required: true) do |building_type|
+        player.choose(:f_pick_building, options_for_building) do |building_type|
           wood_to_remove = cost_for_next_building(building_type)
           piece = send(building_type.pluralize).first
 
           self.victory_points += vp_for_next(building_type)
-          place_building(piece, clearing)
           remove_wood(accessible_wood, wood_to_remove)
+          place_building(piece, clearing)
         end
       end
 
@@ -320,9 +320,10 @@ module Root
 
       def overwork
         player.choose(:c_overwork, overwork_options, required: false) do |cl|
-          discard_card_with_suit(cl.suit)
-          place_wood(cl)
-          player.add_to_history(:c_overwork, clearing: cl.priority)
+          if discard_card_with_suit(cl.suit, required: false)
+            place_wood(cl)
+            player.add_to_history(:c_overwork, clearing: cl.priority)
+          end
         end
       end
 
