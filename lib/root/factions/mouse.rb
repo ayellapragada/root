@@ -183,10 +183,10 @@ module Root
         card_opts = other_faction.cards_in_hand_with_suit(suit)
         return draw_to_supporters if card_opts.empty?
 
-        choice = other_faction.player.pick_option(:m_outrage_card, card_opts)
-        card = card_opts[choice]
-        other_faction.hand.delete(card)
-        supporters << card
+        other_faction.player.choose(:m_outrage_card, card_opts, required: true) do |card|
+          other_faction.hand.delete(card)
+          supporters << card
+        end
       end
 
       def take_turn(players:, **_)
@@ -202,14 +202,12 @@ module Root
 
       def revolt(players)
         until revolt_options.empty?
-          return unless prompt_for_action(:m_revolt_check)
+          player.choose(:m_revolt, revolt_options, yield_anyway: true) do |cl|
+            return false if cl == :none
 
-          opts = revolt_options
-          choice = player.pick_option(:m_revolt, opts)
-          clearing = opts[choice]
-
-          remove_supporters(2, clearing.suit)
-          revolt_in_clearing(clearing, players)
+            remove_supporters(2, cl.suit)
+            revolt_in_clearing(cl, players)
+          end
         end
       end
 
@@ -218,11 +216,14 @@ module Root
       end
 
       def remove_supporter(suit = nil)
-        opts = usable_supporters(suit)
-        choice = player.pick_option(:m_supporter_to_use, opts)
-        supporter = opts[choice]
-        deck.discard_card(supporter)
-        supporters.delete(supporter)
+        player.choose(
+          :m_supporter_to_use,
+          usable_supporters(suit),
+          required: true
+        ) do |supporter|
+          deck.discard_card(supporter)
+          supporters.delete(supporter)
+        end
       end
 
       def revolt_in_clearing(clearing, players)
@@ -264,14 +265,13 @@ module Root
 
       def spread_sympathy
         until spread_sympathy_options.empty? || sympathy.count.zero?
-          return unless prompt_for_action(:m_spread_sympathy_check)
-
           opts = spread_sympathy_options
-          choice = player.pick_option(:m_spread_sympathy, opts)
-          clearing = opts[choice]
+          player.choose(:m_spread_sympathy, opts, yield_anyway: true) do |cl|
+            return false if cl == :none
 
-          remove_supporters(total_supporter_cost(clearing), clearing.suit)
-          spread_sympathy_in_clearing(clearing)
+            remove_supporters(total_supporter_cost(cl), cl.suit)
+            spread_sympathy_in_clearing(cl)
+          end
         end
       end
 
@@ -321,18 +321,21 @@ module Root
 
       def daylight
         until daylight_options.empty?
-          opts = daylight_options + [:none]
-          choice = player.pick_option(:f_pick_action, opts)
-          action = opts[choice]
-
-          # :nocov:
-          case action
-          when :craft then craft_items
-          when :mobilize then mobilize
-          when :train then train
-          when :none then return
+          player.choose(
+            :f_pick_action,
+            daylight_options,
+            yield_anyway: true,
+            info: { actions: '' }
+          ) do |action|
+            # :nocov:
+            case action
+            when :craft then craft_items
+            when :mobilize then mobilize
+            when :train then train
+            when :none then return false
+            end
+            # :nocov:
           end
-          # :nocov:
         end
       end
 
@@ -367,19 +370,17 @@ module Root
       end
 
       def mobilize
-        opts = hand
-        choice = player.pick_option(:m_mobilize, opts)
-        card = opts[choice]
-        add_to_supporters([card])
-        hand.delete(card)
+        player.choose(:m_mobilize, hand) do |card|
+          add_to_supporters([card])
+          hand.delete(card)
+        end
       end
 
       def train
-        opts = train_options
-        choice = player.pick_option(:m_train, opts)
-        card = opts[choice]
-        promote_officer
-        discard_card(card)
+        player.choose(:m_train, train_options) do |card|
+          promote_officer
+          discard_card(card)
+        end
       end
 
       def promote_officer
@@ -397,20 +398,24 @@ module Root
 
       def military_operations(players)
         @remaining_actions = officers.count
-        until evening_options.empty? || @remaining_actions.zero?
-          opts = evening_options + [:none]
-          choice = player.pick_option(:f_pick_action, opts)
-          action = opts[choice]
 
-          # :nocov:
-          case action
-          when :move then with_action { make_move(players) }
-          when :recruit then with_action { recruit }
-          when :battle then with_action { battle(players) }
-          when :organize then with_action { organize }
-          when :none then return
+        until evening_options.empty? || @remaining_actions.zero?
+          player.choose(
+            :f_pick_action,
+            evening_options,
+            yield_anyway: true,
+            info: { actions: "(#{@remaining_actions} actions remaining) " }
+          ) do |action|
+            # :nocov:
+            case action
+            when :move then with_action { make_move(players) }
+            when :recruit then with_action { recruit }
+            when :battle then with_action { battle(players) }
+            when :organize then with_action { organize }
+            when :none then @remaining_actions = 0
+            end
+            # :nocov:
           end
-          # :nocov:
         end
       end
 
@@ -432,11 +437,10 @@ module Root
       end
 
       def recruit
-        opts = recruit_options
-        choice = player.pick_option(:f_recruit_clearing, opts)
-        clearing = opts[choice]
-        place_meeple(clearing)
-        player.add_to_history(:f_recruit_clearing, clearing: clearing.priority)
+        player.choose(:f_recruit_clearing, recruit_options) do |cl|
+          player.add_to_history(:f_recruit_clearing, clearing: cl.priority)
+          place_meeple(cl)
+        end
       end
 
       def can_organize?
@@ -448,15 +452,12 @@ module Root
       end
 
       def organize
-        opts = organize_options
-        choice = player.pick_option(:m_organize_clearing, opts)
-        clearing = opts[choice]
-
-        meeple = clearing.meeples_of_type(:mice).first
-        meeples << meeple
-        clearing.meeples.delete(meeple)
-
-        spread_sympathy_in_clearing(clearing)
+        player.choose(:m_organize_clearing, organize_options) do |clearing|
+          meeple = clearing.meeples_of_type(:mice).first
+          meeples << meeple
+          clearing.meeples.delete(meeple)
+          spread_sympathy_in_clearing(clearing)
+        end
       end
 
       def draw_bonuses

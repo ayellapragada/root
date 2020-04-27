@@ -358,10 +358,6 @@ module Root
 
       private
 
-      def with_action
-        @remaining_actions -= 1 if yield
-      end
-
       def suits_to_craft_with
         board.clearings_with(:workshop).map(&:suit)
       end

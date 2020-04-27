@@ -327,8 +327,7 @@ module Root
       end
 
       def with_action
-        @remaining_actions -= 1
-        yield
+        @remaining_actions -= 1 if yield
       end
 
       def pre_move(move_action); end
