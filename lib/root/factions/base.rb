@@ -266,18 +266,17 @@ module Root
       end
 
       def battle(players)
-        player.choose(:f_battle_options, battle_options, required: false) do |cl|
+        player.choose(:f_battle_options, battle_options) do |cl|
           battle_in_clearing(cl, players)
         end
       end
 
       def battle_in_clearing(clearing, players)
         opts = clearing.other_attackable_factions(faction_symbol)
-        choice = player.pick_option(:f_who_to_battle, opts)
-        faction_to_battle = opts[choice]
-        faction = players.fetch_player(faction_to_battle).faction
-
-        initiate_battle_with_faction(clearing, faction)
+        player.choose(:f_who_to_battle, opts) do |fac_sym|
+          faction_to_battle = players.fetch_player(fac_sym).faction
+          initiate_battle_with_faction(clearing, faction_to_battle)
+        end
       end
 
       def initiate_battle_with_faction(clearing, other_faction)
