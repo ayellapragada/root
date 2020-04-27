@@ -52,6 +52,8 @@ RSpec.describe Root::Game do
   describe '#one_round' do
     it 'all players take their turn' do
       game = Root::Game.default_game(with_computers: true)
+      allow_any_instance_of(Root::Players::Computer)
+        . to receive(:pick_option).and_return(0)
       game.setup
 
       expect { game.one_round }.to change(game, :state)
