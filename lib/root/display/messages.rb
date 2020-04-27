@@ -38,7 +38,7 @@ module Root
           history: ''
         },
         c_field_hospital: {
-          prompt: 'Use Field Hospital for 1 card of matching clearing?',
+          prompt: 'Use Field Hospital for 1 card of %s suit for %s meeple(s)',
           history: 'Used Field Hospital in %s to recover %s meeples'
         },
         f_item_select: {

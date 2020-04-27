@@ -327,9 +327,9 @@ module Root
         )
       end
 
-      def prompt_for_action(key)
+      def prompt_for_action(key, info: {})
         opts = %w[Yes No]
-        choice = player.pick_option(key, opts)
+        choice = player.pick_option(key, opts, info: info)
         choice.zero?
       end
 

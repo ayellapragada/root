@@ -342,7 +342,10 @@ module Root
       end
 
       def field_hospital(meeps, suit)
-        return unless prompt_for_action(:c_field_hospital)
+        return unless prompt_for_action(
+          :c_field_hospital,
+          info: { suit: suit, num: meeps.count }
+        )
 
         discard_card_with_suit(suit)
         meeps.length.times do
