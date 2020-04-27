@@ -370,14 +370,14 @@ module Root
       end
 
       def mobilize
-        player.choose(:m_mobilize, hand) do |card|
+        do_until_stopped(:m_mobilize, proc { hand }) do |card|
           add_to_supporters([card])
           hand.delete(card)
         end
       end
 
       def train
-        player.choose(:m_train, train_options) do |card|
+        do_until_stopped(:m_train, proc { train_options }) do |card|
           promote_officer
           discard_card(card)
         end

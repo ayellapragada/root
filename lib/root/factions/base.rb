@@ -148,15 +148,22 @@ module Root
         board.place_meeple(meeples.pop, clearing)
       end
 
+      def do_until_stopped(key, options_method)
+        loop do
+          options = options_method.()
+          return if options.empty?
+
+          return false unless player.choose(key, options) do |choice|
+            yield(choice)
+          end
+        end
+      end
+
       def craft_items
         @crafted_suits = []
-        until craftable_items.empty?
-          player.choose(:f_item_select, craftable_items, yield_anyway: true) do |item|
-            return if item == :none
-
-            @crafted_suits.concat(item.craft)
-            craft_item(item)
-          end
+        do_until_stopped(:f_item_select, proc { craftable_items }) do |item|
+          @crafted_suits.concat(item.craft)
+          craft_item(item)
         end
       end
 
