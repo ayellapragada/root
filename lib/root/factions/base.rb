@@ -146,7 +146,7 @@ module Root
       end
 
       def place_meeple(clearing)
-        board.place_meeple(meeples.pop, clearing)
+        board.place_meeple(meeples.pop, clearing) if meeples.count.positive?
       end
 
       def do_until_stopped(key, options_method)

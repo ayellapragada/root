@@ -384,7 +384,7 @@ module Root
       end
 
       def promote_officer
-        officers << meeples.pop
+        officers << meeples.pop if meeples.count.positive?
       end
 
       def suits_to_craft_with
