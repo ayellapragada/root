@@ -4,6 +4,7 @@ RSpec.describe Root::Factions::Racoons::QuestCard do
   describe '#initialize' do
     it 'has a suit and 2 cards for the item requirement' do
       card = Root::Factions::Racoons::QuestCard.new(
+        name: 'Questy Cardy!',
         suit: :fox,
         items: %i[torch tea]
       )

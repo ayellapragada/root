@@ -101,7 +101,7 @@ RSpec.describe Root::Factions::Cat do
   end
 
   # Little bit silly, but each method should reaally be tested correctly alone.
-  describe '#currently_available_options' do
+  describe '#daylight_options' do
     context 'when able to do everything' do
       it 'has 6 options' do
         allow(faction).to receive(:can_battle?).and_return(true)
@@ -111,7 +111,7 @@ RSpec.describe Root::Factions::Cat do
         allow(faction).to receive(:can_overwork?).and_return(true)
         allow(faction).to receive(:can_discard_bird?).and_return(true)
 
-        expect(faction.currently_available_options).to match_array(
+        expect(faction.daylight_options).to match_array(
           %i[battle march build recruit overwork discard_bird]
         )
       end
@@ -130,7 +130,7 @@ RSpec.describe Root::Factions::Cat do
 
       expect(faction.battle_options).to match_array([c1, c2])
       expect(faction.can_battle?).to be true
-      expect(faction.currently_available_options).to include(:battle)
+      expect(faction.daylight_options).to include(:battle)
     end
   end
 
@@ -157,7 +157,7 @@ RSpec.describe Root::Factions::Cat do
 
         expect(faction.move_options).to eq([clearings[:five]])
         expect(faction.can_move?).to be true
-        expect(faction.currently_available_options).to include(:march)
+        expect(faction.daylight_options).to include(:march)
       end
     end
 
@@ -171,7 +171,7 @@ RSpec.describe Root::Factions::Cat do
 
         expect(faction.move_options).to eq([])
         expect(faction.can_move?).to be false
-        expect(faction.currently_available_options).not_to include(:march)
+        expect(faction.daylight_options).not_to include(:march)
       end
     end
   end

@@ -143,10 +143,10 @@ module Root
         craft_items
         @remaining_actions = 3
 
-        until currently_available_options.empty? || remaining_actions.zero?
+        until daylight_options.empty? || remaining_actions.zero?
           player.choose(
             :f_pick_action,
-            currently_available_options,
+            daylight_options,
             yield_anyway: true,
             info: { actions: "(#{@remaining_actions} actions remaining) " }
           ) do |action|
@@ -197,7 +197,7 @@ module Root
         DRAW_BONUSES[:recruiter][0...current_number_out(:recruiter)].sum
       end
 
-      def currently_available_options
+      def daylight_options
         [].tap do |options|
           options << :battle if can_battle?
           options << :march if can_move?
