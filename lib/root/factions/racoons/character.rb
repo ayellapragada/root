@@ -31,6 +31,12 @@ module Root
           super(faction: :racoon)
           @name = name
         end
+
+        # :nocov:
+        def inspect
+          "#{name.capitalize}: Power: #{POWERS[name]} | Starting Items: #{STARTING_ITEMS[name].join(', ')}"
+        end
+        # :nocov:
       end
     end
   end
