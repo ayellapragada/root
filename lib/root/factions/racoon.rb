@@ -45,9 +45,21 @@ module Root
         {
           board: {
             title: board_title,
-            rows:  [['TEXT']]
+            rows: [formatted_items]
           }
         }
+      end
+
+      def formatted_items
+        return ['No Items'] if items.empty?
+
+        items
+          .map(&:item)
+          .sort
+          .map(&:capitalize)
+          .each_slice(4)
+          .to_a
+          .map { |arr| arr.join(', ') }
       end
 
       def setup(players:, characters:)

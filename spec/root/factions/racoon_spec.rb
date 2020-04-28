@@ -90,7 +90,7 @@ RSpec.describe Root::Factions::Racoon do
         {
           board: {
             title: "None | Nimble | Lone Wanderer\n0 tea(s) | 0 coin(s) | 0 satchel(s)",
-            rows:  [['TEXT']]
+            rows:  [['No Items']]
           }
         }
       )
@@ -108,5 +108,36 @@ RSpec.describe Root::Factions::Racoon do
         expect(faction.formatted_character).to eq('Thief')
       end
     end
+  end
+
+  describe '#formatted_items' do
+    context 'when having no items' do
+      it { expect(faction.formatted_items).to eq(['No Items']) }
+    end
+
+    context 'with undamaged unexhausted items' do
+      it 'renders just the name without and status' do
+        faction.craft_item(build_item(:tea))
+        faction.craft_item(build_item(:sword))
+        expect(faction.formatted_items).to eq(['Sword, Tea'])
+      end
+    end
+
+    context 'with more than 4 items' do
+      it 'splits on 4 per line' do
+        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:satchel))
+        faction.craft_item(build_item(:hammer))
+        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:tea))
+
+        expect(faction.formatted_items)
+          .to eq(['Hammer, Satchel, Sword, Sword', 'Tea'])
+      end
+    end
+  end
+
+  def build_item(type)
+    Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: type, vp: 1)
   end
 end
