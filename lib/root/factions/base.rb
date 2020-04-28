@@ -109,10 +109,6 @@ module Root
 
       def take_turn(players:, active_quests: nil); end
 
-      def special_info(_show_private)
-        []
-      end
-
       def item_list_for_info
         items.empty? ? 'No items' : items.map(&:item).map(&:capitalize).join(', ')
       end

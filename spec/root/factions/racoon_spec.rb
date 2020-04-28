@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Factions::Racoon do
+  let(:player) { Root::Players::Computer.for('Sneak', :racoon) }
+  let(:faction) { player.faction }
+  let(:board) { player.board }
+  let(:clearings) { board.clearings }
+  let(:mouse_player) { Root::Players::Computer.for('Bird', :mice) }
+  let(:mouse_faction) { bird_player.faction }
+  let(:bird_player) { Root::Players::Computer.for('Bird', :birds) }
+  let(:bird_faction) { bird_player.faction }
+  let(:cat_player) { Root::Players::Computer.for('Cat', :cats) }
+  let(:cat_faction) { cat_player.faction }
+
   describe '#handle_faction_token_setup' do
     it 'sets up an empty item set' do
       faction = Root::Players::Human.for('Sneak', :racoon).faction
@@ -43,7 +54,7 @@ RSpec.describe Root::Factions::Racoon do
 
       player.setup(decks: decks, players: players)
 
-      expect(racoon_is_in_forest(board)).to be true
+      expect(board.forests[:a].meeples_of_type(:racoon).count == 1).to be true
     end
 
     it 'sets up the relationships with other factions to neutral' do
@@ -73,7 +84,29 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
-  def racoon_is_in_forest(board)
-    board.forests.any? { |_, forest| forest.includes_meeple?(:racoon) }
+  describe '#special_info' do
+    it 'returns number of VP and draw bonuses, or else building tyoe' do
+      expect(faction.special_info(true)).to eq(
+        {
+          board: {
+            title: "None | Nimble | Lone Wanderer\n0 tea(s) | 0 coin(s) | 0 satchel(s)",
+            rows:  [['TEXT']]
+          }
+        }
+      )
+    end
+
+    context 'without a character' do
+      it 'returns none correctly' do
+        expect(faction.formatted_character).to eq('None')
+      end
+    end
+
+    context 'with a character' do
+      it 'returns character name correctly' do
+        faction.quick_set_character('Thief')
+        expect(faction.formatted_character).to eq('Thief')
+      end
+    end
   end
 end

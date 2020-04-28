@@ -32,6 +32,24 @@ module Root
         items.select(&:damaged?)
       end
 
+      def formatted_character
+        name = character&.name || 'none'
+        name.capitalize
+      end
+
+      def board_title
+        "#{formatted_character} | Nimble | Lone Wanderer\n#{teas.count} tea(s) | #{coins.count} coin(s) | #{satchels.count} satchel(s)"
+      end
+
+      def special_info(_show_private)
+        {
+          board: {
+            title: board_title,
+            rows:  [['TEXT']]
+          }
+        }
+      end
+
       def setup(players:, characters:)
         handle_character_select(characters)
         handle_forest_select
@@ -43,6 +61,10 @@ module Root
         choice = player.pick_option(:v_char_sel, characters)
         character = characters.remove_from_deck(characters[choice])
         @character = character
+      end
+
+      def quick_set_character(name)
+        @character = Factions::Racoons::Character.new(name: name)
       end
 
       def handle_forest_select
