@@ -53,12 +53,13 @@ module Root
 
       attr_reader :victory_points
 
-      attr_reader :hand, :player, :meeples, :buildings, :tokens, :items
+      attr_reader :hand, :player, :meeples, :buildings, :tokens
       attr_writer :board
 
       def initialize(player)
         @player = player
         @hand = []
+        @items = []
         @victory_points = 0
         set_base_pieces
         handle_faction_token_setup
@@ -83,7 +84,6 @@ module Root
         @meeples = []
         @buildings = []
         @tokens = []
-        @items = []
       end
 
       def hand_size
@@ -111,6 +111,10 @@ module Root
 
       def special_info(_show_private)
         []
+      end
+
+      def items
+        @items.map(&:item)
       end
 
       def item_list_for_info
@@ -173,7 +177,7 @@ module Root
         deck.discard_card(choice)
         hand.delete(choice)
         self.victory_points += handle_item_vp(choice)
-        items << choice.item
+        @items << Pieces::Item.new(choice.item)
         player.add_to_history(:f_item_select, item: choice.item, vp: choice.vp)
       end
 

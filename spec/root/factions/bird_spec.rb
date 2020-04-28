@@ -582,8 +582,22 @@ RSpec.describe Root::Factions::Bird do
       faction.place_roost(clearings[:one])
       faction.place_roost(clearings[:five])
       faction.place_roost(clearings[:five])
-      faction.items << :tea
-      faction.items << :sword
+
+      tea = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[bunny],
+        item: :tea,
+        vp: 2
+      )
+      sword = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[bunny],
+        item: :sword,
+        vp: 1
+      )
+
+      faction.craft_item(tea)
+      faction.craft_item(sword)
 
       expect(faction.special_info(true)).to eq(
         board: {

@@ -11,7 +11,7 @@ module Root
 
       SETUP_PRIORITY = 'D'
 
-      attr_reader :items, :teas, :coins, :satchels, :character, :relationships
+      attr_reader :teas, :coins, :satchels, :character, :relationships
 
       def faction_symbol
         :racoon
@@ -23,7 +23,6 @@ module Root
       end
 
       def handle_empty_item_setup
-        @items = []
         @teas = []
         @coins = []
         @satchels = []

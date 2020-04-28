@@ -296,6 +296,22 @@ RSpec.describe Root::Factions::Mouse do
 
       expect { faction.revolt(players) }.not_to change { clearings[:one] }
     end
+
+    context 'when no more meeples' do
+      it 'does not recruit a meeple' do
+        allow(player).to receive(:pick_option).and_return(0)
+        10.times { faction.place_meeple(clearings[:one]) }
+        faction.place_sympathy(clearings[:two])
+        players = Root::Players::List.new(player)
+
+        faction.supporters << Root::Cards::Base.new(suit: :mouse)
+        faction.supporters << Root::Cards::Base.new(suit: :mouse)
+
+        expect { faction.revolt(players) }
+          .to change { faction.officers.count }
+          .by(0)
+      end
+    end
   end
 
   describe '#spread_sympathy_options' do
@@ -511,6 +527,18 @@ RSpec.describe Root::Factions::Mouse do
         .by(-1)
         .and change { faction.officers.count }
         .by(1)
+    end
+
+    context 'without meeples' do
+      it 'does not convert a meeple into an officer' do
+        10.times { faction.place_meeple(clearings[:one]) }
+
+        expect { faction.promote_officer }
+          .to change { faction.meeples.count }
+          .by(0)
+          .and change { faction.officers.count }
+          .by(0)
+      end
     end
   end
 
