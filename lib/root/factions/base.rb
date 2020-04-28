@@ -53,7 +53,7 @@ module Root
 
       attr_reader :victory_points
 
-      attr_reader :hand, :player, :meeples, :buildings, :tokens
+      attr_reader :hand, :player, :meeples, :buildings, :tokens, :items
       attr_writer :board
 
       def initialize(player)
@@ -113,12 +113,8 @@ module Root
         []
       end
 
-      def items
-        @items.map(&:item)
-      end
-
       def item_list_for_info
-        items.empty? ? 'No items' : items.map(&:capitalize).join(', ')
+        items.empty? ? 'No items' : items.map(&:item).map(&:capitalize).join(', ')
       end
 
       def formatted_special_info(show_private)

@@ -540,7 +540,7 @@ RSpec.describe Root::Factions::Cat do
       expect(faction.hand).not_to include(card_to_craft)
       expect(faction.hand).to include(card_unable_to_be_crafted)
       expect(faction.victory_points).to be(2)
-      expect(faction.items).to include(:tea)
+      expect(faction.items.map(&:item)).to include(:tea)
     end
 
     it 'does not have to craft items' do

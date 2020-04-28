@@ -494,8 +494,7 @@ RSpec.describe Root::Factions::Bird do
   end
 
   describe '#craft_items' do
-    # DISDAIN FOR TRADE WOO
-    it 'crafts card, removes from board and adds victory points' do
+    it 'crafts card, removes from board and adds one victory points' do
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.place_roost(player.board.clearings[:one])
@@ -520,7 +519,7 @@ RSpec.describe Root::Factions::Bird do
       expect(faction.hand).not_to include(card_to_craft)
       expect(faction.hand).to include(card_unable_to_be_crafted)
       expect(faction.victory_points).to be(1)
-      expect(faction.items).to include(:tea)
+      expect(faction.items.map(&:item)).to include(:tea)
     end
 
     context 'when builder is leader' do
@@ -550,7 +549,7 @@ RSpec.describe Root::Factions::Bird do
         expect(faction.hand).not_to include(card_to_craft)
         expect(faction.hand).to include(card_unable_to_be_crafted)
         expect(faction.victory_points).to be(2)
-        expect(faction.items).to include(:tea)
+        expect(faction.items.map(&:item)).to include(:tea)
       end
     end
   end
