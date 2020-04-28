@@ -23,7 +23,8 @@ module Root
 
       def rows
         quests.map do |quest|
-          [Rainbow(quest.items.map(&:capitalize).join(', ')).fg(Colors::SUIT_COLOR[quest.suit])]
+          item_info = quest.items.map(&:capitalize).join(', ')
+          [Rainbow(item_info).fg(Colors::SUIT_COLOR[quest.suit])]
         end
       end
     end

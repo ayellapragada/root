@@ -10,7 +10,7 @@ module Root
     # We got passives
     # I ain't consolidating that heck no
     class Base
-      attr_accessor :suit
+      attr_accessor :suit, :name
 
       def initialize(suit:, name: 'Untitled')
         @suit = suit

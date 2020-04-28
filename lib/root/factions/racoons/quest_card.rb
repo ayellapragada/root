@@ -8,8 +8,8 @@ module Root
       class QuestCard < Cards::Base
         attr_reader :suit, :items
 
-        def initialize(suit:, items:)
-          super(suit: suit)
+        def initialize(suit:, items:, name:)
+          super(suit: suit, name: name)
           @items = items
         end
       end
