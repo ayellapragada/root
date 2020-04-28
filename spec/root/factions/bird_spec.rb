@@ -606,10 +606,29 @@ RSpec.describe Root::Factions::Bird do
         decree: {
           headings: %w[Recruit Move Battle Build],
           rows: [
-            ['Mouse', 'Fox', 'Bird', ''],
-            ['', 'Bunny', '', '']
+            ['Mouse', 'Bunny', 'Bird', ''],
+            ['', 'Fox', '', '']
           ]
-        },
+        }
+      )
+    end
+
+    it 'consolidates multiple of the same suit in the decree' do
+      faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+      faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+      faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
+
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
+
+      faction.decree[:battle] << Root::Cards::Base.new(suit: :bird)
+
+      expect(faction.decree.special_info).to eq(
+        [
+          ['Mouse (3)', 'Bunny (2)', 'Bird', ''],
+          ['', 'Fox', '', '']
+        ]
       )
     end
 

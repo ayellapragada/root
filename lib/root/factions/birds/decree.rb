@@ -59,7 +59,18 @@ module Root
         end
 
         def format_and_pop_card(key, dup_decree)
-          dup_decree[key].pop.to_s.capitalize
+          suit = dup_decree[key].first
+          count = dup_decree[key].count { |s| s == suit }
+          dup_decree[key].delete(suit)
+          formatted = suit.to_s.capitalize
+
+          if count == 1
+            formatted
+          elsif count > 1
+            "#{formatted} (#{count})"
+          else
+            ''
+          end
         end
       end
     end
