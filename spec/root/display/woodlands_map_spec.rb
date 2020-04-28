@@ -7,6 +7,7 @@ RSpec.describe Root::Display::WoodlandsMap do
 
       place_mice_tokens_for_display(game)
       place_racoon_token_for_display(game)
+      place_cards_into_bird_decree(game)
       craft_items_for_cat(game)
       game.setup
       mock_clearing_options(game)
@@ -23,6 +24,27 @@ RSpec.describe Root::Display::WoodlandsMap do
 
     board.place_token(mice.sympathy.pop, clearing)
     3.times { board.place_meeple(mice.meeples.pop, clearing) }
+  end
+
+  def place_cards_into_bird_decree(game)
+    player = game.players.fetch_player(:birds)
+    faction = player.faction
+
+    faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
+    faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
+    faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
+    faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
+
+    faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
+    faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+    faction.decree[:move] << Root::Cards::Base.new(suit: :mouse)
+    faction.decree[:move] << Root::Cards::Base.new(suit: :bird)
+
+    faction.decree[:battle] << Root::Cards::Base.new(suit: :bird)
+    faction.decree[:battle] << Root::Cards::Base.new(suit: :mouse)
+
+    faction.decree[:build] << Root::Cards::Base.new(suit: :fox)
+    faction.decree[:build] << Root::Cards::Base.new(suit: :bird)
   end
 
   # Effectively this is just for test
