@@ -47,5 +47,6 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 ## Ideas For Next
 
+- Possibly hide clearing options unless it's your turn / you making the decisions. Want to hide supporters / options for revolt.
 - Bug when you just _literally_ can't build anymore of them. This needs better handling throughout potentially.
 - Hand refactor that allows to just ask the hand if anything matches, as opposed to the "oh ok i'll check if a card matches and then also another card".
