@@ -308,16 +308,14 @@ module Root
         suits.include?(:bird) ? %i[fox mouse bunny] : suits
       end
 
-      def cards_in_hand_with_suit(suit = nil, bird: true)
+      def cards_in_hand_with_suit(suit = nil)
         return hand unless suit
 
-        hand.select do |card|
-          card.suit == suit || (bird && card.suit == :bird)
-        end
+        hand.select { |card| card.suit == suit || card.suit == :bird }
       end
 
-      def discard_card_with_suit(suit, bird: true, required: true)
-        options = cards_in_hand_with_suit(suit, bird: bird)
+      def discard_card_with_suit(suit, required: true)
+        options = cards_in_hand_with_suit(suit)
         player.choose(:f_discard_card, options, required: required) do |card|
           discard_card(card)
           player.add_to_history(:f_discard_card, suit: card.suit)
