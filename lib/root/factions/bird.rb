@@ -47,7 +47,7 @@ module Root
       end
 
       def board_title
-        "Lords of the Forest | Disdain for Trade\n#{formatted_leader}\n#{item_list_for_info}"
+        "#{formatted_leader} | Rulers | Bad Crafters\n#{item_list_for_info}"
       end
 
       def special_info(_show_private)

@@ -16,6 +16,23 @@ RSpec.describe Root::Display::WoodlandsMap do
       game.print_display = true
       expect(game.render).to be nil
     end
+
+    describe 'when worst case scenario for breaking things' do
+      it 'still does not break though' do
+        game = Root::Game.with_faction_for_play(:racoon)
+        player = game.players.fetch_player(:racoon)
+        allow(player).to receive(:pick_option).and_return(0)
+
+        place_cards_into_bird_decree(game)
+        craft_items_for_cat(game)
+        craft_so_many_items_for_cat(game)
+        craft_items_for_racoon(game)
+        game.setup
+
+        game.print_display = true
+        expect(game.render).to be nil
+      end
+    end
   end
 
   def place_mice_tokens_for_display(game)
@@ -97,5 +114,24 @@ RSpec.describe Root::Display::WoodlandsMap do
 
     faction = game.players.fetch_player(:cats).faction
     faction.craft_item(coin)
+  end
+
+  def craft_so_many_items_for_cat(game)
+    coin = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :coin, vp: 2)
+    satchel1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :satchel, vp: 2)
+    crossbow = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :crossbow, vp: 2)
+    boots1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :boots, vp: 2)
+    boots2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :boots, vp: 2)
+    satchel2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :satchel, vp: 2)
+    tea = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :tea, vp: 2)
+
+    faction = game.players.fetch_player(:cats).faction
+    faction.craft_item(coin)
+    faction.craft_item(satchel1)
+    faction.craft_item(crossbow)
+    faction.craft_item(boots1)
+    faction.craft_item(boots2)
+    faction.craft_item(satchel2)
+    # faction.craft_item(tea)
   end
 end

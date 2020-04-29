@@ -600,7 +600,7 @@ RSpec.describe Root::Factions::Bird do
 
       expect(faction.special_info(true)).to eq(
         board: {
-          title: "Lords of the Forest | Disdain for Trade\nNo Leader\nTea, Sword",
+          title: "No Leader | Rulers | Bad Crafters\nTea, Sword",
           rows: [['Roosts', '0', '1', '2(+1)', 'R', 'R', 'R', 'R']]
         },
         decree: {
@@ -637,7 +637,7 @@ RSpec.describe Root::Factions::Bird do
 
       expect(faction.special_info(true)).to eq(
         board: {
-          title: "Lords of the Forest | Disdain for Trade\nDespot\nNo Items",
+          title: "Despot | Rulers | Bad Crafters\nNo Items",
           rows: [%w[Roosts R R R R R R R]]
         },
         decree: {

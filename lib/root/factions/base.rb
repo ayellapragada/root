@@ -110,7 +110,15 @@ module Root
       def take_turn(players:, active_quests: nil); end
 
       def item_list_for_info
-        items.empty? ? 'No Items' : items.map(&:item).map(&:capitalize).join(', ')
+        return 'No Items' if items.empty?
+
+        names = items.map(&:item)
+        count = names.tally
+
+        names
+          .uniq
+          .map { |item| count[item] > 1 ? "#{item.capitalize} (#{count[item]})" : item.capitalize }
+          .join(', ')
       end
 
       def formatted_special_info(show_private)
