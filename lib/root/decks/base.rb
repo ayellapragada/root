@@ -23,14 +23,6 @@ module Root
         deck.delete(card)
       end
 
-      def [](value)
-        deck[value]
-      end
-
-      def sample
-        deck.sample
-      end
-
       def discard_card(card)
         discard << card
       end

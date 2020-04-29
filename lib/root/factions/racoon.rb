@@ -89,9 +89,10 @@ module Root
       end
 
       def handle_character_select(characters)
-        choice = player.pick_option(:v_char_sel, characters)
-        character = characters.remove_from_deck(characters[choice])
-        @character = character
+        player.choose(:v_char_sel, characters.deck, required: true) do |char|
+          characters.remove_from_deck(char)
+          @character = char
+        end
       end
 
       def quick_set_character(name)
@@ -99,10 +100,10 @@ module Root
       end
 
       def handle_forest_select
-        options = board.forests.values
-        choice = player.pick_option(:v_forest_sel, options)
-        forest = options[choice]
-        board.place_meeple(meeples.pop, forest)
+        opts = board.forests.values
+        player.choose(:v_forest_sel, opts, required: true) do |forest|
+          board.place_meeple(meeples.pop, forest)
+        end
       end
 
       def handle_ruins
