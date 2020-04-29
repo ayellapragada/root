@@ -54,9 +54,7 @@ module Root
         end
 
         merged.each do |row|
-          Cursor.clear_line
-          Cursor.move_up(2)
-          puts row
+          puts "#{row}\e[0K"
         end
       end
 
