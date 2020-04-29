@@ -248,11 +248,11 @@ module Root
 
         until needed_suits.empty?
           opts = get_options_with_turmoil!(action, needed_suits)
-          choice = player.pick_option(key, opts)
-          clearing = opts[choice]
 
-          suit = resolve_bird_in_decree(needed_suits, clearing)
-          needed_suits.delete_first(suit) if yield(clearing)
+          player.choose(key, opts, required: true) do |clearing|
+            suit = resolve_bird_in_decree(needed_suits, clearing)
+            needed_suits.delete_first(suit) if yield(clearing)
+          end
         end
       end
 
