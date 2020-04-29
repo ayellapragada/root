@@ -31,10 +31,9 @@ module Root
         game_info = vps + items + dominance + quests
 
         render_map(map, game_info, other, history)
-        clear_out_rest_of_screen
-        Cursor.move_up(2)
         render_current_info(current_player)
         render_hand(current_player)
+        clear_out_rest_of_screen
         Cursor.show_cursor
       end
 
@@ -54,7 +53,7 @@ module Root
         end
 
         merged.each do |row|
-          puts "#{row}\e[0K"
+          print_and_clear_row(row)
         end
       end
 
@@ -75,12 +74,19 @@ module Root
         hand = player.faction.hand
         puts 'Hand:'
         hand.each do |card|
-          puts Rainbow(card.inspect).fg(Colors::SUIT_COLOR[card.suit])
+          str = Rainbow(card.inspect).fg(Colors::SUIT_COLOR[card.suit])
+          print_and_clear_row(str)
         end
       end
 
+      def print_and_clear_row(str)
+        puts "#{str}\e[0K"
+      end
+
       def clear_out_rest_of_screen
+        Cursor.move_up(1)
         puts "\e[0J"
+        Cursor.move_up(2)
       end
       #:nocov:
     end
