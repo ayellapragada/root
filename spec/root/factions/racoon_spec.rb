@@ -112,27 +112,27 @@ RSpec.describe Root::Factions::Racoon do
 
   describe '#formatted_items' do
     context 'when having no items' do
-      it { expect(faction.formatted_items).to eq(['No Items']) }
+      it { expect(faction.formatted_items).to eq([['No Items']]) }
     end
 
     context 'with undamaged unexhausted items' do
       it 'renders just the name without and status' do
         faction.craft_item(build_item(:tea))
         faction.craft_item(build_item(:sword))
-        expect(faction.formatted_items).to eq(['Sword, Tea'])
+        expect(faction.formatted_items).to eq([['Sword, Tea']])
       end
     end
 
-    context 'with more than 4 items' do
-      it 'splits on 4 per line' do
+    context 'with any damaged items' do
+      it 'puts on a different line than undamaged items' do
         faction.craft_item(build_item(:sword))
         faction.craft_item(build_item(:satchel))
         faction.craft_item(build_item(:hammer))
-        faction.craft_item(build_item(:sword))
-        faction.craft_item(build_item(:tea))
+
+        faction.damage_item(:hammer)
 
         expect(faction.formatted_items)
-          .to eq(['Hammer, Satchel, Sword, Sword', 'Tea'])
+          .to eq([['Satchel, Sword'], ['Hammer (D)']])
       end
     end
   end

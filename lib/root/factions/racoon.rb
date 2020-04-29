@@ -28,6 +28,10 @@ module Root
         @satchels = []
       end
 
+      def undamaged_items
+        items.reject(&:damaged?)
+      end
+
       def damaged_items
         items.select(&:damaged?)
       end
@@ -45,21 +49,25 @@ module Root
         {
           board: {
             title: board_title,
-            rows: [formatted_items]
+            rows: formatted_items
           }
         }
       end
 
       def formatted_items
-        return ['No Items'] if items.empty?
+        return [['No Items']] if items.empty?
 
-        items
-          .map(&:item)
+        [
+          [format_items(undamaged_items)],
+          [format_items(damaged_items)]
+        ].reject { |arr| arr.first == '' }
+      end
+
+      def format_items(items_to_format)
+        items_to_format
+          .map { |item| "#{item.item.capitalize}#{item.damaged? ? ' (D)' : ''}" }
           .sort
-          .map(&:capitalize)
-          .each_slice(4)
-          .to_a
-          .map { |arr| arr.join(', ') }
+          .join(', ' )
       end
 
       def setup(players:, characters:)
@@ -67,6 +75,11 @@ module Root
         handle_forest_select
         handle_ruins
         handle_relationships(players)
+      end
+
+      def damage_item(type)
+        piece = undamaged_items.find { |item| item.item == type }
+        piece.damage
       end
 
       def handle_character_select(characters)

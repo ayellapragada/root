@@ -17,7 +17,8 @@ module Root
       def display
         ::Terminal::Table.new(
           title: 'Active Quests',
-          rows: rows
+          rows: rows,
+          style: { width: 22 }
         )
       end
 

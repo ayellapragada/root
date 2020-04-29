@@ -17,7 +17,8 @@ module Root
       def display
         ::Terminal::Table.new(
           headings: %w[Dominance By],
-          rows: rows
+          rows: rows,
+          style: { width: 22 }
         )
       end
 

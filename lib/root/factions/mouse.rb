@@ -36,7 +36,7 @@ module Root
 
       def board_title(show_private)
         supporters_text = show_private ? '' : "#{supporters.count} Supporters | "
-        "Outrage | Guerilla Warfare | Martial Law\n#{supporters_text}#{officers.count} Officers | #{item_list_for_info}"
+        "Outrage | Guerilla Warfare | Martial Law\n#{supporters_text}#{officers.count} Officers \n#{item_list_for_info}"
       end
 
       def special_info(show_private)
@@ -68,7 +68,7 @@ module Root
         end
       end
 
-      def sympathy_tracker_info(show_private)
+      def sympathy_tracker_info
         cur = VICTORY_POINTS[:sympathy][0...current_number_out(:sympathy)]
         symp = cur.fill('S', cur.length, TOKENS - cur.length)
         [
@@ -76,16 +76,16 @@ module Root
           "(1) #{symp[0]} #{symp[1]} #{symp[2]}",
           "(2) #{symp[3]} #{symp[4]} #{symp[5]}",
           "(3) #{symp[6]} #{symp[7]} #{symp[8]} #{symp[9]}"
-        ].tap { |arr| arr << ' ' if show_private }
+        ]
       end
 
-      def formatted_bases(show_private)
+      def formatted_bases
         [
           'Bases',
           display_for_base(:fox),
           display_for_base(:bunny),
           display_for_base(:mouse)
-        ].tap { |arr| arr << ' ' if show_private }
+        ]
       end
 
       def display_for_base(suit)
@@ -94,19 +94,18 @@ module Root
 
       def formatted_supporters
         [
-          'Supporters',
-          "Fox: #{supporters_for(:fox).count}",
-          "Bunny: #{supporters_for(:bunny).count}",
-          "Mouse: #{supporters_for(:mouse).count}",
-          "Bird: #{supporters_for(:bird).count}"
+          "Bird (#{supporters_for(:bird).count})",
+          "Fox (#{supporters_for(:fox).count})",
+          "Bunny (#{supporters_for(:bunny).count})",
+          "Mouse (#{supporters_for(:mouse).count})"
         ]
       end
 
       def board_special_info(show_private)
         rows = []
         rows << formatted_supporters if show_private
-        rows << formatted_bases(show_private)
-        rows << sympathy_tracker_info(show_private)
+        rows << formatted_bases
+        rows << sympathy_tracker_info
         rows
       end
 

@@ -9,6 +9,7 @@ RSpec.describe Root::Display::WoodlandsMap do
       place_racoon_token_for_display(game)
       place_cards_into_bird_decree(game)
       craft_items_for_cat(game)
+      craft_items_for_racoon(game)
       game.setup
       mock_clearing_options(game)
 
@@ -62,6 +63,20 @@ RSpec.describe Root::Display::WoodlandsMap do
     board.place_meeple(meeple, forest_f)
   end
 
+  def craft_items_for_racoon(game)
+    faction = game.players.fetch_player(:racoon).faction
+    tea = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :tea, vp: 2)
+    sword1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
+    sword2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
+    hammer = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :hammer, vp: 2)
+
+    faction.craft_item(tea)
+    faction.craft_item(sword1)
+    faction.craft_item(sword2)
+    faction.craft_item(hammer)
+    faction.damage_item(:hammer)
+  end
+
   # rubocop:disable all
   def mock_clearing_options(game)
     board = game.board
@@ -78,15 +93,9 @@ RSpec.describe Root::Display::WoodlandsMap do
   end
 
   def craft_items_for_cat(game)
-    tea = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :tea, vp: 2)
-    hammer = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :hammer, vp: 2)
-    sword1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
-    sword2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
+    coin = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :coin, vp: 2)
 
     faction = game.players.fetch_player(:cats).faction
-    faction.craft_item(tea)
-    faction.craft_item(hammer)
-    faction.craft_item(sword1)
-    faction.craft_item(sword2)
+    faction.craft_item(coin)
   end
 end

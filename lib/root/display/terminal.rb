@@ -24,11 +24,11 @@ module Root
         other = Info.for_multiple(game.players.except_player(current_player))
         vps = VictoryPoints.new(game.players).display.to_s.split("\n")
         items = ItemsInfo.new(game.board.items).display.to_s.split("\n")
-        quests = ActiveQuests.new(game.active_quests).display.to_s.split("\n")
         dominance = Dominance.new([]).display.to_s.split("\n")
+        quests = ActiveQuests.new(game.active_quests).display.to_s.split("\n")
 
         Cursor.move_to_top
-        game_info = vps + items + quests + dominance
+        game_info = vps + items + dominance + quests
 
         render_map(map, game_info, other, history)
         clear_out_rest_of_screen

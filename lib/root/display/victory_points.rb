@@ -15,7 +15,8 @@ module Root
       def display
         ::Terminal::Table.new(
           headings: %w[Faction VP],
-          rows: rows
+          rows: rows,
+          style: { width: 22 }
         )
       end
 

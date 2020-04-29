@@ -110,7 +110,7 @@ module Root
       def take_turn(players:, active_quests: nil); end
 
       def item_list_for_info
-        items.empty? ? 'No items' : items.map(&:item).map(&:capitalize).join(', ')
+        items.empty? ? 'No Items' : items.map(&:item).map(&:capitalize).join(', ')
       end
 
       def formatted_special_info(show_private)
@@ -119,8 +119,10 @@ module Root
             obj[:rows] = val[:rows]
             obj[:headings] = val[:headings] if val[:headings]
             obj[:title] = val[:title] if val[:title]
-            # Currently unused
-            # obj[:style] = val[:style] if val[:style]
+
+            style_opts = { width: 50 }
+            obj[:style] = style_opts
+            obj[:alignment] = :center
           end
           Terminal::Table.new(opts)
         end
