@@ -135,45 +135,37 @@ module Root
       end
 
       def birdsong
-        @bird_added = false
         draw_card if hand.empty?
-        2.times do |i|
-          next if hand.empty?
 
-          is_first_time = i.zero?
-          card_opts = get_decree_hand_opts(is_first_time)
-          card_choice = player.pick_option(:b_card_for_decree, card_opts)
-          card = card_opts[card_choice]
-          next if card == :none
+        card = add_to_decree(req: true, birds_allowed: true)
+        add_to_decree(req: false, birds_allowed: card.suit != :bird)
 
-          @bird_added = true if card.bird?
-
-          decree_opts = decree.choices
-          decree_choice = player.pick_option(:b_area_in_decree, decree_opts)
-          area = decree_opts[decree_choice]
-
-          decree[area] << card
-          hand.delete(card)
-
-          player.add_to_history(
-            :b_area_in_decree,
-            suit: card.suit,
-            area: area
-          )
-        end
-
-        return unless board.clearings_with(:roost).empty?
-
-        new_base_opts = board.clearings_with_fewest_pieces
-        new_base_choice = player.pick_option(:b_comeback_roost, new_base_opts)
-        clearing = new_base_opts[new_base_choice]
-        place_roost(clearing)
-        3.times { place_meeple(clearing) }
+        make_comeback_roost if board.clearings_with(:roost).empty?
       end
 
-      def get_decree_hand_opts(is_first_time)
-        opts = @bird_added ? hand.reject(&:bird?) : hand
-        is_first_time ? opts : opts + [:none]
+      def make_comeback_roost
+        new_base_opts = board.clearings_with_fewest_pieces
+        player.choose(:b_comeback_roost, new_base_opts, required: true) do |cl|
+          place_roost(cl)
+          3.times { place_meeple(cl) }
+        end
+      end
+
+      def add_to_decree(req:, birds_allowed:)
+        return if hand.empty?
+
+        card_opts = birds_allowed ? hand : hand.reject(&:bird?)
+
+        player.choose(:b_card_for_decree, card_opts, required: req) do |card|
+          player.choose(:b_area_in_decree, decree.choices, required: true) do |area|
+            decree[area] << card
+            hand.delete(card)
+
+            player.add_to_history(:b_area_in_decree, suit: card.suit, area: area)
+          end
+
+          card
+        end
       end
 
       def daylight(players)

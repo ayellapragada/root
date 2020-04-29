@@ -82,6 +82,7 @@ module Root
         return unless @game
 
         game.history << format_for_history(key, opts)
+        true
       end
 
       def format_for_history(key, opts)
