@@ -736,6 +736,21 @@ RSpec.describe Root::Factions::Cat do
       expect(faction.hand.count).to eq(1)
       expect(clearings[:one].meeples_of_type(:cats).count).to eq(0)
     end
+
+    it 'does not happen when no matching cards in hand' do
+      faction.place_keep(clearings[:one])
+      faction.place_meeple(clearings[:five])
+      faction.place_meeple(clearings[:five])
+      bird_faction.place_meeple(clearings[:five])
+      bird_faction.place_meeple(clearings[:five])
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 1)
+
+      faction.initiate_battle_with_faction(clearings[:five], bird_faction)
+
+      expect(clearings[:one].meeples_of_type(:cats).count).to eq(0)
+    end
   end
 
   describe '#victory_points=' do

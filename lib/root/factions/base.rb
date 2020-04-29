@@ -342,12 +342,6 @@ module Root
         )
       end
 
-      def prompt_for_action(key, info: {})
-        opts = %w[Yes No]
-        choice = player.pick_option(key, opts, info: info)
-        choice.zero?
-      end
-
       def with_action
         @remaining_actions -= 1 if yield
       end

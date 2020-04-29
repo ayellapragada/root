@@ -342,22 +342,14 @@ module Root
       end
 
       def field_hospital(meeps, suit)
-        return unless prompt_for_action(
-          :c_field_hospital,
-          info: { suit: suit, num: meeps.count }
-        )
-
-        discard_card_with_suit(suit) do
+        opts = cards_in_hand_with_suit(suit)
+        player.choose(:c_field_hospital, opts, info: { suit: suit, num: meeps.count }) do |card|
+          discard_card(card)
           meeps.length.times do
             place_meeple(board.corner_with_keep)
           end
+          player.add_to_history(:c_field_hospital, suit: suit, num: meeps.count)
         end
-
-        player.add_to_history(
-          :c_field_hospital,
-          suit: suit,
-          num: meeps.count
-        )
       end
 
       private
