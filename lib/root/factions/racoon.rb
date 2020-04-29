@@ -41,8 +41,14 @@ module Root
         name.capitalize
       end
 
+      def formatted_relationships
+        return 'No Relationships' unless @relationships
+
+        @relationships.formatted_display
+      end
+
       def board_title
-        "#{formatted_character} | Nimble | Lone Wanderer\n#{teas.count} tea(s) | #{coins.count} coin(s) | #{satchels.count} satchel(s)"
+        "#{formatted_character} | Nimble | Lone Wanderer\n#{teas.count} tea(s) | #{coins.count} coin(s) | #{satchels.count} satchel(s)\n#{formatted_relationships}"
       end
 
       def special_info(_show_private)

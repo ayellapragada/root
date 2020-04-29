@@ -85,11 +85,19 @@ RSpec.describe Root::Factions::Racoon do
   end
 
   describe '#special_info' do
-    it 'returns number of VP and draw bonuses, or else building tyoe' do
+    it 'returns special stats, relationships, and items' do
+      game = Root::Game.default_game
+      decks = game.decks
+      players = game.players
+      player = players.fetch_player(:racoon)
+      allow(player).to receive(:pick_option).and_return(0)
+
+      player.setup(decks: decks, players: players)
+      faction = player.faction
       expect(faction.special_info(true)).to eq(
         {
           board: {
-            title: "None | Nimble | Lone Wanderer\n0 tea(s) | 0 coin(s) | 0 satchel(s)",
+            title: "Thief | Nimble | Lone Wanderer\n0 tea(s) | 0 coin(s) | 0 satchel(s)\nMice: 0 | Cats: 0 | Birds: 0",
             rows:  [['No Items']]
           }
         }
@@ -134,6 +142,12 @@ RSpec.describe Root::Factions::Racoon do
         expect(faction.formatted_items)
           .to eq([['Satchel, Sword'], ['Hammer (D)']])
       end
+    end
+  end
+
+  describe '#formatted_relationships' do
+    context 'without relationships' do
+      it { expect(faction.formatted_relationships).to eq('No Relationships') }
     end
   end
 

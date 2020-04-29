@@ -115,10 +115,19 @@ module Root
         names = items.map(&:item)
         count = names.tally
 
-        names
+        res =
+          names
           .uniq
           .map { |item| count[item] > 1 ? "#{item.capitalize} (#{count[item]})" : item.capitalize }
           .join(', ')
+        word_wrap_string(res)
+      end
+
+      def word_wrap_string(string, el = ', ')
+        return string if string.length < 46
+
+        comma_for_split = string[0..50].rindex(el)
+        "#{string[0...comma_for_split]}\n#{string[comma_for_split + 2..-1]}"
       end
 
       def formatted_special_info(show_private)

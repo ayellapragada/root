@@ -21,6 +21,20 @@ module Root
         def count
           @relationships.keys.count
         end
+
+        DISPLAY = {
+          neutral: '0',
+          one: '1',
+          two: '2',
+          allied: 'A',
+          hostile: 'H'
+        }.freeze
+
+        def formatted_display
+          @relationships
+            .map { |k, v| "#{k.capitalize}: #{DISPLAY[v]}" }
+            .join(' | ')
+        end
       end
     end
   end

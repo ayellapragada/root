@@ -132,6 +132,6 @@ RSpec.describe Root::Display::WoodlandsMap do
     faction.craft_item(boots1)
     faction.craft_item(boots2)
     faction.craft_item(satchel2)
-    # faction.craft_item(tea)
+    faction.craft_item(tea)
   end
 end
