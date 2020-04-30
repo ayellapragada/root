@@ -19,6 +19,10 @@ module Root
         @item = item
         @vp = vp
       end
+
+      def inspect
+        "#{name} - #{item.capitalize} | Craft: #{craft.join(', ')}, Victory Points: #{vp}"
+      end
     end
   end
 end

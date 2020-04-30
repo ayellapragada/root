@@ -32,6 +32,10 @@ module Root
       def vizier?
         false
       end
+
+      def inspect
+        name
+      end
     end
   end
 end
