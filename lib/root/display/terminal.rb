@@ -62,7 +62,9 @@ module Root
       end
 
       def render_current_info(player)
-        puts Info.new(player, show_private: true).display
+        Info.new(player, show_private: true).display.split("\n").each do |line|
+          print_and_clear_row(line)
+        end
       end
 
       def append_space(str, num)
