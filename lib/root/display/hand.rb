@@ -15,9 +15,40 @@ module Root
       end
 
       def display
-        hand.map do |card|
-          Rainbow(card.inspect).fg(Colors::SUIT_COLOR[card.suit])
+        ::Terminal::Table.new(
+          rows: rows
+        )
+      end
+
+      def rows
+        %i[name craft body].map do |field|
+          hand.map do |card|
+            case field
+            when :name then handle_name(card)
+            when :craft then handle_craft(card)
+            when :body then handle_body(card)
+            end
+          end
         end
+      end
+
+      def handle_name(card)
+        Rainbow(card.name).fg(Colors::SUIT_COLOR[card.suit])
+      end
+
+      def handle_craft(card)
+        str =
+          card
+          .craft
+          .map { |suit| Rainbow(suit.capitalize).fg(Colors::SUIT_COLOR[suit]) }
+          .join(', ')
+        str.empty? ? '-' : str
+      end
+
+      # Rainbow(card.body).fg(Colors::SUIT_COLOR[card.suit])
+      # Is the alternative, but it might be too much annoying text.
+      def handle_body(card)
+        card.body
       end
     end
   end

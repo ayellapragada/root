@@ -23,6 +23,10 @@ module Root
       def inspect
         "#{name} - #{item.capitalize} | Craft: #{craft.join(', ')}, Victory Points: #{vp}"
       end
+
+      def body
+        "#{item.capitalize}, +#{vp} VPs"
+      end
     end
   end
 end

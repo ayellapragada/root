@@ -36,6 +36,10 @@ module Root
       def inspect
         name
       end
+
+      def body
+        '-'
+      end
     end
   end
 end

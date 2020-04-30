@@ -73,8 +73,14 @@ module Root
       end
 
       def render_hand(player)
-        hand = player.faction.hand
-        Hand.new(hand).display.each { |line| print_and_clear_row(line) }
+        return if player.faction.hand.empty?
+
+        Hand
+          .new(player.faction.hand)
+          .display
+          .to_s
+          .split("\n")
+          .each { |line| print_and_clear_row(line) }
       end
 
       def print_and_clear_row(str)
