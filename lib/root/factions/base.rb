@@ -123,11 +123,27 @@ module Root
         word_wrap_string(res)
       end
 
+      # WOWOWOWOWOW yikers this is a comma based word wrap lets go
       def word_wrap_string(string, el = ', ')
         return string if string.length < 46
 
-        comma_for_split = string[0..50].rindex(el)
-        "#{string[0...comma_for_split]}\n#{string[comma_for_split + 2..-1]}"
+        res = [[]]
+        counter = 0
+        words = string.split(', ')
+        words.each do |word|
+          if (res[counter] + [word]).join(', ').length < 46
+            res[counter] << word
+          else
+            counter += 1
+            res[counter] = []
+          end
+        end
+
+        # add a comma at the end
+        res.map.with_index do |arr, idx|
+          str = (idx != res.length - 1 ? ', ' : '')
+          arr.join(', ') + str
+        end.join("\n")
       end
 
       def formatted_special_info(show_private)

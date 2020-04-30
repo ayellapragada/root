@@ -20,13 +20,13 @@ module Root
         @damaged
       end
 
-      # def exhaust
-      #   @exhausted = true
-      # end
+      def exhaust
+        @exhausted = true
+      end
 
-      # def exhausted?
-      #   @exhausted
-      # end
+      def exhausted?
+        @exhausted
+      end
     end
   end
 end

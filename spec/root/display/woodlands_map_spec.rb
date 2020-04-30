@@ -33,6 +33,21 @@ RSpec.describe Root::Display::WoodlandsMap do
         expect(game.render).to be nil
       end
     end
+
+    describe 'vagabondo item display word fonto' do
+      it 'still does not break though' do
+        game = Root::Game.with_faction_for_play(:mice)
+        player = game.players.fetch_player(:mice)
+        allow(player).to receive(:pick_option).and_return(0)
+
+        place_cards_into_bird_decree(game)
+        craft_all_items_for_racoon(game)
+        game.setup
+
+        game.print_display = true
+        expect(game.render).to be nil
+      end
+    end
   end
 
   def place_mice_tokens_for_display(game)
@@ -92,6 +107,20 @@ RSpec.describe Root::Display::WoodlandsMap do
     faction.craft_item(sword2)
     faction.craft_item(hammer)
     faction.damage_item(:hammer)
+    faction.exhaust_item(:sword)
+  end
+
+  def craft_all_items_for_racoon(game)
+    faction = game.players.fetch_player(:racoon).faction
+    %i[satchel satchel boots boots crossbow hammer sword sword tea tea coin coin].each do |item|
+      card = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: item, vp: 1)
+      faction.craft_item(card)
+      faction.exhaust_item(item)
+      faction.damage_item(item)
+    end
+  end
+  def build_item
+
   end
 
   # rubocop:disable all

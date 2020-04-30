@@ -44,7 +44,7 @@ module Root
       def formatted_relationships
         return 'No Relationships' unless @relationships
 
-        @relationships.formatted_display
+        "Affinity: #{@relationships.formatted_display}"
       end
 
       def board_title
@@ -64,16 +64,24 @@ module Root
         return [['No Items']] if items.empty?
 
         [
-          [format_items(undamaged_items)],
-          [format_items(damaged_items)]
+          [word_wrap_string(format_items(undamaged_items))],
+          [word_wrap_string(format_items(damaged_items))]
         ].reject { |arr| arr.first == '' }
       end
 
       def format_items(items_to_format)
         items_to_format
-          .map { |item| "#{item.item.capitalize}#{item.damaged? ? ' (D)' : ''}" }
-          .sort
-          .join(', ' )
+          .sort_by { |item| [item.exhausted? ? 1 : 0, item.item] }
+          .map { |item| format_with_status(item) }
+          .join(', ')
+      end
+
+      def format_with_status(item)
+        statuses = []
+        statuses << 'E' if item.exhausted?
+        statuses << 'D' if item.damaged?
+        status = statuses.empty? ? '' : " (#{statuses.join})"
+        "#{item.item.capitalize}#{status}"
       end
 
       def setup(players:, characters:)
@@ -86,6 +94,11 @@ module Root
       def damage_item(type)
         piece = undamaged_items.find { |item| item.item == type }
         piece.damage
+      end
+
+      def exhaust_item(type)
+        piece = undamaged_items.find { |item| item.item == type && !item.exhausted? }
+        piece.exhaust
       end
 
       def handle_character_select(characters)
