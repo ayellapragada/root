@@ -2,7 +2,7 @@
 
 module Root
   module Cards
-    VALID_SUITS = %i[mouse bunny fox bird].freeze
+    VALID_SUITS = %i[mouse rabbit fox bird].freeze
     # This is the base card format.
     # Lots of things are going to be optional, so that's fun.
     # We got item cards

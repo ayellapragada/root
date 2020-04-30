@@ -218,7 +218,7 @@ RSpec.describe Root::Factions::Bird do
 
       faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
       faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
-      faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :rabbit)
 
       expect { faction.resolve_decree }
         .to change(faction.meeples, :count)
@@ -247,7 +247,7 @@ RSpec.describe Root::Factions::Bird do
 
         faction.place_meeple(clearings[:one])
 
-        faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+        faction.decree[:move] << Root::Cards::Base.new(suit: :rabbit)
 
         expect { faction.resolve_move }
           .to raise_error { Root::Factions::TurmoilError }
@@ -559,8 +559,8 @@ RSpec.describe Root::Factions::Bird do
       allow(player).to receive(:pick_option).and_return(0)
 
       vizier = Root::Factions::Birds::Vizier.new
-      card1 = Root::Cards::Base.new(suit: :bunny)
-      card2 = Root::Cards::Base.new(suit: :bunny)
+      card1 = Root::Cards::Base.new(suit: :rabbit)
+      card2 = Root::Cards::Base.new(suit: :rabbit)
       faction.decree[:move] << card1
       faction.decree[:move] << card2
       faction.decree[:recruit] << vizier
@@ -573,7 +573,7 @@ RSpec.describe Root::Factions::Bird do
 
   describe '#special_info' do
     it 'shows the roosts board and decree' do
-      faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+      faction.decree[:move] << Root::Cards::Base.new(suit: :rabbit)
       faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
       faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
       faction.decree[:battle] << Root::Cards::Base.new(suit: :bird)
@@ -584,13 +584,13 @@ RSpec.describe Root::Factions::Bird do
 
       tea = Root::Cards::Item.new(
         suit: :fox,
-        craft: %i[bunny],
+        craft: %i[rabbit],
         item: :tea,
         vp: 2
       )
       sword = Root::Cards::Item.new(
         suit: :fox,
-        craft: %i[bunny],
+        craft: %i[rabbit],
         item: :sword,
         vp: 1
       )
@@ -606,7 +606,7 @@ RSpec.describe Root::Factions::Bird do
         decree: {
           headings: %w[Recruit Move Battle Build],
           rows: [
-            ['Mouse', 'Bunny', 'Bird', ''],
+            ['Mouse', 'Rabbit', 'Bird', ''],
             ['', 'Fox', '', '']
           ]
         }
@@ -614,8 +614,8 @@ RSpec.describe Root::Factions::Bird do
     end
 
     it 'consolidates multiple of the same suit in the decree' do
-      faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
-      faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+      faction.decree[:move] << Root::Cards::Base.new(suit: :rabbit)
+      faction.decree[:move] << Root::Cards::Base.new(suit: :rabbit)
       faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
 
       faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
@@ -626,7 +626,7 @@ RSpec.describe Root::Factions::Bird do
 
       expect(faction.decree.special_info).to eq(
         [
-          ['Mouse (3)', 'Bunny (2)', 'Bird', ''],
+          ['Mouse (3)', 'Rabbit (2)', 'Bird', ''],
           ['', 'Fox', '', '']
         ]
       )

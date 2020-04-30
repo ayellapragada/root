@@ -7,7 +7,7 @@ module Root
       SUIT_COLOR = {
         fox: :crimson,
         mouse: :sandybrown,
-        bunny: :gold,
+        rabbit: :gold,
         bird: :deepskyblue,
         forest: :darkgreen
       }.freeze

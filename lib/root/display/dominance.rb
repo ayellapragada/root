@@ -24,7 +24,7 @@ module Root
 
       # :nocov:
       def rows
-        %i[fox bunny mouse bird].map do |suit|
+        %i[fox rabbit mouse bird].map do |suit|
           card = dominance.find { |d| d.suit == suit }
           if card
             [

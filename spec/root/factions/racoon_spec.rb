@@ -191,6 +191,6 @@ RSpec.describe Root::Factions::Racoon do
   end
 
   def build_item(type)
-    Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: type, vp: 1)
+    Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end
 end

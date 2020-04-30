@@ -522,13 +522,13 @@ RSpec.describe Root::Factions::Cat do
 
       card_to_craft = Root::Cards::Item.new(
         suit: :fox,
-        craft: %i[bunny],
+        craft: %i[rabbit],
         item: :tea,
         vp: 2
       )
       card_unable_to_be_crafted = Root::Cards::Item.new(
         suit: :fox,
-        craft: %i[bunny],
+        craft: %i[rabbit],
         item: :coin,
         vp: 1
       )
@@ -550,7 +550,7 @@ RSpec.describe Root::Factions::Cat do
 
       item_card = Root::Cards::Item.new(
         suit: :fox,
-        craft: %i[bunny],
+        craft: %i[rabbit],
         item: :tea,
         vp: 2
       )
@@ -572,7 +572,7 @@ RSpec.describe Root::Factions::Cat do
 
         card_to_craft = Root::Cards::Item.new(
           suit: :fox,
-          craft: %i[bunny],
+          craft: %i[rabbit],
           item: :tea,
           vp: 2
         )
@@ -587,7 +587,7 @@ RSpec.describe Root::Factions::Cat do
       it 'does not allow for crafting anything' do
         card = Root::Cards::Item.new(
           suit: :fox,
-          craft: %i[bunny],
+          craft: %i[rabbit],
           item: :tea,
           vp: 2
         )
@@ -605,7 +605,7 @@ RSpec.describe Root::Factions::Cat do
 
         card = Root::Cards::Item.new(
           suit: :fox,
-          craft: %i[bunny],
+          craft: %i[rabbit],
           item: :tea,
           vp: 2
         )
@@ -711,7 +711,7 @@ RSpec.describe Root::Factions::Cat do
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(2, 1)
 
-      faction.hand << Root::Cards::Base.new(suit: :bunny)
+      faction.hand << Root::Cards::Base.new(suit: :rabbit)
       faction.initiate_battle_with_faction(clearings[:five], bird_faction)
 
       expect(faction.hand.count).to eq(0)
@@ -730,7 +730,7 @@ RSpec.describe Root::Factions::Cat do
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(2, 1)
 
-      faction.hand << Root::Cards::Base.new(suit: :bunny)
+      faction.hand << Root::Cards::Base.new(suit: :rabbit)
       faction.initiate_battle_with_faction(clearings[:five], bird_faction)
 
       expect(faction.hand.count).to eq(1)

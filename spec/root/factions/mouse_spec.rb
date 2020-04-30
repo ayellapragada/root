@@ -30,7 +30,7 @@ RSpec.describe Root::Factions::Mouse do
     context 'when for current player' do
       it 'shows the number and types of supporters' do
         faction.place_base(clearings[:one])
-        faction.supporters << Root::Cards::Base.new(suit: :bunny)
+        faction.supporters << Root::Cards::Base.new(suit: :rabbit)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :bird)
@@ -45,8 +45,8 @@ RSpec.describe Root::Factions::Mouse do
             board: {
               title: "Outrage | Guerilla Warfare | Martial Law\n0 Officers \nNo Items",
               rows: [
-                ['Bird (1)', 'Fox (0)', 'Bunny (1)', 'Mouse (2)'],
-                ['Bases', '(+1)', 'Bunny', 'Mouse'],
+                ['Bird (1)', 'Fox (0)', 'Rabbit (1)', 'Mouse (2)'],
+                ['Bases', '(+1)', 'Rabbit', 'Mouse'],
                 ['Sympathy', '(1) 0 1 1', '(2) 1 2 S', '(3) S S S S']
               ]
             }
@@ -57,7 +57,7 @@ RSpec.describe Root::Factions::Mouse do
 
     context 'when for other players' do
       it 'shows the number of supporters only' do
-        faction.supporters << Root::Cards::Base.new(suit: :bunny)
+        faction.supporters << Root::Cards::Base.new(suit: :rabbit)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :bird)
@@ -67,7 +67,7 @@ RSpec.describe Root::Factions::Mouse do
             board: {
               title: "Outrage | Guerilla Warfare | Martial Law\n4 Supporters | 0 Officers \nNo Items",
               rows: [
-                ['Bases', 'Fox', 'Bunny', 'Mouse'],
+                ['Bases', 'Fox', 'Rabbit', 'Mouse'],
                 ['Sympathy', '(1) S S S', '(2) S S S', '(3) S S S S']
               ]
             }
@@ -238,7 +238,7 @@ RSpec.describe Root::Factions::Mouse do
       faction.supporters << Root::Cards::Base.new(suit: :fox)
       faction.supporters << Root::Cards::Base.new(suit: :fox)
 
-      faction.supporters << Root::Cards::Base.new(suit: :bunny)
+      faction.supporters << Root::Cards::Base.new(suit: :rabbit)
       faction.supporters << Root::Cards::Base.new(suit: :bird)
       faction.place_sympathy(clearings[:five])
       faction.place_sympathy(clearings[:two])
@@ -318,7 +318,7 @@ RSpec.describe Root::Factions::Mouse do
     context 'when no sympathy is currently on the board' do
       it 'can be placed anywhere with the valid supporters' do
         faction.supporters << Root::Cards::Base.new(suit: :fox)
-        faction.supporters << Root::Cards::Base.new(suit: :bunny)
+        faction.supporters << Root::Cards::Base.new(suit: :rabbit)
 
         expect(faction.spread_sympathy_options).to match_array([
           clearings[:one], clearings[:six], clearings[:eight], clearings[:twelve],
@@ -339,7 +339,7 @@ RSpec.describe Root::Factions::Mouse do
         clearings = player.board.clearings
 
         faction.supporters << Root::Cards::Base.new(suit: :fox)
-        faction.supporters << Root::Cards::Base.new(suit: :bunny)
+        faction.supporters << Root::Cards::Base.new(suit: :rabbit)
 
         faction.place_sympathy(clearings[:five])
         faction.place_sympathy(clearings[:two])
@@ -408,9 +408,9 @@ RSpec.describe Root::Factions::Mouse do
   describe '#train_options' do
     it 'returns all suits of built bases' do
       fox_card = Root::Cards::Base.new(suit: :fox)
-      bunny_card = Root::Cards::Base.new(suit: :bunny)
+      rabbit_card = Root::Cards::Base.new(suit: :rabbit)
       faction.hand << fox_card
-      faction.hand << bunny_card
+      faction.hand << rabbit_card
 
       expect(faction.can_train?).to be false
       faction.place_base(clearings[:one])
@@ -619,10 +619,10 @@ RSpec.describe Root::Factions::Mouse do
       cat_faction.place_meeple(clearings[:one])
       faction.place_base(clearings[:one])
 
-      6.times { faction.supporters << Root::Cards::Base.new(suit: :bunny) }
+      6.times { faction.supporters << Root::Cards::Base.new(suit: :rabbit) }
 
       expect { cat_faction.initiate_battle_with_faction(clearings[:one], faction) }
-        .to change { faction.usable_supporters(:bunny).count }
+        .to change { faction.usable_supporters(:rabbit).count }
         .by(-1)
         .and change { faction.deck.discard.count }
         .by(1)

@@ -19,33 +19,33 @@ module Root
       def list_of_cards!
         8.times { deck << Cards::Base.new(suit: :fox) }
         7.times { deck << Cards::Base.new(suit: :mouse) }
-        9.times { deck << Cards::Base.new(suit: :bunny) }
+        9.times { deck << Cards::Base.new(suit: :rabbit) }
         10.times { deck << Cards::Base.new(suit: :bird) }
         [
           # rubocop:disable all
           { suit: :bird,  name: 'Arms Trader', craft: %i[fox fox], item: :sword, vp: 2 },
           { suit: :bird,  name: 'Birdy Bindle', craft: %i[mouse], item: :satchel, vp: 1 },
           { suit: :bird,  name: 'Crossbow', craft: %i[fox], item: :crossbow, vp: 1 },
-          { suit: :bird,  name: 'Woodland Runners', craft: %i[bunny], item: :boots, vp: 1 },
+          { suit: :bird,  name: 'Woodland Runners', craft: %i[rabbit], item: :boots, vp: 1 },
 
           { suit: :fox,  name: 'Anvil', craft: %i[fox], item: :hammer, vp: 2 },
           { suit: :fox,  name: 'Foxfolk Steel', craft: %i[fox fox], item: :sword, vp: 2 },
           { suit: :fox,  name: 'Gently Used Knapsack', craft: %i[mouse], item: :satchel, vp: 1 },
-          { suit: :fox,  name: 'Protection Racket', craft: %i[bunny bunny], item: :coin, vp: 3 },
+          { suit: :fox,  name: 'Protection Racket', craft: %i[rabbit rabbit], item: :coin, vp: 3 },
           { suit: :fox,  name: 'Root Tea', craft: %i[mouse], item: :tea, vp: 2 },
-          { suit: :fox,  name: 'Travel Gear', craft: %i[bunny], item: :boots, vp: 1 },
+          { suit: :fox,  name: 'Travel Gear', craft: %i[rabbit], item: :boots, vp: 1 },
 
           { suit: :mouse,  name: 'Crossbow', craft: %i[fox], item: :crossbow, vp: 1 },
-          { suit: :mouse,  name: 'Investments', craft: %i[bunny bunny], item: :coin, vp: 3 },
+          { suit: :mouse,  name: 'Investments', craft: %i[rabbit rabbit], item: :coin, vp: 3 },
           { suit: :mouse,  name: 'Mouse-in-a-Sack', craft: %i[mouse], item: :satchel, vp: 1 },
           { suit: :mouse,  name: 'Root Tea', craft: %i[mouse], item: :tea, vp: 2 },
           { suit: :mouse,  name: 'Sword', craft: %i[fox fox], item: :sword, vp: 2 },
-          { suit: :mouse,  name: 'Travel Gear', craft: %i[bunny], item: :boots, vp: 1 },
+          { suit: :mouse,  name: 'Travel Gear', craft: %i[rabbit], item: :boots, vp: 1 },
 
-          { suit: :bunny,  name: 'A Visit to Friends', craft: %i[bunny], item: :boots, vp: 1 },
-          { suit: :bunny,  name: 'Bake Sale', craft: %i[bunny bunny], item: :coin, vp: 3 },
-          { suit: :bunny,  name: 'Root Tea', craft: %i[mouse], item: :tea, vp: 2 },
-          { suit: :bunny, name: 'Smuggler\'s Trail', craft: %i[mouse], item: :Satchel, vp: 1 }
+          { suit: :rabbit,  name: 'A Visit to Friends', craft: %i[rabbit], item: :boots, vp: 1 },
+          { suit: :rabbit,  name: 'Bake Sale', craft: %i[rabbit rabbit], item: :coin, vp: 3 },
+          { suit: :rabbit,  name: 'Root Tea', craft: %i[mouse], item: :tea, vp: 2 },
+          { suit: :rabbit, name: 'Smuggler\'s Trail', craft: %i[mouse], item: :Satchel, vp: 1 }
           # rubocop:enable all
         ].each do |row|
           deck << Cards::Item.new(

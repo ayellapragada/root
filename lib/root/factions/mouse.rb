@@ -83,7 +83,7 @@ module Root
         [
           'Bases',
           display_for_base(:fox),
-          display_for_base(:bunny),
+          display_for_base(:rabbit),
           display_for_base(:mouse)
         ]
       end
@@ -96,7 +96,7 @@ module Root
         [
           "Bird (#{supporters_for(:bird).count})",
           "Fox (#{supporters_for(:fox).count})",
-          "Bunny (#{supporters_for(:bunny).count})",
+          "Rabbit (#{supporters_for(:rabbit).count})",
           "Mouse (#{supporters_for(:mouse).count})"
         ]
       end
@@ -112,7 +112,7 @@ module Root
       def handle_base_building
         @buildings = [
           Mice::Base.new(:fox),
-          Mice::Base.new(:bunny),
+          Mice::Base.new(:rabbit),
           Mice::Base.new(:mouse)
         ]
       end
@@ -253,7 +253,7 @@ module Root
 
       def built_base_suits
         unbuilt_base_suits = bases.map(&:suit)
-        %i[fox bunny mouse] - unbuilt_base_suits
+        %i[fox rabbit mouse] - unbuilt_base_suits
       end
 
       def usable_supporters(suit)

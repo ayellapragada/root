@@ -125,13 +125,13 @@ module Root
 
       # WOWOWOWOWOW yikers this is a comma based word wrap lets go
       def word_wrap_string(string, el = ', ')
-        return string if string.length < 46
+        return string if string.length < 50
 
         res = [[]]
         counter = 0
         words = string.split(', ')
         words.each do |word|
-          if (res[counter] + [word]).join(', ').length < 46
+          if (res[counter] + [word]).join(', ').length < 50
             res[counter] << word
           else
             counter += 1
@@ -153,7 +153,7 @@ module Root
             obj[:headings] = val[:headings] if val[:headings]
             obj[:title] = val[:title] if val[:title]
 
-            style_opts = { width: 50 }
+            style_opts = { width: 54 }
             obj[:style] = style_opts
             obj[:alignment] = :center
           end
@@ -321,7 +321,7 @@ module Root
       end
 
       def convert_needed_suits(suits)
-        suits.include?(:bird) ? %i[fox mouse bunny] : suits
+        suits.include?(:bird) ? %i[fox mouse rabbit] : suits
       end
 
       def cards_in_hand_with_suit(suit = nil)

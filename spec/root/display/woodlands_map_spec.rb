@@ -42,6 +42,7 @@ RSpec.describe Root::Display::WoodlandsMap do
 
         place_cards_into_bird_decree(game)
         craft_all_items_for_racoon(game)
+        add_bunny_supporters(game)
         game.setup
 
         game.print_display = true
@@ -66,10 +67,10 @@ RSpec.describe Root::Display::WoodlandsMap do
     faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
     faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
     faction.decree[:recruit] << Root::Cards::Base.new(suit: :bird)
-    faction.decree[:recruit] << Root::Cards::Base.new(suit: :bunny)
+    faction.decree[:recruit] << Root::Cards::Base.new(suit: :rabbit)
 
     faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
-    faction.decree[:move] << Root::Cards::Base.new(suit: :bunny)
+    faction.decree[:move] << Root::Cards::Base.new(suit: :rabbit)
     faction.decree[:move] << Root::Cards::Base.new(suit: :mouse)
     faction.decree[:move] << Root::Cards::Base.new(suit: :bird)
 
@@ -97,10 +98,10 @@ RSpec.describe Root::Display::WoodlandsMap do
 
   def craft_items_for_racoon(game)
     faction = game.players.fetch_player(:racoon).faction
-    tea = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :tea, vp: 2)
-    sword1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
-    sword2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :sword, vp: 2)
-    hammer = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :hammer, vp: 2)
+    tea = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :tea, vp: 2)
+    sword1 = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :sword, vp: 2)
+    sword2 = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :sword, vp: 2)
+    hammer = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :hammer, vp: 2)
 
     faction.craft_item(tea)
     faction.craft_item(sword1)
@@ -112,13 +113,23 @@ RSpec.describe Root::Display::WoodlandsMap do
 
   def craft_all_items_for_racoon(game)
     faction = game.players.fetch_player(:racoon).faction
-    coin = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :coin, vp: 1)
+    coin = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :coin, vp: 1)
     faction.craft_item(coin)
     %i[satchel satchel boots boots crossbow hammer sword sword tea tea coin].each do |item|
-      card = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: item, vp: 1)
+      card = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: item, vp: 1)
       faction.craft_item(card)
       faction.exhaust_item(item)
       faction.damage_item(item)
+    end
+  end
+
+  def add_bunny_supporters(game)
+    faction = game.players.fetch_player(:mice).faction
+    clearings = game.board.clearings
+    faction.place_base(clearings[:one])
+    12.times do
+      card = Root::Cards::Base.new(suit: :rabbit)
+      faction.add_to_supporters([card])
     end
   end
 
@@ -138,20 +149,20 @@ RSpec.describe Root::Display::WoodlandsMap do
   end
 
   def craft_items_for_cat(game)
-    coin = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :coin, vp: 2)
+    coin = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :coin, vp: 2)
 
     faction = game.players.fetch_player(:cats).faction
     faction.craft_item(coin)
   end
 
   def craft_so_many_items_for_cat(game)
-    coin = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :coin, vp: 2)
-    satchel1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :satchel, vp: 2)
-    crossbow = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :crossbow, vp: 2)
-    boots1 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :boots, vp: 2)
-    boots2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :boots, vp: 2)
-    satchel2 = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :satchel, vp: 2)
-    tea = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :tea, vp: 2)
+    coin = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :coin, vp: 2)
+    satchel1 = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :satchel, vp: 2)
+    crossbow = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :crossbow, vp: 2)
+    boots1 = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :boots, vp: 2)
+    boots2 = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :boots, vp: 2)
+    satchel2 = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :satchel, vp: 2)
+    tea = Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: :tea, vp: 2)
 
     faction = game.players.fetch_player(:cats).faction
     faction.craft_item(coin)

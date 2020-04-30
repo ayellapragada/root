@@ -24,11 +24,11 @@ module Root
             { suit: :fox, name: 'Repair a Shed', items: %i[torch hammer] },
             { suit: :fox, name: 'Give a Speech', items: %i[torch tea] },
 
-            { suit: :bunny, name: 'Guard Duty', items: %i[torch sword] },
-            { suit: :bunny, name: 'Errand', items: %i[tea boots] },
-            { suit: :bunny, name: 'Give a Speech', items: %i[torch tea] },
-            { suit: :bunny, name: 'Fend Off a Bear', items: %i[torch crossbow] },
-            { suit: :bunny, name: 'Expel Bandits', items: %i[sword sword] },
+            { suit: :rabbit, name: 'Guard Duty', items: %i[torch sword] },
+            { suit: :rabbit, name: 'Errand', items: %i[tea boots] },
+            { suit: :rabbit, name: 'Give a Speech', items: %i[torch tea] },
+            { suit: :rabbit, name: 'Fend Off a Bear', items: %i[torch crossbow] },
+            { suit: :rabbit, name: 'Expel Bandits', items: %i[sword sword] },
 
             { suit: :mouse, name: 'Expel Bandits', items: %i[sword sword] },
             { suit: :mouse, name: 'Guard Duty', items: %i[torch sword] },

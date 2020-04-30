@@ -5,13 +5,13 @@ RSpec.describe Root::Grid::Clearing do
     it 'sets values for a clearing' do
       clearing = Root::Grid::Clearing.new(
         priority: 1,
-        suit: :bunny,
+        suit: :rabbit,
         slots: 2,
         ruin: true
       )
 
       expect(clearing.priority).to eq(1)
-      expect(clearing.suit).to eq(:bunny)
+      expect(clearing.suit).to eq(:rabbit)
       expect(clearing.ruin?).to eq(true)
       expect(clearing.adjacents).to eq([])
     end
@@ -56,7 +56,7 @@ RSpec.describe Root::Grid::Clearing do
       it 'creates a building' do
         clearing = Root::Grid::Clearing.new(
           priority: 1,
-          suit: :bunny,
+          suit: :rabbit,
           slots: 1
         )
 
@@ -71,7 +71,7 @@ RSpec.describe Root::Grid::Clearing do
       it 'does not create a building' do
         clearing = Root::Grid::Clearing.new(
           priority: 1,
-          suit: :bunny,
+          suit: :rabbit,
           slots: 1,
           ruin: true
         )
@@ -88,7 +88,7 @@ RSpec.describe Root::Grid::Clearing do
     it 'fills available slots with empty slots for display' do
       clearing = Root::Grid::Clearing.new(
         priority: 1,
-        suit: :bunny,
+        suit: :rabbit,
         slots: 3,
         ruin: true
       )
@@ -104,7 +104,7 @@ RSpec.describe Root::Grid::Clearing do
       it 'is ruled by people with most tokens' do
         clearing = Root::Grid::Clearing.new(
           priority: 1,
-          suit: :bunny,
+          suit: :rabbit,
           slots: 3
         )
 
@@ -121,7 +121,7 @@ RSpec.describe Root::Grid::Clearing do
         it 'is ruled by no one' do
           clearing = Root::Grid::Clearing.new(
             priority: 1,
-            suit: :bunny,
+            suit: :rabbit,
             slots: 3
           )
           clearing.place_meeple(Root::Pieces::Meeple.new(:cats))
@@ -142,7 +142,7 @@ RSpec.describe Root::Grid::Clearing do
       it 'gives birds the win on a tie' do
         clearing = Root::Grid::Clearing.new(
           priority: 1,
-          suit: :bunny,
+          suit: :rabbit,
           slots: 3
         )
 
@@ -162,7 +162,7 @@ RSpec.describe Root::Grid::Clearing do
       it 'does not count the ruin ' do
         clearing = Root::Grid::Clearing.new(
           priority: 1,
-          suit: :bunny,
+          suit: :rabbit,
           slots: 3,
           ruin: true
         )

@@ -7,7 +7,7 @@ module Root
   module Grid
     # Node data structure for clearings
     class Clearing
-      VALID_SUITS = %i[fox mice bunny forest].freeze
+      VALID_SUITS = %i[fox mice rabbit forest].freeze
 
       attr_reader :priority, :suit, :slots, :ruin, :type,
                   :all_adjacents, :buildings, :tokens, :meeples

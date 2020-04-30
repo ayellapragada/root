@@ -20,9 +20,11 @@ module Root
         @vp = vp
       end
 
+      # :nocov:
       def inspect
         "#{name} - #{item.capitalize} | Craft: #{craft.join(', ')}, Victory Points: #{vp}"
       end
+      # :nocov:
 
       def body
         "#{item.capitalize}, +#{vp} VPs"
