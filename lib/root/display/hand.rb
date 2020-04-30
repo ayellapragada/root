@@ -33,7 +33,8 @@ module Root
       end
 
       def handle_name(card)
-        Rainbow(card.name).fg(Colors::SUIT_COLOR[card.suit])
+        card_title = "#{card.name} (#{card.suit[0].capitalize})"
+        Rainbow(card_title).fg(Colors::SUIT_COLOR[card.suit])
       end
 
       def handle_craft(card)
@@ -42,7 +43,7 @@ module Root
           .craft
           .map { |suit| Rainbow(suit.capitalize).fg(Colors::SUIT_COLOR[suit]) }
           .join(', ')
-        str.empty? ? '-' : str
+        str.empty? ? ' ' : str
       end
 
       # Rainbow(card.body).fg(Colors::SUIT_COLOR[card.suit])

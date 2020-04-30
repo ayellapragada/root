@@ -38,7 +38,7 @@ module Root
       end
 
       def body
-        '-'
+        ' '
       end
     end
   end
