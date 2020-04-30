@@ -120,14 +120,14 @@ RSpec.describe Root::Factions::Racoon do
 
   describe '#formatted_items' do
     context 'when having no items' do
-      it { expect(faction.formatted_items).to eq([['No Items']]) }
+      it { expect(faction.formatted_items).to eq(['No Items']) }
     end
 
     context 'with undamaged unexhausted items' do
       it 'renders just the name without status' do
         faction.craft_item(build_item(:tea))
         faction.craft_item(build_item(:sword))
-        expect(faction.formatted_items).to eq([['Sword, Tea']])
+        expect(faction.formatted_items).to eq(['Sword, Tea'])
       end
     end
 
@@ -137,7 +137,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.craft_item(build_item(:sword))
 
         faction.exhaust_item(:sword)
-        expect(faction.formatted_items).to eq([['Tea, Sword (E)']])
+        expect(faction.formatted_items).to eq(['Tea, Sword (E)'])
       end
     end
 
@@ -150,7 +150,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.damage_item(:hammer)
 
         expect(faction.formatted_items)
-          .to eq([['Satchel, Sword'], ['Hammer (D)']])
+          .to eq(['Satchel, Sword, Hammer (D)'])
       end
     end
 
@@ -158,25 +158,28 @@ RSpec.describe Root::Factions::Racoon do
       it 'shows both in status message' do
         faction.craft_item(build_item(:sword))
         faction.craft_item(build_item(:satchel))
+        faction.craft_item(build_item(:coin))
         faction.craft_item(build_item(:hammer))
+
+        faction.exhaust_item(:coin)
 
         faction.exhaust_item(:hammer)
         faction.damage_item(:hammer)
 
         expect(faction.formatted_items)
-          .to eq([['Satchel, Sword'], ['Hammer (ED)']])
+          .to eq(['Satchel, Sword, Coin (E), Hammer (ED)'])
       end
     end
 
     context 'with way too many items' do
       it 'puts onto new lines' do
-        %i[satchel satchel boots boots crossbow hammer sword sword tea tea coin coin].each do |item|
+        Root::Boards::ItemsGenerator.generate.each do |item|
           faction.craft_item(build_item(item))
           faction.exhaust_item(item)
           faction.damage_item(item)
         end
 
-        expect(faction.formatted_items.first.first.split("\n").count).to eq(3)
+        expect(faction.formatted_items.first.split("\n").count).to eq(3)
       end
     end
   end

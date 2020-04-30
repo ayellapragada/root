@@ -112,15 +112,14 @@ RSpec.describe Root::Display::WoodlandsMap do
 
   def craft_all_items_for_racoon(game)
     faction = game.players.fetch_player(:racoon).faction
-    %i[satchel satchel boots boots crossbow hammer sword sword tea tea coin coin].each do |item|
+    coin = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: :coin, vp: 1)
+    faction.craft_item(coin)
+    %i[satchel satchel boots boots crossbow hammer sword sword tea tea coin].each do |item|
       card = Root::Cards::Item.new(suit: :fox, craft: %i[bunny], item: item, vp: 1)
       faction.craft_item(card)
       faction.exhaust_item(item)
       faction.damage_item(item)
     end
-  end
-  def build_item
-
   end
 
   # rubocop:disable all

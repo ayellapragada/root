@@ -55,23 +55,22 @@ module Root
         {
           board: {
             title: board_title,
-            rows: formatted_items
+            rows: [formatted_items]
           }
         }
       end
 
       def formatted_items
-        return [['No Items']] if items.empty?
+        return ['No Items'] if items.empty?
 
         [
-          [word_wrap_string(format_items(undamaged_items))],
-          [word_wrap_string(format_items(damaged_items))]
-        ].reject { |arr| arr.first == '' }
+          word_wrap_string(format_items(items)),
+        ]
       end
 
       def format_items(items_to_format)
         items_to_format
-          .sort_by { |item| [item.exhausted? ? 1 : 0, item.item] }
+          .sort_by { |item| [item.damaged? ? 1 : 0, item.exhausted? ? 1 : 0, item.item] }
           .map { |item| format_with_status(item) }
           .join(', ')
       end
