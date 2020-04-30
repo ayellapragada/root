@@ -74,10 +74,7 @@ module Root
 
       def render_hand(player)
         hand = player.faction.hand
-        hand.each do |card|
-          str = Rainbow(card.inspect).fg(Colors::SUIT_COLOR[card.suit])
-          print_and_clear_row(str)
-        end
+        Hand.new(hand).display.each { |line| print_and_clear_row(line) }
       end
 
       def print_and_clear_row(str)
