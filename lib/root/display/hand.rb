@@ -21,15 +21,11 @@ module Root
       end
 
       def rows
-        %i[name craft body].map do |field|
-          hand.map do |card|
-            case field
-            when :name then handle_name(card)
-            when :craft then handle_craft(card)
-            when :body then handle_body(card)
-            end
-          end
-        end
+        [
+          hand.map { |card| handle_name(card) },
+          hand.map { |card| handle_craft(card) },
+          hand.map { |card| handle_body(card) }
+        ]
       end
 
       def handle_name(card)
