@@ -9,14 +9,6 @@ module Root
           prompt: 'Test Option',
           history: 'Test Option'
         },
-        v_char_sel: {
-          prompt: 'Pick a Racoon to be your Character',
-          history: 'Picked the %s Character'
-        },
-        v_forest_sel: {
-          prompt: 'Pick a Forest to start in',
-          history: 'Placed Warrior in forest %s'
-        },
         c_initial_keep: {
           prompt: 'Pick where to place the Keep',
           history: ''
@@ -152,6 +144,19 @@ module Root
         m_organize_clearing: {
           prompt: 'Pick a clearing to revolt in',
           history: ''
+        },
+        r_char_sel: {
+          prompt: 'Pick a Racoon to be your Character',
+          history: 'Picked the %s Character'
+        },
+        r_forest_sel: {
+          prompt: 'Pick a Forest to start in',
+          history: 'Placed Warrior in forest %s'
+        },
+        r_item_refresh: {
+          prompt: 'Pick an Item to refresh',
+          history: '' # FIX ME
+          # history: 'Refreshed items: %s'
         }
       }.freeze
     end

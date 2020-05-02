@@ -11,7 +11,7 @@ module Root
 
       SETUP_PRIORITY = 'D'
 
-      attr_reader :teas, :coins, :satchels, :character, :relationships
+      attr_reader :character, :relationships
 
       def faction_symbol
         :racoon
@@ -19,13 +19,28 @@ module Root
 
       def handle_faction_token_setup
         @meeples = [Pieces::Meeple.new(:racoon)]
-        handle_empty_item_setup
       end
 
-      def handle_empty_item_setup
-        @teas = []
-        @coins = []
-        @satchels = []
+      def teas
+        refreshed_and_undamaged_items.select { |item| item.of_type(:tea) }
+      end
+
+      def coins
+        refreshed_and_undamaged_items.select { |item| item.of_type(:tea) }
+      end
+
+      def satchels
+        refreshed_and_undamaged_items.select { |item| item.of_type(:tea) }
+      end
+
+      def items_in_knapsack
+        items - (teas + coins + satchels)
+      end
+
+      def refreshed_and_undamaged_items
+        items
+          .reject(&:exhausted?)
+          .reject(&:damaged?)
       end
 
       def undamaged_items
@@ -34,6 +49,10 @@ module Root
 
       def damaged_items
         items.select(&:damaged?)
+      end
+
+      def exhausted_items
+        items.select(&:exhausted?)
       end
 
       def formatted_character
@@ -64,7 +83,7 @@ module Root
         return ['No Items'] if items.empty?
 
         [
-          word_wrap_string(format_items(items)),
+          word_wrap_string(format_items(items_in_knapsack))
         ]
       end
 
@@ -101,7 +120,7 @@ module Root
       end
 
       def handle_character_select(characters)
-        player.choose(:v_char_sel, characters.deck, required: true) do |char|
+        player.choose(:r_char_sel, characters.deck, required: true) do |char|
           characters.remove_from_deck(char)
           @character = char
         end
@@ -113,7 +132,7 @@ module Root
 
       def handle_forest_select
         opts = board.forests.values
-        player.choose(:v_forest_sel, opts, required: true) do |forest|
+        player.choose(:r_forest_sel, opts, required: true) do |forest|
           board.place_meeple(meeples.pop, forest)
         end
       end
@@ -128,6 +147,32 @@ module Root
       def handle_relationships(players)
         others = players.except_player(player)
         @relationships = Racoons::Relationships.new(others)
+      end
+
+      def take_turn(players:, active_quests:)
+        birdsong
+        # daylight(players, active_quests)
+        # evening
+      end
+
+      def birdsong
+        refresh_items
+      end
+
+      def refresh_items
+        num_to_refresh = 3 + (teas.count * 2)
+        if num_to_refresh >= exhausted_items.count
+          exhausted_items.each(&:refresh)
+        else
+          num_to_refresh.times do
+            opts = refresh_item_options
+            player.choose(:r_item_refresh, opts, required: true, &:refresh)
+          end
+        end
+      end
+
+      def refresh_item_options
+        exhausted_items
       end
     end
   end

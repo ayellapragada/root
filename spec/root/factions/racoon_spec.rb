@@ -125,19 +125,19 @@ RSpec.describe Root::Factions::Racoon do
 
     context 'with undamaged unexhausted items' do
       it 'renders just the name without status' do
-        faction.craft_item(build_item(:tea))
-        faction.craft_item(build_item(:sword))
-        expect(faction.formatted_items).to eq(['Sword, Tea'])
+        faction.craft_item(build_item(:hammer))
+        faction.craft_item(build_item(:boots))
+        expect(faction.formatted_items).to eq(['Boots, Hammer'])
       end
     end
 
     context 'with exhausted items' do
       it 'renders just the name with the status as part of normal items' do
-        faction.craft_item(build_item(:tea))
-        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:hammer))
+        faction.craft_item(build_item(:boots))
 
-        faction.exhaust_item(:sword)
-        expect(faction.formatted_items).to eq(['Tea, Sword (E)'])
+        faction.exhaust_item(:boots)
+        expect(faction.formatted_items).to eq(['Hammer, Boots (E)'])
       end
     end
 
@@ -187,6 +187,95 @@ RSpec.describe Root::Factions::Racoon do
   describe '#formatted_relationships' do
     context 'without relationships' do
       it { expect(faction.formatted_relationships).to eq('No Relationships') }
+    end
+  end
+
+  describe '#refresh_items' do
+    context 'with no tea' do
+      it 'refreshes 3 items' do
+        faction.craft_item(build_item(:hammer))
+        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:sword))
+
+        faction.exhaust_item(:hammer)
+        faction.exhaust_item(:sword)
+        faction.exhaust_item(:sword)
+
+        expect { faction.refresh_items }
+          .to change { faction.exhausted_items.count }
+          .by(-3)
+      end
+    end
+
+    context 'with tea' do
+      it 'refreshes 3 items + 2 per tea' do
+        faction.craft_item(build_item(:hammer))
+        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:boots))
+        faction.craft_item(build_item(:boots))
+
+        faction.exhaust_item(:hammer)
+        faction.exhaust_item(:sword)
+        faction.exhaust_item(:sword)
+        faction.exhaust_item(:boots)
+        faction.exhaust_item(:boots)
+
+        faction.craft_item(build_item(:tea))
+
+        expect { faction.refresh_items }
+          .to change { faction.exhausted_items.count }
+          .by(-5)
+      end
+    end
+
+    context 'when more items are exhausted than tea' do
+      it 'lets player pick which ones to refresh' do
+        allow(player).to receive(:pick_option).and_return(0)
+
+        faction.craft_item(build_item(:hammer))
+        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:sword))
+        faction.craft_item(build_item(:boots))
+        faction.craft_item(build_item(:boots))
+
+        faction.exhaust_item(:hammer)
+        faction.exhaust_item(:sword)
+        faction.exhaust_item(:sword)
+        faction.exhaust_item(:boots)
+        faction.exhaust_item(:boots)
+
+        expect { faction.refresh_items }
+          .to change { faction.exhausted_items.count }
+          .by(-3)
+      end
+    end
+  end
+
+  describe '#refresh_item_options' do
+    it 'selects all exhausted items even if damaged' do
+      faction.craft_item(build_item(:hammer))
+      faction.craft_item(build_item(:crossbow))
+      faction.craft_item(build_item(:sword))
+      faction.craft_item(build_item(:boots))
+      faction.craft_item(build_item(:coin))
+
+      faction.exhaust_item(:crossbow)
+      faction.exhaust_item(:sword)
+      faction.exhaust_item(:boots)
+      faction.exhaust_item(:coin)
+      faction.damage_item(:coin)
+
+      faction.damage_item(:hammer)
+
+      expect(faction.refresh_item_options.map(&:item))
+        .to eq(%i[crossbow sword boots coin])
+    end
+  end
+
+  describe '#slip_options' do
+    it 'includes adjacent forests and clearings' do
+      # faction.place_meeple(clearings[:a])
     end
   end
 

@@ -24,8 +24,16 @@ module Root
         @exhausted = true
       end
 
+      def refresh
+        @exhausted = false
+      end
+
       def exhausted?
         @exhausted
+      end
+
+      def of_type(type)
+        item == type
       end
     end
   end
