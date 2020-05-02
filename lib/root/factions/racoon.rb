@@ -174,6 +174,14 @@ module Root
       def refresh_item_options
         exhausted_items
       end
+
+      def current_location
+        board.clearings_with_meeples(faction_symbol).first
+      end
+
+      def slip_options
+        current_location.all_adjacents
+      end
     end
   end
 end

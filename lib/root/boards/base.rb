@@ -97,7 +97,7 @@ module Root
       end
 
       def clearings_with_meeples(type)
-        clearings.values.select { |clearing| clearing.includes_meeple?(type) }
+        all_clearings.values.select { |clearing| clearing.includes_meeple?(type) }
       end
 
       def clearings_with_rule(faction)

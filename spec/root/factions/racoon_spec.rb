@@ -5,6 +5,7 @@ RSpec.describe Root::Factions::Racoon do
   let(:faction) { player.faction }
   let(:board) { player.board }
   let(:clearings) { board.clearings }
+  let(:forests) { board.forests }
   let(:mouse_player) { Root::Players::Computer.for('Bird', :mice) }
   let(:mouse_faction) { bird_player.faction }
   let(:bird_player) { Root::Players::Computer.for('Bird', :birds) }
@@ -275,7 +276,14 @@ RSpec.describe Root::Factions::Racoon do
 
   describe '#slip_options' do
     it 'includes adjacent forests and clearings' do
-      # faction.place_meeple(clearings[:a])
+      faction.place_meeple(forests[:a])
+
+      expect(faction.slip_options).to eq(
+        [
+          forests[:b], forests[:c],
+          clearings[:one], clearings[:two], clearings[:five], clearings[:ten]
+        ]
+      )
     end
   end
 
