@@ -192,6 +192,21 @@ module Root
       def slip_options
         current_location.all_adjacents
       end
+
+      # :nocov:
+      def daylight_options
+        [].tap do |options|
+          # options << :move if can_move?
+          # options << :battle if can_battle?
+          # options << :explore if can_explore?
+          # options << :aid if can_aid?
+          # options << :quest if can_quest?
+          # options << :strike if can_strike?
+          # options << :repair if can_repair?
+          # options << :craft if can_craft?
+        end
+      end
+      # :nocov:
     end
   end
 end

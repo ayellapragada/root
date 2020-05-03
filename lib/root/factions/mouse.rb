@@ -179,6 +179,8 @@ module Root
       end
 
       def outrage(other_faction, suit)
+        # return if other_faction == :racoon
+
         card_opts = other_faction.cards_in_hand_with_suit(suit)
         return draw_to_supporters if card_opts.empty?
 
