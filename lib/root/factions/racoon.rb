@@ -158,7 +158,7 @@ module Root
 
       def take_turn(players:, active_quests:)
         birdsong(players)
-        # daylight(players, active_quests)
+        daylight(players, active_quests)
         # evening
       end
 
@@ -187,18 +187,53 @@ module Root
         board.clearings_with_meeples(faction_symbol).first
       end
 
-      def slip(players)
-        player.choose(:f_move_to_options, slip_options) do |where_to|
+      def racoon_move(players, options)
+        player.choose(:f_move_to_options, options) do |where_to|
           move_meeples(current_location, where_to, 1, players)
         end
+      end
+
+      def slip(players)
+        racoon_move(players, slip_options)
+      end
+
+      # maybe even twice idk yet idk if i like this way of handling it
+      def boots_move(players)
+        racoon_move(players, current_location.adjacents)
+        exhaust_item(:boots)
       end
 
       def slip_options
         current_location.all_adjacents
       end
 
+      def daylight(players, active_quests)
+        until daylight_options(active_quests: active_quests).empty?
+          player.choose(
+            :f_pick_action,
+            daylight_options(active_quests: active_quests),
+            yield_anyway: true,
+            info: { actions: '' }
+          ) do |action|
+            # :nocov:
+            case action
+            when :move then boots_move(players)
+            when :battle then with_item(:sword) { battle(players) }
+            when :none then return false
+            end
+            # :nocov:
+          end
+        end
+      end
+
+      def with_item(type)
+        exhaust_item(type) if yield
+      end
+
       # :nocov:
-      def daylight_options
+      # TEMPORARY
+      # def daylight_options(active_quests: [])
+      def daylight_options(*)
         [].tap do |options|
           options << :move if can_move?
           options << :battle if can_battle?
