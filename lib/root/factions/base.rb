@@ -204,8 +204,12 @@ module Root
         deck.discard_card(choice)
         hand.delete(choice)
         self.victory_points += handle_item_vp(choice)
-        @items << Pieces::Item.new(choice.item)
+        make_item(choice.item)
         player.add_to_history(:f_item_select, item: choice.item, vp: choice.vp)
+      end
+
+      def make_item(type)
+        @items << Pieces::Item.new(type)
       end
 
       def handle_item_vp(item)
@@ -277,9 +281,13 @@ module Root
           how_many_opts = [*1.upto(max_choice)]
 
           player.choose(:f_move_number, how_many_opts) do |how_many|
-            Actions::Move.new(clearing, where_to, how_many, self, players).()
+            move_meeples(clearing, where_to, how_many, players)
           end
         end
+      end
+
+      def move_meeples(from, to, num, players)
+        Actions::Move.new(from, to, num, self, players).()
       end
 
       def can_battle?
@@ -358,6 +366,41 @@ module Root
 
       def with_action
         @remaining_actions -= 1 if yield
+      end
+
+      def max_hit(clearing)
+        clearing.meeples_of_type(faction_symbol).count
+      end
+
+      def defenseless?(clearing)
+        max_hit(clearing).zero?
+      end
+
+      def take_damage(clearing)
+        pieces_removed = []
+        meeples = clearing.meeples_of_type(faction_symbol)
+        cardboard_pieces =
+          (clearing.buildings_of_faction(faction_symbol) +
+           clearing.tokens_of_faction(faction_symbol))
+        if !meeples.empty?
+          piece = meeples.first
+          clearing.meeples.delete(piece)
+          meeples << piece
+          pieces_removed << piece
+        elsif !cardboard_pieces.empty?
+          player.choose(
+            :f_remove_piece,
+            cardboard_pieces,
+            required: true,
+            info: { clearing: clearing.priority }
+          ) do |token|
+            plural_form = token.piece_type.pluralize
+            send(plural_form) << token
+            clearing.send(plural_form).delete(token)
+            pieces_removed << token
+          end
+        end
+        pieces_removed
       end
 
       def pre_move(move_action); end

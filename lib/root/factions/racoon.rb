@@ -26,11 +26,11 @@ module Root
       end
 
       def coins
-        refreshed_and_undamaged_items.select { |item| item.of_type(:tea) }
+        refreshed_and_undamaged_items.select { |item| item.of_type(:coin) }
       end
 
       def satchels
-        refreshed_and_undamaged_items.select { |item| item.of_type(:tea) }
+        refreshed_and_undamaged_items.select { |item| item.of_type(:satchel) }
       end
 
       def items_in_knapsack
@@ -90,16 +90,8 @@ module Root
       def format_items(items_to_format)
         items_to_format
           .sort_by { |item| [item.damaged? ? 1 : 0, item.exhausted? ? 1 : 0, item.item] }
-          .map { |item| format_with_status(item) }
+          .map(&:format_with_status)
           .join(', ')
-      end
-
-      def format_with_status(item)
-        statuses = []
-        statuses << 'E' if item.exhausted?
-        statuses << 'D' if item.damaged?
-        status = statuses.empty? ? '' : " (#{statuses.join})"
-        "#{item.item.capitalize}#{status}"
       end
 
       def setup(players:, characters:)
@@ -122,6 +114,7 @@ module Root
       def handle_character_select(characters)
         player.choose(:r_char_sel, characters.deck, required: true) do |char|
           characters.remove_from_deck(char)
+          char.starting_items.each { |item| make_item(item) }
           @character = char
         end
       end
@@ -149,14 +142,25 @@ module Root
         @relationships = Racoons::Relationships.new(others)
       end
 
+      def max_hit(*)
+        undamaged_items.count { |i| i.item == :sword }
+      end
+
+      def take_damage(*)
+        return [] if undamaged_items.empty?
+
+        player.choose(:r_item_damage, undamaged_items, required: true, &:damage)
+      end
+
       def take_turn(players:, active_quests:)
-        birdsong
+        birdsong(players)
         # daylight(players, active_quests)
         # evening
       end
 
-      def birdsong
+      def birdsong(players)
         refresh_items
+        slip(players)
       end
 
       def refresh_items
@@ -177,6 +181,12 @@ module Root
 
       def current_location
         board.clearings_with_meeples(faction_symbol).first
+      end
+
+      def slip(players)
+        player.choose(:f_move_to_options, slip_options) do |where_to|
+          move_meeples(current_location, where_to, 1, players)
+        end
       end
 
       def slip_options

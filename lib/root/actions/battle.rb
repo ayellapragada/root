@@ -32,13 +32,11 @@ module Root
           defender_roll: defender_roll,
           clearing: clearing.priority
         )
-        attacker_meeples = clearing.meeples_of_type(attacker.faction_symbol)
-        defender_meeples = clearing.meeples_of_type(defender.faction_symbol)
 
-        @actual_attack = [attacker_roll, attacker_meeples.count].min
-        @actual_defend = [defender_roll, defender_meeples.count].min
+        @actual_attack = [attacker_roll, attacker.max_hit(clearing)].min
+        @actual_defend = [defender_roll, defender.max_hit(clearing)].min
 
-        @actual_attack += 1 if defender_meeples.empty?
+        @actual_attack += 1 if defender.defenseless?(clearing)
         attacker.pre_battle(self)
         defender.pre_battle(self)
         pieces_removed << deal_damage(actual_attack, defender, attacker)
@@ -62,32 +60,14 @@ module Root
 
       def deal_damage(number, defender, attacker)
         pieces_removed = []
-        until number.zero?
-          meeples = clearing.meeples_of_type(defender.faction_symbol)
-          cardboard_pieces =
-            (clearing.buildings_of_faction(defender.faction_symbol) +
-             clearing.tokens_of_faction(defender.faction_symbol))
-          if !meeples.empty?
-            piece = meeples.first
-            clearing.meeples.delete(piece)
-            defender.meeples << piece
-            pieces_removed << piece
-          elsif !cardboard_pieces.empty?
-            defender.player.choose(
-              :f_remove_piece,
-              cardboard_pieces,
-              required: true,
-              info: { clearing: clearing.priority }
-            ) do |token|
-              plural_form = token.piece_type.pluralize
-              defender.send(plural_form) << token
-              clearing.send(plural_form).delete(token)
-              attacker.victory_points += 1
-              pieces_removed << token
-            end
-          end
-          number -= 1
+        number.times { pieces_removed << defender.take_damage(clearing) }
+
+        pieces_removed.flatten!
+
+        pieces_removed.count(&:points_for_removing?).times do
+          attacker.victory_points += 1
         end
+
         pieces_removed
       end
 

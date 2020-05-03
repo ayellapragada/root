@@ -32,9 +32,13 @@ module Root
           @name = name
         end
 
+        def starting_items
+          STARTING_ITEMS[name]
+        end
+
         # :nocov:
         def inspect
-          "#{name.capitalize}: Power: #{POWERS[name]} | Starting Items: #{STARTING_ITEMS[name].join(', ')}"
+          "#{name.capitalize}: Power: #{POWERS[name]} | Starting Items: #{starting_items.join(', ')}"
         end
         # :nocov:
       end

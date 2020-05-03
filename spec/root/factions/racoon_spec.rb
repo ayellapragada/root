@@ -43,6 +43,7 @@ RSpec.describe Root::Factions::Racoon do
 
       # the first options name, ah well.
       expect(faction.character.name).to be(:thief)
+      expect(faction.items.map(&:item)).to eq(%i[boots torch tea sword])
     end
 
     it 'selects a forest clearing to start in' do
@@ -98,8 +99,8 @@ RSpec.describe Root::Factions::Racoon do
       expect(faction.special_info(true)).to eq(
         {
           board: {
-            title: "Thief | Nimble | Lone Wanderer\n0 tea(s) | 0 coin(s) | 0 satchel(s)\nAffinity: Mice: 0 | Cats: 0 | Birds: 0",
-            rows:  [['No Items']]
+            title: "Thief | Nimble | Lone Wanderer\n1 tea(s) | 0 coin(s) | 0 satchel(s)\nAffinity: Mice: 0 | Cats: 0 | Birds: 0",
+            rows:  [['Boots, Sword, Torch']]
           }
         }
       )
@@ -151,7 +152,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.damage_item(:hammer)
 
         expect(faction.formatted_items)
-          .to eq(['Satchel, Sword, Hammer (D)'])
+          .to eq(['Sword, Hammer (D)'])
       end
     end
 
@@ -168,7 +169,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.damage_item(:hammer)
 
         expect(faction.formatted_items)
-          .to eq(['Satchel, Sword, Coin (E), Hammer (ED)'])
+          .to eq(['Sword, Coin (E), Hammer (ED)'])
       end
     end
 
@@ -188,6 +189,74 @@ RSpec.describe Root::Factions::Racoon do
   describe '#formatted_relationships' do
     context 'without relationships' do
       it { expect(faction.formatted_relationships).to eq('No Relationships') }
+    end
+  end
+
+  describe '#max_hit' do
+    it 'is equal to the number of undamaged swords' do
+      expect(faction.max_hit).to eq(0)
+
+      faction.craft_item(build_item(:sword))
+      expect(faction.max_hit).to eq(1)
+
+      faction.craft_item(build_item(:sword))
+      expect(faction.max_hit).to eq(2)
+
+      faction.exhaust_item(:sword)
+      faction.exhaust_item(:sword)
+      expect(faction.max_hit).to eq(2)
+
+      faction.damage_item(:sword)
+      expect(faction.max_hit).to eq(1)
+    end
+  end
+
+  describe '#take_damage' do
+    it 'lets the user pick which items to damage' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow(cat_player).to receive(:pick_option).and_return(0)
+      cat_player.board = board
+
+      faction.craft_item(build_item(:sword))
+      faction.craft_item(build_item(:boots))
+      faction.craft_item(build_item(:hammer))
+
+      players = Root::Players::List.new(player, cat_player)
+
+      battle_cl = clearings[:one]
+
+      faction.place_meeple(battle_cl)
+      cat_faction.place_meeple(battle_cl)
+      cat_faction.place_meeple(battle_cl)
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 0)
+
+      expect { cat_faction.battle(players) }
+        .to change { faction.damaged_items.count }
+        .by(2)
+    end
+
+    context 'when no items to damage' do
+      it 'just moves on' do
+        allow(player).to receive(:pick_option).and_return(0)
+        allow(cat_player).to receive(:pick_option).and_return(0)
+        cat_player.board = board
+
+        players = Root::Players::List.new(player, cat_player)
+
+        battle_cl = clearings[:one]
+
+        faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+
+        allow_any_instance_of(Root::Actions::Battle).
+          to receive(:dice_roll).and_return(1, 0)
+
+        expect { cat_faction.battle(players) }
+          .to change { faction.damaged_items.count }
+          .by(0)
+      end
     end
   end
 
@@ -284,6 +353,18 @@ RSpec.describe Root::Factions::Racoon do
           clearings[:one], clearings[:two], clearings[:five], clearings[:ten]
         ]
       )
+    end
+  end
+
+  describe '#slip' do
+    it 'is a move that can alsp go into forests' do
+      faction.place_meeple(forests[:a])
+      players = Root::Players::List.new(player)
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.slip(players)
+
+      expect(faction.current_location).to eq(forests[:b])
     end
   end
 

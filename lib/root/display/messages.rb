@@ -157,6 +157,11 @@ module Root
           prompt: 'Pick an Item to refresh',
           history: '' # FIX ME
           # history: 'Refreshed items: %s'
+        },
+        r_item_damage: {
+          prompt: 'Pick an Item to damage',
+          history: '' # FIX ME
+          # history: 'Refreshed items: %s'
         }
       }.freeze
     end

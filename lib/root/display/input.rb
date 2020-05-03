@@ -93,6 +93,8 @@ module Root
         return options.length - 1 if handle_none?(option)
 
         options.find_index do |o|
+          next if o == :none
+
           o.priority == option.to_i ||
             o.priority == option.upcase.to_sym
         end.tap do |res|
