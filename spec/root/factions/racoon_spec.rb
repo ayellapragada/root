@@ -368,6 +368,68 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#nimble' do
+    it 'can move regardless of rule' do
+      faction.place_meeple(clearings[:one])
+      faction.craft_item(build_item(:boots))
+      2.times { cat_faction.place_meeple(clearings[:one]) }
+      2.times { cat_faction.place_meeple(clearings[:five]) }
+      2.times { cat_faction.place_meeple(clearings[:nine]) }
+      2.times { cat_faction.place_meeple(clearings[:ten]) }
+
+      expect(faction.move_options).to eq([clearings[:one]])
+
+      expect(faction.clearing_move_options(clearings[:one]))
+        .to eq([clearings[:five], clearings[:nine], clearings[:ten]])
+    end
+  end
+
+  describe '#can_move?' do
+    it 'needs a valid boot' do
+      faction.place_meeple(clearings[:one])
+
+      faction.craft_item(build_item(:boots))
+
+      expect(faction.can_move?).to be true
+    end
+  end
+
+  describe '#can_battle?' do
+    it 'needs a undamaged and unexhausted sword' do
+      faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+      expect(faction.can_battle?).to be false
+
+      faction.craft_item(build_item(:sword))
+
+      expect(faction.can_battle?).to be true
+    end
+
+    context 'with damaged sword' do
+      it 'can not battle' do
+        faction.place_meeple(clearings[:one])
+        cat_faction.place_meeple(clearings[:one])
+
+        faction.craft_item(build_item(:sword))
+        faction.exhaust_item(:sword)
+
+        expect(faction.can_battle?).to be false
+      end
+    end
+
+    context 'with exhausted sword' do
+      it 'can not battle' do
+        faction.place_meeple(clearings[:one])
+        cat_faction.place_meeple(clearings[:one])
+
+        faction.craft_item(build_item(:sword))
+        faction.damage_item(:sword)
+
+        expect(faction.can_battle?).to be false
+      end
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

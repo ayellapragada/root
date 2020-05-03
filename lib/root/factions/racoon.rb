@@ -43,6 +43,10 @@ module Root
           .reject(&:damaged?)
       end
 
+      def available_items_include?(type)
+        refreshed_and_undamaged_items.any? { |item| item.item == type }
+      end
+
       def undamaged_items
         items.reject(&:damaged?)
       end
@@ -196,8 +200,8 @@ module Root
       # :nocov:
       def daylight_options
         [].tap do |options|
-          # options << :move if can_move?
-          # options << :battle if can_battle?
+          options << :move if can_move?
+          options << :battle if can_battle?
           # options << :explore if can_explore?
           # options << :aid if can_aid?
           # options << :quest if can_quest?
@@ -207,6 +211,15 @@ module Root
         end
       end
       # :nocov:
+
+      # Still a WIP for Hostile, but relationships shall come later.
+      def can_move_to?(_clearing, _adj)
+        available_items_include?(:boots)
+      end
+
+      def can_battle?
+        super && available_items_include?(:sword)
+      end
     end
   end
 end

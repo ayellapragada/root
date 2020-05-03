@@ -141,7 +141,7 @@ module Root
 
         # add a comma at the end
         res.map.with_index do |arr, idx|
-          str = (idx != res.length - 1 ? ', ' : '')
+          str = (idx != res.length - 1 ? ',' : '')
           arr.join(', ') + str
         end.join("\n")
       end
@@ -252,17 +252,19 @@ module Root
           clearing.adjacents.each do |adj|
             next if possible_options.include?(clearing)
 
-            possible_options << clearing if rule?(clearing) || rule?(adj)
+            possible_options << clearing if can_move_to?(clearing, adj)
           end
         end
 
         possible_options
       end
 
+      def can_move_to?(clearing, adj)
+        rule?(clearing) || rule?(adj)
+      end
+
       def clearing_move_options(clearing)
-        clearing.adjacents.select do |adj|
-          rule?(clearing) || rule?(adj)
-        end
+        clearing.adjacents.select { |adj| can_move_to?(clearing, adj) }
       end
 
       def rule?(clearing)
