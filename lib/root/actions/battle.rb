@@ -30,6 +30,27 @@ module Root
         commence_battle
       end
 
+      def strike
+        self.actual_attack = 1
+        self.actual_defend = 0
+
+        commence_battle
+      end
+
+      def attacker?(faction)
+        attacker == faction
+      end
+
+      def other_faction(faction)
+        attacker == faction ? defender : attacker
+      end
+
+      def removed?(type)
+        pieces_removed.map(&:type).include?(type)
+      end
+
+      private
+
       def assign_dice_rolls
         attacker_roll, defender_roll = [dice_roll, dice_roll].sort.reverse
         # guerilla warfare lmfao
@@ -88,20 +109,8 @@ module Root
         pieces_removed
       end
 
-      def attacker?(faction)
-        attacker == faction
-      end
-
-      def other_faction(faction)
-        attacker == faction ? defender : attacker
-      end
-
       def dice_roll
         [0, 1, 2, 3].sample
-      end
-
-      def removed?(type)
-        pieces_removed.map(&:type).include?(type)
       end
     end
   end

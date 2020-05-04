@@ -279,6 +279,11 @@ module Root
       end
 
       def strike(players)
+        opts = current_location.other_attackable_factions(faction_symbol)
+        player.choose(:f_who_to_battle, opts) do |fac_sym|
+          faction_to_battle = players.fetch_player(fac_sym).faction
+          Actions::Battle.new(current_location, self, faction_to_battle).strike
+        end
       end
     end
   end

@@ -505,6 +505,19 @@ RSpec.describe Root::Factions::Racoon do
 
   describe '#strike' do
     it 'removes 1 piece and triggers any post battle affects' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow(cat_player).to receive(:pick_option).and_return(0)
+
+      battle_cl = clearings[:seven]
+      faction.place_meeple(battle_cl)
+      cat_faction.place_sawmill(battle_cl)
+      cat_faction.place_workshop(battle_cl)
+      players = Root::Players::List.new(player, cat_player)
+
+      expect { faction.strike(players) }
+        .to change(faction, :victory_points).by(1)
+      expect(battle_cl.buildings_of_type(:sawmill).count).to eq(0)
+      expect(battle_cl.buildings_of_type(:workshop).count).to eq(1)
     end
   end
 
