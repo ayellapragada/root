@@ -628,4 +628,9 @@ RSpec.describe Root::Factions::Mouse do
         .by(1)
     end
   end
+
+  describe '#skip_outrage_for?' do
+    it { expect(faction.skip_outrage_for?(:racoon)).to be true }
+    it { expect(faction.skip_outrage_for?(:mice)).to be true }
+  end
 end

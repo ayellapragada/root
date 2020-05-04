@@ -146,10 +146,15 @@ module Root
       end
 
       def pre_move(move_action)
-        return if move_action.faction.faction_symbol == faction_symbol
+        return if skip_outrage_for?(move_action.faction.faction_symbol)
         return unless move_action.to_clearing.sympathetic?
 
         outrage(move_action.faction, move_action.to_clearing.suit)
+      end
+
+      # racoons are not pawns ayyy and outrage only affects pawns
+      def skip_outrage_for?(symbol)
+        [:racoon, faction_symbol].include?(symbol)
       end
 
       def post_battle(battle)
@@ -179,8 +184,6 @@ module Root
       end
 
       def outrage(other_faction, suit)
-        # return if other_faction == :racoon
-
         card_opts = other_faction.cards_in_hand_with_suit(suit)
         return draw_to_supporters if card_opts.empty?
 

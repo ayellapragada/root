@@ -503,6 +503,11 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#strike' do
+    it 'removes 1 piece and triggers any post battle affects' do
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

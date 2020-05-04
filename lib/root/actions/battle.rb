@@ -8,9 +8,9 @@ module Root
     # That may be a better abstraction than "Daylight()"
     class Battle
       attr_reader :clearing,
-                  :attacker, :defender, :actual_defend,
+                  :attacker, :defender,
                   :pieces_removed
-      attr_accessor :actual_attack
+      attr_accessor :actual_attack, :actual_defend
 
       def initialize(clearing, attacker, defender)
         @clearing = clearing
@@ -20,32 +20,49 @@ module Root
       end
 
       def call
+        attacker_roll, defender_roll = assign_dice_rolls
+
+        self.actual_attack = [attacker_roll, attacker.max_hit(clearing)].min
+        self.actual_defend = [defender_roll, defender.max_hit(clearing)].min
+
+        self.actual_attack += 1 if defender.defenseless?(clearing)
+
+        commence_battle
+      end
+
+      def assign_dice_rolls
         attacker_roll, defender_roll = [dice_roll, dice_roll].sort.reverse
         # guerilla warfare lmfao
         # it needs to be before adding points so :spinshrug:
         if defender.faction_symbol == :mice
           attacker_roll, defender_roll = defender_roll, attacker_roll
         end
+
         attacker.player.add_to_history(
           :f_dice_roll,
           attaacker_roll: attacker_roll,
           defender_roll: defender_roll,
           clearing: clearing.priority
         )
+        [attacker_roll, defender_roll]
+      end
 
-        @actual_attack = [attacker_roll, attacker.max_hit(clearing)].min
-        @actual_defend = [defender_roll, defender.max_hit(clearing)].min
-
-        @actual_attack += 1 if defender.defenseless?(clearing)
-        attacker.pre_battle(self)
-        defender.pre_battle(self)
-        pieces_removed << deal_damage(actual_attack, defender, attacker)
-        pieces_removed << deal_damage(actual_defend, attacker, defender)
-        pieces_removed.flatten!
-        attacker.post_battle(self)
-        defender.post_battle(self)
+      def commence_battle
+        battle_with_hooks do
+          pieces_removed << deal_damage(actual_attack, defender, attacker)
+          pieces_removed << deal_damage(actual_defend, attacker, defender)
+          pieces_removed.flatten!
+        end
 
         add_history
+      end
+
+      def battle_with_hooks
+        attacker.pre_battle(self)
+        defender.pre_battle(self)
+        yield
+        attacker.post_battle(self)
+        defender.post_battle(self)
       end
 
       def add_history
