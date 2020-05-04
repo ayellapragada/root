@@ -394,15 +394,15 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
-  describe '#can_battle?' do
+  describe '#can_racoon_battle?' do
     it 'needs a undamaged and unexhausted sword' do
       faction.place_meeple(clearings[:one])
       cat_faction.place_meeple(clearings[:one])
-      expect(faction.can_battle?).to be false
+      expect(faction.can_racoon_battle?).to be false
 
       faction.craft_item(build_item(:sword))
 
-      expect(faction.can_battle?).to be true
+      expect(faction.can_racoon_battle?).to be true
     end
 
     context 'with damaged sword' do
@@ -413,7 +413,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.craft_item(build_item(:sword))
         faction.exhaust_item(:sword)
 
-        expect(faction.can_battle?).to be false
+        expect(faction.can_racoon_battle?).to be false
       end
     end
 
@@ -425,7 +425,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.craft_item(build_item(:sword))
         faction.damage_item(:sword)
 
-        expect(faction.can_battle?).to be false
+        expect(faction.can_racoon_battle?).to be false
       end
     end
   end
@@ -488,6 +488,18 @@ RSpec.describe Root::Factions::Racoon do
       faction.daylight(players, [])
 
       expect(faction.exhausted_items.map(&:item)).to eq([])
+    end
+  end
+
+  describe '#can_strike?' do
+    it 'needs a undamaged and unexhausted crossbow' do
+      faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+      expect(faction.can_strike?).to be false
+
+      faction.craft_item(build_item(:crossbow))
+
+      expect(faction.can_strike?).to be true
     end
   end
 

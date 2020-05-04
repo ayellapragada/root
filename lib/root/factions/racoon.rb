@@ -219,6 +219,7 @@ module Root
             when :move then with_item(:boots) { boots_move(players) }
             when :battle then with_item(:sword) { battle_in_clearing(current_location, players) }
             when :explore then with_item(:torch) { explore }
+            when :strike then with_item(:crossbow) { strike(players) }
             when :none then return false
             end
             # :nocov:
@@ -237,11 +238,11 @@ module Root
       def daylight_options(*)
         [].tap do |options|
           options << :move if can_move?
-          options << :battle if can_battle?
+          options << :battle if can_racoon_battle?
           options << :explore if can_explore?
           # options << :aid if can_aid?
           # options << :quest if can_quest?
-          # options << :strike if can_strike?
+          options << :strike if can_strike?
           # options << :repair if can_repair?
           # options << :craft if can_craft?
         end
@@ -253,8 +254,8 @@ module Root
         available_items_include?(:boots)
       end
 
-      def can_battle?
-        super && available_items_include?(:sword)
+      def can_racoon_battle?
+        can_battle? && available_items_include?(:sword)
       end
 
       def can_explore?
@@ -271,6 +272,13 @@ module Root
           item: explored_item
         )
         self.victory_points += 1
+      end
+
+      def can_strike?
+        can_battle? && available_items_include?(:crossbow)
+      end
+
+      def strike(players)
       end
     end
   end
