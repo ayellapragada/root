@@ -17,7 +17,7 @@ module Root
 
         STARTING_ITEMS = {
           thief: %i[boots torch tea sword],
-          tinker: %i[boots torch bag hammer],
+          tinker: %i[boots torch hammer satchel],
           ranger: %i[boots torch crossbow sword]
         }.freeze
 

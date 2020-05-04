@@ -162,6 +162,10 @@ module Root
           prompt: 'Pick an Item to damage',
           history: '' # FIX ME
           # history: 'Refreshed items: %s'
+        },
+        r_explore: {
+          prompt: '',
+          history: 'Explored a ruin in clearing %s and gained a %s'
         }
       }.freeze
     end

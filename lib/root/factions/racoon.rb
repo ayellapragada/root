@@ -135,7 +135,7 @@ module Root
       end
 
       def handle_ruins
-        starting_items = %i[bag boots hammer sword].shuffle
+        starting_items = %i[satchel boots hammer sword].shuffle
         board.ruins.each do |ruin|
           ruin.items << starting_items.pop
         end
@@ -263,7 +263,13 @@ module Root
       end
 
       def explore
-        make_item(current_location.ruin.explore)
+        explored_item = current_location.ruin.explore
+        make_item(explored_item)
+        player.add_to_history(
+          :r_explore,
+          clearing: current_location.priority,
+          item: explored_item
+        )
         self.victory_points += 1
       end
     end
