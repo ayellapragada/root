@@ -22,6 +22,14 @@ module Root
       def attackable?
         false
       end
+
+      def explore
+        items.pop
+      end
+
+      def empty?
+        items.empty?
+      end
     end
   end
 end

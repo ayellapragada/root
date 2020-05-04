@@ -212,7 +212,18 @@ module Root
         total_wood
       end
 
+      def explore
+        ruin.explore.tap do
+          ruin.empty? && clear_ruin
+        end
+      end
+
       private
+
+      def clear_ruin
+        buildings.delete(ruin)
+        @ruin = nil
+      end
 
       def create_ruin
         @ruin = Ruin.new

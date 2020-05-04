@@ -430,6 +430,43 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#can_explore?' do
+    context 'with a torch in a clearing with a ruin' do
+      it 'can explore' do
+        faction.place_meeple(clearings[:ten])
+        faction.make_item(:torch)
+
+        expect(faction.can_explore?).to be true
+      end
+    end
+
+    context 'without a torch in a clearing with a ruin' do
+      it 'can not explore' do
+        faction.place_meeple(clearings[:ten])
+
+        expect(faction.can_explore?).to be false
+      end
+    end
+
+    context 'with a torch in a clearing without a ruin' do
+      it 'can not explore' do
+        faction.place_meeple(clearings[:one])
+        faction.make_item(:torch)
+
+        expect(faction.can_explore?).to be false
+      end
+    end
+  end
+
+  describe '#explore' do
+    it 'explores a ruin taking an item from it' do
+      faction.place_meeple(clearings[:ten])
+
+      expect { faction.explore }.to change(faction, :victory_points).by(1)
+      expect(faction.available_items.count).to eq(1)
+    end
+  end
+
   describe '#with_item' do
     it 'exhausts an item if used' do
       allow(player).to receive(:pick_option).and_return(0)

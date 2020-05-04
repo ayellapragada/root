@@ -22,29 +22,29 @@ module Root
       end
 
       def teas
-        refreshed_and_undamaged_items.select { |item| item.of_type(:tea) }
+        available_items.select { |item| item.of_type(:tea) }
       end
 
       def coins
-        refreshed_and_undamaged_items.select { |item| item.of_type(:coin) }
+        available_items.select { |item| item.of_type(:coin) }
       end
 
       def satchels
-        refreshed_and_undamaged_items.select { |item| item.of_type(:satchel) }
+        available_items.select { |item| item.of_type(:satchel) }
       end
 
       def items_in_knapsack
         items - (teas + coins + satchels)
       end
 
-      def refreshed_and_undamaged_items
+      def available_items
         items
           .reject(&:exhausted?)
           .reject(&:damaged?)
       end
 
       def available_items_include?(type)
-        refreshed_and_undamaged_items.any? { |item| item.item == type }
+        available_items.any? { |item| item.item == type }
       end
 
       def undamaged_items
@@ -218,6 +218,7 @@ module Root
             case action
             when :move then with_item(:boots) { boots_move(players) }
             when :battle then with_item(:sword) { battle(players) }
+            when :explore then with_item(:torch) { explore }
             when :none then return false
             end
             # :nocov:
@@ -226,6 +227,7 @@ module Root
       end
 
       def with_item(type)
+        # IF TYPE == nil then select an item type (for aid)
         exhaust_item(type) if yield
       end
 
@@ -236,7 +238,7 @@ module Root
         [].tap do |options|
           options << :move if can_move?
           options << :battle if can_battle?
-          # options << :explore if can_explore?
+          options << :explore if can_explore?
           # options << :aid if can_aid?
           # options << :quest if can_quest?
           # options << :strike if can_strike?
@@ -253,6 +255,16 @@ module Root
 
       def can_battle?
         super && available_items_include?(:sword)
+      end
+
+      def can_explore?
+        available_items_include?(:torch) &&
+          current_location.includes_building?(:ruin)
+      end
+
+      def explore
+        make_item(current_location.ruin.explore)
+        self.victory_points += 1
       end
     end
   end

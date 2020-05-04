@@ -208,4 +208,41 @@ RSpec.describe Root::Grid::Clearing do
         )
     end
   end
+
+  describe '#explore' do
+    context 'with 1 item' do
+      it 'does remove the ruin' do
+        clearing = Root::Grid::Clearing.new(
+          priority: 1,
+          suit: :rabbit,
+          ruin: true,
+          slots: 1
+        )
+
+        clearing.ruin.items << :sword
+
+        clearing.explore
+
+        expect(clearing.buildings.count).to eq(0)
+        expect(clearing.ruin).to be_nil
+      end
+    end
+
+    context 'with 2 items' do
+      it 'does not remove the ruin' do
+        clearing = Root::Grid::Clearing.new(
+          priority: 1,
+          suit: :rabbit,
+          ruin: true,
+          slots: 1
+        )
+
+        clearing.ruin.items << :sword
+        clearing.ruin.items << :hammer
+
+        expect(clearing.buildings.count).to eq(1)
+        expect(clearing.ruin).not_to be_nil
+      end
+    end
+  end
 end
