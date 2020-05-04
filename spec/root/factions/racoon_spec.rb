@@ -430,6 +430,30 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#with_item' do
+    it 'exhausts an item if used' do
+      allow(player).to receive(:pick_option).and_return(0)
+      players = Root::Players::List.new(player)
+      faction.place_meeple(clearings[:one])
+      faction.craft_item(build_item(:boots))
+
+      faction.daylight(players, [])
+
+      expect(faction.exhausted_items.map(&:item)).to eq([:boots])
+    end
+
+    it 'does not exhaust the item if action canceled' do
+      allow(player).to receive(:pick_option).and_return(0, 3, 1)
+      players = Root::Players::List.new(player)
+      faction.place_meeple(clearings[:one])
+      faction.craft_item(build_item(:boots))
+
+      faction.daylight(players, [])
+
+      expect(faction.exhausted_items.map(&:item)).to eq([])
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

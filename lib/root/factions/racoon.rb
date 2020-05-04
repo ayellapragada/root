@@ -187,8 +187,9 @@ module Root
         board.clearings_with_meeples(faction_symbol).first
       end
 
-      def racoon_move(players, options)
+      def racoon_move(players, options, use_extra_boot: false)
         player.choose(:f_move_to_options, options) do |where_to|
+          # exhaust_item(:boots) if location.hostile? && use_extra_boot
           move_meeples(current_location, where_to, 1, players)
         end
       end
@@ -197,10 +198,8 @@ module Root
         racoon_move(players, slip_options)
       end
 
-      # maybe even twice idk yet idk if i like this way of handling it
       def boots_move(players)
-        racoon_move(players, current_location.adjacents)
-        exhaust_item(:boots)
+        racoon_move(players, current_location.adjacents, use_extra_boot: true)
       end
 
       def slip_options
@@ -217,7 +216,7 @@ module Root
           ) do |action|
             # :nocov:
             case action
-            when :move then boots_move(players)
+            when :move then with_item(:boots) { boots_move(players) }
             when :battle then with_item(:sword) { battle(players) }
             when :none then return false
             end
