@@ -165,7 +165,7 @@ module Root
         },
         r_explore: {
           prompt: '',
-          history: 'Explored a ruin in clearing %s and gained a %s'
+          history: 'Explored a ruin in clearing %s and gained (a) %s'
         }
       }.freeze
     end

@@ -217,7 +217,7 @@ module Root
             # :nocov:
             case action
             when :move then with_item(:boots) { boots_move(players) }
-            when :battle then with_item(:sword) { battle(players) }
+            when :battle then with_item(:sword) { battle_in_clearing(current_location, players) }
             when :explore then with_item(:torch) { explore }
             when :none then return false
             end
