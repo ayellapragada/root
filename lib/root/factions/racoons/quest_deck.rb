@@ -8,8 +8,6 @@ module Root
       class QuestDeck < Decks::Base
         DECK_SIZE = 15
 
-        # We're not currently interested in getting this list done
-        # Really just want to lay the foundation for having quests out
         def generate_deck
           list_of_cards!
           deck.shuffle!

@@ -107,7 +107,7 @@ module Root
         self.class::SETUP_PRIORITY
       end
 
-      def take_turn(players:, active_quests: nil)
+      def take_turn(players:, quests: nil)
         @crafted_suits = []
       end
 

@@ -7,7 +7,7 @@ module Root
       new(
         players: Players::List.default_player_list(with_computers, with_humans),
         board: Boards::Base.new,
-        decks: Decks::List.default_decks_list
+        deck: Decks::Starter.new
       )
     end
 
@@ -16,7 +16,7 @@ module Root
       new(
         players: Players::List.for_faction_for_play(faction),
         board: Boards::Base.new,
-        decks: Decks::List.default_decks_list
+        deck: Decks::Starter.new
       )
     end
 
@@ -28,25 +28,18 @@ module Root
     end
     # :nocov:
 
-    attr_accessor :players, :board, :decks, :active_quests, :print_display,
-                  :history
+    attr_accessor :players, :board, :deck, :quests, :characters,
+                  :print_display, :history
 
-    def initialize(players:, board:, decks:)
+    def initialize(players:, board:, deck:)
       @players = players
       @board = board
-      @decks = decks
-      @active_quests = []
+      @deck = deck
+      @quests = Factions::Racoons::Quests.new
+      @characters = Factions::Racoons::Characters.new
       @players.each { |p| p.game = self }
       @print_display = false
       @history = []
-    end
-
-    def deck
-      decks.shared
-    end
-
-    def quest_deck
-      decks.quest
     end
 
     def setup
@@ -54,12 +47,16 @@ module Root
       setup_by_priority
     end
 
+    def active_quests
+      quests.active_quests
+    end
+
     def setup_by_priority
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card }
         player.setup(
-          decks: decks,
-          players: players
+          players: players,
+          characters: characters
         )
       end
     end
@@ -84,7 +81,7 @@ module Root
     def take_turn(player)
       player.take_turn(
         players: players,
-        active_quests: active_quests
+        quests: quests
       )
     end
 
@@ -94,7 +91,7 @@ module Root
     end
 
     def setup_quests
-      @active_quests = quest_deck.draw_from_top(3)
+      @quests.setup
     end
 
     def render(clearings: [])

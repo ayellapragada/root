@@ -55,17 +55,17 @@ module Root
         faction.faction_symbol
       end
 
-      def setup(players: nil, decks: nil)
+      def setup(players: nil, characters: nil)
         faction.setup(
           players: players,
-          characters: decks&.characters
+          characters: characters
         )
       end
 
-      def take_turn(players: nil, active_quests: nil)
+      def take_turn(players: nil, quests: nil)
         faction.take_turn(
           players: players,
-          active_quests: active_quests
+          quests: quests
         )
       end
 

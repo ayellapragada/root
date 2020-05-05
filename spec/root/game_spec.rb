@@ -5,12 +5,12 @@ RSpec.describe Root::Game do
     it 'takes players, board, and deck' do
       players = Root::Players::List.default_player_list
       board = Root::Boards::Base.new
-      decks = Root::Decks::List.default_decks_list
+      deck = Root::Decks::Starter.new
 
       game = Root::Game.new(
         players: players,
         board: board,
-        decks: decks
+        deck: deck
       )
 
       expect(game.players.current_player.name).to be('Sneaky')

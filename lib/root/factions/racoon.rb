@@ -156,10 +156,10 @@ module Root
         player.choose(:r_item_damage, undamaged_items, required: true, &:damage)
       end
 
-      def take_turn(players:, active_quests:)
+      def take_turn(players:, quests:)
         super
         birdsong(players)
-        daylight(players, active_quests)
+        daylight(players, quests)
         # evening
       end
 
@@ -207,11 +207,11 @@ module Root
         current_location.all_adjacents
       end
 
-      def daylight(players, active_quests)
-        until daylight_options(active_quests: active_quests).empty?
+      def daylight(players, quests)
+        until daylight_options(active_quests: quests.active_quests).empty?
           player.choose(
             :f_pick_action,
-            daylight_options(active_quests: active_quests),
+            daylight_options(active_quests: quests.active_quests),
             yield_anyway: true,
             info: { actions: '' }
           ) do |action|
@@ -224,7 +224,7 @@ module Root
             when :repair then with_item(:hammer) { repair }
             when :craft then hammer_craft
             # when :aid then aid
-            # when :quest then quest
+            when :quest then quest(quests)
             when :none then return false
             end
             # :nocov:
@@ -304,11 +304,6 @@ module Root
 
       def repair
         player.choose(:r_item_repair, damaged_items, &:repair)
-      end
-
-      def repair_item(type)
-        piece = damaged_items.find { |item| item.item == type }
-        piece.repair
       end
 
       def quest(quests)
