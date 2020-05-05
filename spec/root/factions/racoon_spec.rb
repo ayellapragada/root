@@ -521,6 +521,32 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#craft_options' do
+    it 'uses hammers' do
+      faction.place_meeple(clearings[:one])
+      faction.make_item(:hammer)
+
+      card_to_craft = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[fox],
+        item: :tea,
+        vp: 2
+      )
+
+      card_not_to_craft = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[fox fox],
+        item: :tea,
+        vp: 2
+      )
+
+      faction.hand << card_to_craft
+      faction.hand << card_not_to_craft
+
+      expect(faction.craftable_items).to eq([card_to_craft])
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

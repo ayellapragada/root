@@ -244,7 +244,7 @@ module Root
           # options << :quest if can_quest?
           options << :strike if can_strike?
           # options << :repair if can_repair?
-          # options << :craft if can_craft?
+          options << :craft if can_craft?
         end
       end
       # :nocov:
@@ -284,6 +284,11 @@ module Root
           faction_to_battle = players.fetch_player(fac_sym).faction
           Actions::Battle.new(current_location, self, faction_to_battle).strike
         end
+      end
+
+      def suits_to_craft_with
+        num_hammers = available_items.count { |item| item.item == :hammer }
+        Array.new(num_hammers) { current_location.suit }
       end
     end
   end

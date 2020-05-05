@@ -351,10 +351,6 @@ module Root
         end
       end
 
-      def can_craft?
-        !craftable_items.empty?
-      end
-
       def can_mobilize?
         !hand.empty?
       end

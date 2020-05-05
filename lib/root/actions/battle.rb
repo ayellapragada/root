@@ -7,7 +7,7 @@ module Root
     # For example, crafting logic and draw logic.
     # That may be a better abstraction than "Daylight()"
     class Battle
-      attr_reader :clearing,
+      attr_reader :clearing, :type,
                   :attacker, :defender,
                   :pieces_removed
       attr_accessor :actual_attack, :actual_defend
@@ -20,6 +20,7 @@ module Root
       end
 
       def call
+        @type = :battle
         attacker_roll, defender_roll = assign_dice_rolls
 
         self.actual_attack = [attacker_roll, attacker.max_hit(clearing)].min
@@ -31,6 +32,7 @@ module Root
       end
 
       def strike
+        @type = :strike
         self.actual_attack = 1
         self.actual_defend = 0
 

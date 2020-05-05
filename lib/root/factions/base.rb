@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require_relative '../core_extensions/symbol/pluralize'
-require_relative '../core_extensions/array/delete_first'
+require_relative '../core_extensions/array/better_deletes'
 
 module Root
   module Factions
     # Interface for basic faction logic
     class Base
       Symbol.include CoreExtensions::Symbol::Pluralize
-      Array.include CoreExtensions::Array::DeleteFirst
+      Array.include CoreExtensions::Array::BetterDeletes
 
       SETUP_PRIORITY = 'ZZZ'
 
@@ -227,9 +227,13 @@ module Root
       def craftable_cards_in_hand(suits)
         hand.select do |card|
           card.craftable? &&
-            (card.craft - suits).empty? &&
+            card.craft.delete_elements_in(suits).empty? &&
             board.items.include?(card.item)
         end
+      end
+
+      def can_craft?
+        !craftable_items.empty?
       end
 
       def make_move(players, required: false)
