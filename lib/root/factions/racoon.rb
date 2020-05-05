@@ -11,7 +11,7 @@ module Root
 
       SETUP_PRIORITY = 'D'
 
-      attr_reader :character, :relationships
+      attr_reader :character, :relationships, :completed_quests
 
       def faction_symbol
         :racoon
@@ -19,6 +19,7 @@ module Root
 
       def handle_faction_token_setup
         @meeples = [Pieces::Meeple.new(:racoon)]
+        @completed_quests = Racoons::CompletedQuests.new
       end
 
       def teas
@@ -307,17 +308,60 @@ module Root
       end
 
       def quest(quests)
+        player.choose(:r_quest, quest_options(quests.active_quests)) do |quest|
+          pick_reward(quest) do
+            quest.items.each { |type| exhaust_item(type) }
+            quests.draw_new_card
+            complete_quest(quest)
+
+            player.add_to_history(
+              :r_quest,
+              suit: quest.suit,
+              items: quest.items.join(', ')
+            )
+          end
+        end
       end
 
-      def quest_options(quests)
-        quests.select do |card|
+      def complete_quest(quest)
+        completed_quests.complete_quest(quest)
+      end
+
+      def completed_quests_of(suit)
+        completed_quests[suit]
+      end
+
+      def pick_reward(quest)
+        opts = %i[get_victory_points draw_cards]
+        # at this point we technically have not completed the quest
+        # we only want to actually complete it ONCE they've picked
+        # a reward and confirmed
+        points = completed_quests_of(quest.suit).count + 1
+
+        player.choose(:r_quest_reward, opts, info: { vps: points }) do |reward|
+          yield(reward, points) if block_given?
+
+          if reward == :get_victory_points
+            self.victory_points += points
+            value = "Gained #{points} victory points(s)"
+          else
+            2.times { draw_card }
+            value = 'Drew 2 cards'
+          end
+
+          player.add_to_history(:r_quest_reward, value: value)
+        end
+      end
+
+      def quest_options(active_quests)
+        active_quests.select do |card|
           card.items.delete_elements_in(available_items.map(&:item)).empty? &&
             card.suit == current_location.suit
         end
       end
 
-      def can_quest?(quests)
-        !quest_options(quests).empty?
+      def can_quest?(active_quests)
+        !quest_options(active_quests).empty?
       end
     end
   end

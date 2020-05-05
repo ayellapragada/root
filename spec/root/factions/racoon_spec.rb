@@ -229,8 +229,8 @@ RSpec.describe Root::Factions::Racoon do
       cat_faction.place_meeple(battle_cl)
       cat_faction.place_meeple(battle_cl)
 
-      allow_any_instance_of(Root::Actions::Battle).
-        to receive(:dice_roll).and_return(2, 0)
+      allow_any_instance_of(Root::Actions::Battle)
+        .to receive(:dice_roll).and_return(2, 0)
 
       expect { cat_faction.battle(players) }
         .to change { faction.damaged_items.count }
@@ -250,8 +250,8 @@ RSpec.describe Root::Factions::Racoon do
         faction.place_meeple(battle_cl)
         cat_faction.place_meeple(battle_cl)
 
-        allow_any_instance_of(Root::Actions::Battle).
-          to receive(:dice_roll).and_return(1, 0)
+        allow_any_instance_of(Root::Actions::Battle)
+          .to receive(:dice_roll).and_return(1, 0)
 
         expect { cat_faction.battle(players) }
           .to change { faction.damaged_items.count }
@@ -663,16 +663,83 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#quest' do
+    it 'exhausts item, gets reward, adds to completed_quests, gets new quest' do
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.place_meeple(clearings[:one])
+      faction.make_item(:sword)
+      faction.make_item(:sword)
+
+      quests = build_quests
+
+      expect { faction.quest(quests) }
+        .to change { quests.deck.count }
+        .by(-1)
+        .and change { faction.completed_quests_of(:fox).count }
+        .by(1)
+      expect(faction.exhausted_items.map(&:item)).to eq(%i[sword sword])
+      expect(faction.victory_points).to eq(1)
+    end
+  end
+
+  describe '#pick_reward' do
+    it 'can score victory_points' do
+      allow(player).to receive(:pick_option).and_return(0)
+
+      quest = build_active_quests[0]
+
+      expect { faction.pick_reward(quest) }
+        .to change(faction, :victory_points)
+        .by(1)
+        .and change(faction, :hand_size)
+        .by(0)
+    end
+
+    it 'can score victory_points based off of completed_quests' do
+      allow(player).to receive(:pick_option).and_return(0)
+
+      quest = build_active_quests[0]
+
+      faction.complete_quest(quest)
+      faction.complete_quest(quest)
+      expect { faction.pick_reward(quest) }
+        .to change(faction, :victory_points)
+        .by(3)
+        .and change(faction, :hand_size)
+        .by(0)
+    end
+
+    it 'can draw 2 cards instead' do
+      allow(player).to receive(:pick_option).and_return(1)
+
+      quest = build_active_quests[0]
+
+      faction.complete_quest(quest)
+      faction.pick_reward(quest)
+
+      expect { faction.pick_reward(quest) }
+        .to change(faction, :hand_size)
+        .by(2)
+        .and change(faction, :victory_points)
+        .by(0)
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
+  end
+
+  def build_quests
+    Root::Factions::Racoons::Quests.new(build_active_quests)
   end
 
   def build_active_quests
     card = Root::Factions::Racoons::QuestCard
     [
       card.new(suit: :fox, items: %i[sword sword], name: 'Test Quest 1'),
-      card.new(suit: :mouse, items: %i[crossbow hammer], name: 'Test Quest 1'),
-      card.new(suit: :bunny, items: %i[torch tea], name: 'Test Quest 1')
+      card.new(suit: :mouse, items: %i[crossbow hammer], name: 'Test Quest 2'),
+      card.new(suit: :bunny, items: %i[torch tea], name: 'Test Quest 3')
     ]
   end
 end

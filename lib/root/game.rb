@@ -43,7 +43,6 @@ module Root
     end
 
     def setup
-      setup_quests
       setup_by_priority
     end
 
@@ -88,10 +87,6 @@ module Root
     # Simple way to check game state
     def state
       players.map(&:inspect).join("\n")
-    end
-
-    def setup_quests
-      @quests.setup
     end
 
     def render(clearings: [])

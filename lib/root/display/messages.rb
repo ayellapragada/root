@@ -35,7 +35,7 @@ module Root
         },
         f_item_select: {
           prompt: 'Pick an item to craft',
-          history: 'Crafted %s for %s victory point(s)'
+          history: 'Crafted %s for %s VP(s)'
         },
         f_discard_card: {
           prompt: 'Pick a card to discard',
@@ -168,6 +168,14 @@ module Root
         r_item_repair: {
           prompt: 'Pick an item to repair',
           history: 'Repaired the %s'
+        },
+        r_quest: {
+          prompt: 'Pick a quest to accomplish',
+          history: 'Completed a quest in a %s clearing with items %s'
+        },
+        r_quest_reward: {
+          prompt: 'Pick a quest reward, draw 2 cards or get %s VP(s)',
+          history: 'Reward: %s'
         }
       }.freeze
     end
