@@ -221,8 +221,10 @@ module Root
             when :battle then with_item(:sword) { battle_in_clearing(current_location, players) }
             when :explore then with_item(:torch) { explore }
             when :strike then with_item(:crossbow) { strike(players) }
-            when :craft then hammer_craft
             when :repair then with_item(:hammer) { repair }
+            when :craft then hammer_craft
+            # when :aid then aid
+            # when :quest then quest
             when :none then return false
             end
             # :nocov:
@@ -236,15 +238,13 @@ module Root
       end
 
       # :nocov:
-      # TEMPORARY
-      # def daylight_options(active_quests: [])
-      def daylight_options(*)
+      def daylight_options(active_quests: [])
         [].tap do |options|
           options << :move if can_move?
           options << :battle if can_racoon_battle?
           options << :explore if can_explore?
           # options << :aid if can_aid?
-          # options << :quest if can_quest?
+          options << :quest if can_quest?(active_quests)
           options << :strike if can_strike?
           options << :repair if can_repair?
           options << :craft if can_craft?
@@ -309,6 +309,20 @@ module Root
       def repair_item(type)
         piece = damaged_items.find { |item| item.item == type }
         piece.repair
+      end
+
+      def quest(quests)
+      end
+
+      def quest_options(quests)
+        quests.select do |card|
+          card.items.delete_elements_in(available_items.map(&:item)).empty? &&
+            card.suit == current_location.suit
+        end
+      end
+
+      def can_quest?(quests)
+        !quest_options(quests).empty?
       end
     end
   end

@@ -614,7 +614,63 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#quest_options?' do
+    context 'with matching items in the same clearing' do
+      it 'allows to quest' do
+        quests = build_active_quests
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.place_meeple(clearings[:one])
+        expect(faction.quest_options(quests)).to eq([quests[0]])
+        expect(faction.can_quest?(quests)).to be true
+      end
+    end
+
+    context 'when not in the right clearing and has matching items' do
+      it 'does not allowing questing' do
+        quests = build_active_quests
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.place_meeple(clearings[:two])
+        expect(faction.can_quest?(quests)).to be false
+      end
+    end
+
+    context 'when in right clearing but exhausted items' do
+      it 'does not allowing questing' do
+        quests = build_active_quests
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.exhaust_item(:sword)
+
+        faction.place_meeple(clearings[:one])
+        expect(faction.can_quest?(quests)).to be false
+      end
+    end
+
+    context 'when in right clearing but damaged items' do
+      it 'does not allowing questing' do
+        quests = build_active_quests
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.damage_item(:sword)
+
+        faction.place_meeple(clearings[:one])
+        expect(faction.can_quest?(quests)).to be false
+      end
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
+  end
+
+  def build_active_quests
+    card = Root::Factions::Racoons::QuestCard
+    [
+      card.new(suit: :fox, items: %i[sword sword], name: 'Test Quest 1'),
+      card.new(suit: :mouse, items: %i[crossbow hammer], name: 'Test Quest 1'),
+      card.new(suit: :bunny, items: %i[torch tea], name: 'Test Quest 1')
+    ]
   end
 end
