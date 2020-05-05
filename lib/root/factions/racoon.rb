@@ -161,7 +161,7 @@ module Root
         super
         birdsong(players)
         daylight(players, quests)
-        # evening
+        evening
       end
 
       def birdsong(players)
@@ -363,6 +363,30 @@ module Root
 
       def can_quest?(active_quests)
         !quest_options(active_quests).empty?
+      end
+
+      def evening
+        evening_rest
+        draw_cards
+      end
+
+      def draw_bonuses
+        coins.count
+      end
+
+      def evening_rest
+        completely_fix_all_items if can_evening_rest?
+      end
+
+      def completely_fix_all_items
+        items.each do |item|
+          item.repair
+          item.refresh
+        end
+      end
+
+      def can_evening_rest?
+        current_location.forest?
       end
     end
   end

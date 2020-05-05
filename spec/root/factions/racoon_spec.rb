@@ -728,6 +728,52 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#draw_bonuses' do
+    it 'is equal to number of available coins' do
+      faction.make_item(:coin)
+      faction.make_item(:coin)
+      faction.exhaust_item(:coin)
+
+      expect(faction.draw_bonuses).to eq(1)
+    end
+  end
+
+  describe '#evening_rest' do
+    it 'repairs and refreshes all items' do
+      faction.place_meeple(forests[:a])
+
+      faction.make_item(:sword)
+      faction.make_item(:hammer)
+      faction.make_item(:coin)
+
+      faction.exhaust_item(:sword)
+      faction.damage_item(:sword)
+      faction.exhaust_item(:hammer)
+
+      faction.evening_rest
+
+      expect(faction.available_items.count).to eq(3)
+    end
+  end
+
+  describe '#can_evening_rest?' do
+    context 'when in a forest' do
+      it 'can rest' do
+        faction.place_meeple(forests[:a])
+
+        expect(faction.can_evening_rest?).to be true
+      end
+    end
+
+    context 'when in a clearing' do
+      it 'can not rest' do
+        faction.place_meeple(clearings[:one])
+
+        expect(faction.can_evening_rest?).to be false
+      end
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end
