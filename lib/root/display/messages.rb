@@ -176,6 +176,10 @@ module Root
         r_quest_reward: {
           prompt: 'Pick a quest reward, draw 2 cards or get %s VP(s)',
           history: 'Reward: %s'
+        },
+        r_discard_item: {
+          prompt: 'Pick an item to discard',
+          history: ''
         }
       }.freeze
     end

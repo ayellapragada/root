@@ -774,6 +774,73 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#discard items' do
+    context 'with more items to knapsack limit' do
+      it 'requires to discard down to minimum' do
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+        faction.make_item(:hammer)
+        faction.make_item(:crossbow)
+        faction.make_item(:torch)
+
+        expect { faction.discard_items }
+          .to change { faction.items.count }.by(-2)
+      end
+    end
+
+    context 'with less or equal items to knapsack limit' do
+      it 'does not change items' do
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+        faction.make_item(:hammer)
+
+        expect { faction.discard_items }
+          .to change { faction.items.count }.by(0)
+      end
+    end
+
+    context 'with items that do not count for knapsack limit' do
+      it 'does not count them in needing to discard' do
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.make_item(:sword)
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+        faction.make_item(:hammer)
+
+        faction.make_item(:coin)
+        faction.make_item(:coin)
+        faction.make_item(:tea)
+        faction.make_item(:tea)
+
+        expect { faction.discard_items }
+          .to change { faction.items.count }.by(0)
+      end
+    end
+  end
+
+  describe '#knapsack_capacity' do
+    it 'counts valid satchels' do
+      faction.make_item(:satchel)
+      faction.make_item(:satchel)
+      faction.exhaust_item(:satchel)
+
+      expect(faction.knapsack_capacity).to eq(8)
+    end
+
+    it 'has 6 by default' do
+      faction.make_item(:satchel)
+      faction.damage_item(:satchel)
+      expect(faction.knapsack_capacity).to eq(6)
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

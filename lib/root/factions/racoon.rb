@@ -368,6 +368,7 @@ module Root
       def evening
         evening_rest
         draw_cards
+        discard_items
       end
 
       def draw_bonuses
@@ -385,8 +386,21 @@ module Root
         end
       end
 
+      def discard_items
+        until items_in_knapsack.count <= knapsack_capacity
+          opts = items_in_knapsack
+          player.choose(:r_item_discard, opts, required: true) do |item|
+            items.delete(item)
+          end
+        end
+      end
+
       def can_evening_rest?
         current_location.forest?
+      end
+
+      def knapsack_capacity
+        6 + (satchels.count * 2)
       end
     end
   end
