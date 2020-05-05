@@ -313,6 +313,7 @@ module Root
             quest.items.each { |type| exhaust_item(type) }
             quests.draw_new_card
             complete_quest(quest)
+            quests.complete_quest(quest)
 
             player.add_to_history(
               :r_quest,

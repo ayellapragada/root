@@ -678,6 +678,8 @@ RSpec.describe Root::Factions::Racoon do
         .by(-1)
         .and change { faction.completed_quests_of(:fox).count }
         .by(1)
+        .and change { quests.active_quests.count }
+        .by(0)
       expect(faction.exhausted_items.map(&:item)).to eq(%i[sword sword])
       expect(faction.victory_points).to eq(1)
     end

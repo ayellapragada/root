@@ -17,6 +17,10 @@ module Root
         def draw_new_card
           active_quests.concat(deck.draw_from_top)
         end
+
+        def complete_quest(quest)
+          active_quests.delete_first(quest)
+        end
       end
     end
   end
