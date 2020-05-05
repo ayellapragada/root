@@ -268,7 +268,7 @@ module Root
       end
 
       def explore
-        explored_item = current_location.ruin.explore
+        explored_item = current_location.explore
         make_item(explored_item)
         player.add_to_history(
           :r_explore,
