@@ -221,8 +221,7 @@ RSpec.describe Root::Grid::Clearing do
 
         clearing.ruin.items << :sword
 
-        clearing.explore
-
+        expect(clearing.explore).to eq(:sword)
         expect(clearing.buildings.count).to eq(0)
         expect(clearing.ruin).to be_nil
       end
@@ -240,6 +239,7 @@ RSpec.describe Root::Grid::Clearing do
         clearing.ruin.items << :sword
         clearing.ruin.items << :hammer
 
+        expect(clearing.explore).to eq(:hammer)
         expect(clearing.buildings.count).to eq(1)
         expect(clearing.ruin).not_to be_nil
       end

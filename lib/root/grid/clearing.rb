@@ -214,7 +214,7 @@ module Root
 
       def explore
         ruin.explore.tap do
-          ruin.empty? && clear_ruin
+          clear_ruin if ruin.empty?
         end
       end
 

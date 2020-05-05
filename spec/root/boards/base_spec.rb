@@ -42,12 +42,5 @@ RSpec.describe Root::Boards::Base do
       expect(forest_a.adjacent_forests.include?(forest_c)).to be true
       expect(forest_a.adjacent_forests.include?(forest_f)).to be false
     end
-
-    it 'places 4 items randomly into ruins' do
-      board = Root::Boards::Base.new
-
-      item_list = board.ruins.map(&:items).flatten
-      expect(item_list).to match_array(%i[sword hammer boots satchel])
-    end
   end
 end

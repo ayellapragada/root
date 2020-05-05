@@ -16,16 +16,6 @@ module Root
       def initialize(generator: WoodlandsGenerator, items: nil)
         @all_clearings = generator.generate
         @items = items || ItemsGenerator.generate
-        setup
-      end
-
-      def setup
-        place_starting_items_in_ruins
-      end
-
-      def place_starting_items_in_ruins
-        starting_items = %i[satchel boots hammer sword]
-        ruins.each { |ruin| ruin.items << starting_items.pop }
       end
 
       #:nocov:
