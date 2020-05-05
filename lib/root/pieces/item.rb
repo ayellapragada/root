@@ -17,6 +17,11 @@ module Root
         self
       end
 
+      def repair
+        @damaged = false
+        self
+      end
+
       def damaged?
         @damaged
       end

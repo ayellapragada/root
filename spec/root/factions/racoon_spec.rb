@@ -568,6 +568,52 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#can_repair?' do
+    it 'needs a damaged weapon and hammer' do
+      faction.make_item(:sword)
+      faction.damage_item(:sword)
+
+      faction.make_item(:hammer)
+
+      expect(faction.can_repair?).to be true
+    end
+
+    context 'without hammer' do
+      it 'can not repair' do
+        faction.make_item(:sword)
+        faction.damage_item(:sword)
+
+        expect(faction.can_repair?).to be false
+      end
+    end
+
+    context 'without damaged item' do
+      it 'can not repair' do
+        faction.make_item(:sword)
+
+        faction.make_item(:hammer)
+
+        expect(faction.can_repair?).to be false
+      end
+    end
+  end
+
+  describe '#repair' do
+    it 'repairs an item' do
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.make_item(:sword)
+      faction.exhaust_item(:sword)
+      faction.damage_item(:sword)
+
+      faction.repair
+
+      sword = faction.items.find { |i| i.item == :sword }
+      expect(faction.damaged_items).to eq([])
+      expect(faction.exhausted_items).to eq([sword])
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

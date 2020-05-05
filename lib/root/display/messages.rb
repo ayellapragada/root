@@ -154,18 +154,20 @@ module Root
           history: 'Placed Warrior in forest %s'
         },
         r_item_refresh: {
-          prompt: 'Pick an Item to refresh',
-          history: '' # FIX ME
-          # history: 'Refreshed items: %s'
+          prompt: 'Pick an item to refresh',
+          history: ''
         },
         r_item_damage: {
-          prompt: 'Pick an Item to damage',
-          history: '' # FIX ME
-          # history: 'Refreshed items: %s'
+          prompt: 'Pick an item to damage',
+          history: 'Damaged the %s'
         },
         r_explore: {
           prompt: '',
           history: 'Explored a ruin in clearing %s and gained (a) %s'
+        },
+        r_item_repair: {
+          prompt: 'Pick an item to repair',
+          history: 'Repaired the %s'
         }
       }.freeze
     end

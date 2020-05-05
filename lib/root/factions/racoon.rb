@@ -222,6 +222,7 @@ module Root
             when :explore then with_item(:torch) { explore }
             when :strike then with_item(:crossbow) { strike(players) }
             when :craft then hammer_craft
+            when :repair then with_item(:hammer) { repair }
             when :none then return false
             end
             # :nocov:
@@ -245,7 +246,7 @@ module Root
           # options << :aid if can_aid?
           # options << :quest if can_quest?
           options << :strike if can_strike?
-          # options << :repair if can_repair?
+          options << :repair if can_repair?
           options << :craft if can_craft?
         end
       end
@@ -295,6 +296,19 @@ module Root
 
       def hammer_craft
         craft_items { |item| item.craft.count.times { exhaust_item(:hammer) } }
+      end
+
+      def can_repair?
+        !damaged_items.empty? && available_items_include?(:hammer)
+      end
+
+      def repair
+        player.choose(:r_item_repair, damaged_items, &:repair)
+      end
+
+      def repair_item(type)
+        piece = damaged_items.find { |item| item.item == type }
+        piece.repair
       end
     end
   end
