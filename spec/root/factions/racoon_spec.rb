@@ -547,6 +547,27 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#hammer_craft' do
+    it 'exhausts hammers appropriately' do
+      allow(player).to receive(:pick_option).and_return(0)
+      faction.place_meeple(clearings[:one])
+      faction.make_item(:hammer)
+
+      card_to_craft = Root::Cards::Item.new(
+        suit: :fox,
+        craft: %i[fox],
+        item: :tea,
+        vp: 2
+      )
+
+      faction.hand << card_to_craft
+      faction.hammer_craft
+
+      expect(faction.victory_points).to eq(2)
+      expect(faction.exhausted_items.map(&:item)).to eq([:hammer])
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

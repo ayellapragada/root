@@ -194,6 +194,7 @@ module Root
       end
 
       def take_turn(players:, **_)
+        super
         birdsong(players)
         daylight
         evening(players)

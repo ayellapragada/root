@@ -109,6 +109,7 @@ module Root
       end
 
       def take_turn(players:, **_)
+        super
         @recruited = false
         birdsong
         daylight(players)

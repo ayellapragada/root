@@ -107,7 +107,9 @@ module Root
         self.class::SETUP_PRIORITY
       end
 
-      def take_turn(players:, active_quests: nil); end
+      def take_turn(players:, active_quests: nil)
+        @crafted_suits = []
+      end
 
       def item_list_for_info
         return 'No Items' if items.empty?
@@ -192,9 +194,10 @@ module Root
       end
 
       def craft_items
-        @crafted_suits = []
+        @crafted_suits ||= []
         do_until_stopped(:f_item_select, proc { craftable_items }) do |item|
           @crafted_suits.concat(item.craft)
+          yield(item) if block_given?
           craft_item(item)
         end
       end

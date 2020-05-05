@@ -157,6 +157,7 @@ module Root
       end
 
       def take_turn(players:, active_quests:)
+        super
         birdsong(players)
         daylight(players, active_quests)
         # evening
@@ -220,6 +221,7 @@ module Root
             when :battle then with_item(:sword) { battle_in_clearing(current_location, players) }
             when :explore then with_item(:torch) { explore }
             when :strike then with_item(:crossbow) { strike(players) }
+            when :craft then hammer_craft
             when :none then return false
             end
             # :nocov:
@@ -289,6 +291,10 @@ module Root
       def suits_to_craft_with
         num_hammers = available_items.count { |item| item.item == :hammer }
         Array.new(num_hammers) { current_location.suit }
+      end
+
+      def hammer_craft
+        craft_items { |item| item.craft.count.times { exhaust_item(:hammer) } }
       end
     end
   end
