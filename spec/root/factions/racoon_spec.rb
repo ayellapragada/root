@@ -377,8 +377,6 @@ RSpec.describe Root::Factions::Racoon do
       2.times { cat_faction.place_meeple(clearings[:nine]) }
       2.times { cat_faction.place_meeple(clearings[:ten]) }
 
-      expect(faction.move_options).to eq([clearings[:one]])
-
       expect(faction.clearing_move_options(clearings[:one]))
         .to eq([clearings[:five], clearings[:nine], clearings[:ten]])
     end
@@ -391,6 +389,69 @@ RSpec.describe Root::Factions::Racoon do
       faction.craft_item(build_item(:boots))
 
       expect(faction.can_move?).to be true
+    end
+  end
+
+  describe '#can_move_to?' do
+    context 'with a hostile enemy in the clearing' do
+      it 'needs two boots' do
+        players = Root::Players::List.new(player, cat_player)
+        faction.handle_relationships(players)
+        faction.relationships.make_hostile(:cats)
+
+        from_cl = clearings[:one]
+        to_cl = clearings[:five]
+        faction.place_meeple(from_cl)
+        cat_faction.place_meeple(to_cl)
+
+        faction.craft_item(build_item(:boots))
+        expect(faction.can_move_to?(from_cl, to_cl)).to be false
+
+        faction.craft_item(build_item(:boots))
+        expect(faction.can_move_to?(from_cl, to_cl)).to be true
+      end
+    end
+  end
+
+  describe '#move_options' do
+    it 'takes 2 boots to move into a hostile clearing' do
+      allow(player).to receive(:pick_option).and_return(0)
+      players = Root::Players::List.new(player, cat_player)
+      faction.handle_relationships(players)
+      faction.relationships.make_hostile(:cats)
+
+      from_cl = clearings[:one]
+      faction.place_meeple(from_cl)
+      cat_faction.place_meeple(clearings[:nine])
+      cat_faction.place_meeple(clearings[:ten])
+
+      faction.make_item(:boots)
+
+      expect(faction.move_options).to eq([clearings[:five]])
+    end
+  end
+
+  describe '#boots_move' do
+    context 'when hostiles in enemy territory' do
+      it 'exhausts an extra boots' do
+        allow(player).to receive(:pick_option).and_return(0)
+        players = Root::Players::List.new(player, cat_player)
+        faction.handle_relationships(players)
+        faction.relationships.make_hostile(:cats)
+
+        from_cl = clearings[:one]
+        faction.place_meeple(from_cl)
+        cat_faction.place_meeple(clearings[:five])
+        cat_faction.place_meeple(clearings[:nine])
+        cat_faction.place_meeple(clearings[:ten])
+
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+
+        faction.boots_move(players)
+
+        expect(faction.exhausted_items.count).to eq(1)
+      end
     end
   end
 

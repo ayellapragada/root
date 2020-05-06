@@ -190,7 +190,7 @@ module Root
 
       def racoon_move(players, options, use_extra_boot: false)
         player.choose(:f_move_to_options, options) do |where_to|
-          # exhaust_item(:boots) if location.hostile? && use_extra_boot
+          exhaust_item(:boots) if location_hostile?(where_to) && use_extra_boot
           move_meeples(current_location, where_to, 1, players)
         end
       end
@@ -200,7 +200,13 @@ module Root
       end
 
       def boots_move(players)
-        racoon_move(players, current_location.adjacents, use_extra_boot: true)
+        racoon_move(players, move_options, use_extra_boot: true)
+      end
+
+      def move_options
+        current_location.adjacents.select do |adj|
+          can_move_to?(current_location, adj)
+        end
       end
 
       def slip_options
@@ -255,8 +261,15 @@ module Root
       # :nocov:
 
       # Still a WIP for Hostile, but relationships shall come later.
-      def can_move_to?(_clearing, _adj)
-        available_items_include?(:boots)
+      def can_move_to?(_clearing, adj)
+        boots_needed = location_hostile?(adj) ? 2 : 1
+        boots_available = available_items.count { |i| i.item == :boots }
+        boots_available >= boots_needed
+      end
+
+      def location_hostile?(clearing)
+        others = clearing.other_attackable_factions(faction_symbol)
+        others.any? { |o| relationships.hostile?(o) }
       end
 
       def can_racoon_battle?
