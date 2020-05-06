@@ -155,11 +155,19 @@ module Root
         },
         r_item_refresh: {
           prompt: 'Pick an item to refresh',
-          history: ''
+          history: 'Repaired the %s'
         },
         r_item_damage: {
           prompt: 'Pick an item to damage',
           history: 'Damaged the %s'
+        },
+        r_item_exhaust: {
+          prompt: 'Pick an item to exhaust',
+          history: 'Exhausted the %s'
+        },
+        r_discard_item: {
+          prompt: 'Pick an item to discard',
+          history: ''
         },
         r_explore: {
           prompt: '',
@@ -177,8 +185,16 @@ module Root
           prompt: 'Pick a quest reward, draw 2 cards or get %s VP(s)',
           history: 'Reward: %s'
         },
-        r_discard_item: {
-          prompt: 'Pick an item to discard',
+        r_aid_faction: {
+          prompt: 'Pick a faction to aid',
+          history: 'Aided the %s'
+        },
+        r_card_to_give: {
+          prompt: 'Pick a card to give the other faction',
+          history: ''
+        },
+        r_item_to_get: {
+          prompt: 'Pick an item to get from the other faction',
           history: ''
         }
       }.freeze

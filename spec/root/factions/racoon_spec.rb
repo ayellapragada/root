@@ -7,7 +7,7 @@ RSpec.describe Root::Factions::Racoon do
   let(:clearings) { board.clearings }
   let(:forests) { board.forests }
   let(:mouse_player) { Root::Players::Computer.for('Bird', :mice) }
-  let(:mouse_faction) { bird_player.faction }
+  let(:mouse_faction) { mouse_player.faction }
   let(:bird_player) { Root::Players::Computer.for('Bird', :birds) }
   let(:bird_faction) { bird_player.faction }
   let(:cat_player) { Root::Players::Computer.for('Cat', :cats) }
@@ -99,7 +99,7 @@ RSpec.describe Root::Factions::Racoon do
       expect(faction.special_info(true)).to eq(
         {
           board: {
-            title: "Thief | Nimble | Lone Wanderer\n1 tea(s) | 0 coin(s) | 0 satchel(s)\nAffinity: Mice: 0 | Cats: 0 | Birds: 0",
+            title: "Thief | Nimble | Lone Wanderer\n1 tea(s) | 0 coin(s) | 0 satchel(s)\nStatus: Mice: 0 | Cats: 0 | Birds: 0",
             rows:  [['Boots, Sword, Torch']]
           }
         }
@@ -188,7 +188,7 @@ RSpec.describe Root::Factions::Racoon do
 
   describe '#formatted_relationships' do
     context 'without relationships' do
-      it { expect(faction.formatted_relationships).to eq('No Relationships') }
+      it { expect(faction.formatted_relationships).to eq('No Status') }
     end
   end
 
@@ -838,6 +838,92 @@ RSpec.describe Root::Factions::Racoon do
       faction.make_item(:satchel)
       faction.damage_item(:satchel)
       expect(faction.knapsack_capacity).to eq(6)
+    end
+  end
+
+  describe '#aid_options' do
+    it 'selects all other factions with pieces in the current clearing' do
+      our_location = clearings[:one]
+      other_location = clearings[:two]
+
+      faction.place_meeple(our_location)
+      cat_faction.place_meeple(our_location)
+      bird_faction.place_roost(our_location)
+
+      mouse_faction.place_sympathy(other_location)
+
+      expect(faction.aid_options).to eq(%i[cats birds])
+      expect(faction.can_aid?).to be false
+
+      faction.make_item(:torch)
+      expect(faction.can_aid?).to be false
+
+      faction.hand << Root::Cards::Base.new(suit: :fox)
+      expect(faction.can_aid?).to be true
+
+      faction.exhaust_item(:torch)
+      expect(faction.can_aid?).to be false
+    end
+
+    it 'needs another faction to aid' do
+      our_location = clearings[:one]
+      other_location = clearings[:two]
+
+      faction.place_meeple(our_location)
+
+      mouse_faction.place_sympathy(other_location)
+
+      expect(faction.aid_options).to eq([])
+      expect(faction.can_aid?).to be false
+    end
+
+    it 'needs a card in hand matching clearing to aid' do
+      our_location = clearings[:one]
+
+      faction.place_meeple(our_location)
+      cat_faction.place_meeple(our_location)
+
+      faction.make_item(:torch)
+
+      expect(faction.can_aid?).to be false
+
+      faction.hand << Root::Cards::Base.new(suit: :fox)
+
+      expect(faction.can_aid?).to be true
+    end
+  end
+
+  describe '#aid' do
+    it 'picks one faction, gives them a card matching clearing, takes item' do
+      allow(player).to receive(:pick_option).and_return(0)
+      players = Root::Players::List.new(player, cat_player)
+      faction.handle_relationships(players)
+      our_location = clearings[:one]
+
+      faction.place_meeple(our_location)
+      cat_faction.place_meeple(our_location)
+
+      cat_faction.make_item(:hammer)
+
+      faction.make_item(:torch)
+      faction.hand << Root::Cards::Base.new(suit: :fox)
+
+      expect { faction.aid(players) }
+        .to change(faction, :hand_size)
+        .by(-1)
+        .and change(cat_faction, :hand_size)
+        .by(1)
+        .and change(faction, :victory_points)
+        .by(1)
+        .and change { cat_faction.items.count }
+        .by(-1)
+        .and change { faction.items.count }
+        .by(1)
+        .and change { faction.exhausted_items.count }
+        .by(1)
+
+      expect(faction.relationships[:cats][:status]).to be(1)
+      expect(faction.relationships[:cats][:num_aided]).to be(0)
     end
   end
 

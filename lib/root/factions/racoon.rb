@@ -20,6 +20,7 @@ module Root
       def handle_faction_token_setup
         @meeples = [Pieces::Meeple.new(:racoon)]
         @completed_quests = Racoons::CompletedQuests.new
+        @relationships = Racoons::Relationships.new([])
       end
 
       def teas
@@ -66,9 +67,7 @@ module Root
       end
 
       def formatted_relationships
-        return 'No Relationships' unless @relationships
-
-        "Affinity: #{@relationships.formatted_display}"
+        relationships.formatted_display
       end
 
       def board_title
@@ -209,6 +208,8 @@ module Root
       end
 
       def daylight(players, quests)
+        relationships.reset_turn_counters
+
         until daylight_options(active_quests: quests.active_quests).empty?
           player.choose(
             :f_pick_action,
@@ -224,7 +225,7 @@ module Root
             when :strike then with_item(:crossbow) { strike(players) }
             when :repair then with_item(:hammer) { repair }
             when :craft then hammer_craft
-            # when :aid then aid
+            when :aid then aid(players)
             when :quest then quest(quests)
             when :none then return false
             end
@@ -244,7 +245,7 @@ module Root
           options << :move if can_move?
           options << :battle if can_racoon_battle?
           options << :explore if can_explore?
-          # options << :aid if can_aid?
+          options << :aid if can_aid?
           options << :quest if can_quest?(active_quests)
           options << :strike if can_strike?
           options << :repair if can_repair?
@@ -363,6 +364,42 @@ module Root
 
       def can_quest?(active_quests)
         !quest_options(active_quests).empty?
+      end
+
+      def aid(players)
+        player.choose(:r_aid_faction, aid_options) do |fac_sym|
+          other_player = players.fetch_player(fac_sym)
+          other_faction = other_player.faction
+          hand_opts = cards_in_hand_with_suit(current_location.suit)
+
+          player.choose(:r_card_to_give, hand_opts) do |card|
+            other_item_opts = other_faction.items + [:take_no_item]
+            player.choose(:r_item_to_get, other_item_opts) do |item|
+              player.choose(:r_item_exhaust, available_items) do |item_to_use|
+                unless item == :take_no_item
+                  other_faction.items.delete(item)
+                  items << item
+                end
+                other_faction.hand << card
+                hand.delete(card)
+                relationships.aid_once(fac_sym)
+                self.victory_points += relationships.vp_to_gain
+                exhaust_item(item_to_use.item)
+                player.add_to_history(:r_aid_faction, other_faction: fac_sym)
+              end
+            end
+          end
+        end
+      end
+
+      def can_aid?
+        !aid_options.empty? &&
+          !available_items.empty? &&
+          !cards_in_hand_with_suit(current_location.suit).empty?
+      end
+
+      def aid_options
+        current_location.other_attackable_factions(faction_symbol)
       end
 
       def evening
