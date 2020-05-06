@@ -165,7 +165,7 @@ module Root
           prompt: 'Pick an item to exhaust',
           history: 'Exhausted the %s'
         },
-        r_discard_item: {
+        r_item_discard: {
           prompt: 'Pick an item to discard',
           history: ''
         },

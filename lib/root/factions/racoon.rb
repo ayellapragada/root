@@ -404,7 +404,7 @@ module Root
 
       def post_battle(battle)
         battle.removed_of_other_type(faction_symbol).each do |piece|
-          if relationships.hostile?(piece.faction) && battle.attacker?(self)
+          if relationships.hostile?(piece.faction) && battle.attacker?(self) && battle.type == :battle
             self.victory_points += 1
           end
           if piece.piece_type == :meeple
