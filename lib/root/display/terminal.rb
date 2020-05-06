@@ -47,8 +47,8 @@ module Root
           game_info_line = game_info[idx] || ' '
           other_info = others[idx] || ' '
           hist = history[idx] || '' # Default History / Empty Spaces
-          append_space(game_info_line, game_info_buffer) + '  ' +
-            map_row + '  ' +
+          map_row + '  ' +
+            append_space(game_info_line, game_info_buffer) + '  ' +
             append_space(other_info, buffer) + '  ' + hist
         end
 
