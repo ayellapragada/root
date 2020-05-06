@@ -60,7 +60,7 @@ module Root
 
           res =
             @relationships
-            .map { |k, v| "#{k.capitalize}: #{v[:status]}" }
+            .map { |k, v| "#{k.capitalize}: #{DISPLAY[v[:status]]}" }
             .join(' | ')
           "Status: #{res}"
         end
