@@ -44,15 +44,3 @@ Everyone interacting in the root project's codebases, issue trackers, chat rooms
 
 
 [Components List](https://geekdad.com/2018/11/reaping-the-rewards-geekdad-digs-root/) - It's a review but it also has a list of components.
-
-
-## Need To Do Next
-- Vagabond Aid / Relationships
-- Vagabond Specials
-
-## Ideas For Next
-- Possibly hide clearing options unless it's your turn / you making the decisions. Want to hide supporters / options for revolt.
-- Hand refactor that allows to just ask the hand if anything matches, as opposed to the "oh ok i'll check if a card matches and then also another card".
-
-## Bugs
-- Bug when you just _literally_ can't build anymore of them. This needs better handling throughout potentially.
