@@ -927,6 +927,78 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#post_battle' do
+    it 'makes hostile on meeple removal' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(1, 0)
+      players = Root::Players::List.new(player, cat_player)
+      faction.handle_relationships(players)
+
+      faction.make_item(:sword)
+      faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+
+      expect { faction.battle(players) }
+        .to change(faction, :victory_points).by(0)
+
+      expect(faction.relationships.hostile?(:cats)).to be true
+    end
+
+    it 'does not make hostile on building / token removal' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(1, 0)
+      players = Root::Players::List.new(player, cat_player)
+      faction.handle_relationships(players)
+
+      faction.make_item(:sword)
+      faction.place_meeple(clearings[:one])
+      cat_faction.place_sawmill(clearings[:one])
+
+      expect(faction.relationships.hostile?(:cats)).to be false
+    end
+
+    it 'if hostile, scores extra victory point for each piece removed on your turn' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(3, 0)
+      players = Root::Players::List.new(player, cat_player)
+      faction.handle_relationships(players)
+
+      faction.make_item(:sword)
+      faction.make_item(:sword)
+      faction.make_item(:sword)
+      faction.place_meeple(clearings[:one])
+      cat_faction.place_sawmill(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+
+      # 1 meeple makes hostile, 2 for sawmill, 1 for hostile on meeple
+      expect { faction.battle(players) }
+        .to change(faction, :victory_points).by(3)
+    end
+
+    it 'if hostile no extra points when they battle you' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(3, 3)
+      players = Root::Players::List.new(player, cat_player)
+      faction.handle_relationships(players)
+
+      faction.make_item(:sword)
+      faction.make_item(:sword)
+      faction.make_item(:sword)
+      faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:one])
+
+      expect { cat_faction.battle(players) }
+        .to change(faction, :victory_points).by(0)
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

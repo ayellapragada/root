@@ -42,8 +42,9 @@ module Root
           relationships.each { |_, v| v[:num_aided] = 0 }
         end
 
+        # This is making me hesitant, maybe just something to revisit
         def [](val)
-          relationships[val]
+          relationships[val] || {}
         end
 
         def all_neutral?

@@ -402,6 +402,17 @@ module Root
         current_location.other_attackable_factions(faction_symbol)
       end
 
+      def post_battle(battle)
+        battle.removed_of_other_type(faction_symbol).each do |piece|
+          if relationships.hostile?(piece.faction) && battle.attacker?(self)
+            self.victory_points += 1
+          end
+          if piece.piece_type == :meeple
+            relationships.make_hostile(piece.faction)
+          end
+        end
+      end
+
       def evening
         evening_rest
         draw_cards

@@ -51,6 +51,11 @@ module Root
         pieces_removed.map(&:type).include?(type)
       end
 
+      def removed_of_other_type(fac)
+        pieces_removed
+          .reject { |p| p.faction == fac }
+      end
+
       private
 
       def assign_dice_rolls

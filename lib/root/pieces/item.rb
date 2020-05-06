@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
+require_relative '../factions/racoons/racoonable'
+
 module Root
   module Pieces
     # Item class mostly for the vagabondo
     class Item < Base
+      include Factions::Racoons::Racoonable
+
       attr_reader :item
 
       def initialize(item)
