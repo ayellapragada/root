@@ -137,7 +137,7 @@ module Root
             res[counter] << word
           else
             counter += 1
-            res[counter] = []
+            res[counter] = [word]
           end
         end
 

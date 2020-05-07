@@ -154,7 +154,7 @@ module Root
           history: 'Placed Warrior in forest %s'
         },
         r_item_refresh: {
-          prompt: 'Pick an item to refresh',
+          prompt: 'Pick an item to refresh. %s refresh(es) left',
           history: 'Repaired the %s'
         },
         r_item_damage: {

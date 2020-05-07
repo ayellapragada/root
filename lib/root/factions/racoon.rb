@@ -175,7 +175,13 @@ module Root
         else
           num_to_refresh.times do
             opts = refresh_item_options
-            player.choose(:r_item_refresh, opts, required: true, &:refresh)
+            player.choose(
+              :r_item_refresh,
+              opts,
+              required: true,
+              info: { num: num_to_refresh },
+              &:refresh
+            )
           end
         end
       end
