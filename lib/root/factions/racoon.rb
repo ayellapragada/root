@@ -332,7 +332,7 @@ module Root
             player.add_to_history(
               :r_quest,
               suit: quest.suit,
-              items: quest.items.join(', ')
+              items: quest.items.join(' and ')
             )
           end
         end

@@ -179,7 +179,7 @@ module Root
         },
         r_quest: {
           prompt: 'Pick a quest to accomplish',
-          history: 'Completed a quest in a %s clearing with items %s'
+          history: 'Completed a %s quest with %s'
         },
         r_quest_reward: {
           prompt: 'Pick a quest reward, draw 2 cards or get %s VP(s)',
