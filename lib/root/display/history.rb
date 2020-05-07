@@ -6,8 +6,8 @@ module Root
   module Display
     # Handle the display logic for the history object
     class History
-      MAX_NUMBER_OF_MAP_LINES = 31
-      # MAX_NUMBER_OF_MAP_LINES = 7
+      MAX_NUMBER_OF_MAP_LINES = 29
+
       def initialize(history)
         @history = history
       end
@@ -15,6 +15,7 @@ module Root
       # player, key, opts
       def display
         ::Terminal::Table.new(
+          title: 'History',
           rows: rows,
           style: { width: 80 }
         )

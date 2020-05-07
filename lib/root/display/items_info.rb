@@ -5,8 +5,6 @@ require 'rainbow'
 module Root
   module Display
     # Handle logic for showing the victory points
-    # Either stack, or all one square?
-    # Some way to handle it so it's not shifting constantly.
     class ItemsInfo
       def initialize(items)
         @items = items
