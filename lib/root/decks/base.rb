@@ -16,6 +16,11 @@ module Root
       end
 
       def draw_from_top(num = 1)
+        if num > count
+          discard.shuffle
+          deck.concat(discard)
+          @discard = []
+        end
         deck.shift(num)
       end
 

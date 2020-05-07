@@ -19,5 +19,29 @@ RSpec.describe Root::Decks::Starter do
 
       expect(deck.count).to be(Root::Decks::Starter::DECK_SIZE - 3)
     end
+
+    context 'when out of cards' do
+      it 'reshuffles discard and adds to bottom of deck' do
+        deck = described_class.new
+
+        hand = []
+        hand.concat(deck.draw_from_top(52))
+        remaining_cards = deck.deck.dup
+
+        hand[0..5].each do |card|
+          deck.discard_card(card)
+          hand.delete(card)
+        end
+
+        new_hand = []
+
+        new_hand.concat(deck.draw_from_top(3))
+        expect(new_hand[0..1]).to match_array(remaining_cards)
+        expect(new_hand[2]).not_to be nil
+        expect(remaining_cards).not_to include(new_hand[2])
+        expect(deck.discard.count).to be(0)
+        expect(deck.count).to be(5)
+      end
+    end
   end
 end
