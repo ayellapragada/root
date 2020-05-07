@@ -38,6 +38,10 @@ module Root
           self[fac][:status] == 9
         end
 
+        def allied?(fac)
+          self[fac][:status] == 3
+        end
+
         def reset_turn_counters
           relationships.each { |_, v| v[:num_aided] = 0 }
         end

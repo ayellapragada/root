@@ -395,8 +395,11 @@ module Root
                 end
                 other_faction.hand << card
                 hand.delete(card)
+
+                self.victory_points += 2 if relationships.allied?(fac_sym)
                 relationships.aid_once(fac_sym)
                 self.victory_points += relationships.vp_to_gain
+
                 exhaust_item(item_to_use.item)
                 player.add_to_history(:r_aid_faction, other_faction: fac_sym)
               end

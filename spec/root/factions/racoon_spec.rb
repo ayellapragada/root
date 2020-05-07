@@ -986,6 +986,31 @@ RSpec.describe Root::Factions::Racoon do
       expect(faction.relationships[:cats][:status]).to be(1)
       expect(faction.relationships[:cats][:num_aided]).to be(0)
     end
+
+    context 'when allied' do
+      it 'also gains 2 extra victory points' do
+        allow(player).to receive(:pick_option).and_return(0)
+        players = Root::Players::List.new(player, cat_player)
+        faction.handle_relationships(players)
+        8.times { faction.relationships.aid_once(:cats) }
+        our_location = clearings[:one]
+
+        faction.place_meeple(our_location)
+        cat_faction.place_meeple(our_location)
+
+        faction.make_item(:torch)
+        faction.make_item(:torch)
+        faction.hand << Root::Cards::Base.new(suit: :fox)
+        faction.hand << Root::Cards::Base.new(suit: :fox)
+
+        expect { faction.aid(players) }
+          .to change(faction, :victory_points)
+          .by(2)
+        expect { faction.aid(players) }
+          .to change(faction, :victory_points)
+          .by(2)
+      end
+    end
   end
 
   describe '#post_battle' do
