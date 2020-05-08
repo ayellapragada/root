@@ -197,17 +197,22 @@ module Root
         num_to_refresh = 3 + (teas.count * 2)
         if num_to_refresh >= exhausted_items.count
           exhausted_items.each(&:refresh)
-        else
-          num_to_refresh.times do
-            opts = refresh_item_options
-            player.choose(
-              :r_item_refresh,
-              opts,
-              required: true,
-              info: { num: num_to_refresh },
-              &:refresh
-            )
-          end
+          return true
+        end
+
+        until num_to_refresh <= 0
+          opts = refresh_item_options
+
+          player.choose(
+            :r_item_refresh,
+            opts,
+            required: true,
+            info: { num: num_to_refresh },
+            &:refresh
+          )
+
+          num_to_refresh -= 1
+          true
         end
       end
 

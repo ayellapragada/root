@@ -25,7 +25,7 @@ module Root
             if num_to_repair >= special_options.count
               special_options.each(&:repair)
               f.player.add_to_history(:r_c_hideout)
-              return
+              return true
             end
 
             until num_to_repair <= 0
