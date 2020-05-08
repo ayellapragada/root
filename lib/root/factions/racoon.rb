@@ -196,7 +196,7 @@ module Root
 
       def racoon_move(players, options, use_extra_boot: false)
         player.choose(:f_move_to_options, options) do |where_to|
-          exhaust_item(:boots) if location_hostile?(where_to) && use_extra_boot
+          exhaust_extra_boot_if_needed(where_to) if use_extra_boot
           move_meeples(current_location, where_to, 1, players)
         end
       end
@@ -214,10 +214,14 @@ module Root
             Actions::Move
               .new(current_location, where_to, how_many, other_fac, players)
               .racoon_lead(self)
-            exhaust_item(:boots) if location_hostile?(where_to)
+            exhaust_extra_boot_if_needed(where_to)
             move_meeples(current_location, where_to, 1, players)
           end
         end
+      end
+
+      def exhaust_extra_boot_if_needed(clearing)
+        exhaust_item(:boots) if location_hostile?(clearing)
       end
 
       def allied_move(players)
