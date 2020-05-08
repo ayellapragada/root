@@ -36,7 +36,7 @@ module Root
       @board = board
       @deck = deck
       @quests = Factions::Racoons::Quests.new
-      @characters = Factions::Racoons::Characters.new
+      @characters = Factions::Racoons::CharacterDeck.new
       @players.each { |p| p.game = self }
       @print_display = false
       @history = []
