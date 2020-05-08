@@ -260,6 +260,9 @@ RSpec.describe Root::Factions::Racoon do
           .by(0)
       end
     end
+
+    context 'when allied in battle' do
+    end
   end
 
   describe '#refresh_items' do
@@ -574,8 +577,9 @@ RSpec.describe Root::Factions::Racoon do
         faction.place_meeple(battle_cl)
         cat_faction.place_meeple(battle_cl)
         bird_faction.place_meeple(battle_cl)
+        players = Root::Players::List.new(player, cat_player, bird_player)
 
-        expect(faction.pick_ally_for_battle).to be nil
+        expect(faction.pick_ally_for_battle(players)).to be nil
       end
     end
   end

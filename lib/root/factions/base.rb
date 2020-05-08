@@ -385,17 +385,13 @@ module Root
         max_hit(clearing).zero?
       end
 
-      def take_damage(clearing)
-        pieces_removed = []
-        meeples = clearing.meeples_of_type(faction_symbol)
+      def take_damage(clearing, *)
+        cl_meeples = clearing.meeples_of_type(faction_symbol)
         cardboard_pieces =
           (clearing.buildings_of_faction(faction_symbol) +
            clearing.tokens_of_faction(faction_symbol))
-        if !meeples.empty?
-          piece = meeples.first
-          clearing.meeples.delete(piece)
-          meeples << piece
-          pieces_removed << piece
+        if !cl_meeples.empty?
+          piece = remove_meeple(clearing)
         elsif !cardboard_pieces.empty?
           player.choose(
             :f_remove_piece,
@@ -406,10 +402,18 @@ module Root
             plural_form = token.piece_type.pluralize
             send(plural_form) << token
             clearing.send(plural_form).delete(token)
-            pieces_removed << token
+            piece = token
           end
         end
-        pieces_removed
+        piece
+      end
+
+      def remove_meeple(clearing)
+        cl_meeples = clearing.meeples_of_type(faction_symbol)
+        piece = cl_meeples.first
+        clearing.meeples.delete(piece)
+        meeples << piece
+        piece
       end
 
       def pre_move(move_action); end

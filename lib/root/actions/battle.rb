@@ -22,10 +22,10 @@ module Root
 
       def call
         @type = :battle
-        atk, defe = assign_dice_rolls
+        atk, def_roll = assign_dice_rolls
 
         self.actual_attack = [atk, attacker.max_hit(clearing, ally: @ally)].min
-        self.actual_defend = [defe, defender.max_hit(clearing)].min
+        self.actual_defend = [def_roll, defender.max_hit(clearing)].min
 
         self.actual_attack += 1 if defender.defenseless?(clearing)
 
@@ -106,9 +106,11 @@ module Root
 
       def deal_damage(number, defender, attacker)
         pieces_removed = []
-        number.times { pieces_removed << defender.take_damage(clearing) }
+        number.times do
+          pieces_removed << defender.take_damage(clearing, ally: @ally)
+        end
 
-        pieces_removed.flatten!
+        pieces_removed.compact!
 
         pieces_removed.count(&:points_for_removing?).times do
           attacker.victory_points += 1

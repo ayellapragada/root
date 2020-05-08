@@ -149,14 +149,14 @@ module Root
       def max_hit(clearing = current_location, ally: nil)
         num_swords = undamaged_items.count { |i| i.item == :sword }
         if ally
-          clearing.meeples_of_type(ally).count + num_swords
+          clearing.meeples_of_type(ally.faction_symbol).count + num_swords
         else
           num_swords
         end
       end
 
-      def take_damage(*)
-        return [] if undamaged_items.empty?
+      def take_damage(clearing, ally: nil)
+        return if undamaged_items.empty?
 
         player.choose(:r_item_damage, undamaged_items, required: true, &:damage)
       end
@@ -338,8 +338,8 @@ module Root
       end
 
       def battle(players)
-        ally = pick_ally_for_battle
-        opts = other_factions_here - [ally]
+        ally = pick_ally_for_battle(players)
+        opts = other_factions_here - [ally&.faction_symbol]
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
           Actions::Battle
@@ -348,13 +348,15 @@ module Root
         end
       end
 
-      def pick_ally_for_battle
+      def pick_ally_for_battle(players)
         return if other_factions_here(current_location).count < 2
 
         opts = available_allies(current_location)
         return if opts.empty?
 
-        player.choose(:r_allied_battle, opts) { |o| o }
+        player.choose(:r_allied_battle, opts) do |fac_sym|
+          players.fetch_player(fac_sym).faction
+        end
       end
 
       def can_explore?
