@@ -207,7 +207,7 @@ module Root
         opts = other_fac.clearing_move_options(current_location)
 
         player.choose(:f_move_to_options, opts) do |where_to|
-          max_choice = current_location.meeples_of_type(faction_symbol).count
+          max_choice = current_location.meeples_of_type(other_fac.faction_symbol).count
           how_many_opts = [*1.upto(max_choice)]
 
           player.choose(:f_move_number, how_many_opts) do |how_many|

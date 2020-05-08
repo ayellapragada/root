@@ -50,7 +50,7 @@ module Root
       end
 
       def add_history
-        faction.player.add_to_history(
+        actual_leader.player.add_to_history(
           :f_move_number,
           num: num_to_move,
           from: from_clearing.priority,
