@@ -8,7 +8,7 @@ module Root
     # That may be a better abstraction than "Daylight()"
     class Battle
       attr_reader :clearing, :type,
-                  :attacker, :defender,
+                  :attacker, :defender, :ally,
                   :pieces_removed
       attr_accessor :actual_attack, :actual_defend
 
@@ -41,7 +41,11 @@ module Root
       end
 
       def attacker?(faction)
-        attacker == faction
+        [attacker, attacker.faction_symbol].include?(faction)
+      end
+
+      def defender?(faction)
+        [defender, defender.faction_symbol].include?(faction)
       end
 
       def other_faction(faction)
@@ -55,6 +59,11 @@ module Root
       def removed_of_other_type(fac)
         pieces_removed
           .reject { |p| p.faction == fac }
+      end
+
+      def removed_of_type(fac)
+        pieces_removed
+          .select { |p| p.faction == fac }
       end
 
       private

@@ -156,9 +156,27 @@ module Root
       end
 
       def take_damage(clearing, ally: nil)
-        return if undamaged_items.empty?
+        ally_sym = ally&.faction_symbol
+        opts = if warriors_available_to_take_hit?(clearing, ally)
+                 [ally_sym].concat(undamaged_items)
+               else
+                 undamaged_items
+               end
+        return if opts.empty?
 
-        player.choose(:r_item_damage, undamaged_items, required: true, &:damage)
+        player.choose(:r_item_damage, opts, required: true) do |opt|
+          if opt == ally_sym
+            ally.remove_meeple(clearing)
+          else
+            opt.damage
+          end
+        end
+      end
+
+      def warriors_available_to_take_hit?(clearing, ally)
+        return false unless ally
+
+        clearing.meeples_of_type(ally.faction_symbol).count.positive?
       end
 
       def take_turn(players:, quests:)
@@ -506,9 +524,17 @@ module Root
           if relationships.hostile?(piece.faction) && battle.attacker?(self) && battle.type == :battle
             self.victory_points += 1
           end
-          if piece.piece_type == :meeple
+          if piece.piece_type == :meeple && battle.defender?(piece.faction)
             relationships.make_hostile(piece.faction)
           end
+        end
+
+        return unless battle.ally
+
+        rem_meeples = battle.removed_of_type(battle.ally.faction_symbol).count
+        rem_items = battle.removed_of_type(faction_symbol).count
+        if rem_meeples > rem_items
+          relationships.make_hostile(battle.ally.faction_symbol)
         end
       end
 

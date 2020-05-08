@@ -262,6 +262,68 @@ RSpec.describe Root::Factions::Racoon do
     end
 
     context 'when allied in battle' do
+      it 'lets user remove warriors of allied faction too' do
+        allow(player).to receive(:pick_option).and_return(0)
+        players = Root::Players::List.new(player, cat_player, bird_player)
+        become_allied_with(:cats, players)
+
+        battle_cl = clearings[:five]
+
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+
+        faction.make_item(:sword)
+        faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+
+        allow_any_instance_of(Root::Actions::Battle)
+          .to receive(:dice_roll).and_return(3, 3)
+
+        expect { faction.battle(players) }
+          .to change { battle_cl.meeples_of_type(:cats).count }
+          .by(-2)
+          .and change { faction.damaged_items.count }
+          .by(1)
+
+        expect(faction.relationships.hostile?(:cats)).to be true
+      end
+    end
+
+    context 'when allied in battle and damage more items' do
+      it 'removing more items does not make hostile' do
+        allow(player).to receive(:pick_option).and_return(0)
+        players = Root::Players::List.new(player, cat_player, bird_player)
+        become_allied_with(:cats, players)
+
+        battle_cl = clearings[:five]
+
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+        faction.make_item(:boots)
+
+        faction.make_item(:sword)
+        faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+
+        allow_any_instance_of(Root::Actions::Battle)
+          .to receive(:dice_roll).and_return(3, 3)
+
+        expect { faction.battle(players) }
+          .to change { battle_cl.meeples_of_type(:cats).count }
+          .by(-1)
+          .and change { faction.damaged_items.count }
+          .by(2)
+
+        expect(faction.relationships.hostile?(:cats)).to be false
+      end
     end
   end
 
