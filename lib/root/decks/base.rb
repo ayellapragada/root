@@ -28,6 +28,11 @@ module Root
         deck.delete(card)
       end
 
+      def remove_from_discard(card)
+        discard.delete(card)
+        card
+      end
+
       def discard_card(card)
         discard << card
       end

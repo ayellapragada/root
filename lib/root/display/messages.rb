@@ -208,6 +208,10 @@ module Root
         r_c_steal: {
           prompt: 'Pick a faction steal a card from',
           history: 'Stole a card from the %s'
+        },
+        r_c_day_labor: {
+          prompt: 'Pick a card from the discard pile to take',
+          history: 'Retrieved a card from the discard pile'
         }
       }.freeze
     end
