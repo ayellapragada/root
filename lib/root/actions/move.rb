@@ -21,6 +21,11 @@ module Root
         add_history
       end
 
+      def racoon_lead(racoon)
+        @actual_leader = racoon
+        call
+      end
+
       def pre_move
         factions_involved.each { |fac| fac.pre_move(self) }
       end
@@ -38,6 +43,10 @@ module Root
           from_clearing.meeples.delete(piece)
           to_clearing.meeples << piece
         end
+      end
+
+      def actual_leader
+        @actual_leader || faction
       end
 
       def add_history

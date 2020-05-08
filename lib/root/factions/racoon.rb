@@ -201,12 +201,46 @@ module Root
         end
       end
 
+      # HACKY OH WELL LOL
+      def move_with_allies(players, ally)
+        other_fac = players.fetch_player(ally).faction
+        opts = other_fac.clearing_move_options(current_location)
+
+        player.choose(:f_move_to_options, opts) do |where_to|
+          max_choice = current_location.meeples_of_type(faction_symbol).count
+          how_many_opts = [*1.upto(max_choice)]
+
+          player.choose(:f_move_number, how_many_opts) do |how_many|
+            Actions::Move
+              .new(current_location, where_to, how_many, other_fac, players)
+              .racoon_lead(self)
+            exhaust_item(:boots) if location_hostile?(where_to)
+            move_meeples(current_location, where_to, 1, players)
+          end
+        end
+      end
+
+      def allied_move(players)
+        opts = available_allies(current_location)
+        player.choose(:r_allied_move, opts, yield_anyway: true) do |ally|
+          if ally == :none
+            racoon_move(players, move_options, use_extra_boot: true)
+          else
+            move_with_allies(players, ally)
+          end
+        end
+      end
+
       def slip(players)
         racoon_move(players, slip_options)
       end
 
       def boots_move(players)
-        racoon_move(players, move_options, use_extra_boot: true)
+        if location_allied?(current_location)
+          allied_move(players)
+        else
+          racoon_move(players, move_options, use_extra_boot: true)
+        end
       end
 
       def move_options
@@ -276,6 +310,15 @@ module Root
       def location_hostile?(clearing)
         others = clearing.other_attackable_factions(faction_symbol)
         others.any? { |o| relationships.hostile?(o) }
+      end
+
+      def available_allies(clearing)
+        others = clearing.other_attackable_factions(faction_symbol)
+        others.select { |o| relationships.allied?(o) }
+      end
+
+      def location_allied?(clearing)
+        !available_allies(clearing).empty?
       end
 
       def can_racoon_battle?

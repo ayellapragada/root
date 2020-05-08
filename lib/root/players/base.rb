@@ -105,6 +105,7 @@ module Root
         end
 
         yield(selected)
+        selected
       end
     end
   end

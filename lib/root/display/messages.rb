@@ -196,6 +196,10 @@ module Root
         r_item_to_get: {
           prompt: 'Pick an item to get from the other faction',
           history: ''
+        },
+        r_allied_move: {
+          prompt: 'Pick a faction to move with you',
+          history: ''
         }
       }.freeze
     end

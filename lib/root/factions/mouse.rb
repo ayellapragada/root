@@ -149,7 +149,7 @@ module Root
         return if skip_outrage_for?(move_action.faction.faction_symbol)
         return unless move_action.to_clearing.sympathetic?
 
-        outrage(move_action.faction, move_action.to_clearing.suit)
+        outrage(move_action.actual_leader, move_action.to_clearing.suit)
       end
 
       # racoons are not pawns ayyy and outrage only affects pawns

@@ -181,7 +181,7 @@ RSpec.describe Root::Factions::Racoon do
           faction.damage_item(item)
         end
 
-        expect(faction.formatted_items.first.split("\n").count).to eq(3)
+        expect(faction.formatted_items.first.split("\n").count).to eq(4)
       end
     end
   end
@@ -453,6 +453,52 @@ RSpec.describe Root::Factions::Racoon do
         expect(faction.exhausted_items.count).to eq(1)
       end
     end
+
+    context 'when allied' do
+      it 'can move warriors from allied faction, follows rules for movement' do
+        allow(player).to receive(:pick_option).and_return(0)
+        players = Root::Players::List.new(player, cat_player, mouse_player)
+        become_allied_with(:cats, players)
+        from_location = clearings[:five]
+        to_location = clearings[:one]
+
+        faction.place_meeple(from_location)
+        cat_faction.place_meeple(from_location)
+        cat_faction.place_meeple(from_location)
+        mouse_faction.place_sympathy(to_location)
+
+        faction.make_item(:boots)
+        faction.hand << Root::Cards::Base.new(suit: :fox)
+
+        # We pay outrage costs
+        expect { faction.boots_move(players) }
+          .to change(faction, :hand_size)
+          .by(-1)
+          .and change { mouse_faction.supporters.count }
+          .by(1)
+        expect(from_location.meeples_of_type(:cats).count).to be(1)
+        expect(from_location.meeples_of_type(:mouse).count).to be(0)
+      end
+
+      it 'does not need to move with any allies' do
+        # Move without allies, then move normally
+        allow(player).to receive(:pick_option).and_return(1, 0)
+        players = Root::Players::List.new(player, cat_player, mouse_player)
+        become_allied_with(:cats, players)
+        from_location = clearings[:five]
+
+        faction.place_meeple(from_location)
+        cat_faction.place_meeple(from_location)
+        cat_faction.place_meeple(from_location)
+
+        faction.make_item(:boots)
+        faction.hand << Root::Cards::Base.new(suit: :fox)
+
+        faction.boots_move(players)
+        expect(from_location.meeples_of_type(:cats).count).to be(2)
+        expect(from_location.meeples_of_type(:racoon).count).to be(0)
+      end
+    end
   end
 
   describe '#can_racoon_battle?' do
@@ -490,6 +536,11 @@ RSpec.describe Root::Factions::Racoon do
       end
     end
   end
+
+  # describe '#battle' do
+  #   context 'when allied' do
+  #   end
+  # end
 
   describe '#can_explore?' do
     context 'with a torch in a clearing with a ruin' do
@@ -991,8 +1042,7 @@ RSpec.describe Root::Factions::Racoon do
       it 'also gains 2 extra victory points' do
         allow(player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player)
-        faction.handle_relationships(players)
-        8.times { faction.relationships.aid_once(:cats) }
+        become_allied_with(:cats, players)
         our_location = clearings[:one]
 
         faction.place_meeple(our_location)
@@ -1100,5 +1150,10 @@ RSpec.describe Root::Factions::Racoon do
       card.new(suit: :mouse, items: %i[crossbow hammer], name: 'Test Quest 2'),
       card.new(suit: :bunny, items: %i[torch tea], name: 'Test Quest 3')
     ]
+  end
+
+  def become_allied_with(fac_sym, players)
+    faction.handle_relationships(players)
+    8.times { faction.relationships.aid_once(fac_sym) }
   end
 end
