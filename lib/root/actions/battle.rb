@@ -12,19 +12,20 @@ module Root
                   :pieces_removed
       attr_accessor :actual_attack, :actual_defend
 
-      def initialize(clearing, attacker, defender)
+      def initialize(clearing, attacker, defender, ally: nil)
         @clearing = clearing
         @attacker = attacker
         @defender = defender
         @pieces_removed = []
+        @ally = ally
       end
 
       def call
         @type = :battle
-        attacker_roll, defender_roll = assign_dice_rolls
+        atk, defe = assign_dice_rolls
 
-        self.actual_attack = [attacker_roll, attacker.max_hit(clearing)].min
-        self.actual_defend = [defender_roll, defender.max_hit(clearing)].min
+        self.actual_attack = [atk, attacker.max_hit(clearing, ally: @ally)].min
+        self.actual_defend = [defe, defender.max_hit(clearing)].min
 
         self.actual_attack += 1 if defender.defenseless?(clearing)
 

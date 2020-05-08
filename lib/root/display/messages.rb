@@ -198,7 +198,11 @@ module Root
           history: ''
         },
         r_allied_move: {
-          prompt: 'Pick a faction to move with you',
+          prompt: 'Pick an allied faction to move with you',
+          history: ''
+        },
+        r_allied_battle: {
+          prompt: 'Pick an allied faction to aid you in battle',
           history: ''
         }
       }.freeze

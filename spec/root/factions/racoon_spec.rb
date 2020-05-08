@@ -194,6 +194,8 @@ RSpec.describe Root::Factions::Racoon do
 
   describe '#max_hit' do
     it 'is equal to the number of undamaged swords' do
+      faction.place_meeple(clearings[:one])
+
       expect(faction.max_hit).to eq(0)
 
       faction.craft_item(build_item(:sword))
@@ -537,10 +539,46 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
-  # describe '#battle' do
-  #   context 'when allied' do
-  #   end
-  # end
+  describe '#battle' do
+    context 'when allied' do
+      it 'can use allies from clearing in battle' do
+        allow(player).to receive(:pick_option).and_return(0, 0)
+        players = Root::Players::List.new(player, cat_player, bird_player)
+        allow_any_instance_of(Root::Actions::Battle)
+          .to receive(:dice_roll).and_return(3, 0)
+
+        become_allied_with(:cats, players)
+        battle_cl = clearings[:five]
+
+        faction.make_item(:sword)
+        faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+
+        expect { faction.battle(players) }
+          .to change { battle_cl.meeples_of_type(:birds).count }
+          .by(-3)
+          .and change { battle_cl.meeples_of_type(:cats).count }
+          .by(0)
+      end
+    end
+  end
+
+  describe '#pick_ally_for_battle' do
+    context 'when no allied forces in the area' do
+      it 'can not make a choice' do
+        battle_cl = clearings[:five]
+        faction.place_meeple(battle_cl)
+        cat_faction.place_meeple(battle_cl)
+        bird_faction.place_meeple(battle_cl)
+
+        expect(faction.pick_ally_for_battle).to be nil
+      end
+    end
+  end
 
   describe '#can_explore?' do
     context 'with a torch in a clearing with a ruin' do

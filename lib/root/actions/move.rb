@@ -7,23 +7,19 @@ module Root
     class Move
       attr_reader :from_clearing, :to_clearing, :num_to_move, :faction, :players
 
-      def initialize(from_clearing, to_clearing, num_to_move, faction, players)
+      def initialize(from_clearing, to_clearing, num_to_move, faction, players, lead_by: nil)
         @from_clearing = from_clearing
         @to_clearing = to_clearing
         @num_to_move = num_to_move
         @faction = faction
         @players = players
+        @lead_by = lead_by
       end
 
       def call
         pre_move
         move_meeples
         add_history
-      end
-
-      def racoon_lead(racoon)
-        @actual_leader = racoon
-        call
       end
 
       def pre_move
@@ -46,7 +42,7 @@ module Root
       end
 
       def actual_leader
-        @actual_leader || faction
+        @lead_by || faction
       end
 
       def add_history

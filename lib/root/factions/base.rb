@@ -377,7 +377,7 @@ module Root
         @remaining_actions -= 1 if yield
       end
 
-      def max_hit(clearing)
+      def max_hit(clearing, *)
         clearing.meeples_of_type(faction_symbol).count
       end
 

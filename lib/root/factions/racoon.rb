@@ -146,8 +146,13 @@ module Root
         @relationships = Racoons::Relationships.new(others)
       end
 
-      def max_hit(*)
-        undamaged_items.count { |i| i.item == :sword }
+      def max_hit(clearing = current_location, ally: nil)
+        num_swords = undamaged_items.count { |i| i.item == :sword }
+        if ally
+          clearing.meeples_of_type(ally).count + num_swords
+        else
+          num_swords
+        end
       end
 
       def take_damage(*)
@@ -194,6 +199,10 @@ module Root
         board.clearings_with_meeples(faction_symbol).first
       end
 
+      def other_factions_here(clearing = current_location)
+        clearing.other_attackable_factions(faction_symbol)
+      end
+
       def racoon_move(players, options, use_extra_boot: false)
         player.choose(:f_move_to_options, options) do |where_to|
           exhaust_extra_boot_if_needed(where_to) if use_extra_boot
@@ -206,16 +215,17 @@ module Root
         other_fac = players.fetch_player(ally).faction
         opts = other_fac.clearing_move_options(current_location)
 
-        player.choose(:f_move_to_options, opts) do |where_to|
-          max_choice = current_location.meeples_of_type(other_fac.faction_symbol).count
+        player.choose(:f_move_to_options, opts) do |to|
+          avail = current_location.meeples_of_type(other_fac.faction_symbol)
+          max_choice = avail.count
           how_many_opts = [*1.upto(max_choice)]
 
-          player.choose(:f_move_number, how_many_opts) do |how_many|
+          player.choose(:f_move_number, how_many_opts) do |num|
             Actions::Move
-              .new(current_location, where_to, how_many, other_fac, players)
-              .racoon_lead(self)
-            exhaust_extra_boot_if_needed(where_to)
-            move_meeples(current_location, where_to, 1, players)
+              .new(current_location, to, num, other_fac, players, lead_by: self)
+              .()
+            exhaust_extra_boot_if_needed(to)
+            move_meeples(current_location, to, 1, players)
           end
         end
       end
@@ -270,7 +280,7 @@ module Root
             # :nocov:
             case action
             when :move then with_item(:boots) { boots_move(players) }
-            when :battle then with_item(:sword) { battle_in_clearing(current_location, players) }
+            when :battle then with_item(:sword) { battle(players) }
             when :explore then with_item(:torch) { explore }
             when :strike then with_item(:crossbow) { strike(players) }
             when :repair then with_item(:hammer) { repair }
@@ -312,13 +322,11 @@ module Root
       end
 
       def location_hostile?(clearing)
-        others = clearing.other_attackable_factions(faction_symbol)
-        others.any? { |o| relationships.hostile?(o) }
+        other_factions_here(clearing).any? { |o| relationships.hostile?(o) }
       end
 
       def available_allies(clearing)
-        others = clearing.other_attackable_factions(faction_symbol)
-        others.select { |o| relationships.allied?(o) }
+        other_factions_here(clearing).select { |o| relationships.allied?(o) }
       end
 
       def location_allied?(clearing)
@@ -327,6 +335,26 @@ module Root
 
       def can_racoon_battle?
         can_battle? && available_items_include?(:sword)
+      end
+
+      def battle(players)
+        ally = pick_ally_for_battle
+        opts = other_factions_here - [ally]
+        player.choose(:f_who_to_battle, opts) do |fac_sym|
+          faction_to_battle = players.fetch_player(fac_sym).faction
+          Actions::Battle
+            .new(current_location, self, faction_to_battle, ally: ally)
+            .()
+        end
+      end
+
+      def pick_ally_for_battle
+        return if other_factions_here(current_location).count < 2
+
+        opts = available_allies(current_location)
+        return if opts.empty?
+
+        player.choose(:r_allied_battle, opts) { |o| o }
       end
 
       def can_explore?
@@ -350,7 +378,7 @@ module Root
       end
 
       def strike(players)
-        opts = current_location.other_attackable_factions(faction_symbol)
+        opts = other_factions_here
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
           Actions::Battle.new(current_location, self, faction_to_battle).strike
@@ -468,7 +496,7 @@ module Root
       end
 
       def aid_options
-        current_location.other_attackable_factions(faction_symbol)
+        other_factions_here
       end
 
       def post_battle(battle)
