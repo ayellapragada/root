@@ -8,6 +8,8 @@ module Root
       module Characters
         # Base logic for characters, they can handle powers and items
         class Character < Pieces::Meeple
+          attr_accessor :f
+
           def self.for(name)
             CharacterDeck::CHARACTER_MAPPING[name]
           end
@@ -20,10 +22,14 @@ module Root
             type.to_s.capitalize
           end
 
+          def torch?
+            f.available_items_include?(:torch)
+          end
+
           # :nocov:
           def inspect
-            power = self.class::POWER
             starting_items = self.class::STARTING_ITEMS.join(', ')
+            power = self.class::POWER
             "#{name}: Power: #{power} | Start: #{starting_items}"
           end
           # :nocov:

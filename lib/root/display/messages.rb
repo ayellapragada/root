@@ -204,6 +204,10 @@ module Root
         r_allied_battle: {
           prompt: 'Pick an allied faction to aid you in battle',
           history: ''
+        },
+        r_c_steal: {
+          prompt: 'Pick a faction steal a card from',
+          history: 'Stole a card from the %s'
         }
       }.freeze
     end

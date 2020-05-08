@@ -119,11 +119,14 @@ module Root
           characters.remove_from_deck(char)
           char.class::STARTING_ITEMS.each { |item| make_item(item) }
           @character = char
+          @character.f = self
         end
       end
 
       def quick_set_character(name)
         @character = Factions::Racoons::Characters::Character.for(name)
+        @character.class::STARTING_ITEMS.each { |item| make_item(item) }
+        @character.f = self
       end
 
       def handle_forest_select
@@ -284,13 +287,15 @@ module Root
         current_location.all_adjacents
       end
 
+      SIMPLE_SPECIALS = %i[steal day_labor].freeze
+
       def daylight(players, quests)
         relationships.reset_turn_counters
 
-        until daylight_options(active_quests: quests.active_quests).empty?
+        until daylight_options(active_quests: quests.active_quests, players: players).empty?
           player.choose(
             :f_pick_action,
-            daylight_options(active_quests: quests.active_quests),
+            daylight_options(active_quests: quests.active_quests, players: players),
             yield_anyway: true,
             info: { actions: '' }
           ) do |action|
@@ -304,6 +309,8 @@ module Root
             when :craft then hammer_craft
             when :aid then aid(players)
             when :quest then quest(quests)
+            when ->(n) { SIMPLE_SPECIALS.include?(n) }
+              with_item(:torch) { use_special(players) }
             when :none then return false
             end
             # :nocov:
@@ -317,7 +324,7 @@ module Root
       end
 
       # :nocov:
-      def daylight_options(active_quests: [])
+      def daylight_options(active_quests: [], players: [])
         [].tap do |options|
           options << :move if can_move?
           options << :battle if can_racoon_battle?
@@ -327,9 +334,22 @@ module Root
           options << :strike if can_strike?
           options << :repair if can_repair?
           options << :craft if can_craft?
+          options << special_name if can_special?(players)
         end
       end
       # :nocov:
+
+      def special_name
+        character.class::POWER
+      end
+
+      def can_special?(players)
+        character&.can_special?(players)
+      end
+
+      def use_special(players)
+        character.special(players)
+      end
 
       # Still a WIP for Hostile, but relationships shall come later.
       def can_move_to?(_clearing, adj)
