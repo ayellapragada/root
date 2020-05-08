@@ -22,7 +22,7 @@ module Root
 
       # :nocov:
       def inspect
-        "#{name} - #{item.capitalize} | Craft: #{craft.join(', ')}, Victory Points: #{vp}"
+        "#{name_with_suit} - #{item.capitalize} | Craft: #{craft.join(', ')}, Victory Points: #{vp}"
       end
       # :nocov:
 

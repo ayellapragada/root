@@ -33,8 +33,12 @@ module Root
         false
       end
 
+      def name_with_suit
+        "#{name} (#{suit[0].upcase})"
+      end
+
       def inspect
-        name
+        name_with_suit
       end
 
       def body
