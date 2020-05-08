@@ -29,7 +29,7 @@ module Root
       end
 
       def handle_name(card)
-        card_title = "#{card.name} (#{card.suit[0].capitalize})"
+        card_title = "#{card.name}"
         Rainbow(card_title).fg(Colors::SUIT_COLOR[card.suit])
       end
 
