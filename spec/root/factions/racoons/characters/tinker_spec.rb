@@ -18,6 +18,8 @@ RSpec.describe Root::Factions::Racoons::Characters::Tinker do
 
   describe '#special' do
     it 'can take any card from discard matching clearing suit or bird' do
+      allow(player).to receive(:pick_option).and_return(0)
+
       faction.place_meeple(clearings[:one])
       fox_card = Root::Cards::Base.new(suit: :fox)
       mouse_card = Root::Cards::Base.new(suit: :mouse)

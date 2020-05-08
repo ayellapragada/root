@@ -174,7 +174,7 @@ module Root
           history: 'Explored a ruin in clearing %s and gained (a) %s'
         },
         r_item_repair: {
-          prompt: 'Pick an item to repair',
+          prompt: 'Pick an item to repair. %s repair(s) left',
           history: 'Repaired the %s'
         },
         r_quest: {
@@ -212,6 +212,10 @@ module Root
         r_c_day_labor: {
           prompt: 'Pick a card from the discard pile to take',
           history: 'Retrieved a card from the discard pile'
+        },
+        r_c_hideout: {
+          prompt: '',
+          history: 'Repaired 3 items and ended turn.'
         }
       }.freeze
     end

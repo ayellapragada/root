@@ -311,6 +311,9 @@ module Root
             when :quest then quest(quests)
             when ->(n) { SIMPLE_SPECIALS.include?(n) }
               with_item(:torch) { use_special(players) }
+            when :hideout
+              with_item(:torch) { use_special(players) }
+              return false
             when :none then return false
             end
             # :nocov:
@@ -438,7 +441,12 @@ module Root
       end
 
       def repair
-        player.choose(:r_item_repair, damaged_items, &:repair)
+        player.choose(
+          :r_item_repair,
+          damaged_items,
+          info: { num: 1 },
+          &:repair
+        )
       end
 
       def quest(quests)
