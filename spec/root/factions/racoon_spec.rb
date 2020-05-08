@@ -42,7 +42,7 @@ RSpec.describe Root::Factions::Racoon do
       faction = player.faction
 
       # the first options name, ah well.
-      expect(faction.character.name).to be(:thief)
+      expect(faction.character.name).to eq('Thief')
       expect(faction.items.map(&:item)).to eq(%i[boots torch tea sword])
     end
 
@@ -114,7 +114,7 @@ RSpec.describe Root::Factions::Racoon do
 
     context 'with a character' do
       it 'returns character name correctly' do
-        faction.quick_set_character('Thief')
+        faction.quick_set_character(:thief)
         expect(faction.formatted_character).to eq('Thief')
       end
     end

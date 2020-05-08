@@ -62,8 +62,7 @@ module Root
       end
 
       def formatted_character
-        name = character&.name || 'none'
-        name.capitalize
+        character&.name || 'None'
       end
 
       def formatted_relationships
@@ -118,13 +117,13 @@ module Root
       def handle_character_select(characters)
         player.choose(:r_char_sel, characters.deck, required: true) do |char|
           characters.remove_from_deck(char)
-          char.starting_items.each { |item| make_item(item) }
+          char.class::STARTING_ITEMS.each { |item| make_item(item) }
           @character = char
         end
       end
 
       def quick_set_character(name)
-        @character = Factions::Racoons::Character.new(name: name)
+        @character = Factions::Racoons::Characters::Character.for(name)
       end
 
       def handle_forest_select
