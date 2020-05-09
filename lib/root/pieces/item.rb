@@ -16,6 +16,10 @@ module Root
         @exhausted = false
       end
 
+      def piece_type
+        :item
+      end
+
       def damage
         @damaged = true
         self

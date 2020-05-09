@@ -1240,6 +1240,28 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#take_big_damage' do
+    it 'does damage to 3 items' do
+      allow(player).to receive(:pick_option).and_return(0)
+
+      faction.craft_item(build_item(:sword))
+      faction.craft_item(build_item(:crossbow))
+      faction.craft_item(build_item(:boots))
+      faction.craft_item(build_item(:hammer))
+
+      players = Root::Players::List.new(player, mouse_player)
+
+      revolt_cl = clearings[:one]
+
+      faction.place_meeple(revolt_cl)
+      mouse_faction.place_sympathy(revolt_cl)
+
+      expect { mouse_faction.revolt_in_clearing(revolt_cl, players) }
+        .to change { faction.damaged_items.count }
+        .by(3)
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end

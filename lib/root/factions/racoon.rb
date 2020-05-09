@@ -157,9 +157,9 @@ module Root
         end
       end
 
-      def take_damage(clearing, ally: nil)
+      def take_damage(*, ally: nil)
         ally_sym = ally&.faction_symbol
-        opts = if warriors_available_to_take_hit?(clearing, ally)
+        opts = if warriors_available_to_take_hit?(ally)
                  [ally_sym].concat(undamaged_items)
                else
                  undamaged_items
@@ -167,18 +167,17 @@ module Root
         return if opts.empty?
 
         player.choose(:r_item_damage, opts, required: true) do |opt|
-          if opt == ally_sym
-            ally.remove_meeple(clearing)
-          else
-            opt.damage
-          end
+          opt == ally_sym ? ally.remove_meeple(current_location) : opt.damage
         end
       end
 
-      def warriors_available_to_take_hit?(clearing, ally)
+      def warriors_available_to_take_hit?(ally)
         return false unless ally
 
-        clearing.meeples_of_type(ally.faction_symbol).count.positive?
+        current_location
+          .meeples_of_type(ally.faction_symbol)
+          .count
+          .positive?
       end
 
       def take_turn(players:, quests:)
@@ -606,6 +605,10 @@ module Root
 
       def knapsack_capacity
         6 + (satchels.count * 2)
+      end
+
+      def take_big_damage(*)
+        3.times.collect { take_damage(current_location) }
       end
     end
   end
