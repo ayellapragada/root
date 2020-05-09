@@ -10,8 +10,8 @@ module Root
       # All characters can be plopped in here for now
       class CharacterDeck < Decks::Base
         CHARACTER_MAPPING = {
-          thief: Characters::Thief.new,
           ranger: Characters::Ranger.new,
+          thief: Characters::Thief.new,
           tinker: Characters::Tinker.new
         }.freeze
 

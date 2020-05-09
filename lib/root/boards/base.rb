@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require_relative '../grid/clearing'
-require_relative '../factions/cats/keep'
-
 module Root
   module Boards
-    # Handles Creates graph / grid for the forest (default) board.
-    # Not going to lie this might be the only one I end up creating.
-    # I haven't played the expansions much so I'm not familiar with them.
+    # This is all base board logic.
+    # This is currently only for the woodland normie one,
+    # But ideally to do another map it wouldn't be that bad.
     class Base
       attr_reader :all_clearings, :items
 
@@ -17,12 +14,6 @@ module Root
         @all_clearings = generator.generate
         @items = items || ItemsGenerator.generate
       end
-
-      #:nocov:
-      def test_render
-        Root::Display::WoodlandsMap.new(self).display
-      end
-      #:nocov:
 
       def available_corners
         corners.select(&:with_spaces?)

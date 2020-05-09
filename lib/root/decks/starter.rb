@@ -61,40 +61,58 @@ module Root
   end
 end
 
+# rubocop:disable all
 # :nocov:
+# FAVOR
+# suit: :fox,  Favor of the Foxes  FFF  Remove all enemy pieces in fox clearings, Discard
+# suit: :mouse,  Favor of the Mice  MMM  Remove all enemy pieces in mouse clearings, Discard
+# suit: :rabbit,  Favor of the Rabbits  RRR  Remove all enemy pieces in rabbit clearings, Discard
+
+# BATTLE
+# Ambush
 # Suit  Name  Location  Craft Effects
 # suit: :bird,  Ambush  Any  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
 # suit: :bird,  Ambush  Any  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-# suit: :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
-# suit: :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
-# suit: :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
-# suit: :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
-# suit: :bird,  Dominance  NA  If at least 10VP, Play to rule Opposite Corners
-# suit: :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
-# suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
-# suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
 # suit: :fox,  Ambush  F  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-# suit: :fox,  Dominance  FFF  If at least 10VP, You win if you rule 3 fox clearings at start of your Birdsong
-# suit: :fox,  Favor of the Foxes  FFF  Remove all enemy pieces in fox clearings, Discard
-# suit: :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
-# suit: :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
-# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
-# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
-# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
 # suit: :mouse,  Ambush  M  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-# suit: :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
-# suit: :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
-# suit: :mouse,  Dominance  MMM  If at least 10VP, You win if you rule 3 mouse clearings at start of your Birdsong
-# suit: :mouse,  Favor of the Mice  MMM  Remove all enemy pieces in mouse clearings, Discard
-# suit: :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
-# suit: :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
 # suit: :rabbit,  Ambush  R  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
+
+# suit: :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
+# suit: :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
+# suit: :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
+# suit: :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
+# suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
+# suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
+
+# Dominance
+# suit: :bird,  Dominance  NA  If at least 10VP, Play to rule Opposite Corners
+# suit: :fox,  Dominance  FFF  If at least 10VP, You win if you rule 3 fox clearings at start of your Birdsong
+# suit: :mouse,  Dominance  MMM  If at least 10VP, You win if you rule 3 mouse clearings at start of your Birdsong
+# suit: :rabbit,  Dominance  RRR  If at least 10VP, You win if you rule 3 rabbit clearings at start of your Birdsong
+
+# Improvements
+
+# suit: :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
+# suit: :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
+
+# Birdsong
+# suit: :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
+# suit: :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
+# suit: :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 # suit: :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
 # suit: :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
+
+# Daylight
+# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
+# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
+# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
+# suit: :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
+# suit: :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
+# suit: :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
+# suit: :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
+
+# Evening
 # suit: :rabbit,  Cobbler  RR  At start of Evening, may take a move
 # suit: :rabbit, Cobbler  RR  At start of Evening, may take a move
-# suit: :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
-# suit: :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
-# suit: :rabbit,  Dominance  RRR  If at least 10VP, You win if you rule 3 rabbit clearings at start of your Birdsong
-# suit: :rabbit,  Favor of the Rabbits  RRR  Remove all enemy pieces in rabbit clearings, Discard
 # :nocov:
+# rubocop:enable all

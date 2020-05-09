@@ -36,12 +36,13 @@ RSpec.describe Root::Factions::Racoon do
       characters = game.characters
       players = game.players
       player = players.fetch_player(:racoon)
-      allow(player).to receive(:pick_option).and_return(0)
+      # This only needs to be changed to pick the thief in the future
+      # IF / WHEN new characters get added
+      allow(player).to receive(:pick_option).and_return(1)
 
       player.setup(characters: characters, players: players)
       faction = player.faction
 
-      # the first options name, ah well.
       expect(faction.character.name).to eq('Thief')
       expect(faction.items.map(&:item)).to eq(%i[boots torch tea sword])
     end
@@ -92,7 +93,7 @@ RSpec.describe Root::Factions::Racoon do
       characters = game.characters
       players = game.players
       player = players.fetch_player(:racoon)
-      allow(player).to receive(:pick_option).and_return(0)
+      allow(player).to receive(:pick_option).and_return(1)
 
       player.setup(characters: characters, players: players)
       faction = player.faction

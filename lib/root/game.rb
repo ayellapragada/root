@@ -95,11 +95,5 @@ module Root
       players.each { |player| player.render_game(self, clearings: clearings) }
       nil
     end
-
-    # :nocov:
-    def test_render
-      Display::Terminal.new.render_game(self, players.fetch_player(:mice))
-    end
-    # :nocov:
   end
 end
