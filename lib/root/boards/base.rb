@@ -31,6 +31,10 @@ module Root
         all_clearings.select { |key, _| all_clearings[key].forest? }
       end
 
+      def clearings_of_suit(suit)
+        clearings.values.select { |cl| cl.suit == suit }
+      end
+
       def place_token(token, clearing)
         clearing.place_token(token)
       end

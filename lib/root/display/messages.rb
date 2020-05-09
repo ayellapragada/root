@@ -93,6 +93,10 @@ module Root
           prompt: '',
           history: 'Game over! Winner is %s with type of victory %s'
         },
+        f_favor: {
+          prompt: '',
+          history: 'Used Favor of the %s'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'
