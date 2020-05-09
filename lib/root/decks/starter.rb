@@ -17,12 +17,17 @@ module Root
       end
 
       def list_of_cards!
-        8.times { deck << Cards::Base.new(suit: :fox) }
-        7.times { deck << Cards::Base.new(suit: :mouse) }
-        9.times { deck << Cards::Base.new(suit: :rabbit) }
+        7.times { deck << Cards::Base.new(suit: :fox) }
+        6.times { deck << Cards::Base.new(suit: :mouse) }
+        8.times { deck << Cards::Base.new(suit: :rabbit) }
         10.times { deck << Cards::Base.new(suit: :bird) }
+        add_item_cards
+        add_favor_cards
+      end
+
+      # rubocop:disable all
+      def add_item_cards
         [
-          # rubocop:disable all
           { suit: :bird,  name: 'Arms Trader', craft: %i[fox fox], item: :sword, vp: 2 },
           { suit: :bird,  name: 'Birdy Bindle', craft: %i[mouse], item: :satchel, vp: 1 },
           { suit: :bird,  name: 'Crossbow', craft: %i[fox], item: :crossbow, vp: 1 },
@@ -46,7 +51,6 @@ module Root
           { suit: :rabbit,  name: 'Bake Sale', craft: %i[rabbit rabbit], item: :coin, vp: 3 },
           { suit: :rabbit,  name: 'Root Tea', craft: %i[mouse], item: :tea, vp: 2 },
           { suit: :rabbit, name: 'Smuggler\'s Trail', craft: %i[mouse], item: :Satchel, vp: 1 }
-          # rubocop:enable all
         ].each do |row|
           deck << Cards::Item.new(
             suit: row[:suit],
@@ -57,17 +61,19 @@ module Root
           )
         end
       end
+      # rubocop:enable all
+
+      def add_favor_cards
+        %i[fox mouse rabbit].each do |suit|
+          deck << Cards::Favor.new(suit: suit)
+        end
+      end
     end
   end
 end
 
 # rubocop:disable all
 # :nocov:
-# FAVOR
-# suit: :fox,  Favor of the Foxes  FFF  Remove all enemy pieces in fox clearings, Discard
-# suit: :mouse,  Favor of the Mice  MMM  Remove all enemy pieces in mouse clearings, Discard
-# suit: :rabbit,  Favor of the Rabbits  RRR  Remove all enemy pieces in rabbit clearings, Discard
-
 # BATTLE
 # Ambush
 # Suit  Name  Location  Craft Effects

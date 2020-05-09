@@ -8,7 +8,8 @@ module Root
     class Favor < Base
       attr_reader :craft
 
-      def initialize(suit:, name: 'Favor')
+      def initialize(suit:)
+        name = "Favor of the #{suit.pluralize.capitalize}"
         super(suit: suit, name: name)
         @craft = Array.new(3) { suit }
       end
@@ -20,14 +21,14 @@ module Root
       # :nocov:
 
       def body
-        "Remove in #{suit}"
+        "Remove in #{suit} clearing"
       end
 
-      # def faction_craft(fac, players:)
       def faction_craft(fac)
-        # board
-        #   .clearings_of_suit(suit)
-        #   .each { |cl| fac.do_big_damage(cl, players) }
+        fac
+          .board
+          .clearings_of_suit(suit)
+          .each { |cl| fac.do_big_damage(cl) }
         fac.player.add_to_history(:f_favor, suit: suit.capitalize)
         fac.discard_card(self)
       end

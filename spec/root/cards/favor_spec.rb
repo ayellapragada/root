@@ -28,8 +28,19 @@ RSpec.describe Root::Cards::Favor do
     end
   end
 
+  describe '#info' do
+    it 'is hopefully helpful' do
+      card = Root::Cards::Favor.new(suit: :fox)
+      expect(card.name).to eq('Favor of the Foxes')
+      expect(card.body).to eq('Remove in fox clearing')
+    end
+  end
+
   describe '#faction_craft' do
-    xit 'removes all enemy pieces in all clearings of its suit' do
+    it 'removes all enemy pieces in all clearings of its suit' do
+      players = Root::Players::List.new(player, cat_player, bird_player, racoon_player)
+      player.players = players
+
       fox_cl1 = clearings[:one]
       fox_cl2 = clearings[:six]
       fox_cl3 = clearings[:eight]

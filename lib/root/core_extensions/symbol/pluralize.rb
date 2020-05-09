@@ -8,7 +8,9 @@ module Root
         PLURAL_FORMS_EXCEPTIONS = {
           wood: :wood,
           keep: :keep,
-          sympathy: :sympathy
+          sympathy: :sympathy,
+          fox: :foxes,
+          mouse: :mice
         }.freeze
 
         def pluralize
