@@ -128,10 +128,10 @@ module Root
         end
       end
 
-      def take_turn(players:, **_)
+      def take_turn(**_)
         super
         birdsong
-        daylight(players)
+        daylight
         evening
       end
 
@@ -169,9 +169,9 @@ module Root
         end
       end
 
-      def daylight(players)
+      def daylight
         craft_items
-        resolve_decree(players)
+        resolve_decree
       end
 
       VICTORY_POINTS = {
@@ -193,13 +193,10 @@ module Root
         DRAW_BONUSES[:roost][0...current_number_out(:roost)].sum
       end
 
-      # Resolve decree only needs players for battle and move!
-      # MOVE IS OUTRAGE :yikes:
-      # So we're letting it be nil for test, but this is DEF needed
-      def resolve_decree(players = nil)
+      def resolve_decree
         resolve_recruit
-        resolve_move(players)
-        resolve_battle(players)
+        resolve_move
+        resolve_battle
         resolve_build
       rescue TurmoilError
         turmoil!
@@ -215,13 +212,13 @@ module Root
         end
       end
 
-      def resolve_move(players)
-        resolve(:move, :f_move_from_options) { |cl| move(cl, players) }
+      def resolve_move
+        resolve(:move, :f_move_from_options) { |cl| move(cl) }
       end
 
-      def resolve_battle(players)
+      def resolve_battle
         resolve(:battle, :f_battle_options) do |cl|
-          battle_in_clearing(cl, players)
+          battle_in_clearing(cl)
         end
       end
 

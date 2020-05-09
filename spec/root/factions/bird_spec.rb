@@ -292,7 +292,7 @@ RSpec.describe Root::Factions::Bird do
       faction.decree[:move] << Root::Cards::Base.new(suit: :fox)
       faction.decree[:move] << Root::Cards::Base.new(suit: :mouse)
 
-      faction.resolve_decree(players)
+      faction.resolve_decree
 
       expect(clearings[:one].meeples_of_type(:birds).count).to eq(0)
       expect(clearings[:two].meeples_of_type(:birds).count).to eq(0)
@@ -357,6 +357,7 @@ RSpec.describe Root::Factions::Bird do
         to receive(:dice_roll).and_return(2, 1)
 
       players = Root::Players::List.new(player, cat_player)
+      player.players = players
 
       battle_cl = clearings[:one]
       faction.place_meeple(battle_cl)
@@ -367,7 +368,7 @@ RSpec.describe Root::Factions::Bird do
 
       faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
 
-      faction.resolve_decree(players)
+      faction.resolve_decree
 
       expect(clearings[:one].meeples.count).to eq(0)
       expect(clearings[:two].meeples.count).to eq(2)
@@ -378,6 +379,7 @@ RSpec.describe Root::Factions::Bird do
         allow(player).to receive(:pick_option).and_return(0)
 
         players = Root::Players::List.new(player, cat_player)
+        player.players = players
 
         battle_cl = clearings[:one]
 
@@ -392,7 +394,7 @@ RSpec.describe Root::Factions::Bird do
         faction.change_current_leader(:commander)
         faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
 
-        faction.resolve_decree(players)
+        faction.resolve_decree
 
         expect(clearings[:one].meeples_of_type(:cats).count).to eq(0)
       end
@@ -404,6 +406,7 @@ RSpec.describe Root::Factions::Bird do
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         players = Root::Players::List.new(player, cat_player)
+        player.players = players
 
         battle_cl = clearings[:one]
 
@@ -416,7 +419,7 @@ RSpec.describe Root::Factions::Bird do
         faction.change_current_leader(:despot)
         faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
 
-        expect { faction.resolve_decree(players) }
+        expect { faction.resolve_decree }
           .to change(faction, :victory_points).by(2)
       end
 
@@ -425,6 +428,7 @@ RSpec.describe Root::Factions::Bird do
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         players = Root::Players::List.new(player, cat_player)
+        player.players = players
 
         battle_cl = clearings[:one]
 
@@ -437,7 +441,7 @@ RSpec.describe Root::Factions::Bird do
         faction.change_current_leader(:despot)
         faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
 
-        expect { faction.resolve_decree(players) }
+        expect { faction.resolve_decree }
           .to change(faction, :victory_points).by(2)
       end
 
@@ -446,6 +450,8 @@ RSpec.describe Root::Factions::Bird do
         allow(cat_player).to receive(:pick_option).and_return(0)
 
         players = Root::Players::List.new(player, cat_player)
+        player.players = players
+
         battle_cl = clearings[:one]
 
         faction.place_meeple(battle_cl)
@@ -457,7 +463,7 @@ RSpec.describe Root::Factions::Bird do
         faction.change_current_leader(:despot)
         faction.decree[:battle] << Root::Cards::Base.new(suit: battle_cl.suit)
 
-        expect { faction.resolve_decree(players) }
+        expect { faction.resolve_decree }
           .to change(faction, :victory_points).by(0)
       end
     end

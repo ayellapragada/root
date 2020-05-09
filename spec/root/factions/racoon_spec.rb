@@ -40,7 +40,7 @@ RSpec.describe Root::Factions::Racoon do
       # IF / WHEN new characters get added
       allow(player).to receive(:pick_option).and_return(1)
 
-      player.setup(characters: characters, players: players)
+      player.setup(characters: characters)
       faction = player.faction
 
       expect(faction.character.name).to eq('Thief')
@@ -55,7 +55,7 @@ RSpec.describe Root::Factions::Racoon do
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(characters: characters, players: players)
+      player.setup(characters: characters)
 
       expect(board.forests[:a].meeples_of_type(:racoon).count == 1).to be true
     end
@@ -67,7 +67,7 @@ RSpec.describe Root::Factions::Racoon do
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(characters: characters, players: players)
+      player.setup(characters: characters)
 
       faction = player.faction
       expect(faction.relationships.all_neutral?).to be true
@@ -81,7 +81,7 @@ RSpec.describe Root::Factions::Racoon do
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(characters: characters, players: players)
+      player.setup(characters: characters)
 
       expect(board.ruins.all?(&:contains_item?)).to be true
     end
@@ -95,7 +95,7 @@ RSpec.describe Root::Factions::Racoon do
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(1)
 
-      player.setup(characters: characters, players: players)
+      player.setup(characters: characters)
       faction = player.faction
       expect(faction.special_info(true)).to eq(
         {
@@ -225,6 +225,7 @@ RSpec.describe Root::Factions::Racoon do
       faction.craft_item(build_item(:hammer))
 
       players = Root::Players::List.new(player, cat_player)
+      cat_player.players = players
 
       battle_cl = clearings[:one]
 
@@ -235,7 +236,7 @@ RSpec.describe Root::Factions::Racoon do
       allow_any_instance_of(Root::Actions::Battle)
         .to receive(:dice_roll).and_return(2, 0)
 
-      expect { cat_faction.battle(players) }
+      expect { cat_faction.battle }
         .to change { faction.damaged_items.count }
         .by(2)
     end
@@ -247,6 +248,7 @@ RSpec.describe Root::Factions::Racoon do
         cat_player.board = board
 
         players = Root::Players::List.new(player, cat_player)
+        cat_player.players = players
 
         battle_cl = clearings[:one]
 
@@ -256,7 +258,7 @@ RSpec.describe Root::Factions::Racoon do
         allow_any_instance_of(Root::Actions::Battle)
           .to receive(:dice_roll).and_return(1, 0)
 
-        expect { cat_faction.battle(players) }
+        expect { cat_faction.battle }
           .to change { faction.damaged_items.count }
           .by(0)
       end
@@ -266,7 +268,8 @@ RSpec.describe Root::Factions::Racoon do
       it 'lets user remove warriors of allied faction too' do
         allow(player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player, bird_player)
-        become_allied_with(:cats, players)
+        player.players = players
+        become_allied_with(:cats)
 
         battle_cl = clearings[:five]
 
@@ -285,7 +288,7 @@ RSpec.describe Root::Factions::Racoon do
         allow_any_instance_of(Root::Actions::Battle)
           .to receive(:dice_roll).and_return(3, 3)
 
-        expect { faction.battle(players) }
+        expect { faction.battle }
           .to change { battle_cl.meeples_of_type(:cats).count }
           .by(-2)
           .and change { faction.damaged_items.count }
@@ -299,7 +302,8 @@ RSpec.describe Root::Factions::Racoon do
       it 'removing more items does not make hostile' do
         allow(player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player, bird_player)
-        become_allied_with(:cats, players)
+        player.players = players
+        become_allied_with(:cats)
 
         battle_cl = clearings[:five]
 
@@ -317,7 +321,7 @@ RSpec.describe Root::Factions::Racoon do
         allow_any_instance_of(Root::Actions::Battle)
           .to receive(:dice_roll).and_return(3, 3)
 
-        expect { faction.battle(players) }
+        expect { faction.battle }
           .to change { battle_cl.meeples_of_type(:cats).count }
           .by(-1)
           .and change { faction.damaged_items.count }
@@ -428,9 +432,10 @@ RSpec.describe Root::Factions::Racoon do
     it 'is a move that can alsp go into forests' do
       faction.place_meeple(forests[:a])
       players = Root::Players::List.new(player)
+      player.players = players
       allow(player).to receive(:pick_option).and_return(0)
 
-      faction.slip(players)
+      faction.slip
 
       expect(faction.current_location).to eq(forests[:b])
     end
@@ -464,7 +469,8 @@ RSpec.describe Root::Factions::Racoon do
     context 'with a hostile enemy in the clearing' do
       it 'needs two boots' do
         players = Root::Players::List.new(player, cat_player)
-        faction.handle_relationships(players)
+        player.players = players
+        faction.handle_relationships
         faction.relationships.make_hostile(:cats)
 
         from_cl = clearings[:one]
@@ -485,7 +491,8 @@ RSpec.describe Root::Factions::Racoon do
     it 'takes 2 boots to move into a hostile clearing' do
       allow(player).to receive(:pick_option).and_return(0)
       players = Root::Players::List.new(player, cat_player)
-      faction.handle_relationships(players)
+      player.players = players
+      faction.handle_relationships
       faction.relationships.make_hostile(:cats)
 
       from_cl = clearings[:one]
@@ -504,7 +511,8 @@ RSpec.describe Root::Factions::Racoon do
       it 'exhausts an extra boots' do
         allow(player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player)
-        faction.handle_relationships(players)
+        player.players = players
+        faction.handle_relationships
         faction.relationships.make_hostile(:cats)
 
         from_cl = clearings[:one]
@@ -516,7 +524,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.make_item(:boots)
         faction.make_item(:boots)
 
-        faction.boots_move(players)
+        faction.boots_move
 
         expect(faction.exhausted_items.count).to eq(1)
       end
@@ -526,7 +534,10 @@ RSpec.describe Root::Factions::Racoon do
       it 'can move warriors from allied faction, follows rules for movement' do
         allow(player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player, mouse_player)
-        become_allied_with(:cats, players)
+        player.players = players
+        cat_player.players = players
+
+        become_allied_with(:cats)
         from_location = clearings[:five]
         to_location = clearings[:one]
 
@@ -539,7 +550,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.hand << Root::Cards::Base.new(suit: :fox)
 
         # We pay outrage costs
-        expect { faction.boots_move(players) }
+        expect { faction.boots_move }
           .to change(faction, :hand_size)
           .by(-1)
           .and change { mouse_faction.supporters.count }
@@ -552,7 +563,8 @@ RSpec.describe Root::Factions::Racoon do
         # Move without allies, then move normally
         allow(player).to receive(:pick_option).and_return(1, 0)
         players = Root::Players::List.new(player, cat_player, mouse_player)
-        become_allied_with(:cats, players)
+        player.players = players
+        become_allied_with(:cats)
         from_location = clearings[:five]
 
         faction.place_meeple(from_location)
@@ -562,7 +574,7 @@ RSpec.describe Root::Factions::Racoon do
         faction.make_item(:boots)
         faction.hand << Root::Cards::Base.new(suit: :fox)
 
-        faction.boots_move(players)
+        faction.boots_move
         expect(from_location.meeples_of_type(:cats).count).to be(2)
         expect(from_location.meeples_of_type(:racoon).count).to be(0)
       end
@@ -610,10 +622,11 @@ RSpec.describe Root::Factions::Racoon do
       it 'can use allies from clearing in battle' do
         allow(player).to receive(:pick_option).and_return(0, 0)
         players = Root::Players::List.new(player, cat_player, bird_player)
+        player.players = players
         allow_any_instance_of(Root::Actions::Battle)
           .to receive(:dice_roll).and_return(3, 0)
 
-        become_allied_with(:cats, players)
+        become_allied_with(:cats)
         battle_cl = clearings[:five]
 
         faction.make_item(:sword)
@@ -624,7 +637,7 @@ RSpec.describe Root::Factions::Racoon do
         bird_faction.place_meeple(battle_cl)
         bird_faction.place_meeple(battle_cl)
 
-        expect { faction.battle(players) }
+        expect { faction.battle }
           .to change { battle_cl.meeples_of_type(:birds).count }
           .by(-3)
           .and change { battle_cl.meeples_of_type(:cats).count }
@@ -641,8 +654,9 @@ RSpec.describe Root::Factions::Racoon do
         cat_faction.place_meeple(battle_cl)
         bird_faction.place_meeple(battle_cl)
         players = Root::Players::List.new(player, cat_player, bird_player)
+        player.players = players
 
-        expect(faction.pick_ally_for_battle(players)).to be nil
+        expect(faction.pick_ally_for_battle).to be nil
       end
     end
   end
@@ -689,10 +703,11 @@ RSpec.describe Root::Factions::Racoon do
       allow(player).to receive(:pick_option).and_return(0)
       quests = Root::Factions::Racoons::Quests.new
       players = Root::Players::List.new(player)
+      player.players = players
       faction.place_meeple(clearings[:one])
       faction.craft_item(build_item(:boots))
 
-      faction.daylight(players, quests)
+      faction.daylight(quests)
 
       expect(faction.exhausted_items.map(&:item)).to eq([:boots])
     end
@@ -701,10 +716,11 @@ RSpec.describe Root::Factions::Racoon do
       allow(player).to receive(:pick_option).and_return(0, 3, 1)
       quests = Root::Factions::Racoons::Quests.new
       players = Root::Players::List.new(player)
+      player.players = players
       faction.place_meeple(clearings[:one])
       faction.craft_item(build_item(:boots))
 
-      faction.daylight(players, quests)
+      faction.daylight(quests)
 
       expect(faction.exhausted_items.map(&:item)).to eq([])
     end
@@ -732,8 +748,9 @@ RSpec.describe Root::Factions::Racoon do
       cat_faction.place_sawmill(battle_cl)
       cat_faction.place_workshop(battle_cl)
       players = Root::Players::List.new(player, cat_player)
+      player.players = players
 
-      expect { faction.strike(players) }
+      expect { faction.strike }
         .to change(faction, :victory_points).by(1)
       expect(battle_cl.buildings_of_type(:sawmill).count).to eq(0)
       expect(battle_cl.buildings_of_type(:workshop).count).to eq(1)
@@ -1114,7 +1131,8 @@ RSpec.describe Root::Factions::Racoon do
     it 'picks one faction, gives them a card matching clearing, takes item' do
       allow(player).to receive(:pick_option).and_return(0)
       players = Root::Players::List.new(player, cat_player)
-      faction.handle_relationships(players)
+      player.players = players
+      faction.handle_relationships
       our_location = clearings[:one]
 
       faction.place_meeple(our_location)
@@ -1125,7 +1143,7 @@ RSpec.describe Root::Factions::Racoon do
       faction.make_item(:torch)
       faction.hand << Root::Cards::Base.new(suit: :fox)
 
-      expect { faction.aid(players) }
+      expect { faction.aid }
         .to change(faction, :hand_size)
         .by(-1)
         .and change(cat_faction, :hand_size)
@@ -1147,7 +1165,8 @@ RSpec.describe Root::Factions::Racoon do
       it 'also gains 2 extra victory points' do
         allow(player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player)
-        become_allied_with(:cats, players)
+        player.players = players
+        become_allied_with(:cats)
         our_location = clearings[:one]
 
         faction.place_meeple(our_location)
@@ -1158,10 +1177,10 @@ RSpec.describe Root::Factions::Racoon do
         faction.hand << Root::Cards::Base.new(suit: :fox)
         faction.hand << Root::Cards::Base.new(suit: :fox)
 
-        expect { faction.aid(players) }
+        expect { faction.aid }
           .to change(faction, :victory_points)
           .by(2)
-        expect { faction.aid(players) }
+        expect { faction.aid }
           .to change(faction, :victory_points)
           .by(2)
       end
@@ -1174,13 +1193,14 @@ RSpec.describe Root::Factions::Racoon do
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(1, 0)
       players = Root::Players::List.new(player, cat_player)
-      faction.handle_relationships(players)
+      player.players = players
+      faction.handle_relationships
 
       faction.make_item(:sword)
       faction.place_meeple(clearings[:one])
       cat_faction.place_meeple(clearings[:one])
 
-      expect { faction.battle(players) }
+      expect { faction.battle }
         .to change(faction, :victory_points).by(0)
 
       expect(faction.relationships.hostile?(:cats)).to be true
@@ -1191,7 +1211,8 @@ RSpec.describe Root::Factions::Racoon do
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(1, 0)
       players = Root::Players::List.new(player, cat_player)
-      faction.handle_relationships(players)
+      player.players = players
+      faction.handle_relationships
 
       faction.make_item(:sword)
       faction.place_meeple(clearings[:one])
@@ -1205,7 +1226,8 @@ RSpec.describe Root::Factions::Racoon do
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(3, 0)
       players = Root::Players::List.new(player, cat_player)
-      faction.handle_relationships(players)
+      player.players = players
+      faction.handle_relationships
 
       faction.make_item(:sword)
       faction.make_item(:sword)
@@ -1216,7 +1238,7 @@ RSpec.describe Root::Factions::Racoon do
       cat_faction.place_meeple(clearings[:one])
 
       # 1 meeple makes hostile, 2 for sawmill, 1 for hostile on meeple
-      expect { faction.battle(players) }
+      expect { faction.battle }
         .to change(faction, :victory_points).by(3)
     end
 
@@ -1225,7 +1247,8 @@ RSpec.describe Root::Factions::Racoon do
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(3, 3)
       players = Root::Players::List.new(player, cat_player)
-      faction.handle_relationships(players)
+      cat_player.players = players
+      faction.handle_relationships
 
       faction.make_item(:sword)
       faction.make_item(:sword)
@@ -1235,7 +1258,7 @@ RSpec.describe Root::Factions::Racoon do
       cat_faction.place_meeple(clearings[:one])
       cat_faction.place_meeple(clearings[:one])
 
-      expect { cat_faction.battle(players) }
+      expect { cat_faction.battle }
         .to change(faction, :victory_points).by(0)
     end
   end
@@ -1250,13 +1273,14 @@ RSpec.describe Root::Factions::Racoon do
       faction.craft_item(build_item(:hammer))
 
       players = Root::Players::List.new(player, mouse_player)
+      mouse_player.players = players
 
       revolt_cl = clearings[:one]
 
       faction.place_meeple(revolt_cl)
       mouse_faction.place_sympathy(revolt_cl)
 
-      expect { mouse_faction.revolt_in_clearing(revolt_cl, players) }
+      expect { mouse_faction.revolt_in_clearing(revolt_cl) }
         .to change { faction.damaged_items.count }
         .by(3)
     end
@@ -1279,8 +1303,8 @@ RSpec.describe Root::Factions::Racoon do
     ]
   end
 
-  def become_allied_with(fac_sym, players)
-    faction.handle_relationships(players)
+  def become_allied_with(fac_sym)
+    faction.handle_relationships
     8.times { faction.relationships.aid_once(fac_sym) }
   end
 end

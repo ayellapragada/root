@@ -193,25 +193,25 @@ module Root
         end
       end
 
-      def take_turn(players:, **_)
+      def take_turn(**_)
         super
-        birdsong(players)
+        birdsong
         daylight
-        evening(players)
+        evening
       end
 
-      def birdsong(players)
-        revolt(players)
+      def birdsong
+        revolt
         spread_sympathy
       end
 
-      def revolt(players)
+      def revolt
         until revolt_options.empty?
           player.choose(:m_revolt, revolt_options, yield_anyway: true) do |cl|
             return false if cl == :none
 
             remove_supporters(2, cl.suit)
-            revolt_in_clearing(cl, players)
+            revolt_in_clearing(cl)
           end
         end
       end
@@ -231,8 +231,8 @@ module Root
         end
       end
 
-      def revolt_in_clearing(clearing, players)
-        do_big_damage(clearing, players)
+      def revolt_in_clearing(clearing)
+        do_big_damage(clearing)
         board
           .clearings_with(:sympathy)
           .count { |cl| cl.suit == clearing.suit }
@@ -384,12 +384,12 @@ module Root
         board.clearings_with(:sympathy).map(&:suit)
       end
 
-      def evening(players)
-        military_operations(players)
+      def evening
+        military_operations
         draw_cards
       end
 
-      def military_operations(players)
+      def military_operations
         @remaining_actions = officers.count
 
         until evening_options.empty? || @remaining_actions.zero?
@@ -401,9 +401,9 @@ module Root
           ) do |action|
             # :nocov:
             case action
-            when :move then with_action { make_move(players) }
+            when :move then with_action { make_move }
             when :recruit then with_action { recruit }
-            when :battle then with_action { battle(players) }
+            when :battle then with_action { battle }
             when :organize then with_action { organize }
             when :none then @remaining_actions = 0
             end

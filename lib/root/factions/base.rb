@@ -73,6 +73,10 @@ module Root
         player.deck
       end
 
+      def players
+        player.players
+      end
+
       def victory_points=(value)
         @victory_points = value
         return if @victory_points < 30
@@ -107,7 +111,7 @@ module Root
         self.class::SETUP_PRIORITY
       end
 
-      def take_turn(players:, quests: nil)
+      def take_turn(quests: nil)
         @crafted_suits = []
       end
 
@@ -232,13 +236,13 @@ module Root
         !craftable_items.empty?
       end
 
-      def make_move(players, required: false)
+      def make_move(required: false)
         player.choose(
           :f_move_from_options,
           move_options,
           required: required
         ) do |cl|
-          move(cl, players)
+          move(cl)
         end
       end
 
@@ -275,7 +279,7 @@ module Root
         !move_options.empty?
       end
 
-      def move(clearing, players)
+      def move(clearing)
         opts = clearing_move_options(clearing)
 
         player.choose(:f_move_to_options, opts) do |where_to|
@@ -283,13 +287,13 @@ module Root
           how_many_opts = [*1.upto(max_choice)]
 
           player.choose(:f_move_number, how_many_opts) do |how_many|
-            move_meeples(clearing, where_to, how_many, players)
+            move_meeples(clearing, where_to, how_many)
           end
         end
       end
 
-      def move_meeples(from, to, num, players)
-        Actions::Move.new(from, to, num, self, players).()
+      def move_meeples(from, to, num)
+        Actions::Move.new(from, to, num, self).()
       end
 
       def can_battle?
@@ -306,13 +310,13 @@ module Root
         end
       end
 
-      def battle(players)
+      def battle
         player.choose(:f_battle_options, battle_options) do |cl|
-          battle_in_clearing(cl, players)
+          battle_in_clearing(cl)
         end
       end
 
-      def battle_in_clearing(clearing, players)
+      def battle_in_clearing(clearing)
         opts = clearing.other_attackable_factions(faction_symbol)
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
@@ -409,7 +413,7 @@ module Root
         piece
       end
 
-      def do_big_damage(clearing, players)
+      def do_big_damage(clearing)
         others = clearing.other_attackable_factions(faction_symbol)
         pieces = []
         others.each do |sym|

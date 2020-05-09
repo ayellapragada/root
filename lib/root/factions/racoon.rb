@@ -97,11 +97,11 @@ module Root
           .join(', ')
       end
 
-      def setup(players:, characters:)
+      def setup(characters:)
         handle_character_select(characters)
         handle_forest_select
         handle_ruins
-        handle_relationships(players)
+        handle_relationships
       end
 
       def damage_item(type)
@@ -143,7 +143,7 @@ module Root
         end
       end
 
-      def handle_relationships(players)
+      def handle_relationships
         others = players.except_player(player)
         @relationships = Racoons::Relationships.new(others)
       end
@@ -180,16 +180,16 @@ module Root
           .positive?
       end
 
-      def take_turn(players:, quests:)
+      def take_turn(quests:)
         super
-        birdsong(players)
-        daylight(players, quests)
+        birdsong
+        daylight(quests)
         evening
       end
 
-      def birdsong(players)
+      def birdsong
         refresh_items
-        slip(players)
+        slip
       end
 
       def refresh_items
@@ -227,15 +227,15 @@ module Root
         clearing.other_attackable_factions(faction_symbol)
       end
 
-      def racoon_move(players, options, use_extra_boot: false)
+      def racoon_move(options, use_extra_boot: false)
         player.choose(:f_move_to_options, options) do |where_to|
           exhaust_extra_boot_if_needed(where_to) if use_extra_boot
-          move_meeples(current_location, where_to, 1, players)
+          move_meeples(current_location, where_to, 1)
         end
       end
 
       # HACKY OH WELL LOL
-      def move_with_allies(players, ally)
+      def move_with_allies(ally)
         other_fac = players.fetch_player(ally).faction
         opts = other_fac.clearing_move_options(current_location)
 
@@ -246,10 +246,10 @@ module Root
 
           player.choose(:f_move_number, how_many_opts) do |num|
             Actions::Move
-              .new(current_location, to, num, other_fac, players, lead_by: self)
+              .new(current_location, to, num, other_fac, lead_by: self)
               .()
             exhaust_extra_boot_if_needed(to)
-            move_meeples(current_location, to, 1, players)
+            move_meeples(current_location, to, 1)
           end
         end
       end
@@ -258,26 +258,26 @@ module Root
         exhaust_item(:boots) if location_hostile?(clearing)
       end
 
-      def allied_move(players)
+      def allied_move
         opts = available_allies(current_location)
         player.choose(:r_allied_move, opts, yield_anyway: true) do |ally|
           if ally == :none
-            racoon_move(players, move_options, use_extra_boot: true)
+            racoon_move(move_options, use_extra_boot: true)
           else
-            move_with_allies(players, ally)
+            move_with_allies(ally)
           end
         end
       end
 
-      def slip(players)
-        racoon_move(players, slip_options)
+      def slip
+        racoon_move(slip_options)
       end
 
-      def boots_move(players)
+      def boots_move
         if location_allied?(current_location)
-          allied_move(players)
+          allied_move
         else
-          racoon_move(players, move_options, use_extra_boot: true)
+          racoon_move(move_options, use_extra_boot: true)
         end
       end
 
@@ -293,30 +293,30 @@ module Root
 
       SIMPLE_SPECIALS = %i[steal day_labor].freeze
 
-      def daylight(players, quests)
+      def daylight(quests)
         relationships.reset_turn_counters
 
-        until daylight_options(active_quests: quests.active_quests, players: players).empty?
+        until daylight_options(active_quests: quests.active_quests).empty?
           player.choose(
             :f_pick_action,
-            daylight_options(active_quests: quests.active_quests, players: players),
+            daylight_options(active_quests: quests.active_quests),
             yield_anyway: true,
             info: { actions: '' }
           ) do |action|
             # :nocov:
             case action
-            when :move then with_item(:boots) { boots_move(players) }
-            when :battle then with_item(:sword) { battle(players) }
+            when :move then with_item(:boots) { boots_move }
+            when :battle then with_item(:sword) { battle }
             when :explore then with_item(:torch) { explore }
-            when :strike then with_item(:crossbow) { strike(players) }
+            when :strike then with_item(:crossbow) { strike }
             when :repair then with_item(:hammer) { repair }
             when :craft then hammer_craft
-            when :aid then aid(players)
+            when :aid then aid
             when :quest then quest(quests)
             when ->(n) { SIMPLE_SPECIALS.include?(n) }
-              with_item(:torch) { use_special(players) }
+              with_item(:torch) { use_special }
             when :hideout
-              with_item(:torch) { use_special(players) }
+              with_item(:torch) { use_special }
               return false
             when :none then return false
             end
@@ -331,7 +331,7 @@ module Root
       end
 
       # :nocov:
-      def daylight_options(active_quests: [], players: [])
+      def daylight_options(active_quests: [])
         [].tap do |options|
           options << :move if can_move?
           options << :battle if can_racoon_battle?
@@ -341,7 +341,7 @@ module Root
           options << :strike if can_strike?
           options << :repair if can_repair?
           options << :craft if can_craft?
-          options << special_name if can_special?(players)
+          options << special_name if can_special?
         end
       end
       # :nocov:
@@ -350,12 +350,12 @@ module Root
         character.class::POWER
       end
 
-      def can_special?(players)
-        character&.can_special?(players)
+      def can_special?
+        character&.can_special?
       end
 
-      def use_special(players)
-        character.special(players)
+      def use_special
+        character.special
       end
 
       # Still a WIP for Hostile, but relationships shall come later.
@@ -381,8 +381,8 @@ module Root
         can_battle? && available_items_include?(:sword)
       end
 
-      def battle(players)
-        ally = pick_ally_for_battle(players)
+      def battle
+        ally = pick_ally_for_battle
         opts = other_factions_here - [ally&.faction_symbol]
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
@@ -392,7 +392,7 @@ module Root
         end
       end
 
-      def pick_ally_for_battle(players)
+      def pick_ally_for_battle
         return if other_factions_here(current_location).count < 2
 
         opts = available_allies(current_location)
@@ -423,7 +423,7 @@ module Root
         can_battle? && available_items_include?(:crossbow)
       end
 
-      def strike(players)
+      def strike
         opts = other_factions_here
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
@@ -511,7 +511,7 @@ module Root
         !quest_options(active_quests).empty?
       end
 
-      def aid(players)
+      def aid
         player.choose(:r_aid_faction, aid_options) do |fac_sym|
           other_player = players.fetch_player(fac_sym)
           other_faction = other_player.faction

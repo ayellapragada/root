@@ -53,10 +53,7 @@ module Root
     def setup_by_priority
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card }
-        player.setup(
-          players: players,
-          characters: characters
-        )
+        player.setup(characters: characters)
       end
     end
 
@@ -78,10 +75,7 @@ module Root
     end
 
     def take_turn(player)
-      player.take_turn(
-        players: players,
-        quests: quests
-      )
+      player.take_turn(quests: quests)
     end
 
     # Simple way to check game state

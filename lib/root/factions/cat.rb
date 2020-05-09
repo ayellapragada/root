@@ -108,11 +108,11 @@ module Root
         board.clearings_other_than(clearing).each { |cl| place_meeple(cl) }
       end
 
-      def take_turn(players:, **_)
+      def take_turn(**_)
         super
         @recruited = false
         birdsong
-        daylight(players)
+        daylight
         evening
       end
 
@@ -140,7 +140,7 @@ module Root
         end
       end
 
-      def daylight(players)
+      def daylight
         craft_items
         @remaining_actions = 3
 
@@ -153,8 +153,8 @@ module Root
           ) do |action|
             # :nocov:
             case action
-            when :battle then with_action { battle(players) }
-            when :march then with_action { march(players) }
+            when :battle then with_action { battle }
+            when :march then with_action { march }
             when :build then with_action { build }
             when :recruit then with_action { recruit }
             when :overwork then with_action { overwork }
@@ -248,10 +248,10 @@ module Root
         end
       end
 
-      def march(players)
-        if make_move(players)
-          make_move(players, required: true)
-        end
+      # If you make the first movement, you need to make the second
+      # Else the first can be cancelled
+      def march
+        make_move(required: true) if make_move
       end
 
       def build_options(*)

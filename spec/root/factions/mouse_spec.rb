@@ -83,13 +83,14 @@ RSpec.describe Root::Factions::Mouse do
         it 'must give card' do
           allow(cat_player).to receive(:pick_option).and_return(0)
           players = Root::Players::List.new(player, cat_player)
+          cat_player.players = players
 
           clearings = player.board.clearings
           cat_faction.hand << Root::Cards::Base.new(suit: :fox)
           cat_faction.place_meeple(clearings[:five])
           faction.place_sympathy(clearings[:one])
 
-          expect { cat_faction.move(clearings[:five], players) }
+          expect { cat_faction.move(clearings[:five]) }
             .to change(faction.supporters, :count)
             .by(1)
             .and change(cat_faction, :hand_size)
@@ -101,12 +102,13 @@ RSpec.describe Root::Factions::Mouse do
         it 'lets faction draw to supporters' do
           allow(cat_player).to receive(:pick_option).and_return(0)
           players = Root::Players::List.new(player, cat_player)
+          cat_player.players = players
 
           clearings = player.board.clearings
           cat_faction.place_meeple(clearings[:five])
           faction.place_sympathy(clearings[:one])
 
-          expect { cat_faction.move(clearings[:five], players) }
+          expect { cat_faction.move(clearings[:five]) }
             .to change(faction.supporters, :count)
             .by(1)
             .and change(faction.deck, :size)
@@ -120,6 +122,8 @@ RSpec.describe Root::Factions::Mouse do
         allow(player).to receive(:pick_option).and_return(0)
         allow(cat_player).to receive(:pick_option).and_return(0)
         players = Root::Players::List.new(player, cat_player)
+        player.players = players
+        cat_player.players = players
 
         clearings = player.board.clearings
         cat_faction.hand << Root::Cards::Base.new(suit: :fox)
@@ -128,9 +132,9 @@ RSpec.describe Root::Factions::Mouse do
         faction.place_meeple(clearings[:five])
 
         # This does nothing, just testing outrage doesn't trigger on self
-        faction.move(clearings[:five], players)
+        faction.move(clearings[:five])
 
-        expect { cat_faction.move(clearings[:five], players) }
+        expect { cat_faction.move(clearings[:five]) }
           .to change(faction.supporters, :count)
           .by(0)
           .and change(cat_faction, :hand_size)
@@ -251,6 +255,7 @@ RSpec.describe Root::Factions::Mouse do
     it 'returns all other faction pieces back to owner' do
       allow(player).to receive(:pick_option).and_return(0)
       players = Root::Players::List.new(player, cat_player, bird_player)
+      player.players = players
 
       cat_faction.place_wood(clearings[:one])
       bird_faction.place_roost(clearings[:one])
@@ -263,7 +268,7 @@ RSpec.describe Root::Factions::Mouse do
       faction.place_sympathy(clearings[:one])
       faction.place_meeple(clearings[:one])
 
-      expect { faction.revolt(players) }
+      expect { faction.revolt }
         .to change { faction.victory_points }
         .by(2)
         .and change { faction.officers.count }
@@ -285,7 +290,6 @@ RSpec.describe Root::Factions::Mouse do
 
     it 'does not have to revolt' do
       allow(player).to receive(:pick_option).and_return(1)
-      players = Root::Players::List.new(player, cat_player)
       clearings = player.board.clearings
 
       cat_faction.place_meeple(clearings[:one])
@@ -294,7 +298,7 @@ RSpec.describe Root::Factions::Mouse do
       faction.supporters << Root::Cards::Base.new(suit: :bird)
       faction.place_sympathy(clearings[:one])
 
-      expect { faction.revolt(players) }.not_to change { clearings[:one] }
+      expect { faction.revolt }.not_to change { clearings[:one] }
     end
 
     context 'when no more meeples' do
@@ -302,12 +306,11 @@ RSpec.describe Root::Factions::Mouse do
         allow(player).to receive(:pick_option).and_return(0)
         10.times { faction.place_meeple(clearings[:one]) }
         faction.place_sympathy(clearings[:two])
-        players = Root::Players::List.new(player)
 
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
         faction.supporters << Root::Cards::Base.new(suit: :mouse)
 
-        expect { faction.revolt(players) }
+        expect { faction.revolt }
           .to change { faction.officers.count }
           .by(0)
       end
@@ -547,12 +550,11 @@ RSpec.describe Root::Factions::Mouse do
       # Pick Recruit as an option
       allow(player).to receive(:pick_option).and_return(0)
       clearings = player.board.clearings
-      players = Root::Players::List.new(player)
 
       faction.promote_officer
       faction.place_base(clearings[:one])
 
-      expect { faction.military_operations(players) }
+      expect { faction.military_operations }
         .to change { clearings[:one].meeples_of_type(:mice).count }.by(1)
     end
   end

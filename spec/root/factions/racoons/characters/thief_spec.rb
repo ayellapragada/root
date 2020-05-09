@@ -22,10 +22,11 @@ RSpec.describe Root::Factions::Racoons::Characters::Thief do
       cat_faction.place_meeple(clearings[:one])
       bird_faction.place_meeple(clearings[:one])
       players = Root::Players::List.new(player, cat_player, bird_player)
+      player.players = players
 
       cat_faction.hand << Root::Cards::Base.new(suit: :fox)
       cat_faction.hand << Root::Cards::Base.new(suit: :mouse)
-      expect(char.special_options(players)).to eq([:cats])
+      expect(char.special_options).to eq([:cats])
     end
 
     context 'without any cards' do
@@ -34,9 +35,10 @@ RSpec.describe Root::Factions::Racoons::Characters::Thief do
         cat_faction.place_meeple(clearings[:one])
         bird_faction.place_meeple(clearings[:one])
         players = Root::Players::List.new(player, cat_player, bird_player)
+        player.players = players
 
-        expect(faction.can_special?(players)).to be false
-        expect(char.special_options(players)).to be_empty
+        expect(faction.can_special?).to be false
+        expect(char.special_options).to be_empty
       end
     end
   end
@@ -49,11 +51,12 @@ RSpec.describe Root::Factions::Racoons::Characters::Thief do
       cat_faction.place_meeple(clearings[:one])
       bird_faction.place_meeple(clearings[:one])
       players = Root::Players::List.new(player, cat_player, bird_player)
+      player.players = players
 
       cat_faction.hand << Root::Cards::Base.new(suit: :fox)
       cat_faction.hand << Root::Cards::Base.new(suit: :mouse)
 
-      expect { faction.use_special(players) }
+      expect { faction.use_special }
         .to change(faction, :hand_size)
         .by(1)
         .and change(cat_faction, :hand_size)

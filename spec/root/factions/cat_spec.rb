@@ -66,7 +66,7 @@ RSpec.describe Root::Factions::Cat do
       allow(player).to receive(:pick_option).and_return(0)
       game.setup
 
-      expect { player.faction.take_turn(players: game.players) }
+      expect { player.faction.take_turn }
         .to change(player, :inspect)
     end
   end
@@ -137,6 +137,7 @@ RSpec.describe Root::Factions::Cat do
   describe '#battle' do
     it 'removes units after battle' do
       players = Root::Players::List.new(player, bird_player)
+      player.players = players
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.place_meeple(clearings[:five])
@@ -144,7 +145,7 @@ RSpec.describe Root::Factions::Cat do
 
       # We're using a defenseless building to avoid needing mocks
       # removing a cardboard piece is one VP
-      expect { faction.battle(players) }
+      expect { faction.battle }
         .to change(faction, :victory_points).by(1)
       expect(clearings[:five].buildings.count).to eq(0)
     end
@@ -217,13 +218,14 @@ RSpec.describe Root::Factions::Cat do
   describe '#move' do
     it 'faction moves any number of units from one clearing to another' do
       players = Root::Players::List.new(player, bird_player)
+      player.players = players
 
       clearing = player.board.clearings[:one]
       clearing.place_meeple(faction.meeples[0])
       clearing.place_meeple(faction.meeples[1])
       allow(player).to receive(:pick_option).and_return(0)
 
-      faction.move(clearing, players)
+      faction.move(clearing)
 
       # Okay, so this is not ideal, but the idea is that option 0 will be:
       # 1. move (1) meeple
@@ -235,7 +237,6 @@ RSpec.describe Root::Factions::Cat do
 
   describe '#march' do
     it 'allows faction to move twice' do
-      players = Root::Players::List.new(player, bird_player)
       clearing = player.board.clearings[:one]
       clearing.place_meeple(faction.meeples[0])
       # BIG OOF. Basically just
@@ -247,18 +248,17 @@ RSpec.describe Root::Factions::Cat do
       # 6. Move 1 unit
       allow(player).to receive(:pick_option).and_return(0, 0, 0, 0, 1, 0)
 
-      faction.march(players)
+      faction.march
       expect(player.board.clearings[:one].meeples.count).to be(0)
       expect(player.board.clearings[:two].meeples.count).to be(1)
     end
 
     it 'does not have to move' do
       allow(player).to receive(:pick_option).and_return(1)
-      players = Root::Players::List.new(player, bird_player)
 
       faction.place_meeple(clearings[:one])
 
-      faction.march(players)
+      faction.march
       expect(player.board.clearings[:one].meeples.count).to be(1)
     end
   end
@@ -508,7 +508,7 @@ RSpec.describe Root::Factions::Cat do
       allow(player).to receive(:pick_option).and_return(0, 1, 2)
       players = Root::Players::List.new(player)
 
-      faction.daylight(players)
+      faction.daylight
 
       expect(faction.remaining_actions).to eq(0)
     end

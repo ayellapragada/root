@@ -16,6 +16,8 @@ RSpec.describe Root::Actions::Battle do
       allow(player).to receive(:pick_option).and_return(0)
       allow(bird_player).to receive(:pick_option).and_return(0)
 
+      player.players = players
+
       clearings[:five].place_meeple(faction.meeples.pop)
       clearings[:five].place_meeple(faction.meeples.pop)
       clearings[:five].place_meeple(bird_faction.meeples.pop)
@@ -24,7 +26,7 @@ RSpec.describe Root::Actions::Battle do
       allow_any_instance_of(Root::Actions::Battle).
         to receive(:dice_roll).and_return(2, 1)
 
-      faction.battle(players)
+      faction.battle
 
       expect(clearings[:five].meeples_of_type(:cats).count).to eq(1)
       expect(clearings[:five].meeples_of_type(:birds).count).to eq(0)
@@ -33,13 +35,14 @@ RSpec.describe Root::Actions::Battle do
     context 'when defender has no meeples' do
       it 'gives an extra hit to the attackers' do
         players = Root::Players::List.new(player, mouse_player)
+        player.players = players
 
         allow(player).to receive(:pick_option).and_return(0)
 
         clearings[:five].place_meeple(faction.meeples.pop)
         clearings[:five].place_token(mouse_faction.sympathy.pop)
 
-        expect { faction.battle(players) }
+        expect { faction.battle }
           .to change(faction, :victory_points).by(1)
         expect(clearings[:five].buildings.count).to eq(0)
       end
