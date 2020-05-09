@@ -99,6 +99,10 @@ module Root
         (meeples + buildings + tokens).select(&:attackable?)
       end
 
+      def all_pieces_of_type(faction)
+        all_pieces.select { |piece| piece.faction == faction }
+      end
+
       def all_other_pieces(faction)
         all_pieces.reject { |piece| piece.faction == faction }
       end

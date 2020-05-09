@@ -232,15 +232,7 @@ module Root
       end
 
       def revolt_in_clearing(clearing, players)
-        pieces = clearing.all_other_pieces(faction_symbol)
-        pieces.each do |piece|
-          type = piece.piece_type
-          plural_form = type.pluralize
-          other_faction = players.fetch_player(piece.faction).faction
-          other_faction.send(plural_form) << piece
-          clearing.send(plural_form).delete(piece)
-          self.victory_points += 1 if %i[building token].include?(type)
-        end
+        do_big_damage(clearing, players)
         board
           .clearings_with(:sympathy)
           .count { |cl| cl.suit == clearing.suit }

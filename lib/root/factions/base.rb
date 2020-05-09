@@ -416,6 +416,29 @@ module Root
         piece
       end
 
+      def do_big_damage(clearing, players)
+        others = clearing.other_attackable_factions(faction_symbol)
+        pieces = []
+        others.each do |sym|
+          pieces << players.fetch_player(sym).faction.take_big_damage(clearing)
+        end
+
+        pieces.flatten.each do |piece|
+          type = piece.piece_type
+          self.victory_points += 1 if %i[building token].include?(type)
+        end
+      end
+
+      def take_big_damage(clearing)
+        clearing.all_pieces_of_type(faction_symbol).map do |piece|
+          type = piece.piece_type
+          plural_form = type.pluralize
+          send(plural_form) << piece
+          clearing.send(plural_form).delete(piece)
+          piece
+        end
+      end
+
       def pre_move(move_action); end
 
       def pre_battle(battle); end
