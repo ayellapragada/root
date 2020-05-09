@@ -203,12 +203,7 @@ module Root
       end
 
       def craft_item(choice)
-        board.items.delete_first(choice.item)
-        deck.discard_card(choice)
-        hand.delete(choice)
-        self.victory_points += handle_item_vp(choice)
-        make_item(choice.item)
-        player.add_to_history(:f_item_select, item: choice.item, vp: choice.vp)
+        choice.faction_craft(self)
       end
 
       def make_item(type)
@@ -229,9 +224,7 @@ module Root
 
       def craftable_cards_in_hand(suits)
         hand.select do |card|
-          card.craftable? &&
-            card.craft.delete_elements_in(suits).empty? &&
-            board.items.include?(card.item)
+          card.craftable?(board) && card.craft.delete_elements_in(suits).empty?
         end
       end
 

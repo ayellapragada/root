@@ -26,6 +26,18 @@ module Root
       def body
         "#{item.capitalize}, +#{vp} VPs"
       end
+
+      def faction_craft(fac)
+        fac.board.items.delete_first(item)
+        fac.discard_card(self)
+        fac.victory_points += fac.handle_item_vp(self)
+        fac.make_item(item)
+        fac.player.add_to_history(:f_item_select, item: item, vp: vp)
+      end
+
+      def craftable?(board)
+        board.items.include?(item)
+      end
     end
   end
 end

@@ -21,8 +21,8 @@ module Root
         []
       end
 
-      def craftable?
-        !craft.empty?
+      def craftable?(*)
+        false
       end
 
       def bird?
