@@ -117,7 +117,7 @@ module Root
         ]
       end
 
-      def setup(**_)
+      def setup
         draw_to_supporters(3)
       end
 
@@ -193,7 +193,7 @@ module Root
         end
       end
 
-      def take_turn(**_)
+      def take_turn
         super
         birdsong
         daylight

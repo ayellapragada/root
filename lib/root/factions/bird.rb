@@ -74,7 +74,7 @@ module Root
       end
 
 
-      def setup(*)
+      def setup
         setup_roost_in_corner
         change_current_leader
         change_viziers_with_leader
@@ -128,7 +128,7 @@ module Root
         end
       end
 
-      def take_turn(**_)
+      def take_turn
         super
         birdsong
         daylight

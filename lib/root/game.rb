@@ -7,7 +7,7 @@ module Root
       new(
         players: Players::List.default_player_list(with_computers, with_humans),
         board: Boards::Base.new,
-        deck: Decks::Starter.new
+        decks: Decks::List.new(shared: Decks::Starter.new)
       )
     end
 
@@ -16,7 +16,7 @@ module Root
       new(
         players: Players::List.for_faction_for_play(faction),
         board: Boards::Base.new,
-        deck: Decks::Starter.new
+        decks: Decks::List.new(shared: Decks::Starter.new)
       )
     end
 
@@ -28,15 +28,12 @@ module Root
     end
     # :nocov:
 
-    attr_accessor :players, :board, :deck, :quests, :characters,
-                  :print_display, :history
+    attr_accessor :players, :board, :decks, :print_display, :history
 
-    def initialize(players:, board:, deck:)
+    def initialize(players:, board:, decks:)
       @players = players
       @board = board
-      @deck = deck
-      @quests = Factions::Racoons::Quests.new
-      @characters = Factions::Racoons::CharacterDeck.new
+      @decks = decks
       @players.each { |p| p.game = self }
       @print_display = false
       @history = []
@@ -46,14 +43,18 @@ module Root
       setup_by_priority
     end
 
+    def deck
+      decks.shared
+    end
+
     def active_quests
-      quests.active_quests
+      decks.quests.active_quests
     end
 
     def setup_by_priority
       players.order_by_setup_priority.each do |player|
         3.times { player.draw_card }
-        player.setup(characters: characters)
+        player.setup
       end
     end
 
@@ -75,7 +76,7 @@ module Root
     end
 
     def take_turn(player)
-      player.take_turn(quests: quests)
+      player.take_turn
     end
 
     # Simple way to check game state

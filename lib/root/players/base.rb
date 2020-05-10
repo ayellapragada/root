@@ -35,8 +35,12 @@ module Root
         @board ||= game&.board || Boards::Base.new
       end
 
+      def decks
+        @decks ||= game&.decks || Decks::List.new
+      end
+
       def deck
-        @deck ||= game&.deck || Decks::Starter.new
+        @deck ||= decks.shared
       end
 
       def players
@@ -59,12 +63,12 @@ module Root
         faction.faction_symbol
       end
 
-      def setup(characters: nil)
-        faction.setup(characters: characters)
+      def setup
+        faction.setup
       end
 
-      def take_turn(quests: nil)
-        faction.take_turn(quests: quests)
+      def take_turn
+        faction.take_turn
       end
 
       def inspect

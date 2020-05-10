@@ -33,14 +33,13 @@ RSpec.describe Root::Factions::Racoon do
   describe '#setup' do
     it 'selects a character and gets starting items' do
       game = Root::Game.default_game
-      characters = game.characters
       players = game.players
       player = players.fetch_player(:racoon)
       # This only needs to be changed to pick the thief in the future
       # IF / WHEN new characters get added
       allow(player).to receive(:pick_option).and_return(1)
 
-      player.setup(characters: characters)
+      player.setup
       faction = player.faction
 
       expect(faction.character.name).to eq('Thief')
@@ -50,24 +49,22 @@ RSpec.describe Root::Factions::Racoon do
     it 'selects a forest clearing to start in' do
       game = Root::Game.default_game
       board = game.board
-      characters = game.characters
       players = game.players
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(characters: characters)
+      player.setup
 
       expect(board.forests[:a].meeples_of_type(:racoon).count == 1).to be true
     end
 
     it 'sets up the relationships with other factions to neutral' do
       game = Root::Game.default_game
-      characters = game.characters
       players = game.players
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(characters: characters)
+      player.setup
 
       faction = player.faction
       expect(faction.relationships.all_neutral?).to be true
@@ -76,12 +73,11 @@ RSpec.describe Root::Factions::Racoon do
     it 'sets up 4 ruins with item cards' do
       game = Root::Game.default_game
       board = game.board
-      characters = game.characters
       players = game.players
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(0)
 
-      player.setup(characters: characters)
+      player.setup
 
       expect(board.ruins.all?(&:contains_item?)).to be true
     end
@@ -90,12 +86,11 @@ RSpec.describe Root::Factions::Racoon do
   describe '#special_info' do
     it 'returns special stats, relationships, and items' do
       game = Root::Game.default_game
-      characters = game.characters
       players = game.players
       player = players.fetch_player(:racoon)
       allow(player).to receive(:pick_option).and_return(1)
 
-      player.setup(characters: characters)
+      player.setup
       faction = player.faction
       expect(faction.special_info(true)).to eq(
         {
@@ -701,26 +696,24 @@ RSpec.describe Root::Factions::Racoon do
   describe '#with_item' do
     it 'exhausts an item if used' do
       allow(player).to receive(:pick_option).and_return(0)
-      quests = Root::Factions::Racoons::Quests.new
       players = Root::Players::List.new(player)
       player.players = players
       faction.place_meeple(clearings[:one])
       faction.craft_item(build_item(:boots))
 
-      faction.daylight(quests)
+      faction.daylight
 
       expect(faction.exhausted_items.map(&:item)).to eq([:boots])
     end
 
     it 'does not exhaust the item if action canceled' do
       allow(player).to receive(:pick_option).and_return(0, 3, 1)
-      quests = Root::Factions::Racoons::Quests.new
       players = Root::Players::List.new(player)
       player.players = players
       faction.place_meeple(clearings[:one])
       faction.craft_item(build_item(:boots))
 
-      faction.daylight(quests)
+      faction.daylight
 
       expect(faction.exhausted_items.map(&:item)).to eq([])
     end
@@ -853,46 +846,52 @@ RSpec.describe Root::Factions::Racoon do
   describe '#quest_options?' do
     context 'with matching items in the same clearing' do
       it 'allows to quest' do
-        active_quests = build_active_quests
+        quests = build_quests
+        faction.quests = quests
+
         faction.make_item(:sword)
         faction.make_item(:sword)
         faction.place_meeple(clearings[:one])
-        expect(faction.quest_options(active_quests)).to eq([active_quests[0]])
-        expect(faction.can_quest?(active_quests)).to be true
+        expect(faction.quest_options).to eq([quests.active_quests[0]])
+        expect(faction.can_quest?).to be true
       end
     end
 
     context 'when not in the right clearing and has matching items' do
       it 'does not allowing questing' do
-        active_quests = build_active_quests
+        faction.quests = build_quests
+
         faction.make_item(:sword)
         faction.make_item(:sword)
         faction.place_meeple(clearings[:two])
-        expect(faction.can_quest?(active_quests)).to be false
+
+        expect(faction.can_quest?).to be false
       end
     end
 
     context 'when in right clearing but exhausted items' do
       it 'does not allowing questing' do
-        active_quests = build_active_quests
+        faction.quests = build_quests
+
         faction.make_item(:sword)
         faction.make_item(:sword)
         faction.exhaust_item(:sword)
 
         faction.place_meeple(clearings[:one])
-        expect(faction.can_quest?(active_quests)).to be false
+        expect(faction.can_quest?).to be false
       end
     end
 
     context 'when in right clearing but damaged items' do
       it 'does not allowing questing' do
-        active_quests = build_active_quests
+        faction.quests = build_quests
+
         faction.make_item(:sword)
         faction.make_item(:sword)
         faction.damage_item(:sword)
 
         faction.place_meeple(clearings[:one])
-        expect(faction.can_quest?(active_quests)).to be false
+        expect(faction.can_quest?).to be false
       end
     end
   end
@@ -900,14 +899,14 @@ RSpec.describe Root::Factions::Racoon do
   describe '#quest' do
     it 'exhausts item, gets reward, adds to completed_quests, gets new quest' do
       allow(player).to receive(:pick_option).and_return(0)
+      quests = build_quests
+      faction.quests = quests
 
       faction.place_meeple(clearings[:one])
       faction.make_item(:sword)
       faction.make_item(:sword)
 
-      quests = build_quests
-
-      expect { faction.quest(quests) }
+      expect { faction.quest }
         .to change { quests.deck.count }
         .by(-1)
         .and change { faction.completed_quests_of(:fox).count }
@@ -1291,7 +1290,7 @@ RSpec.describe Root::Factions::Racoon do
   end
 
   def build_quests
-    Root::Factions::Racoons::Quests.new(build_active_quests)
+    Root::Factions::Racoons::Quests.new(active_quests: build_active_quests)
   end
 
   def build_active_quests

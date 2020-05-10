@@ -97,8 +97,8 @@ module Root
           .join(', ')
       end
 
-      def setup(characters:)
-        handle_character_select(characters)
+      def setup
+        handle_character_select
         handle_forest_select
         handle_ruins
         handle_relationships
@@ -114,7 +114,11 @@ module Root
         piece.exhaust
       end
 
-      def handle_character_select(characters)
+      def characters
+        player.decks.characters
+      end
+
+      def handle_character_select
         player.choose(:r_char_sel, characters.deck, required: true) do |char|
           characters.remove_from_deck(char)
           char.class::STARTING_ITEMS.each { |item| make_item(item) }
@@ -180,10 +184,10 @@ module Root
           .positive?
       end
 
-      def take_turn(quests:)
+      def take_turn
         super
         birdsong
-        daylight(quests)
+        daylight
         evening
       end
 
@@ -293,7 +297,7 @@ module Root
 
       SIMPLE_SPECIALS = %i[steal day_labor].freeze
 
-      def daylight(quests)
+      def daylight
         relationships.reset_turn_counters
 
         until daylight_options(active_quests: quests.active_quests).empty?
@@ -312,7 +316,7 @@ module Root
             when :repair then with_item(:hammer) { repair }
             when :craft then hammer_craft
             when :aid then aid
-            when :quest then quest(quests)
+            when :quest then quest
             when ->(n) { SIMPLE_SPECIALS.include?(n) }
               with_item(:torch) { use_special }
             when :hideout
@@ -337,7 +341,7 @@ module Root
           options << :battle if can_racoon_battle?
           options << :explore if can_explore?
           options << :aid if can_aid?
-          options << :quest if can_quest?(active_quests)
+          options << :quest if can_quest?
           options << :strike if can_strike?
           options << :repair if can_repair?
           options << :craft if can_craft?
@@ -453,8 +457,20 @@ module Root
         )
       end
 
-      def quest(quests)
-        player.choose(:r_quest, quest_options(quests.active_quests)) do |quest|
+      def quests
+        player.decks.quests
+      end
+
+      def quests=(new_deck)
+        player.decks.quests = new_deck
+      end
+
+      def active_quests
+        quests.active_quests
+      end
+
+      def quest
+        player.choose(:r_quest, quest_options) do |quest|
           pick_reward(quest) do
             quest.items.each { |type| exhaust_item(type) }
             quests.draw_new_card
@@ -500,15 +516,15 @@ module Root
         end
       end
 
-      def quest_options(active_quests)
+      def quest_options
         active_quests.select do |card|
           card.items.delete_elements_in(available_items.map(&:item)).empty? &&
             card.suit == current_location.suit
         end
       end
 
-      def can_quest?(active_quests)
-        !quest_options(active_quests).empty?
+      def can_quest?
+        !quest_options.empty?
       end
 
       def aid

@@ -5,12 +5,12 @@ RSpec.describe Root::Game do
     it 'takes players, board, and deck' do
       players = Root::Players::List.default_player_list
       board = Root::Boards::Base.new
-      deck = Root::Decks::Starter.new
+      deck = Root::Decks::List.new
 
       game = Root::Game.new(
         players: players,
         board: board,
-        deck: deck
+        decks: deck
       )
 
       expect(game.players.current_player.name).to be('Sneaky')
@@ -53,7 +53,7 @@ RSpec.describe Root::Game do
     it 'all players take their turn' do
       game = Root::Game.default_game(with_computers: true)
       allow_any_instance_of(Root::Players::Computer)
-        . to receive(:pick_option).and_return(0)
+        .to receive(:pick_option).and_return(0)
       game.setup
 
       expect { game.one_round }.to change(game, :state)

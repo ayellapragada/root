@@ -67,7 +67,7 @@ module Root
         rows
       end
 
-      def setup(*)
+      def setup
         build_keep
         build_initial_buildings
         place_initial_warriors
@@ -108,7 +108,7 @@ module Root
         board.clearings_other_than(clearing).each { |cl| place_meeple(cl) }
       end
 
-      def take_turn(**_)
+      def take_turn
         super
         @recruited = false
         birdsong
