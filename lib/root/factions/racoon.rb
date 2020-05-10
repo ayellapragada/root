@@ -571,7 +571,7 @@ module Root
           if relationships.hostile?(piece.faction) && battle.attacker?(self) && battle.type == :battle
             self.victory_points += 1
           end
-          if piece.piece_type == :meeple && battle.defender?(piece.faction)
+          if piece.piece_type == :meeple && !battle.ally?(piece.faction)
             relationships.make_hostile(piece.faction)
           end
         end

@@ -44,8 +44,8 @@ module Root
         [attacker, attacker.faction_symbol].include?(faction)
       end
 
-      def defender?(faction)
-        [defender, defender.faction_symbol].include?(faction)
+      def ally?(faction)
+        [ally, ally&.faction_symbol].include?(faction)
       end
 
       def other_faction(faction)
