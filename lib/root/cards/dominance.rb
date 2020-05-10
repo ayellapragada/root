@@ -24,14 +24,7 @@ module Root
         end
       end
 
-      def faction_craft(fac)
-        fac
-          .board
-          .clearings_of_suit(suit)
-          .each { |cl| fac.do_big_damage(cl) }
-        fac.player.add_to_history(:f_favor, suit: suit.capitalize)
-        fac.discard_card(self)
-      end
+      def faction_craft(fac); end
     end
   end
 end

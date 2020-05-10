@@ -18,6 +18,13 @@ RSpec.describe Root::Cards::Dominance do
       expect(card.name).to eq('Dominance')
       expect(card.body).to eq('Rule 3 clearings of fox suit')
     end
+
+    context 'when bird' do
+      it 'is hopefully helpful' do
+        card = Root::Cards::Dominance.new(suit: :bird)
+        expect(card.body).to eq('Rule 2 opposite corners')
+      end
+    end
   end
 
   describe '#faction_craft' do
