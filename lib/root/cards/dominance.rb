@@ -24,6 +24,10 @@ module Root
         end
       end
 
+      def dominance?
+        true
+      end
+
       # if we do change to dominance, then place to side ya feel me?
       # It's not discarded, but it is gone.
       # Maybe another something something in the deck list

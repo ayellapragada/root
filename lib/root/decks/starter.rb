@@ -1,28 +1,25 @@
 # frozen_string_literal: true
 
+require_relative './shared'
 require_relative '../cards/base'
 
 module Root
   module Decks
     # This is the deck for crafting and ambushes and etc.
-    # The idea here is just to leave room for exiles and partisans.
-    class Starter < Base
+    class Starter < Shared
       DECK_SIZE = 54
 
-      # We're not currently interested in getting items done
-      # Really just want to lay the foundation
-      def generate_deck
-        list_of_cards!
-        deck.shuffle!
+      def list_of_cards!
+        add_base_cards
+        add_item_cards
+        add_favor_cards
       end
 
-      def list_of_cards!
+      def add_base_cards
         7.times { deck << Cards::Base.new(suit: :fox) }
         6.times { deck << Cards::Base.new(suit: :mouse) }
         8.times { deck << Cards::Base.new(suit: :rabbit) }
         10.times { deck << Cards::Base.new(suit: :bird) }
-        add_item_cards
-        add_favor_cards
       end
 
       # rubocop:disable all

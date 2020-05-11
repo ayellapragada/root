@@ -44,4 +44,18 @@ RSpec.describe Root::Decks::Starter do
       end
     end
   end
+
+  describe '#discard_card' do
+    context 'when dominance card' do
+      it 'makes available and not in discard' do
+        deck = described_class.new
+        card = Root::Cards::Dominance.new(suit: :fox)
+
+        expect { deck.discard_card(card) }
+          .to change { deck.discard.count }.by(0)
+
+        expect(deck.dominance_for(:fox)).to be(card)
+      end
+    end
+  end
 end

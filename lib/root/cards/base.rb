@@ -33,6 +33,10 @@ module Root
         false
       end
 
+      def dominance?
+        false
+      end
+
       def name_with_suit
         "#{name} (#{suit[0].upcase})"
       end

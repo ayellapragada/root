@@ -33,9 +33,11 @@ module Root
         card
       end
 
-      def discard_card(card)
-        discard << card
-      end
+      # Funnily enough, not used.
+      # Characters and Qeests never get discarded
+      # def discard_card(card)
+      #   discard << card
+      # end
 
       def size
         deck.size

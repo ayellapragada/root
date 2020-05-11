@@ -2,10 +2,12 @@
 
 module Root
   module Decks
-    # Contains all decks in the game that players can draw from, our look at
-    # Discard and Lost Souls will also get their own deck in the future
+    # Contains all decks in the game that players can draw from or can access
+    # quest and character decks are shared between racoons,
+    # but do not go into the discard, so they belong here.
+    # decks that interact with discard go into shared
     class List
-      attr_reader :shared, :characters
+      attr_reader :shared, :characters, :dominance
       attr_accessor :quests
 
       def initialize(shared: Decks::Starter.new)
