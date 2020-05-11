@@ -283,7 +283,6 @@ RSpec.describe Root::Factions::Bird do
 
   context 'when in move' do
     it 'must move FROM clearings matching that suit' do
-      players = Root::Players::List.new(player)
       allow(player).to receive(:pick_option).and_return(0)
 
       faction.place_meeple(clearings[:one])
@@ -469,6 +468,21 @@ RSpec.describe Root::Factions::Bird do
     end
   end
 
+  context 'when having a daylight option' do
+    it 'can use that during resolving a decree as well' do
+      allow(player).to receive(:pick_option).and_return(1, 0)
+
+      faction.decree[:recruit] << Root::Cards::Base.new(suit: :fox)
+      faction.place_roost(clearings[:one])
+
+      faction.victory_points = 10
+      faction.hand << Root::Cards::Dominance.new(suit: :fox)
+
+      faction.resolve_decree
+      expect(faction.victory_points).to eq(:fox)
+    end
+  end
+
   describe '#turmoil!' do
     it 'reduces victory_points, clears decree, and resets leader + viziers' do
       allow(player).to receive(:pick_option).and_return(0)
@@ -495,6 +509,17 @@ RSpec.describe Root::Factions::Bird do
         expect { faction.resolve_decree }
           .to change(faction, :victory_points)
           .by(0)
+      end
+    end
+
+    context 'when changed to dominance' do
+      it 'does not go below zero' do
+        allow(player).to receive(:pick_option).and_return(0)
+
+        faction.victory_points = :fox
+        faction.decree[:recruit] << Root::Cards::Base.new(suit: :mouse)
+
+        expect { faction.resolve_decree }.not_to raise_error
       end
     end
   end

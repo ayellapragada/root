@@ -244,16 +244,19 @@ module Root
 
       def resolve(action, key)
         needed_suits = decree.suits_in(action)
-        # this is what we change
-        # user gets to pick which suit they want to resolve
-        # and while doing that, before committing to an action
-        # they can also use shared_opts
-        until needed_suits.empty?
-          opts = get_options_with_turmoil!(action, needed_suits)
 
-          player.choose(key, opts, required: true) do |clearing|
-            suit = resolve_bird_in_decree(needed_suits, clearing)
-            needed_suits.delete_first(suit) if yield(clearing)
+        until needed_suits.empty?
+          opts = add_daylight_options(needed_suits.uniq)
+
+          player.choose(:b_resolve_suit, opts, required: true, info: { action: action }) do |suit|
+            next do_daylight_option(suit) if DAYLIGHT_OPTIONS.include?(suit)
+
+            opts = get_options_with_turmoil!(action, [suit])
+
+            player.choose(key, opts, required: true) do |clearing|
+              suit = resolve_bird_in_decree(needed_suits, clearing)
+              needed_suits.delete_first(suit) if yield(clearing)
+            end
           end
         end
       end
@@ -280,6 +283,8 @@ module Root
       end
 
       def change_victory_points_for_turmoil
+        return if win_via_dominance?
+
         self.victory_points -= decree.number_of_birds
         self.victory_points = 0 if self.victory_points.negative?
       end

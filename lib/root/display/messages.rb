@@ -133,6 +133,10 @@ module Root
           prompt: 'Pick where to place your new first Roost with 3 Warriors',
           history: 'Setup comeback roost in clearing %s'
         },
+        b_resolve_suit: {
+          prompt: 'Pick a suit to resolve in %s',
+          history: ''
+        },
         b_turmoil: {
           prompt: '',
           history: 'Went into turmoil'

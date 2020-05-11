@@ -508,6 +508,7 @@ module Root
       def add_daylight_options(options)
         options << :take_dominance if take_dominance?
         options << :play_dominance if play_dominance?
+        options
       end
       # :nocov:
 
