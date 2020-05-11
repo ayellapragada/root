@@ -110,6 +110,13 @@ module Root
           .map(&:faction_symbol)
       end
 
+      def dominance_holders
+        players
+          .map(&:faction)
+          .select(&:win_via_dominance?)
+          .map(&:faction_symbol)
+      end
+
       private
 
       attr_accessor :current_player_index

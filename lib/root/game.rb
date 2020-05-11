@@ -67,7 +67,26 @@ module Root
         winner: e.winner.faction_symbol,
         type: e.type
       )
+
+      handle_coalition_victory(e.winner)
       render
+    end
+
+    def handle_coalition_victory(winner)
+      return unless coalition_winner(winner)
+
+      coalition_winner.add_to_history(
+        :f_game_over,
+        winner: coalition_winner.faction.faction_symbol,
+        type: :coalition
+      )
+    end
+
+    def coalition_winner(winner)
+      fac_sym = winner.fac_sym
+      players
+        .dominance_holders
+        .find { |fac| fac.victory_points == fac_sym }
     end
     # :nocov:
 
