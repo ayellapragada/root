@@ -12,7 +12,7 @@ module Root
 
       # :nocov:
       def inspect
-        "#{name_with_suit} | Craft: #{craft.join(', ')}"
+        "#{name_with_suit}"
       end
       # :nocov:
 
@@ -24,7 +24,9 @@ module Root
         end
       end
 
-      def faction_craft(fac); end
+      def faction_play(fac)
+        fac.change_to_dominance(suit)
+      end
     end
   end
 end

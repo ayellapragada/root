@@ -136,6 +136,7 @@ module Root
       end
 
       def birdsong
+        super
         draw_card if hand.empty?
 
         card = add_to_decree(req: true, birds_allowed: true)
@@ -184,7 +185,7 @@ module Root
 
       def evening
         vps = VICTORY_POINTS[:roost][current_number_out(:roost) - 1]
-        self.victory_points += vps
+        gain_vps(vps)
 
         draw_cards
       end
@@ -299,7 +300,7 @@ module Root
       def post_battle(battle)
         return unless current_leader?(:despot)
 
-        self.victory_points += 1 if battle.pieces_removed.any?(&:points_for_removing?)
+        gain_vps(1) if battle.pieces_removed.any?(&:points_for_removing?)
       end
 
       def current_leader?(type)

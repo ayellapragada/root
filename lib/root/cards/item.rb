@@ -30,7 +30,7 @@ module Root
       def faction_craft(fac, *)
         fac.board.items.delete_first(item)
         fac.discard_card(self)
-        fac.victory_points += fac.handle_item_vp(self)
+        fac.gain_vps(fac.handle_item_vp(self))
         fac.make_item(item)
         fac.player.add_to_history(:f_item_select, item: item, vp: vp)
       end

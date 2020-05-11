@@ -192,6 +192,7 @@ module Root
       end
 
       def birdsong
+        super
         refresh_items
         slip
       end
@@ -420,7 +421,7 @@ module Root
           clearing: current_location.priority,
           item: explored_item
         )
-        self.victory_points += 1
+        gain_vps(1)
       end
 
       def can_strike?
@@ -505,7 +506,7 @@ module Root
           yield(reward, points) if block_given?
 
           if reward == :get_victory_points
-            self.victory_points += points
+            gain_vps(points)
             value = "Gained #{points} victory points(s)"
           else
             2.times { draw_card }
@@ -544,9 +545,9 @@ module Root
                 other_faction.hand << card
                 hand.delete(card)
 
-                self.victory_points += 2 if relationships.allied?(fac_sym)
+                gain_vps(2) if relationships.allied?(fac_sym)
                 relationships.aid_once(fac_sym)
-                self.victory_points += relationships.vp_to_gain
+                gain_vps(relationships.vp_to_gain)
 
                 exhaust_item(item_to_use.item)
                 player.add_to_history(:r_aid_faction, other_faction: fac_sym)
@@ -569,7 +570,7 @@ module Root
       def post_battle(battle)
         battle.removed_of_other_type(faction_symbol).each do |piece|
           if relationships.hostile?(piece.faction) && battle.attacker?(self) && battle.type == :battle
-            self.victory_points += 1
+            gain_vps(1)
           end
           if piece.piece_type == :meeple && !battle.ally?(piece.faction)
             relationships.make_hostile(piece.faction)

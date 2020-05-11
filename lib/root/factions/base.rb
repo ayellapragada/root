@@ -13,6 +13,7 @@ module Root
       SETUP_PRIORITY = 'ZZZ'
 
       HISTORY_EXCLUSION = %i[wood].freeze
+      POINTS_FOR_WIN = 30
 
       def self.attr_buildings(*names)
         names.each { |name| define_methods(:buildings, name) }
@@ -77,11 +78,23 @@ module Root
         player.players
       end
 
+      def gain_vps(value)
+        return if win_via_dominance?
+
+        self.victory_points += value
+      end
+
       def victory_points=(value)
         @victory_points = value
-        return if @victory_points < 30
+
+        return if Cards::VALID_SUITS.include?(value)
+        return if @victory_points < POINTS_FOR_WIN
 
         raise Errors::WinConditionReached.new(self, :vps)
+      end
+
+      def win_via_dominance?
+        Cards::VALID_SUITS.include?(@victory_points)
       end
 
       def set_base_pieces
@@ -208,6 +221,10 @@ module Root
 
       def craft_item(choice)
         choice.faction_craft(self)
+      end
+
+      def play_card(choice)
+        choice.faction_play(self)
       end
 
       def make_item(type)
@@ -422,7 +439,7 @@ module Root
 
         pieces.flatten.each do |piece|
           type = piece.piece_type
-          self.victory_points += 1 if %i[building token].include?(type)
+          gain_vps(1) if %i[building token].include?(type)
         end
       end
 
@@ -434,6 +451,18 @@ module Root
           clearing.send(plural_form).delete(piece)
           piece
         end
+      end
+
+      def birdsong
+        check_for_dominance if win_via_dominance?
+      end
+
+      def check_for_dominance
+        Actions::Dominance.new(self).check
+      end
+
+      def change_to_dominance(suit)
+        self.victory_points = suit unless win_via_dominance?
       end
 
       def pre_move(move_action); end

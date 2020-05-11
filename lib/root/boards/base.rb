@@ -81,7 +81,11 @@ module Root
       end
 
       def clearing_across_from_keep
-        clearings[DIAGANOLS[corner_with_keep.priority]]
+        clearing_across(corner_with_keep)
+      end
+
+      def clearing_across(clearing)
+        clearings[DIAGANOLS[clearing.priority]]
       end
 
       def clearings_other_than(other_clearing)

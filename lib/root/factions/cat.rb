@@ -119,6 +119,7 @@ module Root
       # Same issue as recruit. If there isn't enough,
       # the player should be on prompted where to place it.
       def birdsong
+        super
         sawmill_clearings = board.clearings_with(:sawmill)
         if wood.count > sawmill_clearings.count
           sawmill_clearings.each do |cl|
@@ -226,7 +227,7 @@ module Root
           wood_to_remove = cost_for_next_building(building_type)
           piece = send(building_type.pluralize).first
 
-          self.victory_points += vp_for_next(building_type)
+          gain_vps(vp_for_next(building_type))
           remove_wood(accessible_wood, wood_to_remove)
           place_building(piece, clearing)
         end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Cards::Dominance do
-  let(:player) { Root::Players::Computer.for('Sneak', :mice) }
-  let(:faction) { player.faction }
+  let(:mouse_player) { Root::Players::Computer.for('Sneak', :mice) }
+  let(:mouse_faction) { mouse_player.faction }
   let(:board) { player.board }
   let(:clearings) { board.clearings }
   let(:bird_player) { Root::Players::Computer.for('Bird', :birds) }
@@ -28,7 +28,13 @@ RSpec.describe Root::Cards::Dominance do
   end
 
   describe '#faction_craft' do
-    it 'removes all enemy pieces in all clearings of its suit' do
+    it 'changes factions victory conditions' do
+      card = Root::Cards::Dominance.new(suit: :fox)
+
+      mouse_faction.play_card(card)
+
+      expect(mouse_faction.victory_points).to eq(:fox)
+      expect(mouse_faction.win_via_dominance?).to be true
     end
   end
 end

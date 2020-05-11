@@ -201,6 +201,7 @@ module Root
       end
 
       def birdsong
+        super
         revolt
         spread_sympathy
       end
@@ -275,7 +276,7 @@ module Root
       def spread_sympathy_in_clearing(clearing)
         place_sympathy(clearing)
         vps = VICTORY_POINTS[:sympathy][current_number_out(:sympathy) - 1]
-        self.victory_points += vps
+        gain_vps(vps)
       end
 
       def spread_sympathy_options
