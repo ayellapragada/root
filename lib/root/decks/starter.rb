@@ -86,45 +86,37 @@ end
 # rubocop:disable all
 # :nocov:
 
-# BATTLE
-# Suit  Name  Location  Craft Effects
-# suit: :bird,  Ambush  -  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-# suit: :bird,  Ambush  -  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-# suit: :fox,  Ambush  -  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-# suit: :mouse,  Ambush  -  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-# suit: :rabbit,  Ambush  -  Defender deals 2 immediate hits unless Attacker plays Ambush, Discard
-#
-# suit: :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
-# suit: :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
-# suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
-# suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
+# Battle
+# :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
+# :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
+# :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
+# :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
 
 # Improvements
-
-# suit: :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
-# suit: :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
-# suit: :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
-# suit: :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
+# :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
+# :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
+# :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
+# :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
 
 # Birdsong
-# suit: :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
-# suit: :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
-# suit: :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
-# suit: :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
-# suit: :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
+# :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
+# :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
+# :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
+# :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
+# :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 
 # Daylight
-# suit: :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
-# suit: :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
-# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
-# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
-# suit: :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
-# suit: :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
-# suit: :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
+# :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
+# :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
+# :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
+# :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
+# :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
+# :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
+# :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
 
 # Evening
-# suit: :rabbit,  Cobbler  RR  At start of Evening, may take a move
-# suit: :rabbit, Cobbler  RR  At start of Evening, may take a move
+# :rabbit,  Cobbler  RR  At start of Evening, may take a move
+# :rabbit, Cobbler  RR  At start of Evening, may take a move
 
 # :nocov:
 # rubocop:enable all
