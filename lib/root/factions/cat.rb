@@ -142,8 +142,8 @@ module Root
       end
 
       def daylight
-        craft_items
         @remaining_actions = 3
+        craft_with_specific_timing
 
         until daylight_options.empty? || remaining_actions.zero?
           player.choose(

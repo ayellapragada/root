@@ -215,6 +215,32 @@ module Root
         end
       end
 
+      def craft_with_specific_timing
+        until craft_with_specific_timing_options.empty?
+          player.choose(
+            :f_pick_action,
+            craft_with_specific_timing_options,
+            yield_anyway: true,
+            info: { actions: '' }
+          ) do |action|
+            # :nocov:
+            case action
+            when :craft then craft_items
+            when ->(n) { DAYLIGHT_OPTIONS.include?(n) } then do_daylight_option(action)
+            when :none then return false
+            end
+            # :nocov:
+          end
+        end
+      end
+
+      def craft_with_specific_timing_options
+        [].tap do |options|
+          options << :craft if can_craft?
+          add_daylight_options(options)
+        end
+      end
+
       def craft_items
         @crafted_suits ||= []
         do_until_stopped(:f_item_select, proc { craftable_items }) do |item|
