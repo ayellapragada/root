@@ -330,6 +330,7 @@ module Root
             when :craft then craft_items
             when :mobilize then mobilize
             when :train then train
+            when ->(n) { SHARED_OPTIONS.include?(n) } then do_shared_options(action)
             when :none then return false
             end
             # :nocov:
@@ -342,6 +343,7 @@ module Root
           options << :craft if can_craft?
           options << :mobilize if can_mobilize?
           options << :train if can_train?
+          add_shared_options(options)
         end
       end
 

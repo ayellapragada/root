@@ -87,10 +87,12 @@ module Root
     end
 
     def coalition_winner(winner)
-      fac_sym = winner.fac_sym
+      fac_sym = winner.faction_symbol
       players
         .dominance_holders
-        .find { |fac| fac.victory_points == fac_sym }
+        .find do |fac|
+        players.fetch_player(fac).faction.victory_points == fac_sym
+      end
     end
     # :nocov:
 

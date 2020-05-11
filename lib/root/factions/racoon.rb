@@ -323,6 +323,7 @@ module Root
             when :hideout
               with_item(:torch) { use_special }
               return false
+            when ->(n) { SHARED_OPTIONS.include?(n) } then do_shared_options(action)
             when :none then return false
             end
             # :nocov:
@@ -347,6 +348,7 @@ module Root
           options << :repair if can_repair?
           options << :craft if can_craft?
           options << special_name if can_special?
+          add_shared_options(options)
         end
       end
       # :nocov:

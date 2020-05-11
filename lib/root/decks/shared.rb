@@ -22,7 +22,7 @@ module Root
       end
 
       def dominance_for(suit)
-        @dominance[suit]
+        @dominance[suit][:card]
       end
 
       def change_dominance(suit, status)

@@ -4,6 +4,8 @@ module Root
   module Decks
     # Logic to handle a shared dominance pile for the game
     class Dominance
+      include Enumerable
+
       attr_reader :dominance
 
       def initialize
@@ -23,8 +25,8 @@ module Root
         dominance[key] = val
       end
 
-      def map
-        @dominance.map do |key, val|
+      def each
+        @dominance.each do |key, val|
           yield(key, val)
         end
       end

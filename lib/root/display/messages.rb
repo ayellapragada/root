@@ -97,6 +97,14 @@ module Root
           prompt: '',
           history: 'Used Favor of the %s'
         },
+        f_dominance: {
+          prompt: 'Select a Dominance card to play',
+          history: 'Played the %s Dominance card'
+        },
+        f_take_dominance: {
+          prompt: 'Select an available Dominance card to take',
+          history: 'Took the %s dominance card'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'

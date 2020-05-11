@@ -9,6 +9,7 @@ module Root
     class Base
       Symbol.include CoreExtensions::Symbol::Pluralize
       Array.include CoreExtensions::Array::BetterDeletes
+      SHARED_OPTIONS = %i[take_dominance play_dominance].freeze
 
       SETUP_PRIORITY = 'ZZZ'
 
@@ -72,6 +73,10 @@ module Root
 
       def deck
         player.deck
+      end
+
+      def dominance
+        deck.dominance
       end
 
       def players
@@ -143,7 +148,7 @@ module Root
       end
 
       # WOWOWOWOWOW yikers this is a comma based word wrap lets go
-      def word_wrap_string(string, el = ', ')
+      def word_wrap_string(string, _el = ', ')
         return string if string.length < 50
 
         res = [[]]
@@ -463,6 +468,59 @@ module Root
 
       def change_to_dominance(suit)
         self.victory_points = suit unless win_via_dominance?
+      end
+
+      def do_shared_options(action)
+        send(action)
+      end
+
+      # code breakers, tax collectors
+      # improvements.each { |i| options << i.name if i.can_use?(fac) }
+      # :nocov:
+      def add_shared_options(options)
+        options << :take_dominance if take_dominance?
+        options << :play_dominance if play_dominance?
+      end
+      # :nocov:
+
+      def take_dominance?
+        !take_dominance_opts.empty?
+      end
+
+      def take_dominance_opts
+        dominance.select do |suit, data|
+          next false unless data[:card]
+
+          !cards_in_hand_with_suit(suit).empty?
+        end.map { |arr| arr[1][:card] }
+      end
+
+      def take_dominance
+        player.choose(:f_take_dominance, take_dominance_opts) do |card|
+          suit = card.suit
+          discard_card_with_suit(suit, required: false) do
+            hand << deck.dominance_for(suit)
+            deck.change_dominance(suit, '-')
+            player.add_to_history(:f_take_dominance, suit: suit)
+          end
+        end
+      end
+
+      def play_dominance?
+        return false if win_via_dominance?
+
+        victory_points >= 10 && !play_dominance_opts.empty?
+      end
+
+      def play_dominance_opts
+        hand.select(&:dominance?)
+      end
+
+      def play_dominance
+        player.choose(:f_dominance, play_dominance_opts) do |card|
+          play_card(card)
+          player.add_to_history(:f_dominance, suit: card.suit)
+        end
       end
 
       def pre_move(move_action); end

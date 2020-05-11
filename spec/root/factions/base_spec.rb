@@ -39,4 +39,65 @@ RSpec.describe Root::Factions::Base do
         .to raise_error(Root::Errors::WinConditionReached)
     end
   end
+
+  describe '#take_dominance_opts' do
+    it 'requires an available dominance with matching suit card in hand' do
+      dominance = Root::Cards::Dominance.new(suit: :fox)
+      mouse_player.deck = cat_player.deck
+
+      mouse_faction.hand << dominance
+      expect(cat_faction.take_dominance?).to be false
+
+      mouse_faction.discard_card(dominance)
+      expect(cat_faction.take_dominance?).to be false
+
+      cat_faction.hand << Root::Cards::Base.new(suit: :mouse)
+      cat_faction.hand << Root::Cards::Base.new(suit: :fox)
+      expect(cat_faction.take_dominance_opts).to eq([dominance])
+      expect(cat_faction.take_dominance?).to be true
+    end
+  end
+
+  describe '#play_dominance?' do
+    it 'requires a dominance card in hand and at least 10 victory points' do
+      dominance = Root::Cards::Dominance.new(suit: :fox)
+
+      expect(cat_faction.play_dominance?).to be false
+
+      cat_faction.hand << dominance
+      expect(cat_faction.play_dominance?).to be false
+
+      cat_faction.victory_points = 10
+      expect(cat_faction.play_dominance?).to be true
+
+      cat_faction.discard_card(dominance)
+      expect(cat_faction.play_dominance?).to be false
+    end
+
+    context 'when dominance already played' do
+      it 'cannot be played' do
+        dominance = Root::Cards::Dominance.new(suit: :fox)
+        cat_faction.play_card(dominance)
+
+        expect(cat_faction.play_dominance?).to be false
+      end
+    end
+  end
+
+  describe '#take_dominance' do
+    it 'lets a faction take an available dominance card' do
+      allow(cat_player).to receive(:pick_option).and_return(0)
+
+      dominance = Root::Cards::Dominance.new(suit: :fox)
+      cat_faction.hand << dominance
+      cat_faction.discard_card(dominance)
+
+      cat_faction.hand << Root::Cards::Base.new(suit: :fox)
+
+      expect { cat_faction.take_dominance }
+        .to change { cat_faction.deck.discard.count }.by(1)
+      expect(cat_faction.hand).to eq([dominance])
+      expect(cat_faction.deck.dominance[:fox][:card]).to be nil
+    end
+  end
 end

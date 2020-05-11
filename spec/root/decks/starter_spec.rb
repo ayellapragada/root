@@ -54,7 +54,7 @@ RSpec.describe Root::Decks::Starter do
         expect { deck.discard_card(card) }
           .to change { deck.discard.count }.by(0)
 
-        expect(deck.dominance_for(:fox)).to eq(card: card, status: 'free')
+        expect(deck.dominance_for(:fox)).to eq(card)
       end
     end
   end
