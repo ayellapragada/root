@@ -130,6 +130,7 @@ module Root
 
       def take_turn
         super
+        @decree_resolved = false
         birdsong
         daylight
         evening
@@ -172,7 +173,35 @@ module Root
 
       def daylight
         craft_items
-        resolve_decree
+
+        until daylight_options.empty?
+          player.choose(
+            :f_pick_action,
+            daylight_options,
+            yield_anyway: true,
+            required: can_decree?,
+            info: { actions: '' }
+          ) do |action|
+            # :nocov:
+            case action
+            when :decree then resolve_decree
+            when ->(n) { SHARED_OPTIONS.include?(n) } then do_shared_options(action)
+            when :none then return false
+            end
+            # :nocov:
+          end
+        end
+      end
+
+      def daylight_options
+        [].tap do |options|
+          options << :decree if can_decree?
+          add_shared_options(options)
+        end
+      end
+
+      def can_decree?
+        @decree_resolved != true
       end
 
       VICTORY_POINTS = {
@@ -195,6 +224,7 @@ module Root
       end
 
       def resolve_decree
+        @decree_resolved = true
         resolve_recruit
         resolve_move
         resolve_battle
