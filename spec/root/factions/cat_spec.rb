@@ -536,7 +536,7 @@ RSpec.describe Root::Factions::Cat do
       faction.hand << card_to_craft
       faction.hand << card_unable_to_be_crafted
 
-      faction.craft_items
+      faction.craft_with_specific_timing
       expect(faction.hand).not_to include(card_to_craft)
       expect(faction.hand).to include(card_unable_to_be_crafted)
       expect(faction.victory_points).to be(2)

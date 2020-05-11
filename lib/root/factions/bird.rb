@@ -244,7 +244,10 @@ module Root
 
       def resolve(action, key)
         needed_suits = decree.suits_in(action)
-
+        # this is what we change
+        # user gets to pick which suit they want to resolve
+        # and while doing that, before committing to an action
+        # they can also use shared_opts
         until needed_suits.empty?
           opts = get_options_with_turmoil!(action, needed_suits)
 
