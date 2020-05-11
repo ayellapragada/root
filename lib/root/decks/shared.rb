@@ -28,6 +28,15 @@ module Root
       def change_dominance(suit, status)
         @dominance[suit] = { card: nil, status: status }
       end
+
+      def substitute_dominance
+        deck
+          .select(&:dominance?)
+          .each { |c| deck.delete(c) }
+        %i[bird fox rabbit mouse].each do |suit|
+          deck << Cards::Base.new(suit: suit)
+        end
+      end
     end
   end
 end

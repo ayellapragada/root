@@ -23,6 +23,7 @@ RSpec.describe Root::Decks::Starter do
     context 'when out of cards' do
       it 'reshuffles discard and adds to bottom of deck' do
         deck = described_class.new
+        deck.substitute_dominance
 
         hand = []
         hand.concat(deck.draw_from_top(52))

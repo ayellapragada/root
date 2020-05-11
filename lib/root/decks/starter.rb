@@ -13,13 +13,14 @@ module Root
         add_base_cards
         add_item_cards
         add_favor_cards
+        add_dominance_cards
       end
 
       def add_base_cards
-        7.times { deck << Cards::Base.new(suit: :fox) }
-        6.times { deck << Cards::Base.new(suit: :mouse) }
-        8.times { deck << Cards::Base.new(suit: :rabbit) }
-        10.times { deck << Cards::Base.new(suit: :bird) }
+        6.times { deck << Cards::Base.new(suit: :fox) }
+        5.times { deck << Cards::Base.new(suit: :mouse) }
+        7.times { deck << Cards::Base.new(suit: :rabbit) }
+        9.times { deck << Cards::Base.new(suit: :bird) }
       end
 
       # rubocop:disable all
@@ -65,6 +66,12 @@ module Root
           deck << Cards::Favor.new(suit: suit)
         end
       end
+
+      def add_dominance_cards
+        %i[bird fox mouse rabbit].each do |suit|
+          deck << Cards::Dominance.new(suit: suit)
+        end
+      end
     end
   end
 end
@@ -86,12 +93,6 @@ end
 # suit: :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
 # suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
 # suit: :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
-
-# Dominance
-# suit: :bird,  Dominance  NA  If at least 10VP, Play to rule Opposite Corners
-# suit: :fox,  Dominance  FFF  If at least 10VP, You win if you rule 3 fox clearings at start of your Birdsong
-# suit: :mouse,  Dominance  MMM  If at least 10VP, You win if you rule 3 mouse clearings at start of your Birdsong
-# suit: :rabbit,  Dominance  RRR  If at least 10VP, You win if you rule 3 rabbit clearings at start of your Birdsong
 
 # Improvements
 
