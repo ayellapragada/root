@@ -8,10 +8,10 @@ module Root
 
       def initialize
         @dominance = {
-          bird: nil,
-          fox: nil,
-          mouse: nil,
-          rabbit: nil
+          bird: { card: nil, status: '-' },
+          fox: { card: nil, status: '-' },
+          mouse: { card: nil, status: '-' },
+          rabbit: { card: nil, status: '-' }
         }
       end
 
@@ -21,6 +21,12 @@ module Root
 
       def []=(key, val)
         dominance[key] = val
+      end
+
+      def map
+        @dominance.map do |key, val|
+          yield(key, val)
+        end
       end
     end
   end

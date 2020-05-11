@@ -628,12 +628,11 @@ module Root
         3.times.collect { take_damage(current_location) }
       end
 
-      def change_to_dominance(*)
+      def change_to_dominance(suit)
         opts = players.options_to_coalition_with(faction_symbol)
 
         player.choose(:r_coalition, opts) do |fac_sym|
           self.victory_points = fac_sym
-
           player.add_to_history(:r_coalition, faction: fac_sym)
         end
       end

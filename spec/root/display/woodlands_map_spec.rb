@@ -10,6 +10,7 @@ RSpec.describe Root::Display::WoodlandsMap do
       place_cards_into_bird_decree(game)
       craft_items_for_cat(game)
       craft_items_for_racoon(game)
+      do_the_dominance(game)
       game.setup
       mock_clearing_options(game)
 
@@ -172,5 +173,17 @@ RSpec.describe Root::Display::WoodlandsMap do
     faction.craft_item(boots2)
     faction.craft_item(satchel2)
     faction.craft_item(tea)
+  end
+
+  def do_the_dominance(game)
+    racoon_player = game.players.fetch_player(:racoon)
+    allow(racoon_player).to receive(:pick_option).and_return(0)
+
+    cat_faction = game.players.fetch_player(:cats).faction
+    racoon_faction = racoon_player.faction
+
+    cat_faction.play_card(Root::Cards::Dominance.new(suit: :fox))
+    racoon_faction.play_card(Root::Cards::Dominance.new(suit: :bird))
+    cat_faction.discard_card(Root::Cards::Dominance.new(suit: :mouse))
   end
 end

@@ -23,7 +23,7 @@ module Root
       def rows
         players
           .victory_points
-          .sort_by { |p| p[:victory_points] }
+          .sort_by { |p| p[:victory_points].to_s }
           .reverse
           .map do |player|
           [

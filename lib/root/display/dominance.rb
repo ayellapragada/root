@@ -16,30 +16,20 @@ module Root
 
       def display
         ::Terminal::Table.new(
-          headings: %w[Dominance By],
+          title: 'Dominance',
           rows: rows,
           style: { width: 22 }
         )
       end
 
-      # :nocov:
       def rows
-        %i[fox rabbit mouse bird].map do |suit|
-          card = dominance.find { |d| d.suit == suit }
-          if card
-            [
-              Rainbow(suit.capitalize).fg(Colors::SUIT_COLOR[suit]),
-              Rainbow(card.faction.capitalize).fg(card.faction.display_color)
-            ]
-          else
-            [
-              Rainbow(suit.capitalize).fg(Colors::SUIT_COLOR[suit]),
-              '-'
-            ]
-          end
+        dominance.map do |suit, dom|
+          [
+            Rainbow(suit.capitalize).fg(Colors::SUIT_COLOR[suit]),
+            dom[:status]
+          ]
         end
       end
-      # :nocov:
     end
   end
 end

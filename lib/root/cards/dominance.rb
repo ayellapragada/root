@@ -33,6 +33,7 @@ module Root
       # Maybe another something something in the deck list
       def faction_play(fac)
         fac.change_to_dominance(suit)
+        fac.deck.change_dominance(suit, fac.faction_symbol)
       end
     end
   end

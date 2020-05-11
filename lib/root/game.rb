@@ -47,6 +47,10 @@ module Root
       decks.shared
     end
 
+    def dominance
+      decks.shared.dominance
+    end
+
     def active_quests
       decks.quests.active_quests
     end

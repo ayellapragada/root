@@ -1297,7 +1297,7 @@ RSpec.describe Root::Factions::Racoon do
       mouse_faction.victory_points = 5
       bird_faction.victory_points = :fox
 
-      faction.change_to_dominance
+      faction.change_to_dominance(:bird)
       expect(faction.victory_points).to eq(:cats)
     end
   end
