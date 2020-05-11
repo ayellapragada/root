@@ -301,10 +301,10 @@ module Root
       def daylight
         relationships.reset_turn_counters
 
-        until daylight_options(active_quests: quests.active_quests).empty?
+        until daylight_options.empty?
           player.choose(
             :f_pick_action,
-            daylight_options(active_quests: quests.active_quests),
+            daylight_options,
             yield_anyway: true,
             info: { actions: '' }
           ) do |action|
@@ -336,7 +336,7 @@ module Root
       end
 
       # :nocov:
-      def daylight_options(active_quests: [])
+      def daylight_options
         [].tap do |options|
           options << :move if can_move?
           options << :battle if can_racoon_battle?
