@@ -185,7 +185,7 @@ module Root
             # :nocov:
             case action
             when :decree then resolve_decree
-            when ->(n) { SHARED_OPTIONS.include?(n) } then do_shared_options(action)
+            when ->(n) { DAYLIGHT_OPTIONS.include?(n) } then do_daylight_option(action)
             when :none then return false
             end
             # :nocov:
@@ -196,7 +196,7 @@ module Root
       def daylight_options
         [].tap do |options|
           options << :decree if can_decree?
-          add_shared_options(options)
+          add_daylight_options(options)
         end
       end
 

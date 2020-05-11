@@ -160,7 +160,7 @@ module Root
             when :recruit then with_action { recruit }
             when :overwork then with_action { overwork }
             when :discard_bird then discard_bird
-            when ->(n) { SHARED_OPTIONS.include?(n) } then do_shared_options(action)
+            when ->(n) { DAYLIGHT_OPTIONS.include?(n) } then do_daylight_option(action)
             when :none then @remaining_actions = 0
             end
             # :nocov:
@@ -208,7 +208,7 @@ module Root
           options << :recruit if can_recruit?
           options << :overwork if can_overwork?
           options << :discard_bird if can_discard_bird?
-          add_shared_options(options)
+          add_daylight_options(options)
         end
       end
 

@@ -29,11 +29,15 @@ module Root
         suit == :bird
       end
 
-      def vizier?
+      def ambush?
         false
       end
 
       def dominance?
+        false
+      end
+
+      def vizier?
         false
       end
 

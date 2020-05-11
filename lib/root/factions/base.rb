@@ -9,7 +9,7 @@ module Root
     class Base
       Symbol.include CoreExtensions::Symbol::Pluralize
       Array.include CoreExtensions::Array::BetterDeletes
-      SHARED_OPTIONS = %i[take_dominance play_dominance].freeze
+      DAYLIGHT_OPTIONS = %i[take_dominance play_dominance].freeze
 
       SETUP_PRIORITY = 'ZZZ'
 
@@ -360,6 +360,8 @@ module Root
         suits.include?(:bird) ? %i[fox mouse rabbit] : suits
       end
 
+      # OH MY GOD THE HAND REFACTOR MIGHT JUST BE THIS
+      # :PRAY: THIS LEGIT MIGHT JUST NEED A REAVEALED? CHECK AND WE'RE GOOD!
       def cards_in_hand_with_suit(suit = nil)
         return hand unless suit
 
@@ -470,14 +472,14 @@ module Root
         self.victory_points = suit unless win_via_dominance?
       end
 
-      def do_shared_options(action)
+      def do_daylight_option(action)
         send(action)
       end
 
       # code breakers, tax collectors
       # improvements.each { |i| options << i.name if i.can_use?(fac) }
       # :nocov:
-      def add_shared_options(options)
+      def add_daylight_options(options)
         options << :take_dominance if take_dominance?
         options << :play_dominance if play_dominance?
       end
@@ -521,6 +523,10 @@ module Root
           play_card(card)
           player.add_to_history(:f_dominance, suit: card.suit)
         end
+      end
+
+      def ambush_opts(clearing)
+        cards_in_hand_with_suit(clearing.suit).select(&:ambush?)
       end
 
       def pre_move(move_action); end

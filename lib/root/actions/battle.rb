@@ -22,6 +22,9 @@ module Root
 
       def call
         @type = :battle
+        ambush
+        return if attacker.max_hit(clearing, ally: @ally).zero?
+
         atk, def_roll = assign_dice_rolls
 
         self.actual_attack = [atk, attacker.max_hit(clearing, ally: @ally)].min
@@ -80,7 +83,7 @@ module Root
           :f_dice_roll,
           attaacker_roll: attacker_roll,
           defender_roll: defender_roll,
-          clearing: clearing.priority
+          clearing: priority
         )
         [attacker_roll, defender_roll]
       end
@@ -109,7 +112,7 @@ module Root
           damage_done: actual_attack,
           damage_taken: actual_defend,
           other_faction: defender.faction_symbol,
-          clearing: clearing.priority
+          clearing: priority
         )
       end
 
@@ -130,6 +133,28 @@ module Root
 
       def dice_roll
         [0, 1, 2, 3].sample
+      end
+
+      private
+
+      def ambush
+        ambush_info = { faction: attacker.faction_symbol, clearing: priority }
+        foil_info = { clearing: priority }
+        def_card =
+          defender.player.choose(:f_ambush, defender.ambush_opts(clearing), info: ambush_info) { |c| c }
+        return unless def_card
+
+        defender.player.add_to_history(:f_ambush, ambush_info)
+        attacker.player.choose(:f_foil_ambush, attacker.ambush_opts(clearing), info: foil_info) do
+          attacker.player.add_to_history(:f_foil_ambush, foil_info)
+          return
+        end
+
+        pieces_removed << deal_damage(2, attacker, defender)
+      end
+
+      def priority
+        clearing.priority
       end
     end
   end

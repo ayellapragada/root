@@ -53,6 +53,14 @@ module Root
           prompt: 'Pick a clearing to battle in',
           history: ''
         },
+        f_ambush: {
+          prompt: 'Ambush the %s in clearing %s',
+          history: 'Ambushed the %s in clearing %s'
+        },
+        f_foil_ambush: {
+          prompt: 'Foil the ambush in clearing %s',
+          history: 'Foiled ambush in clearing %s'
+        },
         f_pick_building: {
           prompt: 'Pick a type of building to make',
           history: ''

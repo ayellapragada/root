@@ -57,4 +57,83 @@ RSpec.describe Root::Actions::Battle do
       expect(battle.other_faction(mouse_faction)).to eq(faction)
     end
   end
+
+  describe '#ambush' do
+    it 'if defender plays an ambush card, does 2 damage' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow(bird_player).to receive(:pick_option).and_return(0)
+
+      players = Root::Players::List.new(player, bird_player)
+      player.players = players
+
+      battle_cl = clearings[:one]
+      faction.place_meeple(battle_cl)
+      faction.place_meeple(battle_cl)
+      faction.place_meeple(battle_cl)
+      bird_faction.place_meeple(battle_cl)
+      bird_faction.place_meeple(battle_cl)
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 2)
+
+      bird_faction.hand << Root::Cards::Ambush.new(suit: :fox)
+
+      faction.battle
+
+      expect(battle_cl.meeples_of_type(:cats).count).to eq(0)
+      expect(battle_cl.meeples_of_type(:birds).count).to eq(1)
+    end
+
+    it 'can be cancelled if the attacker plays an ambush card' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow(bird_player).to receive(:pick_option).and_return(0)
+
+      players = Root::Players::List.new(player, bird_player)
+      player.players = players
+
+      battle_cl = clearings[:one]
+      faction.place_meeple(battle_cl)
+      faction.place_meeple(battle_cl)
+      faction.place_meeple(battle_cl)
+      bird_faction.place_meeple(battle_cl)
+      bird_faction.place_meeple(battle_cl)
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 2)
+
+      bird_faction.hand << Root::Cards::Ambush.new(suit: :fox)
+      faction.hand << Root::Cards::Ambush.new(suit: :bird)
+
+      faction.battle
+
+      expect(battle_cl.meeples_of_type(:cats).count).to eq(1)
+      expect(battle_cl.meeples_of_type(:birds).count).to eq(0)
+    end
+
+    it 'ends battle immediately if all attacking warriors removed' do
+      allow(player).to receive(:pick_option).and_return(0)
+      allow(bird_player).to receive(:pick_option).and_return(0)
+
+      players = Root::Players::List.new(player, bird_player)
+      player.players = players
+
+      battle_cl = clearings[:one]
+      faction.place_meeple(battle_cl)
+      faction.place_meeple(battle_cl)
+      faction.place_sawmill(battle_cl)
+      bird_faction.place_meeple(battle_cl)
+      bird_faction.place_meeple(battle_cl)
+
+      allow_any_instance_of(Root::Actions::Battle).
+        to receive(:dice_roll).and_return(2, 2)
+
+      bird_faction.hand << Root::Cards::Ambush.new(suit: :fox)
+
+      faction.battle
+
+      expect(battle_cl.meeples_of_type(:cats).count).to eq(0)
+      expect(battle_cl.buildings_of_type(:sawmill).count).to eq(1)
+      expect(battle_cl.meeples_of_type(:birds).count).to eq(2)
+    end
+  end
 end
