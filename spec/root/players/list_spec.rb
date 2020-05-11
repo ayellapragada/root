@@ -60,4 +60,17 @@ RSpec.describe Root::Players::List do
       )
     end
   end
+
+  describe '#options_to_coalition_with' do
+    it 'selects all factions have the minimum vp' do
+      list = Root::Players::List.default_player_list
+
+      list.fetch_player(:cats).faction.victory_points = 5
+      list.fetch_player(:mice).faction.victory_points = 5
+      list.fetch_player(:birds).faction.victory_points = :fox
+      list.fetch_player(:racoon).faction.victory_points = 10
+
+      expect(list.options_to_coalition_with(:racoon)).to eq(%i[mice cats])
+    end
+  end
 end

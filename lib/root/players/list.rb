@@ -97,6 +97,19 @@ module Root
         end
       end
 
+      def options_to_coalition_with(fac)
+        choices =
+          except_player(fetch_player(fac))
+          .map(&:faction)
+          .reject(&:win_via_dominance?)
+
+        min_vp = choices.map(&:victory_points).min
+
+        choices
+          .select { |faction| faction.victory_points == min_vp }
+          .map(&:faction_symbol)
+      end
+
       private
 
       attr_accessor :current_player_index

@@ -35,5 +35,15 @@ RSpec.describe Root::Actions::Dominance do
           .to raise_error(Root::Errors::WinConditionReached)
       end
     end
+
+    context 'when dominance suit is coalition for racoon' do
+      it 'does nothing' do
+        allow(racoon_player).to receive(:pick_option).and_return(0)
+        dominance = Root::Cards::Dominance.new(suit: :bird)
+        racoon_faction.play_card(dominance)
+
+        expect { described_class.new(cat_faction).check }.not_to raise_error
+      end
+    end
   end
 end

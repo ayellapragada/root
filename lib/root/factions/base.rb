@@ -87,14 +87,14 @@ module Root
       def victory_points=(value)
         @victory_points = value
 
-        return if Cards::VALID_SUITS.include?(value)
+        return if win_via_dominance?
         return if @victory_points < POINTS_FOR_WIN
 
         raise Errors::WinConditionReached.new(self, :vps)
       end
 
       def win_via_dominance?
-        Cards::VALID_SUITS.include?(@victory_points)
+        !@victory_points.is_a?(Numeric)
       end
 
       def set_base_pieces

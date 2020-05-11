@@ -21,7 +21,7 @@ module Root
 
         if %i[fox mouse rabbit].include?(suit)
           suit_dominance?(suit)
-        else
+        elsif suit == :bird
           bird_dominance?
         end
       end

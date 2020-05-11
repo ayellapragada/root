@@ -1285,6 +1285,23 @@ RSpec.describe Root::Factions::Racoon do
     end
   end
 
+  describe '#change_to_dominance' do
+    it 'forms a coalition with the person with the lowest vp' do
+      allow(player).to receive(:pick_option).and_return(0)
+      players =
+        Root::Players::List.new(player, cat_player, mouse_player, bird_player)
+      player.players = players
+
+      faction.victory_points = 10
+      cat_faction.victory_points = 5
+      mouse_faction.victory_points = 5
+      bird_faction.victory_points = :fox
+
+      faction.change_to_dominance
+      expect(faction.victory_points).to eq(:cats)
+    end
+  end
+
   def build_item(type)
     Root::Cards::Item.new(suit: :fox, craft: %i[rabbit], item: type, vp: 1)
   end
