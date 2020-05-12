@@ -196,13 +196,6 @@ module Root
         end
       end
 
-      def take_turn
-        super
-        birdsong
-        daylight
-        evening
-      end
-
       def birdsong
         super
         revolt

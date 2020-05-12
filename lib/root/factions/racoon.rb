@@ -184,13 +184,6 @@ module Root
           .positive?
       end
 
-      def take_turn
-        super
-        birdsong
-        daylight
-        evening
-      end
-
       def birdsong
         super
         refresh_items

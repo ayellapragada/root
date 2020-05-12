@@ -128,17 +128,10 @@ module Root
         end
       end
 
-      def take_turn
+      def birdsong
         super
         @turmoiled = false
         decree.clear_resolved
-        birdsong
-        daylight
-        evening
-      end
-
-      def birdsong
-        super
         draw_card if hand.empty?
 
         card = add_to_decree(req: true, birds_allowed: true)

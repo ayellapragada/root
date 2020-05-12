@@ -108,18 +108,11 @@ module Root
         board.clearings_other_than(clearing).each { |cl| place_meeple(cl) }
       end
 
-      def take_turn
-        super
-        @recruited = false
-        birdsong
-        daylight
-        evening
-      end
-
       # Same issue as recruit. If there isn't enough,
       # the player should be on prompted where to place it.
       def birdsong
         super
+        @recruited = false
         sawmill_clearings = board.clearings_with(:sawmill)
         if wood.count > sawmill_clearings.count
           sawmill_clearings.each do |cl|

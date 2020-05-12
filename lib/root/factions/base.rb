@@ -140,6 +140,9 @@ module Root
       def take_turn
         @crafted_suits = []
         improvements.each(&:refresh)
+        birdsong
+        daylight
+        evening
       end
 
       def item_list_for_info
