@@ -16,7 +16,7 @@ module Root
 
         # :nocov:
         def body
-          'Discard as defender, deal extra hit'
+          'Def: Discard, deal extra hit'
         end
         # :nocov:
       end

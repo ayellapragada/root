@@ -22,7 +22,7 @@ module Root
         5.times { deck << Cards::Base.new(suit: :fox) }
         2.times { deck << Cards::Base.new(suit: :mouse) }
         6.times { deck << Cards::Base.new(suit: :rabbit) }
-        3.times { deck << Cards::Base.new(suit: :bird) }
+        1.times { deck << Cards::Base.new(suit: :bird) }
       end
 
       # rubocop:disable all
@@ -85,6 +85,7 @@ module Root
         2.times { deck << Cards::Improvements::Armorers.new }
         2.times { deck << Cards::Improvements::Sappers.new }
         2.times { deck << Cards::Improvements::ScoutingParty.new }
+        2.times { deck << Cards::Improvements::BrutalTactics.new }
       end
     end
   end
@@ -94,9 +95,6 @@ end
 # :nocov:
 
 # Improvements
-# :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
-# :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
-
 # Birdsong
 # :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
 # :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.

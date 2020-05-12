@@ -73,6 +73,10 @@ module Root
           prompt: 'Discard Sappers to add extra hit to %s',
           history: 'Used Sappers to increase damage by 1'
         },
+        f_brutal_tactics: {
+          prompt: 'Get 1 extra damage to give 1 VP? %s damage now',
+          history: 'Used Brutal Tactics to increase damage by 1'
+        },
         f_pick_building: {
           prompt: 'Pick a type of building to make',
           history: ''

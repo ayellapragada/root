@@ -180,7 +180,7 @@ module Root
       def add_extra_hits
         self.actual_attack += 1 if defender.defenseless?(clearing)
         use_sappers(defender)
-        # use_brutal_tactics(attacker)
+        use_brutal_tactics(attacker)
       end
 
       def use_armorer(faction)
@@ -203,6 +203,17 @@ module Root
           faction.discard_improvement(improvement)
           faction.player.add_to_history(:f_sappers)
           self.actual_defend += 1
+        end
+      end
+
+      def use_brutal_tactics(faction)
+        info = { hits: actual_attack }
+
+        opts = faction.improvements_options(:brutal_tactics)
+        faction.player.choose(:f_brutal_tactics, opts, info: info) do
+          faction.player.add_to_history(:f_brutal_tactics)
+          self.actual_attack += 1
+          defender.victory_points += 1
         end
       end
 
