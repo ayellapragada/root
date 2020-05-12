@@ -138,9 +138,13 @@ module Root
       end
 
       def ambush
-        # return if attacker.improvement?(:scouting_party)
-
-        ambush_info = { faction: attacker.faction_symbol, clearing: priority }
+        attacker_immune = attacker.improvements_include?(:scouting_party)
+        text = attacker_immune ? '. Attacker ignores ambush' : ''
+        ambush_info = {
+          faction: attacker.faction_symbol,
+          clearing: priority,
+          text: text
+        }
         foil_info = { clearing: priority }
 
         def_ambush_opts = defender.ambush_opts(clearing)
@@ -148,16 +152,21 @@ module Root
         def_card =
           defender
           .player
-          .choose(:f_ambush, def_ambush_opts, info: ambush_info) { |c| c }
-        return unless def_card
+          .choose(:f_ambush, def_ambush_opts, info: ambush_info) do |card|
+            defender.discard_card(card)
+            card
+          end
+
+        return false if attacker_immune || !def_card
 
         foil_opts = attacker.ambush_opts(clearing)
         defender.player.add_to_history(:f_ambush, ambush_info)
         attacker
           .player
-          .choose(:f_foil_ambush, foil_opts, info: foil_info) do
+          .choose(:f_foil_ambush, foil_opts, info: foil_info) do |card|
+          attacker.discard_card(card)
           attacker.player.add_to_history(:f_foil_ambush, foil_info)
-          return
+          return false
         end
 
         pieces_removed << deal_damage(2, attacker, defender)

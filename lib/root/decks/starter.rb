@@ -20,7 +20,7 @@ module Root
 
       def add_base_cards
         5.times { deck << Cards::Base.new(suit: :fox) }
-        4.times { deck << Cards::Base.new(suit: :mouse) }
+        2.times { deck << Cards::Base.new(suit: :mouse) }
         6.times { deck << Cards::Base.new(suit: :rabbit) }
         3.times { deck << Cards::Base.new(suit: :bird) }
       end
@@ -84,6 +84,7 @@ module Root
       def add_improvements
         2.times { deck << Cards::Improvements::Armorers.new }
         2.times { deck << Cards::Improvements::Sappers.new }
+        2.times { deck << Cards::Improvements::ScoutingParty.new }
       end
     end
   end
@@ -93,8 +94,6 @@ end
 # :nocov:
 
 # Improvements
-# :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
-# :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
 # :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
 # :bird,  Brutal Tactics  FF  In battle as attacker, may deal an extra hit, but defender scores 1 VP.
 

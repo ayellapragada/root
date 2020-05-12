@@ -58,7 +58,7 @@ module Root
           history: ''
         },
         f_ambush: {
-          prompt: 'Ambush the %s in clearing %s',
+          prompt: 'Ambush the %s in clearing %s%s',
           history: 'Ambushed the %s in clearing %s'
         },
         f_foil_ambush: {

@@ -5,18 +5,18 @@ require_relative '../improvement'
 module Root
   module Cards
     module Improvements
-      class Sappers < Improvement
+      class ScoutingParty < Improvement
         def initialize
-          super(suit: :bird, name: 'Sappers', craft: %i[mouse])
+          super(suit: :mouse, name: 'Scouting Party', craft: %i[mouse mouse])
         end
 
         def type
-          :sappers
+          :scouting_party
         end
 
         # :nocov:
         def body
-          'Discard as defender, deal extra hit'
+          'As attacker, not affected by ambush'
         end
         # :nocov:
       end

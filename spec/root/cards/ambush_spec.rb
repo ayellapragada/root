@@ -60,6 +60,7 @@ RSpec.describe Root::Cards::Ambush do
 
       expect(battle_cl.meeples_of_type(:cats).count).to eq(0)
       expect(battle_cl.meeples_of_type(:birds).count).to eq(1)
+      expect(bird_faction.hand_size).to eq(0)
     end
 
     it 'can be cancelled if the attacker plays an ambush card' do
@@ -86,6 +87,8 @@ RSpec.describe Root::Cards::Ambush do
 
       expect(battle_cl.meeples_of_type(:cats).count).to eq(1)
       expect(battle_cl.meeples_of_type(:birds).count).to eq(0)
+      expect(faction.hand_size).to eq(0)
+      expect(bird_faction.hand_size).to eq(0)
     end
 
     it 'ends battle immediately if all attacking warriors removed' do
