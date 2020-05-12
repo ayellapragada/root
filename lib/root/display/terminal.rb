@@ -18,7 +18,7 @@ module Root
       end
 
       def be_shown_hand(hand)
-        res = hand.map(&:inspect).join("\n")
+        res = hand.empty? ? 'No Cards In Hand' : hand.map(&:inspect).join("\n")
         Menu.new(res).display
       end
 

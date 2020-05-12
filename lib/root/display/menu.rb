@@ -14,7 +14,7 @@ module Root
 
       # :nocov:
       def display
-        IO.popen('less', 'w') { |f| f.puts file }
+        IO.popen('less', 'w') { |f| f.puts text }
       end
       # :nocov:
     end
