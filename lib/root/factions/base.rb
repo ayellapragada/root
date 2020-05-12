@@ -10,7 +10,7 @@ module Root
       Symbol.include CoreExtensions::Symbol::Pluralize
       Array.include CoreExtensions::Array::BetterDeletes
 
-      DAYLIGHT_OPTIONS = %i[take_dominance play_dominance].freeze
+      DAYLIGHT_OPTIONS = %i[take_dominance play_dominance tax_collector].freeze
 
       SETUP_PRIORITY = 'ZZZ'
 
@@ -523,11 +523,11 @@ module Root
       end
 
       # code breakers, tax collectors
-      # improvements.each { |i| options << i.name if i.can_use?(fac) }
       # :nocov:
       def add_daylight_options(options)
         options << :take_dominance if take_dominance?
         options << :play_dominance if play_dominance?
+        options << :tax_collector if tax_collector?
         options
       end
       # :nocov:
@@ -576,6 +576,19 @@ module Root
         cards_in_hand_with_suit(clearing.suit).select(&:ambush?)
       end
 
+      def tax_collector?
+        usable_improvement?(:tax_collector)
+      end
+
+      def tax_collector
+        use_improvement_optionally(:tax_collector)
+      end
+
+      def usable_improvement?(type)
+        improvements_include?(type) &&
+          improvements_options(type).first.usable?(self)
+      end
+
       def available_improvements
         improvements.reject(&:exhausted)
       end
@@ -587,7 +600,9 @@ module Root
       def use_improvement(type)
         return unless improvements_include?(type)
 
-        improvements_options(type).first.faction_use(self)
+        improvement = improvements_options(type).first
+        improvement.faction_use(self)
+        improvement.exhaust
       end
 
       def use_improvement_optionally(type)

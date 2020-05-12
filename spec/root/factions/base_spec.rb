@@ -100,4 +100,31 @@ RSpec.describe Root::Factions::Base do
       expect(cat_faction.deck.dominance[:fox][:card]).to be nil
     end
   end
+
+  describe '#tax_collector?' do
+    it 'requires 1 warrior on the board and the crafted improvement' do
+      card = Root::Cards::Improvements::TaxCollector.new
+      cat_faction.improvements << card
+      expect(cat_faction.tax_collector?).to be false
+
+      cat_faction.place_meeple(clearings[:one])
+      expect(cat_faction.tax_collector?).to be true
+    end
+  end
+
+  describe '#tax_collector' do
+    it 'removes 1 warrior to draw 1 card' do
+      allow(cat_player).to receive(:pick_option).and_return(0)
+
+      card = Root::Cards::Improvements::TaxCollector.new
+      cat_faction.improvements << card
+      cat_faction.place_meeple(clearings[:one])
+
+      expect { cat_faction.tax_collector }
+        .to change(cat_faction, :hand_size)
+        .by(1)
+        .and change { clearings[:one].meeples_of_type(:cats).count }
+        .by(-1)
+    end
+  end
 end

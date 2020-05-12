@@ -77,6 +77,10 @@ module Root
           prompt: 'Get 1 extra damage to give 1 VP? %s damage now',
           history: 'Used Brutal Tactics to increase damage by 1'
         },
+        f_tax_collector: {
+          prompt: 'Pick clearing to remove 1 warrior from',
+          history: 'Removed 1 warrior in %s and drew a card'
+        },
         f_pick_building: {
           prompt: 'Pick a type of building to make',
           history: ''
