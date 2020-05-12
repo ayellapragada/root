@@ -23,13 +23,11 @@ module Root
           end
 
           def special
-            f.player.choose(:r_c_steal, special_options) do |fac_sym|
+            f.player.choose(:f_take_random_card, special_options) do |fac_sym|
               other_faction = f.players.fetch_player(fac_sym).faction
-              card = other_faction.hand.sample
-              f.hand << card
-              other_faction.hand.delete(card)
+              f.take_card_from(other_faction)
 
-              f.player.add_to_history(:r_c_steal, faction: fac_sym)
+              f.player.add_to_history(:f_take_random_card, faction: fac_sym)
             end
           end
         end

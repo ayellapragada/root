@@ -27,6 +27,7 @@ module Root
         handle_building_setup
         handle_token_setup
         @remaining_actions = 0
+        # improvements << Cards::Improvements::StandAndDeliver.new
       end
 
       def handle_meeple_setup
@@ -113,6 +114,11 @@ module Root
       def birdsong
         super
         @recruited = false
+
+        do_with_birdsong_options(:place_wood) { place_wood_in_all_sawmills }
+      end
+
+      def place_wood_in_all_sawmills
         sawmill_clearings = board.clearings_with(:sawmill)
         if wood.count > sawmill_clearings.count
           sawmill_clearings.each do |cl|

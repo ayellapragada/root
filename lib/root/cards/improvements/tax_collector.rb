@@ -20,7 +20,7 @@ module Root
 
         # :nocov:
         def body
-          'Daylight: Remove 1 of your warriors, draw 1'
+          'Daylight: May remove 1 of your warriors to draw 1'
         end
         # :nocov:
 

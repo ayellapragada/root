@@ -141,6 +141,10 @@ module Root
           prompt: '',
           history: 'Showed hand to %s'
         },
+        f_take_random_card: {
+          prompt: 'Pick a faction to take random card from',
+          history: 'Took a card from the %s'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'
@@ -260,10 +264,6 @@ module Root
         r_coalition: {
           prompt: 'Pick a faction to coalition with',
           history: 'Formed a coalition with the %s'
-        },
-        r_c_steal: {
-          prompt: 'Pick a faction steal a card from',
-          history: 'Stole a card from the %s'
         },
         r_c_day_labor: {
           prompt: 'Pick a card from the discard pile to take',

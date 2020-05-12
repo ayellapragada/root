@@ -198,8 +198,8 @@ module Root
 
       def birdsong
         super
-        revolt
-        spread_sympathy
+        do_with_birdsong_options(:revolt) { revolt }
+        do_with_birdsong_options(:spread_sympathy) { spread_sympathy }
       end
 
       def revolt

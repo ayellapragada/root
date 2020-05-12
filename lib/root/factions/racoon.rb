@@ -186,8 +186,8 @@ module Root
 
       def birdsong
         super
-        refresh_items
-        slip
+        do_with_birdsong_options(:refresh_items) { refresh_items }
+        do_with_birdsong_options(:slip) { slip }
       end
 
       def refresh_items

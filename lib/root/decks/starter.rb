@@ -19,7 +19,6 @@ module Root
       end
 
       def add_base_cards
-        2.times { deck << Cards::Base.new(suit: :fox) }
         1.times { deck << Cards::Base.new(suit: :bird) }
       end
 
@@ -89,17 +88,10 @@ module Root
         2.times { deck << Cards::Improvements::Cobbler.new }
         3.times { deck << Cards::Improvements::TaxCollector.new }
         2.times { deck << Cards::Improvements::Codebreakers.new }
+        2.times { deck << Cards::Improvements::StandAndDeliver.new }
       end
     end
   end
 end
 
-# rubocop:disable all
-# :nocov:
-
-# :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
-# :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
-# :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
-
-# :nocov:
-# rubocop:enable all
+# :bird,  Royal Claim  ????

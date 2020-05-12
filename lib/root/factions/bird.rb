@@ -134,10 +134,14 @@ module Root
         decree.clear_resolved
         draw_card if hand.empty?
 
-        card = add_to_decree(req: true, birds_allowed: true)
-        add_to_decree(req: false, birds_allowed: card.suit != :bird)
+        do_with_birdsong_options(:add_to_decree) { add_cards_to_decree }
 
         make_comeback_roost if board.clearings_with(:roost).empty?
+      end
+
+      def add_cards_to_decree
+        card = add_to_decree(req: true, birds_allowed: true)
+        add_to_decree(req: false, birds_allowed: card.suit != :bird)
       end
 
       def make_comeback_roost

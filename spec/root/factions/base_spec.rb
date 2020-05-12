@@ -158,4 +158,82 @@ RSpec.describe Root::Factions::Base do
       expect(cat_player).to have_received(:be_shown_hand)
     end
   end
+
+  describe '#do_with_birdsong_options' do
+    it 'allows user to pick multiple options in daylight when available' do
+      players = Root::Players::List.new(cat_player, bird_player)
+      cat_player.players = players
+      allow(cat_player).to receive(:pick_option).and_return(1, 0)
+
+      card = Root::Cards::Improvements::StandAndDeliver.new
+      cat_faction.improvements << card
+      bird_faction.hand << Root::Cards::Base.new(suit: :fox)
+
+      expect { cat_faction.birdsong }
+        .to change(cat_faction, :hand_size)
+        .by(1)
+        .and change(bird_faction, :hand_size)
+        .by(-1)
+    end
+
+    it 'can skip the extra options but must do the required ones' do
+      players = Root::Players::List.new(cat_player, bird_player)
+      cat_player.players = players
+      allow(cat_player).to receive(:pick_option).and_return(0, 1)
+
+      card = Root::Cards::Improvements::StandAndDeliver.new
+      cat_faction.improvements << card
+      bird_faction.hand << Root::Cards::Base.new(suit: :fox)
+
+      expect { cat_faction.birdsong }
+        .to change(cat_faction, :hand_size)
+        .by(0)
+        .and change(bird_faction, :hand_size)
+        .by(0)
+    end
+
+    it 'can start using improvement then cancel' do
+      players = Root::Players::List.new(cat_player, bird_player)
+      cat_player.players = players
+      # 1: select improvement
+      # 1: cancel / :none
+      # 0: pick wood
+      # 1: finish /:none
+      allow(cat_player).to receive(:pick_option).and_return(1, 1, 0, 1)
+
+      card = Root::Cards::Improvements::StandAndDeliver.new
+      cat_faction.improvements << card
+      bird_faction.hand << Root::Cards::Base.new(suit: :fox)
+
+      expect { cat_faction.birdsong }
+        .to change(cat_faction, :hand_size)
+        .by(0)
+        .and change(bird_faction, :hand_size)
+        .by(0)
+    end
+  end
+
+  describe '#royal_claim' do
+    it 'requires 4 matching craftable suits' do
+      allow(cat_player).to receive(:pick_option).and_return(1, 0)
+
+      card = Root::Cards::Improvements::RoyalClaim.new
+
+      expect(cat_faction.royal_claim?).to be false
+
+      cat_faction.improvements << card
+
+      expect(cat_faction.royal_claim?).to be true
+
+      cat_faction.place_meeple(clearings[:one])
+      cat_faction.place_meeple(clearings[:two])
+      cat_faction.place_meeple(clearings[:three])
+
+      expect { cat_faction.birdsong }
+        .to change(cat_faction, :victory_points)
+        .by(3)
+        .and change { cat_faction.improvements.count }
+        .by(-1)
+    end
+  end
 end

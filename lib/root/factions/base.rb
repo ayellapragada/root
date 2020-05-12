@@ -510,6 +510,55 @@ module Root
         use_improvement(:better_burrow_bank)
       end
 
+      def do_with_birdsong_options(option)
+        required_option_done = false
+
+        until birdsong_options(option, required_option_done).empty?
+          opts = birdsong_options(option, required_option_done)
+
+          if opts.length == 1 && opts.first == option
+            required_option_done = true
+            yield
+            return
+          end
+
+          player.choose(
+            :f_pick_action,
+            opts,
+            required: !required_option_done,
+            yield_anyway: true,
+            info: { actions: '' }
+          ) do |action|
+            # :nocov:
+            case action
+            when option
+              required_option_done = true
+              yield
+            when :stand_and_deliver then use_improvement(:stand_and_deliver)
+            when :royal_claim then use_improvement(:royal_claim)
+            when :none then return false
+            end
+            # :nocov:
+          end
+        end
+      end
+
+      def birdsong_options(option, required_option_done)
+        start = required_option_done ? [] : [option]
+        start.tap do |opts|
+          opts << :stand_and_deliver if stand_and_deliver?
+          opts << :royal_claim if royal_claim?
+        end
+      end
+
+      def stand_and_deliver?
+        usable_improvement?(:stand_and_deliver)
+      end
+
+      def royal_claim?
+        usable_improvement?(:royal_claim)
+      end
+
       def daylight
         use_improvement_optionally(:command_warren)
       end
@@ -530,7 +579,6 @@ module Root
         send(action)
       end
 
-      # code breakers, tax collectors
       # :nocov:
       def add_daylight_options(options)
         options << :take_dominance if take_dominance?
@@ -618,8 +666,7 @@ module Root
         return unless improvements_include?(type)
 
         improvement = improvements_options(type).first
-        improvement.faction_use(self)
-        improvement.exhaust
+        improvement.exhaust if improvement.faction_use(self)
       end
 
       def use_improvement_optionally(type)
@@ -648,6 +695,12 @@ module Root
 
       def other_factions
         players.except_player(player).map(&:faction)
+      end
+
+      def take_card_from(other_faction)
+        card = other_faction.hand.sample
+        hand << card
+        other_faction.hand.delete(card)
       end
 
       def show_hand(other_faction)
