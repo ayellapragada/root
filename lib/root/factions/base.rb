@@ -498,6 +498,7 @@ module Root
 
       def birdsong
         check_for_dominance if win_via_dominance?
+        use_improvement(:better_burrow_bank)
       end
 
       def check_for_dominance
@@ -574,6 +575,12 @@ module Root
         available_improvements.map(&:type).include?(type)
       end
 
+      def use_improvement(type)
+        return unless improvements_include?(type)
+
+        improvements_options(type).first.faction_use(self)
+      end
+
       def improvements_options(type)
         available_improvements.select { |imp| imp.type == type }
       end
@@ -581,6 +588,10 @@ module Root
       def discard_improvement(card)
         improvements.delete(card)
         deck.discard_card(card)
+      end
+
+      def other_factions
+        players.except_player(player).map(&:faction)
       end
 
       def pre_move(move_action); end

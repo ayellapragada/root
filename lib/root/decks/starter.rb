@@ -21,7 +21,7 @@ module Root
       def add_base_cards
         5.times { deck << Cards::Base.new(suit: :fox) }
         2.times { deck << Cards::Base.new(suit: :mouse) }
-        6.times { deck << Cards::Base.new(suit: :rabbit) }
+        4.times { deck << Cards::Base.new(suit: :rabbit) }
         1.times { deck << Cards::Base.new(suit: :bird) }
       end
 
@@ -86,6 +86,7 @@ module Root
         2.times { deck << Cards::Improvements::Sappers.new }
         2.times { deck << Cards::Improvements::ScoutingParty.new }
         2.times { deck << Cards::Improvements::BrutalTactics.new }
+        2.times { deck << Cards::Improvements::BetterBurrowBank.new }
       end
     end
   end
@@ -96,8 +97,6 @@ end
 
 # Improvements
 # Birdsong
-# :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
-# :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
 # :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 # :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 
