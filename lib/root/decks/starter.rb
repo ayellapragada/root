@@ -21,7 +21,6 @@ module Root
       def add_base_cards
         5.times { deck << Cards::Base.new(suit: :fox) }
         2.times { deck << Cards::Base.new(suit: :mouse) }
-        2.times { deck << Cards::Base.new(suit: :rabbit) }
         1.times { deck << Cards::Base.new(suit: :bird) }
       end
 
@@ -88,6 +87,7 @@ module Root
         2.times { deck << Cards::Improvements::BrutalTactics.new }
         2.times { deck << Cards::Improvements::BetterBurrowBank.new }
         2.times { deck << Cards::Improvements::CommandWarren.new }
+        2.times { deck << Cards::Improvements::Cobbler.new }
       end
     end
   end
@@ -107,10 +107,6 @@ end
 # :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
 # :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
 # :mouse,  Codebreakers  M  Once in Daylight, may look at another player's hand
-
-# Evening
-# :rabbit,  Cobbler  RR  At start of Evening, may take a move
-# :rabbit, Cobbler  RR  At start of Evening, may take a move
 
 # this might be doable with the same thing as dominance. whatever. not worth stressing about tbh
 # :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
