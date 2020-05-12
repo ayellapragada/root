@@ -116,6 +116,7 @@ module Root
           other_faction: defender.faction_symbol,
           clearing: priority
         )
+        true
       end
 
       def deal_damage(number, defender, attacker)

@@ -600,8 +600,7 @@ module Root
           ) do |improvement|
             return false if improvement == :none
 
-            improvement.faction_use(self)
-            improvement.exhaust
+            improvement.exhaust if improvement.faction_use(self)
           end
         end
       end
