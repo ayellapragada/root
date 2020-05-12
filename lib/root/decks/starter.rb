@@ -86,7 +86,7 @@ end
 # rubocop:disable all
 # :nocov:
 
-# Battle
+# Discarded Improvements
 # :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
 # :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
 # :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.

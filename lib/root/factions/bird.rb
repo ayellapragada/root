@@ -130,6 +130,7 @@ module Root
 
       def take_turn
         super
+        decree.clear_resolved
         birdsong
         daylight
         evening
@@ -172,7 +173,31 @@ module Root
 
       def daylight
         craft_with_specific_timing
-        resolve_decree
+
+        until daylight_options.empty?
+          player.choose(
+            :f_pick_action,
+            daylight_options,
+            yield_anyway: true,
+            required: !decree.resolved?,
+            info: { actions: '' }
+          ) do |action|
+            # :nocov:
+            case action
+            when :decree then resolve_decree
+            when ->(n) { DAYLIGHT_OPTIONS.include?(n) } then do_daylight_option(action)
+            when :none then return false
+            end
+            # :nocov:
+          end
+        end
+      end
+
+      def daylight_options
+        [].tap do |options|
+          options << :decree unless decree.resolved?
+          add_daylight_options(options)
+        end
       end
 
       VICTORY_POINTS = {
@@ -195,10 +220,10 @@ module Root
       end
 
       def resolve_decree
-        resolve_recruit
-        resolve_move
-        resolve_battle
-        resolve_build
+        res1 = resolve_recruit
+        res2 = resolve_move if res1
+        res3 = resolve_battle if res2
+        resolve_build if res3
       rescue TurmoilError
         turmoil!
       end
@@ -243,22 +268,19 @@ module Root
       end
 
       def resolve(action, key)
-        needed_suits = decree.suits_in(action)
+        return true if decree.resolved_action?(action)
 
-        until needed_suits.empty?
-          opts = add_daylight_options(needed_suits.uniq)
+        until decree.resolved_action?(action)
+          needed_suits = decree.suits_needed(action)
+          opts = get_options_with_turmoil!(action, needed_suits)
 
-          player.choose(:b_resolve_suit, opts, required: true, info: { action: action }) do |suit|
-            next do_daylight_option(suit) if DAYLIGHT_OPTIONS.include?(suit)
+          player.choose(key, opts, yield_anyway: true) do |clearing|
+            return false if clearing == :none
 
-            opts = get_options_with_turmoil!(action, [suit])
-
-            player.choose(key, opts, required: true) do |clearing|
-              suit = resolve_bird_in_decree(needed_suits, clearing)
-              needed_suits.delete_first(suit) if yield(clearing)
-            end
+            decree.resolve_in(action, clearing.suit) if yield(clearing)
           end
         end
+        true
       end
 
       def get_options_with_turmoil!(action, needed_suits)
@@ -266,10 +288,6 @@ module Root
         send(option_name, convert_needed_suits(needed_suits)).tap do |opts|
           raise TurmoilError if opts.empty?
         end
-      end
-
-      def resolve_bird_in_decree(needed_suits, clearing)
-        needed_suits.include?(clearing.suit) ? clearing.suit : :bird
       end
 
       def turmoil!

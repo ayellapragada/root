@@ -478,7 +478,7 @@ RSpec.describe Root::Factions::Bird do
       faction.victory_points = 10
       faction.hand << Root::Cards::Dominance.new(suit: :fox)
 
-      faction.resolve_decree
+      faction.daylight
       expect(faction.victory_points).to eq(:fox)
     end
   end
