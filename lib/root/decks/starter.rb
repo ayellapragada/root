@@ -97,12 +97,9 @@ end
 # rubocop:disable all
 # :nocov:
 
-# Improvements
-# Birdsong
+# :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
 # :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 # :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 
-# this might be doable with the same thing as dominance. whatever. not worth stressing about tbh
-# :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
 # :nocov:
 # rubocop:enable all
