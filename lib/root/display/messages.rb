@@ -66,8 +66,12 @@ module Root
           history: 'Foiled ambush in clearing %s'
         },
         f_armorers: {
-          prompt: 'Select Armorers to reduce %s rolled hits to 0',
-          history: 'Used Armorers to reduce %s damage'
+          prompt: 'Discard Armorers to reduce %s rolled hits to 0',
+          history: 'Discarded Armorers to reduce %s damage'
+        },
+        f_sappers: {
+          prompt: 'Discard Sappers to add extra hit to %s',
+          history: 'Used Sappers to increase damage by 1'
         },
         f_pick_building: {
           prompt: 'Pick a type of building to make',

@@ -22,7 +22,7 @@ module Root
         5.times { deck << Cards::Base.new(suit: :fox) }
         4.times { deck << Cards::Base.new(suit: :mouse) }
         6.times { deck << Cards::Base.new(suit: :rabbit) }
-        5.times { deck << Cards::Base.new(suit: :bird) }
+        3.times { deck << Cards::Base.new(suit: :bird) }
       end
 
       # rubocop:disable all
@@ -83,6 +83,7 @@ module Root
 
       def add_improvements
         2.times { deck << Cards::Improvements::Armorers.new }
+        2.times { deck << Cards::Improvements::Sappers.new }
       end
     end
   end
@@ -90,10 +91,6 @@ end
 
 # rubocop:disable all
 # :nocov:
-
-# Discarded Improvements
-# :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
-# :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
 
 # Improvements
 # :mouse,  Scouting Party  MM  As attacker in battle, you are not affected by ambush cards.
