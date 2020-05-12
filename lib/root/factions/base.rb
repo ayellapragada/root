@@ -209,7 +209,6 @@ module Root
       def do_until_stopped(key, options_method)
         loop do
           options = options_method.()
-          return if options.empty?
 
           return false unless player.choose(key, options) do |choice|
             yield(choice)
@@ -270,7 +269,7 @@ module Root
 
       def craftable_items
         @crafted_suits ||= []
-        usable_suits = suits_to_craft_with - @crafted_suits
+        usable_suits = suits_to_craft_with.delete_elements_in(@crafted_suits)
         return [] if usable_suits.empty?
 
         craftable_cards_in_hand(usable_suits)
@@ -278,8 +277,16 @@ module Root
 
       def craftable_cards_in_hand(suits)
         hand.select do |card|
-          card.craftable?(board) && card.craft.delete_elements_in(suits).empty?
+          card.craftable?(board) &&
+            card.craft.delete_elements_in(suits).empty? &&
+            not_already_crafted_improvement?(card)
         end
+      end
+
+      def not_already_crafted_improvement?(card)
+        return true unless card.improvement?
+
+        !improvements_include?(card.type)
       end
 
       def can_craft?
@@ -556,6 +563,10 @@ module Root
 
       def ambush_opts(clearing)
         cards_in_hand_with_suit(clearing.suit).select(&:ambush?)
+      end
+
+      def improvements_include?(type)
+        improvements.map(&:type).include?(type)
       end
 
       def improvements_options(type)

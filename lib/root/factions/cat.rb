@@ -359,7 +359,14 @@ module Root
       private
 
       def suits_to_craft_with
-        board.clearings_with(:workshop).map(&:suit)
+        clearings = board.clearings_with(:workshop)
+        res = []
+        clearings.each do |cl|
+          cl.buildings_of_type(:workshop).count.times do
+            res << cl.suit
+          end
+        end
+        res
       end
     end
   end

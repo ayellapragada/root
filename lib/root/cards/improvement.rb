@@ -28,6 +28,10 @@ module Root
         'Improvement Info'
       end
 
+      def improvement?
+        true
+      end
+
       def faction_craft(fac)
         fac.discard_card(self)
         fac.improvements << self

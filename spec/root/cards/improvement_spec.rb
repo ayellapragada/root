@@ -27,4 +27,22 @@ RSpec.describe Root::Cards::Improvement do
       expect(cat_faction.improvements).to eq([card])
     end
   end
+
+  describe '#faction_craft' do
+    it 'can not craft 2 of the same improvement' do
+      allow(cat_player).to receive(:pick_option).and_return(0)
+
+      card1 = Root::Cards::Improvement.new(suit: :bird, craft: [:fox])
+      card2 = Root::Cards::Improvement.new(suit: :bird, craft: [:fox])
+      cat_faction.improvements << card1
+
+      cat_faction.hand << card2
+
+      cat_faction.place_workshop(clearings[:eight])
+
+      cat_faction.craft_items
+
+      expect(cat_faction.improvements).to eq([card1])
+    end
+  end
 end

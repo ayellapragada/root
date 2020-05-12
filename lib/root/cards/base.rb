@@ -37,6 +37,10 @@ module Root
         false
       end
 
+      def improvement?
+        false
+      end
+
       def vizier?
         false
       end
