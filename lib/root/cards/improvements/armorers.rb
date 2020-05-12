@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../improvement'
+
 module Root
   module Cards
     module Improvements

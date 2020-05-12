@@ -81,6 +81,10 @@ module Root
           prompt: 'Pick clearing to remove 1 warrior from',
           history: 'Removed 1 warrior in %s and drew a card'
         },
+        f_codebreakers: {
+          prompt: 'Pick other factions hand to see',
+          history: ''
+        },
         f_pick_building: {
           prompt: 'Pick a type of building to make',
           history: ''

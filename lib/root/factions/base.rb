@@ -10,7 +10,12 @@ module Root
       Symbol.include CoreExtensions::Symbol::Pluralize
       Array.include CoreExtensions::Array::BetterDeletes
 
-      DAYLIGHT_OPTIONS = %i[take_dominance play_dominance tax_collector].freeze
+      DAYLIGHT_OPTIONS = %i[
+        take_dominance
+        play_dominance
+        tax_collector
+        codebreakers
+      ].freeze
 
       SETUP_PRIORITY = 'ZZZ'
 
@@ -528,6 +533,7 @@ module Root
         options << :take_dominance if take_dominance?
         options << :play_dominance if play_dominance?
         options << :tax_collector if tax_collector?
+        options << :codebreakers if codebreakers?
         options
       end
       # :nocov:
@@ -580,8 +586,16 @@ module Root
         usable_improvement?(:tax_collector)
       end
 
+      def codebreakers?
+        usable_improvement?(:codebreakers)
+      end
+
       def tax_collector
         use_improvement_optionally(:tax_collector)
+      end
+
+      def codebreakers
+        use_improvement_optionally(:codebreakers)
       end
 
       def usable_improvement?(type)

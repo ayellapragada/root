@@ -127,4 +127,35 @@ RSpec.describe Root::Factions::Base do
         .by(-1)
     end
   end
+
+  describe '#codebreakers?' do
+    it 'requires other factions to have a card in hand' do
+      players = Root::Players::List.new(cat_player, bird_player)
+      cat_player.players = players
+
+      card = Root::Cards::Improvements::Codebreakers.new
+      cat_faction.improvements << card
+      expect(cat_faction.codebreakers?).to be false
+
+      bird_faction.hand << Root::Cards::Base.new(suit: :fox)
+      expect(cat_faction.codebreakers?).to be true
+    end
+  end
+
+  describe '#codebreakers' do
+    it 'is shown other factions hand' do
+      players = Root::Players::List.new(cat_player, bird_player)
+      cat_player.players = players
+      allow(cat_player).to receive(:pick_option).and_return(0)
+      allow(cat_player).to receive(:be_shown_hand)
+
+      card = Root::Cards::Improvements::Codebreakers.new
+      cat_faction.improvements << card
+      bird_faction.hand << Root::Cards::Base.new(suit: :fox)
+
+      cat_faction.codebreakers
+
+      expect(cat_player).to have_received(:be_shown_hand)
+    end
+  end
 end
