@@ -565,12 +565,16 @@ module Root
         cards_in_hand_with_suit(clearing.suit).select(&:ambush?)
       end
 
+      def available_improvements
+        improvements.reject(&:exhausted)
+      end
+
       def improvements_include?(type)
-        improvements.map(&:type).include?(type)
+        available_improvements.map(&:type).include?(type)
       end
 
       def improvements_options(type)
-        improvements.select { |imp| imp.type == type }
+        available_improvements.select { |imp| imp.type == type }
       end
 
       def discard_improvement(card)
