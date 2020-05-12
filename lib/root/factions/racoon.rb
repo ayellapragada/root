@@ -590,6 +590,7 @@ module Root
       end
 
       def evening
+        super
         evening_rest
         draw_cards
         discard_items

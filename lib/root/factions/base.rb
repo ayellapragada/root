@@ -134,6 +134,7 @@ module Root
 
       def take_turn
         @crafted_suits = []
+        improvements.each(&:refresh)
       end
 
       def item_list_for_info
@@ -502,7 +503,11 @@ module Root
       end
 
       def daylight
-        use_improvement(:command_warren)
+        use_improvement_optionally(:command_warren)
+      end
+
+      def evening
+        use_improvement_optionally(:cobbler)
       end
 
       def check_for_dominance
@@ -583,6 +588,22 @@ module Root
         return unless improvements_include?(type)
 
         improvements_options(type).first.faction_use(self)
+      end
+
+      def use_improvement_optionally(type)
+        until improvements_options(type).empty?
+          player.choose(
+            :f_pick_action,
+            improvements_options(type),
+            yield_anyway: true,
+            info: { actions: '' }
+          ) do |improvement|
+            return false if improvement == :none
+
+            improvement.faction_use(self)
+            improvement.exhaust
+          end
+        end
       end
 
       def improvements_options(type)

@@ -211,6 +211,7 @@ module Root
       }.freeze
 
       def evening
+        super
         vps = VICTORY_POINTS[:roost][current_number_out(:roost) - 1]
         gain_vps(vps)
 

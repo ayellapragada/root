@@ -389,6 +389,7 @@ module Root
       end
 
       def evening
+        super
         military_operations
         draw_cards
       end

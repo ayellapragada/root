@@ -194,6 +194,7 @@ module Root
       }.freeze
 
       def evening
+        super
         draw_cards
       end
 

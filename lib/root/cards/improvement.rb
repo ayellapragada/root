@@ -32,6 +32,14 @@ module Root
         true
       end
 
+      def exhaust
+        @exhausted = true
+      end
+
+      def refresh
+        @exhausted = false
+      end
+
       def faction_craft(fac)
         fac.discard_card(self)
         fac.improvements << self

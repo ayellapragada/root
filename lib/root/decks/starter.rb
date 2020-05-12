@@ -102,8 +102,6 @@ end
 # :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 
 # Daylight
-# :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
-# :rabbit,  Command Warren  RR  At start of Daylight, may initiate a battle
 # :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
 # :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
 # :fox,  Tax Collector  RFM  Once in Daylight, remove 1 of your warriors, draw 1
