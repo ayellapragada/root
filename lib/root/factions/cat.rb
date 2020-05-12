@@ -142,6 +142,7 @@ module Root
       end
 
       def daylight
+        super
         @remaining_actions = 3
         craft_with_specific_timing
 

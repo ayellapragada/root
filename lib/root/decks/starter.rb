@@ -21,7 +21,7 @@ module Root
       def add_base_cards
         5.times { deck << Cards::Base.new(suit: :fox) }
         2.times { deck << Cards::Base.new(suit: :mouse) }
-        4.times { deck << Cards::Base.new(suit: :rabbit) }
+        2.times { deck << Cards::Base.new(suit: :rabbit) }
         1.times { deck << Cards::Base.new(suit: :bird) }
       end
 
@@ -87,6 +87,7 @@ module Root
         2.times { deck << Cards::Improvements::ScoutingParty.new }
         2.times { deck << Cards::Improvements::BrutalTactics.new }
         2.times { deck << Cards::Improvements::BetterBurrowBank.new }
+        2.times { deck << Cards::Improvements::CommandWarren.new }
       end
     end
   end

@@ -173,6 +173,7 @@ module Root
       end
 
       def daylight
+        super
         craft_with_specific_timing
 
         until daylight_options.empty? || @turmoiled

@@ -299,6 +299,7 @@ module Root
       SIMPLE_SPECIALS = %i[steal day_labor].freeze
 
       def daylight
+        super
         relationships.reset_turn_counters
 
         until daylight_options.empty?

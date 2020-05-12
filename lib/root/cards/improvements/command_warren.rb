@@ -5,31 +5,27 @@ require_relative '../improvement'
 module Root
   module Cards
     module Improvements
-      class BetterBurrowBank < Improvement
+      class CommandWarren < Improvement
         def initialize
           super(
             suit: :rabbit,
-            name: 'Better Burrow Bank',
+            name: 'Command Warren',
             craft: %i[rabbit rabbit]
           )
         end
 
         def type
-          :better_burrow_bank
+          :command_warren
         end
 
         # :nocov:
         def body
-          'Start of Birdsong: You and another player draw a card'
+          'Start of Daylight: May initiate a battle'
         end
         # :nocov:
 
         def faction_use(faction)
-          opts = faction.other_factions
-          faction.player.choose(:f_better_burrow_bank, opts) do |other|
-            faction.draw_card
-            other.draw_card
-          end
+          faction.battle
         end
       end
     end

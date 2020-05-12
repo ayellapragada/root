@@ -318,6 +318,7 @@ module Root
       end
 
       def daylight
+        super
         until daylight_options.empty?
           player.choose(
             :f_pick_action,

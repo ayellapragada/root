@@ -501,6 +501,10 @@ module Root
         use_improvement(:better_burrow_bank)
       end
 
+      def daylight
+        use_improvement(:command_warren)
+      end
+
       def check_for_dominance
         Actions::Dominance.new(self).check
       end
