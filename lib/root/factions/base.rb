@@ -9,6 +9,7 @@ module Root
     class Base
       Symbol.include CoreExtensions::Symbol::Pluralize
       Array.include CoreExtensions::Array::BetterDeletes
+
       DAYLIGHT_OPTIONS = %i[take_dominance play_dominance].freeze
 
       SETUP_PRIORITY = 'ZZZ'
