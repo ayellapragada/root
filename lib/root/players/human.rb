@@ -16,6 +16,10 @@ module Root
       def render_game(game, clearings: nil)
         display.render_game(game, self, clearings)
       end
+
+      def be_shown_hand(hand)
+        display.be_shown_hand(hand)
+      end
     end
   end
 end

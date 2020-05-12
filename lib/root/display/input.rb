@@ -135,12 +135,12 @@ module Root
 
       def render_help
         file = File.read(File.join(File.dirname(__FILE__), 'help.txt'))
-        IO.popen('less', 'w') { |f| f.puts file }
+        Menu.new(file).display
       end
 
       def render_discard
         res = discard.empty? ? 'None' : @discard.map(&:inspect).join("\n")
-        IO.popen('less', 'w') { |f| f.puts res }
+        Menu.new(res).display
       end
       # :nocov:
     end

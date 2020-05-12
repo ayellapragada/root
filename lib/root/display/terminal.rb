@@ -17,6 +17,11 @@ module Root
         input.handle_input
       end
 
+      def be_shown_hand(hand)
+        res = hand.map(&:inspect).join("\n")
+        Menu.new(res).display
+      end
+
       def render_game(game, current_player, clearings)
         Cursor.hide_cursor
         map = WoodlandsMap.new(game.board, clearings).display

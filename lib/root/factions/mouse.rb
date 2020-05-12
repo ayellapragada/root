@@ -185,7 +185,10 @@ module Root
 
       def outrage(other_faction, suit)
         card_opts = other_faction.cards_in_hand_with_suit(suit)
-        return draw_to_supporters if card_opts.empty?
+        if card_opts.empty?
+          other_faction.show_hand(self)
+          return draw_to_supporters
+        end
 
         other_faction.player.choose(:m_outrage_card, card_opts, required: true) do |card|
           other_faction.hand.delete(card)

@@ -16,6 +16,8 @@ module Root
       end
 
       def render_game(*); end
+
+      def be_shown_hand(*); end
     end
   end
 end

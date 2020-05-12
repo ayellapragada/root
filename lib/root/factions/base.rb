@@ -633,6 +633,10 @@ module Root
         players.except_player(player).map(&:faction)
       end
 
+      def show_hand(other_faction)
+        Actions::ShowHand.new(self, other_faction).()
+      end
+
       def pre_move(move_action); end
 
       def pre_battle(battle); end

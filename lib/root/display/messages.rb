@@ -133,6 +133,10 @@ module Root
           prompt: 'Select an available Dominance card to take',
           history: 'Took the %s dominance card'
         },
+        f_reveal_hand: {
+          prompt: '',
+          history: 'Showed hand to %s'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'
