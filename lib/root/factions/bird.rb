@@ -219,11 +219,15 @@ module Root
         DRAW_BONUSES[:roost][0...current_number_out(:roost)].sum
       end
 
+      # This is tested, just now the if branches.
+      # And those are very low priority to test tbh.
       def resolve_decree
+        # :nocov:
         res1 = resolve_recruit
         res2 = resolve_move if res1
         res3 = resolve_battle if res2
         resolve_build if res3
+        # :nocov:
       rescue TurmoilError
         turmoil!
       end
@@ -275,7 +279,10 @@ module Root
           opts = get_options_with_turmoil!(action, needed_suits)
 
           player.choose(key, opts, yield_anyway: true) do |clearing|
+            # :nocov:
             return false if clearing == :none
+
+            # :nocov:
 
             decree.resolve_in(action, clearing.suit) if yield(clearing)
           end
