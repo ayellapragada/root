@@ -46,5 +46,22 @@ RSpec.describe Root::Cards::Improvements::CommandWarren do
       expect(battle_cl.meeples_of_type(:mice).count).to eq(1)
       expect(battle_cl.meeples_of_type(:cats).count).to eq(1)
     end
+
+    it 'can be cancelled part of the way through as well' do
+      allow(mouse_player).to receive(:pick_option).and_return(0, 0, 1)
+      allow(cat_player).to receive(:pick_option).and_return(0)
+      players = Root::Players::List.new(mouse_player, cat_player)
+      mouse_player.players = players
+
+      battle_cl = clearings[:one]
+      mouse_faction.place_meeple(battle_cl)
+      cat_faction.place_meeple(battle_cl)
+
+      mouse_faction.improvements << described_class.new
+
+      mouse_faction.daylight
+      expect(battle_cl.meeples_of_type(:mice).count).to eq(1)
+      expect(battle_cl.meeples_of_type(:cats).count).to eq(1)
+    end
   end
 end

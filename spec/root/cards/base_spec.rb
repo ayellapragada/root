@@ -5,6 +5,7 @@ RSpec.describe Root::Cards::Base do
     it 'always has a suit' do
       card = Root::Cards::Base.new(suit: :fox)
       expect(card.suit).to be(:fox)
+      expect(card.body).to eq(' ')
     end
   end
 end

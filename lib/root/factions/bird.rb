@@ -285,9 +285,8 @@ module Root
             # :nocov:
             return false if clearing == :none
 
-            # :nocov:
-
             decree.resolve_in(action, clearing.suit) if yield(clearing)
+            # :nocov:
           end
         end
         true
