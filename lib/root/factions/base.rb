@@ -55,13 +55,15 @@ module Root
 
       attr_reader :victory_points
 
-      attr_reader :hand, :player, :meeples, :buildings, :tokens, :items
+      attr_reader :hand, :player, :meeples, :buildings, :tokens, :items,
+                  :improvements
       attr_writer :board
 
       def initialize(player)
         @player = player
         @hand = []
         @items = []
+        @improvements = []
         @victory_points = 0
         set_base_pieces
         handle_faction_token_setup
@@ -554,6 +556,15 @@ module Root
 
       def ambush_opts(clearing)
         cards_in_hand_with_suit(clearing.suit).select(&:ambush?)
+      end
+
+      def improvements_options(type)
+        improvements.select { |imp| imp.type == type }
+      end
+
+      def discard_improvement(card)
+        improvements.delete(card)
+        deck.discard_card(card)
       end
 
       def pre_move(move_action); end

@@ -37,6 +37,10 @@ module Root
           prompt: 'Pick an item to craft',
           history: 'Crafted %s for %s VP(s)'
         },
+        f_improvement: {
+          prompt: '',
+          history: 'Built %s'
+        },
         f_discard_card: {
           prompt: 'Pick a card to discard',
           history: 'Discarded a %s card'
@@ -60,6 +64,10 @@ module Root
         f_foil_ambush: {
           prompt: 'Foil the ambush in clearing %s',
           history: 'Foiled ambush in clearing %s'
+        },
+        f_armorers: {
+          prompt: 'Select Armorers to reduce %s rolled hits to 0',
+          history: 'Used Armorers to reduce %s damage'
         },
         f_pick_building: {
           prompt: 'Pick a type of building to make',

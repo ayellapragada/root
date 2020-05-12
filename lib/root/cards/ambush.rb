@@ -12,7 +12,7 @@ module Root
 
       # :nocov:
       def inspect
-        name_with_suit.to_s
+        "#{name_with_suit.to_s} | #{body}"
       end
       # :nocov:
 

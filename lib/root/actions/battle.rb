@@ -30,7 +30,9 @@ module Root
         self.actual_attack = [atk, attacker.max_hit(clearing, ally: @ally)].min
         self.actual_defend = [def_roll, defender.max_hit(clearing)].min
 
-        self.actual_attack += 1 if defender.defenseless?(clearing)
+        armorers
+
+        add_extra_hits
 
         commence_battle
       end
@@ -135,22 +137,56 @@ module Root
         [0, 1, 2, 3].sample
       end
 
-      private
-
       def ambush
+        # return if attacker.improvement?(:scouting_party)
+
         ambush_info = { faction: attacker.faction_symbol, clearing: priority }
         foil_info = { clearing: priority }
+
+        def_ambush_opts = defender.ambush_opts(clearing)
+
         def_card =
-          defender.player.choose(:f_ambush, defender.ambush_opts(clearing), info: ambush_info) { |c| c }
+          defender
+          .player
+          .choose(:f_ambush, def_ambush_opts, info: ambush_info) { |c| c }
         return unless def_card
 
+        foil_opts = attacker.ambush_opts(clearing)
         defender.player.add_to_history(:f_ambush, ambush_info)
-        attacker.player.choose(:f_foil_ambush, attacker.ambush_opts(clearing), info: foil_info) do
+        attacker
+          .player
+          .choose(:f_foil_ambush, foil_opts, info: foil_info) do
           attacker.player.add_to_history(:f_foil_ambush, foil_info)
           return
         end
 
         pieces_removed << deal_damage(2, attacker, defender)
+      end
+
+      def armorers
+        use_armorer(defender)
+        use_armorer(attacker)
+      end
+
+      def add_extra_hits
+        self.actual_attack += 1 if defender.defenseless?(clearing)
+        # defender.sappers
+        # attacker.brutal_tactics
+      end
+
+      def use_armorer(faction)
+        opts = faction.improvements_options(:armorers)
+
+        return false if opts.empty?
+
+        hits = attacker?(faction) ? actual_defend : self.actual_attack
+        info = { hits: hits }
+
+        faction.player.choose(:f_armorers, opts, info: info) do |improvement|
+          faction.discard_improvement(improvement)
+          faction.player.add_to_history(:f_armorers, info)
+          attacker?(faction) ? self.actual_defend = 0 : self.actual_attack = 0
+        end
       end
 
       def priority

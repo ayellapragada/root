@@ -97,6 +97,8 @@ module Root
       end
 
       def choose(key, choices, required: false, yield_anyway: false, info: {})
+        return if choices.empty?
+
         extra_keys = required ? [] : [:none]
         total_options = choices + extra_keys
         choice = pick_option(key, total_options, info: info)

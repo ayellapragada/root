@@ -130,6 +130,7 @@ module Root
 
       def take_turn
         super
+        @turmoiled = false
         decree.clear_resolved
         birdsong
         daylight
@@ -174,7 +175,7 @@ module Root
       def daylight
         craft_with_specific_timing
 
-        until daylight_options.empty?
+        until daylight_options.empty? || @turmoiled
           player.choose(
             :f_pick_action,
             daylight_options,
@@ -298,6 +299,7 @@ module Root
       end
 
       def turmoil!
+        @turmoiled = true
         player.add_to_history(:b_turmoil)
         change_victory_points_for_turmoil
         discard_from_decree

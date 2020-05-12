@@ -27,7 +27,7 @@ module Root
         "#{item.capitalize}, +#{vp} VPs"
       end
 
-      def faction_craft(fac, *)
+      def faction_craft(fac)
         fac.board.items.delete_first(item)
         fac.discard_card(self)
         fac.gain_vps(fac.handle_item_vp(self))

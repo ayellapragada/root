@@ -15,13 +15,14 @@ module Root
         add_favor_cards
         add_dominance_cards
         add_ambush_cards
+        add_improvements
       end
 
       def add_base_cards
         5.times { deck << Cards::Base.new(suit: :fox) }
         4.times { deck << Cards::Base.new(suit: :mouse) }
         6.times { deck << Cards::Base.new(suit: :rabbit) }
-        7.times { deck << Cards::Base.new(suit: :bird) }
+        5.times { deck << Cards::Base.new(suit: :bird) }
       end
 
       # rubocop:disable all
@@ -79,6 +80,10 @@ module Root
           deck << Cards::Ambush.new(suit: suit)
         end
       end
+
+      def add_improvements
+        2.times { deck << Cards::Improvements::Armorers.new }
+      end
     end
   end
 end
@@ -87,8 +92,6 @@ end
 # :nocov:
 
 # Discarded Improvements
-# :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
-# :bird,  Armorers  F  In battle, may discard this to ignore all rolled hits taken
 # :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
 # :bird,  Sappers  M  In battle as defender, discard to deal an extra hit.
 
@@ -101,7 +104,6 @@ end
 # Birdsong
 # :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
 # :rabbit,  Better Burrow Bank  RR  At start of Birdsong, you and another player draw a card.
-# :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
 # :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 # :fox,  Stand and Deliver!  MMM  In Birdsong, may take a random card from another play. That player scores 1 VP.
 
@@ -118,5 +120,7 @@ end
 # :rabbit,  Cobbler  RR  At start of Evening, may take a move
 # :rabbit, Cobbler  RR  At start of Evening, may take a move
 
+# this might be doable with the same thing as dominance. whatever. not worth stressing about tbh
+# :bird,  Royal Claim  ????  In Birdsong, discard to score 1VP per ruled clearing.
 # :nocov:
 # rubocop:enable all
