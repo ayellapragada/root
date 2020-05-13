@@ -117,7 +117,7 @@ module Root
       end
 
       def handle_getting_input
-        menu_opts = %w[? help discard game clear]
+        menu_opts = %w[? help discard game hist clear]
         loop do
           option = gets.chomp
           Cursor.clear_previous_line
@@ -131,6 +131,7 @@ module Root
         help_opts = %w[? help]
         render_help if help_opts.include?(option)
         render_discard if option == 'discard'
+        render_history if option == 'hist'
         render_game_state if option == 'game'
         system('clear') || system('cls') if option == 'clear'
       end
@@ -141,7 +142,18 @@ module Root
       end
 
       def render_discard
-        res = game.deck.discard.empty? ? 'None' : @discard.map(&:inspect).join("\n")
+        discard = game.deck.discard
+        res = discard.empty? ? 'None' : discard.map(&:inspect).join("\n")
+        Menu.new(res).display
+      end
+
+      def render_history
+        res = game.history.map do |hist|
+          [
+            hist[:player],
+            Messages::LIST[hist[:key]][:history] % hist[:opts].values
+          ].join(' | ')
+        end.join("\n")
         Menu.new(res).display
       end
 
