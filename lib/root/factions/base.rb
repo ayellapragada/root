@@ -254,10 +254,21 @@ module Root
 
       def craft_items
         @crafted_suits ||= []
-        do_until_stopped(:f_item_select, proc { craftable_items }) do |item|
-          @crafted_suits.concat(item.craft)
-          yield(item) if block_given?
-          craft_item(item)
+        do_until_stopped(:f_item_select, proc { craftable_items }) do |card|
+          if card.royal_claim? && usable_suits.count == 4
+            @crafted_suits.concat(usable_suits)
+          elsif card.royal_claim? && usable_suits.count > 4
+            4.times do
+              player.choose(:f_suit_craft, usable_suits, required: true) do |suit|
+                @crafted_suits << suit
+              end
+            end
+            @crafted_suits.concat(card.craft)
+          else
+            @crafted_suits.concat(card.craft)
+          end
+          yield(card) if block_given?
+          craft_item(card)
         end
       end
 
@@ -279,17 +290,21 @@ module Root
 
       def craftable_items
         @crafted_suits ||= []
-        usable_suits = suits_to_craft_with.delete_elements_in(@crafted_suits)
         return [] if usable_suits.empty?
 
-        craftable_cards_in_hand(usable_suits)
+        craftable_cards_in_hand
       end
 
-      def craftable_cards_in_hand(suits)
+      def usable_suits
+        suits_to_craft_with.delete_elements_in(@crafted_suits)
+      end
+
+      def craftable_cards_in_hand
         hand.select do |card|
-          card.craftable?(board) &&
-            card.craft.delete_elements_in(suits).empty? &&
-            not_already_crafted_improvement?(card)
+          (card.royal_claim? && usable_suits.length >= 4) ||
+            (card.craftable?(board) &&
+             card.craft.delete_elements_in(usable_suits).empty? &&
+             not_already_crafted_improvement?(card))
         end
       end
 

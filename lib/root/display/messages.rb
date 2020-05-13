@@ -145,6 +145,14 @@ module Root
           prompt: 'Pick a faction to take random card from',
           history: 'Took a card from the %s'
         },
+        f_suit_craft: {
+          prompt: 'Pick a suit to craft with',
+          history: ''
+        },
+        f_royal_claim: {
+          prompt: '',
+          history: 'Played Royal Claim and gained %s victory points'
+        },
         b_new_leader: {
           prompt: 'Pick the next leader',
           history: 'Picked %s as new Leader'

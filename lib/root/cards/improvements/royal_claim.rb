@@ -8,7 +8,7 @@ module Root
       # This is a lil tricky bugger
       class RoyalClaim < Improvement
         def initialize
-          super(suit: :bird, name: 'Royal Claim', craft: %i[? ? ? ?])
+          super(suit: :bird, name: 'Royal Claim', craft: %i[any any any any])
         end
 
         def type
@@ -28,9 +28,14 @@ module Root
             .clearings_with_rule(faction.faction_symbol).count
           faction.gain_vps(vps)
           faction.discard_improvement(self)
+          faction.player.add_to_history(:f_royal_claim, vps: vps)
         end
 
         def usable?(*)
+          true
+        end
+
+        def royal_claim?
           true
         end
       end

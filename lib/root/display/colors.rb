@@ -9,7 +9,8 @@ module Root
         mouse: :sandybrown,
         rabbit: :gold,
         bird: :deepskyblue,
-        forest: :darkgreen
+        forest: :darkgreen,
+        any: :thistle
       }.freeze
     end
   end

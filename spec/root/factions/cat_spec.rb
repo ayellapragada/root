@@ -562,6 +562,50 @@ RSpec.describe Root::Factions::Cat do
       expect(faction.victory_points).to be(0)
       expect(faction.items).not_to include(:tea)
     end
+
+    context 'with 4 usable suits and crafting royal_claim' do
+      it 'uses available suits' do
+        allow(player).to receive(:pick_option).and_return(0)
+        card = Root::Cards::Improvements::RoyalClaim.new
+        card_unable_to_be_crafted = Root::Cards::Item.new(
+          suit: :fox,
+          craft: %i[rabbit],
+          item: :coin,
+          vp: 1
+        )
+        faction.hand << card
+        faction.hand << card_unable_to_be_crafted
+
+        faction.place_workshop(clearings[:one])
+        faction.place_workshop(clearings[:four])
+        faction.place_workshop(clearings[:five])
+        faction.place_workshop(clearings[:five])
+
+        faction.craft_items
+        faction.craft_items
+        expect(faction.improvements.count).to eq(1)
+        expect(faction.hand_size).to eq(1)
+      end
+    end
+
+    context 'with more than 4 usable suits and crafting royal_claim' do
+      it 'uses available suits' do
+        allow(player).to receive(:pick_option).and_return(0)
+        card = Root::Cards::Improvements::RoyalClaim.new
+
+        faction.hand << card
+
+        faction.place_workshop(clearings[:one])
+        faction.place_workshop(clearings[:four])
+        faction.place_workshop(clearings[:five])
+        faction.place_workshop(clearings[:five])
+        faction.place_workshop(clearings[:nine])
+        faction.place_workshop(clearings[:nine])
+
+        faction.craft_items
+        expect(faction.improvements.count).to eq(1)
+      end
+    end
   end
 
   describe 'craftable_items' do
@@ -631,13 +675,26 @@ RSpec.describe Root::Factions::Cat do
         expect(faction.craftable_items).not_to include(card)
       end
     end
+
+    context 'when royal claim' do
+      it 'needs 4 workshops anywhere' do
+        card = Root::Cards::Improvements::RoyalClaim.new
+        faction.hand << card
+        expect(faction.craftable_items).to eq([])
+
+        faction.place_workshop(clearings[:one])
+        faction.place_workshop(clearings[:four])
+        faction.place_workshop(clearings[:five])
+        faction.place_workshop(clearings[:five])
+
+        expect(faction.craftable_items).to eq([card])
+      end
+    end
   end
 
   describe '#evening' do
     context 'with no draw bonuses' do
       it 'draw one card' do
-        player.setup
-
         expect { faction.evening }.to change(faction, :hand_size).by(1)
       end
     end

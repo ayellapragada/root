@@ -27,7 +27,6 @@ module Root
         handle_building_setup
         handle_token_setup
         @remaining_actions = 0
-        # improvements << Cards::Improvements::StandAndDeliver.new
       end
 
       def handle_meeple_setup

@@ -45,6 +45,10 @@ module Root
         false
       end
 
+      def royal_claim?
+        false
+      end
+
       def name_with_suit
         "#{name} (#{suit[0].upcase})"
       end
