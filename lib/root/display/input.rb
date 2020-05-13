@@ -7,7 +7,6 @@ module Root
     # Code for displaying the prompt, and getting input.
     class Input
       class InputError < StandardError; end
-      class ShowMenu < StandardError; end
 
       attr_reader :key, :options, :player, :game, :info
 
