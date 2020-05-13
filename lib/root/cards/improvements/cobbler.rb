@@ -19,8 +19,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Start of Evening'
+        end
+
         def body
-          'Start of Evening: May take a move'
+          'May take a move'
         end
         # :nocov:
 

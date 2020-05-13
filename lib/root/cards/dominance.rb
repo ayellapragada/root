@@ -12,7 +12,11 @@ module Root
 
       # :nocov:
       def inspect
-        name_with_suit.to_s
+        name_with_suit
+      end
+
+      def phase
+        'Daylight then Start of Birdsong'
       end
       # :nocov:
 

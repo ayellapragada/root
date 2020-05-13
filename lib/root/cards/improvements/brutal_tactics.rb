@@ -15,6 +15,10 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Battle'
+        end
+
         def body
           'Atk: May do +1 dmg, Def. gets +1VP'
         end

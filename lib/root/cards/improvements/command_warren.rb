@@ -19,8 +19,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Start of Daylight'
+        end
+
         def body
-          'Start of Daylight: May initiate a battle'
+          'May initiate a battle'
         end
         # :nocov:
 

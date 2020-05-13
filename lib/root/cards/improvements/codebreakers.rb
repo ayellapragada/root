@@ -19,8 +19,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Once during Daylight'
+        end
+
         def body
-          'Daylight: May look at another players hand'
+          'May look at another players hand'
         end
         # :nocov:
 

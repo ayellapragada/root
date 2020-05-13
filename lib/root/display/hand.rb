@@ -23,27 +23,27 @@ module Root
       def rows
         [
           hand.map { |card| handle_name(card) },
-          hand.map { |card| handle_craft(card) },
+          hand.map { |card| handle_phase(card) },
           hand.map { |card| handle_body(card) }
         ]
       end
 
       def handle_name(card)
-        card_title = "#{card.name}"
-        Rainbow(card_title).fg(Colors::SUIT_COLOR[card.suit])
-      end
-
-      def handle_craft(card)
-        str =
+        craft_text =
           card
           .craft
           .map { |suit| Rainbow(suit.capitalize).fg(Colors::SUIT_COLOR[suit]) }
           .join(', ')
-        str.empty? ? ' ' : str
+        format_craft_text = craft_text.empty? ? '' : " (#{craft_text})"
+        title = Rainbow(card.name).fg(Colors::SUIT_COLOR[card.suit])
+
+        "#{title}#{format_craft_text}"
       end
 
-      # Rainbow(card.body).fg(Colors::SUIT_COLOR[card.suit])
-      # Is the alternative, but it might be too much annoying text.
+      def handle_phase(card)
+        card.phase
+      end
+
       def handle_body(card)
         card.body
       end

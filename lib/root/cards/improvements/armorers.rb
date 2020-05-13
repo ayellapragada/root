@@ -15,8 +15,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Battle'
+        end
+
         def body
-          'Discard, ignore rolled hits taken'
+          'Discard to ignore rolled hits taken'
         end
         # :nocov:
       end

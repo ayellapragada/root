@@ -19,8 +19,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Once during Birdsong'
+        end
+
         def body
-          'Birdsong: May take a card from player, they score 1 VPs'
+          'May take a card from player, they score 1 VPs'
         end
         # :nocov:
 

@@ -18,11 +18,15 @@ module Root
       def inspect
         "#{name_with_suit} | Craft: #{craft.join(', ')}"
       end
-      # :nocov:
+
+      def phase
+        'Crafting'
+      end
 
       def body
         "Remove in #{suit} clearing"
       end
+      # :nocov:
 
       def faction_craft(fac)
         fac.discard_card(self)

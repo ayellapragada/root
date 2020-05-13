@@ -21,11 +21,15 @@ module Root
       def inspect
         "#{name_with_suit} - #{item.capitalize} | Craft: #{craft.join(', ')}, Victory Points: #{vp}"
       end
-      # :nocov:
+
+      def phase
+        'Crafting'
+      end
 
       def body
         "#{item.capitalize}, +#{vp} VPs"
       end
+      # :nocov:
 
       def faction_craft(fac)
         fac.board.items.delete_first(item)

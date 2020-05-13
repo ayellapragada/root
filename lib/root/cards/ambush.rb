@@ -12,13 +12,17 @@ module Root
 
       # :nocov:
       def inspect
-        "#{name_with_suit.to_s} | #{body}"
+        "#{name_with_suit} | #{body}"
       end
-      # :nocov:
+
+      def phase
+        'Battle'
+      end
 
       def body
         'Deal 2 hits on Defense'
       end
+      # :nocov:
 
       def ambush?
         true

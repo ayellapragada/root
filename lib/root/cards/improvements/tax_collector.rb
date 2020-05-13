@@ -19,8 +19,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Once during Daylight'
+        end
+
         def body
-          'Daylight: May remove 1 of your warriors to draw 1'
+          'May remove 1 of your warriors to draw 1'
         end
         # :nocov:
 

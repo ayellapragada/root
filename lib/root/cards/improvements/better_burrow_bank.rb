@@ -19,8 +19,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Start of Birdsong'
+        end
+
         def body
-          'Start of Birdsong: You and another player draw a card'
+          'You and another player draw a card'
         end
         # :nocov:
 

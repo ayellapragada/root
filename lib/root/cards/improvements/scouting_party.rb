@@ -15,6 +15,10 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Battle'
+        end
+
         def body
           'Atk: Not affected by ambush'
         end

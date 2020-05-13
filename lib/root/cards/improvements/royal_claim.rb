@@ -16,8 +16,12 @@ module Root
         end
 
         # :nocov:
+        def phase
+          'Birdsong'
+        end
+
         def body
-          'Birdsong: Discard to score 1VP per ruled clearing'
+          'Discard to score 1VP per ruled clearing'
         end
         # :nocov:
 
