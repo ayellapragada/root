@@ -139,10 +139,6 @@ module Root
         buildings.dup.fill(EmptySlot.new, buildings.count, available_slots)
       end
 
-      def includes_any_other_attackable_faction?(faction)
-        !all_other_pieces(faction).empty?
-      end
-
       def other_attackable_factions(faction)
         all_other_pieces(faction).map(&:faction).uniq
       end

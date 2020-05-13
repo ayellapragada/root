@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Grid::Clearing do
+  let(:bird_player) { Root::Players::Computer.for('Bird', :birds) }
+  let(:bird_faction) { bird_player.faction }
+  let(:cat_player) { Root::Players::Computer.for('Cat', :cats) }
+  let(:cat_faction) { cat_player.faction }
+  let(:racoon_player) { Root::Players::Computer.for('Racoon', :racoon) }
+  let(:racoon_faction) { racoon_player.faction }
+  let(:mouse_player) { Root::Players::Computer.for('Mouse', :mice) }
+  let(:mouse_faction) { mouse_player.faction }
+
   describe '#initialize' do
     it 'sets values for a clearing' do
       clearing = Root::Grid::Clearing.new(

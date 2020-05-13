@@ -236,4 +236,37 @@ RSpec.describe Root::Factions::Base do
         .by(-1)
     end
   end
+
+  describe '#other_attackable_factions' do
+    context 'when in an coalition with them' do
+      it 'removes that faction' do
+        players = Root::Players::List.new(
+          cat_faction,
+          bird_faction,
+          mouse_faction,
+          racoon_faction
+        )
+        clearing = clearings[:one]
+        cat_faction.place_meeple(clearing)
+        cat_player.players = players
+        bird_faction.place_meeple(clearing)
+        bird_player.players = players
+        mouse_faction.place_meeple(clearing)
+        mouse_player.players = players
+        racoon_faction.place_meeple(clearing)
+        racoon_player.players = players
+
+        racoon_faction.victory_points = :mice
+
+        expect(cat_faction.other_attackable_factions(clearing))
+          .to eq(%i[birds mice racoon])
+        expect(bird_faction.other_attackable_factions(clearing))
+          .to eq(%i[cats mice racoon])
+        expect(racoon_faction.other_attackable_factions(clearing))
+          .to eq(%i[cats birds])
+        expect(mouse_faction.other_attackable_factions(clearing))
+          .to eq(%i[cats birds])
+      end
+    end
+  end
 end

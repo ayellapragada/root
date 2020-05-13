@@ -225,6 +225,10 @@ module Root
         clearing.other_attackable_factions(faction_symbol)
       end
 
+      def other_attackable_factions_here(clearing = current_location)
+        other_attackable_factions(clearing)
+      end
+
       def racoon_move(options, use_extra_boot: false)
         player.choose(:f_move_to_options, options) do |where_to|
           exhaust_extra_boot_if_needed(where_to) if use_extra_boot
@@ -384,7 +388,7 @@ module Root
 
       def battle
         ally = pick_ally_for_battle
-        opts = other_factions_here - [ally&.faction_symbol]
+        opts = other_attackable_factions_here - [ally&.faction_symbol]
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
           Actions::Battle
@@ -425,7 +429,7 @@ module Root
       end
 
       def strike
-        opts = other_factions_here
+        opts = other_attackable_factions_here
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
           Actions::Battle.new(current_location, self, faction_to_battle).strike

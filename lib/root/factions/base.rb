@@ -388,7 +388,7 @@ module Root
         clearings.select! { |cl| suits.include? cl.suit } unless suits.empty?
 
         clearings.select do |clearing|
-          clearing.includes_any_other_attackable_faction?(faction_symbol)
+          !other_attackable_factions(clearing).empty?
         end
       end
 
@@ -399,7 +399,7 @@ module Root
       end
 
       def battle_in_clearing(clearing)
-        opts = clearing.other_attackable_factions(faction_symbol)
+        opts = other_attackable_factions(clearing)
         player.choose(:f_who_to_battle, opts) do |fac_sym|
           faction_to_battle = players.fetch_player(fac_sym).faction
           initiate_battle_with_faction(clearing, faction_to_battle)
@@ -498,7 +498,7 @@ module Root
       end
 
       def do_big_damage(clearing)
-        others = clearing.other_attackable_factions(faction_symbol)
+        others = other_attackable_factions(clearing)
         pieces = []
         others.each do |sym|
           pieces << players.fetch_player(sym).faction.take_big_damage(clearing)
@@ -720,6 +720,20 @@ module Root
 
       def show_hand(other_faction)
         Actions::ShowHand.new(self, other_faction).()
+      end
+
+      def other_attackable_factions(clearing)
+        clearing
+          .other_attackable_factions(faction_symbol)
+          .reject { |fac_sym| in_coalition_with?(fac_sym) }
+      end
+
+      def in_coalition_with?(fac_sym)
+        other_faction = players.fetch_player(fac_sym)
+        return false unless other_faction
+
+        other_faction.victory_points == faction_symbol ||
+          victory_points == other_faction.faction_symbol
       end
 
       def pre_move(move_action); end
