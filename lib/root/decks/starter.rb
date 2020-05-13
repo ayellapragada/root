@@ -10,16 +10,11 @@ module Root
       DECK_SIZE = 54
 
       def list_of_cards!
-        add_base_cards
         add_item_cards
         add_favor_cards
         add_dominance_cards
         add_ambush_cards
         add_improvements
-      end
-
-      def add_base_cards
-        1.times { deck << Cards::Base.new(suit: :bird) }
       end
 
       # rubocop:disable all
@@ -89,9 +84,8 @@ module Root
         3.times { deck << Cards::Improvements::TaxCollector.new }
         2.times { deck << Cards::Improvements::Codebreakers.new }
         2.times { deck << Cards::Improvements::StandAndDeliver.new }
+        deck << Cards::Improvements::RoyalClaim.new
       end
     end
   end
 end
-
-# :bird,  Royal Claim  ????
