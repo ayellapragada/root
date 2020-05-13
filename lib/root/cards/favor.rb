@@ -25,15 +25,18 @@ module Root
       end
 
       def faction_craft(fac)
-        pieces_removed = []
-
+        fac.discard_card(self)
+        fac.player.add_to_history(:f_favor, suit: suit.capitalize)
         fac
           .board
           .clearings_of_suit(suit)
-          .each { |cl| pieces_removed << fac.do_big_damage(cl) }
-        fac.post_removal(pieces_removed.flatten)
-        fac.player.add_to_history(:f_favor, suit: suit.capitalize)
-        fac.discard_card(self)
+          .each do |cl|
+          pieces_removed = fac.do_big_damage(cl)
+          pieces_removed.group_by(&:faction).each do |key, val|
+            other_fac = fac.players.fetch_player(key).faction
+            Actions::Battle.new(cl, fac, other_fac).use_for_post_battle(val)
+          end
+        end
       end
 
       def craftable?(*)

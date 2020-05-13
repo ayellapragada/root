@@ -45,6 +45,13 @@ module Root
         commence_battle
       end
 
+      def use_for_post_battle(pieces_removed)
+        @type = :post_battle
+        @pieces_removed = pieces_removed
+        attacker.post_battle(self)
+        defender.post_battle(self)
+      end
+
       def attacker?(faction)
         [attacker, attacker.faction_symbol].include?(faction)
       end
