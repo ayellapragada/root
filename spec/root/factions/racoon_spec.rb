@@ -521,7 +521,22 @@ RSpec.describe Root::Factions::Racoon do
 
         faction.boots_move
 
-        expect(faction.exhausted_items.count).to eq(1)
+        expect(faction.exhausted_items.count).to eq(2)
+      end
+
+      it 'can be canceled and not use boot' do
+        # 3: none / cancel
+        # 1: none / end turn
+        allow(player).to receive(:pick_option).and_return(3, 1)
+
+        from_cl = clearings[:one]
+        faction.place_meeple(from_cl)
+
+        faction.make_item(:boots)
+
+        faction.boots_move
+
+        expect(faction.exhausted_items.count).to eq(0)
       end
     end
 
@@ -707,11 +722,16 @@ RSpec.describe Root::Factions::Racoon do
     end
 
     it 'does not exhaust the item if action canceled' do
-      allow(player).to receive(:pick_option).and_return(0, 3, 1)
+      # 0 pick repair
+      # 1 pick none / cancel
+      # 1 pick none / end turn
+      allow(player).to receive(:pick_option).and_return(0, 1)
       players = Root::Players::List.new(player)
       player.players = players
       faction.place_meeple(clearings[:one])
-      faction.craft_item(build_item(:boots))
+      faction.make_item(:hammer)
+      faction.make_item(:sword)
+      faction.damage_item(:sword)
 
       faction.daylight
 

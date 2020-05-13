@@ -276,11 +276,13 @@ module Root
       end
 
       def boots_move
-        if location_allied?(current_location)
-          allied_move
-        else
-          racoon_move(move_options, use_extra_boot: true)
-        end
+        completed = if location_allied?(current_location)
+                      allied_move
+                    else
+                      racoon_move(move_options, use_extra_boot: true)
+                    end
+
+        exhaust_item(:boots) if completed
       end
 
       def move_options
@@ -308,7 +310,7 @@ module Root
           ) do |action|
             # :nocov:
             case action
-            when :move then with_item(:boots) { boots_move }
+            when :move then boots_move
             when :battle then with_item(:sword) { battle }
             when :explore then with_item(:torch) { explore }
             when :strike then with_item(:crossbow) { strike }
@@ -330,14 +332,16 @@ module Root
       end
 
       def with_item(type)
-        # IF TYPE == nil then select an item type (for aid)
-        exhaust_item(type) if yield
+        item = exhaust_item(type)
+        return if yield
+
+        item.refresh
       end
 
       # :nocov:
       def daylight_options
         [].tap do |options|
-          options << :move if can_move?
+          options << :move if can_racoon_move?
           options << :battle if can_racoon_battle?
           options << :explore if can_explore?
           options << :aid if can_aid?
@@ -365,9 +369,9 @@ module Root
 
       # Still a WIP for Hostile, but relationships shall come later.
       def can_move_to?(_clearing, adj)
-        boots_needed = location_hostile?(adj) ? 2 : 1
+        extra_boots_needed = location_hostile?(adj) ? 2 : 1
         boots_available = available_items.count { |i| i.item == :boots }
-        boots_available >= boots_needed
+        boots_available >= extra_boots_needed
       end
 
       def location_hostile?(clearing)
@@ -380,6 +384,10 @@ module Root
 
       def location_allied?(clearing)
         !available_allies(clearing).empty?
+      end
+
+      def can_racoon_move?
+        can_move? && available_items_include?(:boots)
       end
 
       def can_racoon_battle?
