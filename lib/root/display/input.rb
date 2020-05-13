@@ -9,13 +9,13 @@ module Root
       class InputError < StandardError; end
       class ShowMenu < StandardError; end
 
-      attr_reader :key, :options, :discard, :info
+      attr_reader :key, :options, :game, :info
 
       # :nocov:
-      def initialize(key, options, discard:, info:)
+      def initialize(key, options, game:, info:)
         @key = key
         @options = options
-        @discard = discard
+        @game = game
         @info = info
       end
 
@@ -139,7 +139,7 @@ module Root
       end
 
       def render_discard
-        res = discard.empty? ? 'None' : @discard.map(&:inspect).join("\n")
+        res = game.deck.discard.empty? ? 'None' : @discard.map(&:inspect).join("\n")
         Menu.new(res).display
       end
       # :nocov:
