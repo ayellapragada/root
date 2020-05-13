@@ -11,8 +11,14 @@ module Root
     class Terminal
       # NOT TESTING TERMINAL BECAUSE OOFY
       #:nocov:
-      def pick_option(key, options, game:, info:)
-        input = Input.new(key, options, game: game, info: info)
+      def pick_option(key, options, player:, game:, info:)
+        input = Input.new(
+          key,
+          options,
+          player: player,
+          game: game,
+          info: info
+        )
         input.display_pick_option_message
         input.handle_input
       end

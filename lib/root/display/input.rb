@@ -9,12 +9,13 @@ module Root
       class InputError < StandardError; end
       class ShowMenu < StandardError; end
 
-      attr_reader :key, :options, :game, :info
+      attr_reader :key, :options, :player, :game, :info
 
       # :nocov:
-      def initialize(key, options, game:, info:)
+      def initialize(key, options, player:, game:, info:)
         @key = key
         @options = options
+        @player = player
         @game = game
         @info = info
       end
@@ -116,7 +117,7 @@ module Root
       end
 
       def handle_getting_input
-        menu_opts = %w[? help discard clear]
+        menu_opts = %w[? help discard game clear]
         loop do
           option = gets.chomp
           Cursor.clear_previous_line
@@ -130,6 +131,7 @@ module Root
         help_opts = %w[? help]
         render_help if help_opts.include?(option)
         render_discard if option == 'discard'
+        render_game_state if option == 'game'
         system('clear') || system('cls') if option == 'clear'
       end
 
@@ -140,6 +142,12 @@ module Root
 
       def render_discard
         res = game.deck.discard.empty? ? 'None' : @discard.map(&:inspect).join("\n")
+        Menu.new(res).display
+      end
+
+      # Now have the game and current player, so can render everything needed
+      def render_game_state
+        res = "GAME STATE as #{player.faction}"
         Menu.new(res).display
       end
       # :nocov:
