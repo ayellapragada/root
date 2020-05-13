@@ -657,11 +657,11 @@ module Root
       end
 
       def tax_collector
-        use_improvement_optionally(:tax_collector)
+        use_improvement(:tax_collector)
       end
 
       def codebreakers
-        use_improvement_optionally(:codebreakers)
+        use_improvement(:codebreakers)
       end
 
       def usable_improvement?(type)

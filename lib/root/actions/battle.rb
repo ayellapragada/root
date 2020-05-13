@@ -23,7 +23,7 @@ module Root
       def call
         @type = :battle
         ambush
-        return if attacker.max_hit(clearing, ally: @ally).zero?
+        return true if attacker.max_hit(clearing, ally: @ally).zero?
 
         atk, def_roll = assign_dice_rolls
 
