@@ -722,6 +722,8 @@ module Root
         Actions::ShowHand.new(self, other_faction).()
       end
 
+      def post_removal(*); end
+
       def pre_move(move_action); end
 
       def pre_battle(battle); end

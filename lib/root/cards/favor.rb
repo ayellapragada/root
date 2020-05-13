@@ -25,10 +25,13 @@ module Root
       end
 
       def faction_craft(fac)
+        pieces_removed = []
+
         fac
           .board
           .clearings_of_suit(suit)
-          .each { |cl| fac.do_big_damage(cl) }
+          .each { |cl| pieces_removed << fac.do_big_damage(cl) }
+        fac.post_removal(pieces_removed.flatten)
         fac.player.add_to_history(:f_favor, suit: suit.capitalize)
         fac.discard_card(self)
       end

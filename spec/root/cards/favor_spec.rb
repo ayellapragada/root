@@ -84,5 +84,31 @@ RSpec.describe Root::Cards::Favor do
         .and change { mouse_cl.meeples_of_type(:racoon).count }
         .by(0)
     end
+
+    context 'when racoon uses it and removes a meeple' do
+      it 'becomes hostile with the faction' do
+        players = Root::Players::List.new(player, cat_player, bird_player, racoon_player)
+        racoon_player.players = players
+        racoon_player.board = board
+        racoon_faction.handle_relationships
+
+        racoon_faction.make_item(:hammer)
+        racoon_faction.make_item(:hammer)
+        racoon_faction.make_item(:hammer)
+
+        fox_cl = clearings[:one]
+
+        racoon_faction.place_meeple(fox_cl)
+        cat_faction.place_meeple(fox_cl)
+        bird_faction.place_roost(fox_cl)
+
+        card = Root::Cards::Favor.new(suit: :fox)
+
+        racoon_faction.craft_item(card)
+
+        expect(racoon_faction.relationships.hostile?(:cats)).to be true
+        expect(racoon_faction.relationships.hostile?(:birds)).to be false
+      end
+    end
   end
 end

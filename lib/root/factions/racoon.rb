@@ -625,7 +625,15 @@ module Root
         3.times.collect { take_damage(current_location) }
       end
 
-      def change_to_dominance(suit)
+      def post_removal(pieces)
+        pieces.each do |piece|
+          if piece.piece_type == :meeple
+            relationships.make_hostile(piece.faction)
+          end
+        end
+      end
+
+      def change_to_dominance(*)
         opts = players.options_to_coalition_with(faction_symbol)
 
         player.choose(:r_coalition, opts) do |fac_sym|
