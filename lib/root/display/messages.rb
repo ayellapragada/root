@@ -206,7 +206,7 @@ module Root
           history: ''
         },
         m_organize_clearing: {
-          prompt: 'Pick a clearing to revolt in',
+          prompt: 'Pick a clearing to organize in',
           history: ''
         },
         r_char_sel: {

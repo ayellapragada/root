@@ -9,9 +9,9 @@ module Root
 
       attr_reader :deck, :discard
 
-      def initialize
-        @deck = []
-        @discard = []
+      def initialize(deck: [], discard: [])
+        @deck = deck
+        @discard = discard
         generate_deck
       end
 
