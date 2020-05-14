@@ -75,8 +75,6 @@ RSpec.describe Root::Factions::Bird do
   describe '#change_current_leader' do
     context 'when not given a leader to switch to' do
       it 'removes current leader and picks a new one' do
-        player = Root::Players::Human.for('Sneak', :birds)
-        birds = player.faction
         allow(player).to receive(:pick_option).and_return(0)
         expect(faction.current_leader).to be nil
 
@@ -96,7 +94,6 @@ RSpec.describe Root::Factions::Bird do
 
     context 'when given a leader to switch to' do
       it 'switches current leader to given one' do
-        birds = Root::Players::Computer.for('Sneak', :birds).faction
         expect(faction.current_leader).to be nil
 
         faction.change_current_leader(:despot)

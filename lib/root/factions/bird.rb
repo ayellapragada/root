@@ -91,8 +91,7 @@ module Root
           board.clearing_across_from_keep
         else
           options = board.available_corners
-          choice = player.pick_option(:b_first_roost, options)
-          options[choice]
+          player.choose(:b_first_roost, options) { |c| c }
         end
       end
 
@@ -102,6 +101,7 @@ module Root
 
         new_leader = find_next_leader(type)
         self.current_leader = new_leader
+        leaders.delete(new_leader)
         player.add_to_history(:b_new_leader, leader: new_leader.leader)
       end
 
@@ -112,14 +112,10 @@ module Root
 
       def find_next_leader(type = nil)
         if type
-          new_leader = leaders.find { |l| l.leader == type }
-          leaders.delete(new_leader)
+          leaders.find { |l| l.leader == type }
         else
-          options = leaders
-          choice = player.pick_option(:b_new_leader, options)
-          new_leader = leaders.delete(options[choice])
+          player.choose(:b_new_leader, leaders) { |c| c }
         end
-        new_leader
       end
 
       def change_viziers_with_leader
