@@ -155,12 +155,12 @@ module Root
         }
         foil_info = { clearing: priority }
 
-        def_ambush_opts = defender.ambush_opts(clearing)
+        ambush_opts = defender.ambush_opts(clearing)
 
         def_card =
           defender
           .player
-          .choose(:f_ambush, def_ambush_opts, info: ambush_info) do |card|
+          .choose(:f_ambush, ambush_opts, info: ambush_info) do |card|
             defender.discard_card(card)
             card
           end
