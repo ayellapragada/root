@@ -96,7 +96,13 @@ module Root
         }
       end
 
-      def choose(key, choices, required: false, yield_anyway: false, info: {})
+      # required: self explanatory, user can not cancel
+      # yield_anyway: sometimes the app needs to know if user picked none
+      # i.e., picking none cancels the turn
+      # give_val: sometimes we just want them to pick something,
+      # nothing happens with it yet
+      # info: optional info to be placed into the prompt
+      def choose(key, choices, required: false, yield_anyway: false, give_val: false, info: {})
         return false if choices.empty?
 
         extra_keys = required ? [] : [:none]
@@ -108,7 +114,8 @@ module Root
           return false if selected == :none
         end
 
-        yield(selected)
+        res = yield(selected) if block_given?
+        give_val ? selected : res
       end
     end
   end

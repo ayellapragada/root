@@ -91,7 +91,7 @@ module Root
           board.clearing_across_from_keep
         else
           options = board.available_corners
-          player.choose(:b_first_roost, options, required: true) { |c| c }
+          player.choose(:b_first_roost, options, required: true, give_val: true)
         end
       end
 
@@ -114,7 +114,7 @@ module Root
         if type
           leaders.find { |l| l.leader == type }
         else
-          player.choose(:b_new_leader, leaders, required: true) { |c| c }
+          player.choose(:b_new_leader, leaders, required: true, give_val: true)
         end
       end
 
