@@ -38,6 +38,7 @@ module Root
       def faction_play(fac)
         fac.change_to_dominance(suit)
         fac.deck.change_dominance(suit, fac.faction_symbol)
+        fac.discard_card(self)
       end
     end
   end

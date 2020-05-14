@@ -40,6 +40,9 @@ RSpec.describe Root::Cards::Dominance do
 
       expect(mouse_faction.victory_points).to eq(:fox)
       expect(mouse_faction.win_via_dominance?).to be true
+      # be sure to discard the card, not move into supporters
+      expect(mouse_faction.hand_size).to eq(0)
+      expect(mouse_faction.supporters.count).to eq(0)
     end
   end
 end
