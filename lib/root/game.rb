@@ -4,20 +4,12 @@ module Root
   # Handles logic for starting and handling a game
   class Game
     def self.default_game(with_computers: false, with_humans: false)
-      new(
-        players: Players::List.default_player_list(with_computers, with_humans),
-        board: Boards::Base.new,
-        decks: Decks::List.new(shared: Decks::Starter.new)
-      )
+      new(players: Players::List.default_player_list(with_computers, with_humans))
     end
 
     # :nocov:
     def self.with_faction_for_play(faction)
-      new(
-        players: Players::List.for_faction_for_play(faction),
-        board: Boards::Base.new,
-        decks: Decks::List.new(shared: Decks::Starter.new)
-      )
+      new(players: Players::List.for_faction_for_play(faction))
     end
 
     def self.start_and_play_game(faction:)
@@ -30,7 +22,11 @@ module Root
 
     attr_accessor :players, :board, :decks, :print_display, :history
 
-    def initialize(players:, board:, decks:)
+    def initialize(
+      players:,
+      board: Boards::Base.new,
+      decks: Decks::List.new(shared: Decks:: Starter.new)
+    )
       @players = players
       @board = board
       @decks = decks
