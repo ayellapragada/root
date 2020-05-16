@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rainbow'
+require 'terminal-table'
 
 module Root
   module Display

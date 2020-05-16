@@ -11,6 +11,7 @@ PATH
   remote: .
   specs:
     root (0.1.0)
+      rainbow
 
 GEM
   remote: https://rubygems.org/
