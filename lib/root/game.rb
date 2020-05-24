@@ -4,21 +4,10 @@ module Root
   # Handles logic for starting and handling a game
   class Game
     def self.default_game(with_computers: false, with_humans: false)
-      new(players: Players::List.default_player_list(with_computers, with_humans))
+      new(
+        players: Players::List.default_player_list(with_computers, with_humans)
+      )
     end
-
-    # :nocov:
-    def self.with_faction_for_play(faction)
-      new(players: Players::List.for_faction_for_play(faction))
-    end
-
-    def self.start_and_play_game(faction:)
-      game = with_faction_for_play(faction)
-      game.print_display = true
-      game.setup
-      game.run_game
-    end
-    # :nocov:
 
     attr_accessor :players, :board, :decks, :print_display, :history
 

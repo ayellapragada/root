@@ -182,21 +182,6 @@ module Root
         end.join("\n")
       end
 
-      def formatted_special_info(show_private)
-        special_info(show_private).map do |_key, val|
-          opts = {}.tap do |obj|
-            obj[:rows] = val[:rows]
-            obj[:headings] = val[:headings] if val[:headings]
-            obj[:title] = val[:title] if val[:title]
-
-            style_opts = { width: 54 }
-            obj[:style] = style_opts
-            obj[:alignment] = :center
-          end
-          Terminal::Table.new(opts)
-        end
-      end
-
       def current_number_out(type)
         self.class::BUILDINGS - send(type.pluralize).count
       end

@@ -1,7 +1,0 @@
-This is my quarantine project :sweats:
-This is a single player version of Root
-
-"help" or "?" to open this current menu.
-"discard" to see the Discarded Cards menu.
-"hist" to see the full history, not just the last 32.
-"clear" to reset the screen in case of terminal weirdness.

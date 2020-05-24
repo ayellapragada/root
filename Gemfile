@@ -5,9 +5,6 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in root.gemspec
 gemspec
 
-gem 'rainbow'
-gem 'terminal-table'
-
 # DEV
 gem 'byebug', '~> 11.0'
 gem 'rake', '~> 12.0'

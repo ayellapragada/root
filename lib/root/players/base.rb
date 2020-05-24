@@ -25,10 +25,10 @@ module Root
       attr_accessor :game
       attr_writer :board, :deck, :players
 
-      def initialize(name:, faction:)
+      def initialize(name:, faction:, display: MockDisplay.new)
         @name = name
         @faction = faction.new(self)
-        @display = Display::Terminal.new
+        @display = display
       end
 
       def board
