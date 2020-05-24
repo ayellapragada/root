@@ -47,6 +47,10 @@ module Root
       def meeple_of_type?(_type)
         false
       end
+
+      def updater_type
+        type
+      end
     end
   end
 end

@@ -17,18 +17,35 @@ module Root
     # Safe spot for all centralized player logic
     # This should only be responsible for getting / displaying output.
     class Base
+      def self.from_db(record, display: MockDisplay.new, updater: MockPlayerUpdater.new)
+        faction = faction.from_db(record)
+        new(
+          name: 'Yeet',
+          faction: faction,
+          display: display,
+          updater: updater
+        )
+      end
+
       def self.for(name, faction, display = nil)
-        new(name: name, faction: FACTION_MAPPING[faction], display: display)
+        new(
+          name: name,
+          faction: FACTION_MAPPING[faction].new.post_initialize,
+          display: display,
+          updater: MockPlayerUpdater
+        )
       end
 
       attr_reader :name, :faction, :display
       attr_accessor :game
       attr_writer :board, :deck, :players
 
-      def initialize(name:, faction:, display: MockDisplay.new)
+      def initialize(name:, faction:, display: MockDisplay.new, updater: MockPlayerUpdater.new)
         @name = name
-        @faction = faction.new(self)
+        @faction = faction
         @display = display
+
+        @faction.player = self
       end
 
       def board

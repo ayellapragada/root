@@ -12,6 +12,34 @@ RSpec.describe Root::Factions::Base do
   let(:racoon_player) { Root::Players::Computer.for('Racoon', :racoon) }
   let(:racoon_faction) { racoon_player.faction }
 
+  describe '.from_db' do
+    xit 'sets hand, victory_points, and pieces correctly' do
+      # Keep in mind these may actually be strings as keys
+      db_record = {
+        code: 'cats',
+        victory_points: 12,
+        hand: [], # TODO, STILL NEED ID <-> CARD MAPPER
+        items: %i[tea sword],
+        meeples: %i[cats cats cats cats cats cats],
+        buildings: %i[sawmill sawmill sawmill recruiter workshop],
+        tokens: %i[keep wood wood wood wood wood],
+        improvements: %i[],
+        info: { recruited: true }
+      }
+
+      faction = Root::Factions::Cat.from_db(db_record)
+      expect(faction.items.map(&:item)).to eq(%i[tea sword])
+      expect(faction.meeples.count).to eq(6)
+      expect(faction.sawmills.count).to eq(3)
+      expect(faction.recruiters.count).to eq(1)
+      expect(faction.workshop.count).to eq(1)
+      expect(faction.keep.count).to eq(1)
+      expect(faction.wood.count).to eq(5)
+      # expect(faction.hand_size).to eq(0)
+      # expect(faction.improvements.count).to eq(0)
+    end
+  end
+
   describe '#victory_points=' do
     it 'can not change again once dominance' do
       dominance = Root::Cards::Dominance.new(suit: :fox)

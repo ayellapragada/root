@@ -36,7 +36,7 @@ module Root
       def move_meeples
         num_to_move.times do
           piece = from_clearing.meeples_of_type(faction.faction_symbol).first
-          from_clearing.meeples.delete(piece)
+          faction.remove_meeple(from_clearing)
           to_clearing.meeples << piece
         end
       end

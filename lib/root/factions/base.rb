@@ -59,20 +59,28 @@ module Root
         end
       end
 
-      attr_reader :victory_points
+      def self.from_db(record)
+        new.tap do |faction|
+        end
+      end
 
-      attr_reader :hand, :player, :meeples, :buildings, :tokens, :items,
-                  :improvements
+      attr_reader :hand, :meeples, :buildings, :tokens, :items,
+                  :improvements, :victory_points
       attr_writer :board
+      attr_accessor :player
 
-      def initialize(player)
-        @player = player
+      def initialize
         @hand = []
         @items = []
         @improvements = []
         @victory_points = 0
+      end
+
+      def post_initialize
         set_base_pieces
         handle_faction_token_setup
+        handle_faction_info_setup
+        self
       end
 
       def board
@@ -468,6 +476,7 @@ module Root
             plural_form = token.piece_type.pluralize
             send(plural_form) << token
             clearing.send(plural_form).delete(token)
+            board.updater.remove(clearing, token.updater_type)
             piece = token
           end
         end
@@ -477,6 +486,7 @@ module Root
       def remove_meeple(clearing)
         cl_meeples = clearing.meeples_of_type(faction_symbol)
         piece = cl_meeples.first
+        board.updater.remove(clearing, piece.updater_type)
         clearing.meeples.delete(piece)
         meeples << piece
         piece
@@ -501,6 +511,7 @@ module Root
           plural_form = type.pluralize
           send(plural_form) << piece
           clearing.send(plural_form).delete(piece)
+          board.updater.remove(clearing, piece.updater_type)
           piece
         end
       end

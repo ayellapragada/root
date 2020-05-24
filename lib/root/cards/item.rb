@@ -33,6 +33,7 @@ module Root
 
       def faction_craft(fac)
         fac.board.items.delete_first(item)
+        fac.board.updater.update_items
         fac.discard_card(self)
         fac.gain_vps(fac.handle_item_vp(self))
         fac.make_item(item)

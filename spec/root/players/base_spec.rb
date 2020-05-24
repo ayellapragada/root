@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Root::Players::Base do
   describe '#board' do
     context 'when there is a game' do

@@ -21,26 +21,19 @@ module Root
       end
 
       def handle_faction_token_setup
-        handle_meeple_setup
-        handle_building_setup
-        handle_token_setup
-        @remaining_actions = 0
-      end
-
-      def handle_meeple_setup
         @meeples = Array.new(25) { Pieces::Meeple.new(faction_symbol) }
-      end
-
-      def handle_building_setup
         @buildings = [
           Array.new(6) { Cats::Recruiter.new },
           Array.new(6) { Cats::Sawmill.new },
           Array.new(6) { Cats::Workshop.new }
         ].flatten
+        @tokens = [Cats::Keep.new] + Array.new(8) { Cats::Wood.new }
       end
 
-      def handle_token_setup
-        @tokens = [Cats::Keep.new] + Array.new(8) { Cats::Wood.new }
+      def handle_faction_info_setup
+        @remaining_actions = 0
+        @completed_quests = Racoons::CompletedQuests.new
+        @relationships = Racoons::Relationships.new([])
       end
 
       def board_title

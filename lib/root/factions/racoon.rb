@@ -19,6 +19,9 @@ module Root
 
       def handle_faction_token_setup
         @meeples = [Pieces::Meeple.new(:racoon)]
+      end
+
+      def handle_faction_info_setup
         @completed_quests = Racoons::CompletedQuests.new
         @relationships = Racoons::Relationships.new([])
       end
@@ -144,7 +147,9 @@ module Root
         starting_items = %i[satchel boots hammer sword].shuffle
 
         board.ruins_clearings.each do |cl|
-          cl.items << starting_items.pop
+          item = starting_items.pop
+          board.updater.add(cl, item)
+          cl.items << item
         end
       end
 
@@ -424,6 +429,7 @@ module Root
 
       def explore
         explored_item = current_location.explore
+        board.updater.remove(current_location, explored_item)
         make_item(explored_item)
         player.add_to_history(
           :r_explore,

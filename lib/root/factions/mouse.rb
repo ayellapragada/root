@@ -26,10 +26,13 @@ module Root
       def handle_faction_token_setup
         @meeples = Array.new(10) { Pieces::Meeple.new(:mice) }
         @tokens = Array.new(10) { Mice::Sympathy.new }
+        @buildings = [Mice::Base.new(:fox), Mice::Base.new(:rabbit), Mice::Base.new(:mouse)]
+      end
+
+      def handle_faction_info_setup
         @supporters = []
         @officers = []
         @remaining_actions = 0
-        handle_base_building
       end
 
       def board_title(show_private)
@@ -105,14 +108,6 @@ module Root
         rows << formatted_bases
         rows << sympathy_tracker_info
         rows
-      end
-
-      def handle_base_building
-        @buildings = [
-          Mice::Base.new(:fox),
-          Mice::Base.new(:rabbit),
-          Mice::Base.new(:mouse)
-        ]
       end
 
       def setup
@@ -445,9 +440,7 @@ module Root
 
       def organize
         player.choose(:m_organize_clearing, organize_options) do |clearing|
-          meeple = clearing.meeples_of_type(:mice).first
-          meeples << meeple
-          clearing.meeples.delete(meeple)
+          remove_meeple(clearing)
           spread_sympathy_in_clearing(clearing)
         end
       end

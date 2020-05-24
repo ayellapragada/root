@@ -42,6 +42,10 @@ module Root
       def piece_type
         :meeple
       end
+
+      def updater_type
+        faction
+      end
     end
   end
 end
