@@ -1,6 +1,34 @@
 # frozen_string_literal: true
 
 RSpec.describe Root::Boards::Base do
+  describe '.from_db' do
+    it 'sets the values and pieces correctly' do
+      db_record = {
+        items: %i[tea tea sword],
+        one: %i[cats cats birds mice],
+        two: %i[sawmill wood cats],
+        three: %i[base sympathy],
+        four: %i[ruin sword]
+      }
+
+      board = Root::Boards::Base.from_db(db_record)
+      expect(board.items).to eq(%i[tea tea sword])
+      expect(board.clearings[:one].meeples_of_type(:cats).count).to eq(2)
+      expect(board.clearings[:one].meeples_of_type(:birds).count).to eq(1)
+      expect(board.clearings[:one].meeples_of_type(:mice).count).to eq(1)
+
+      expect(board.clearings[:two].buildings_of_type(:sawmill).count).to eq(1)
+      expect(board.clearings[:two].tokens_of_type(:wood).count).to eq(1)
+      expect(board.clearings[:two].meeples_of_type(:cats).count).to eq(1)
+
+      expect(board.clearings[:three].buildings_of_type(:base).count).to eq(1)
+      expect(board.clearings[:three].tokens_of_type(:sympathy).count).to eq(1)
+
+      expect(board.clearings[:four].buildings_of_type(:ruin).count).to eq(1)
+      expect(board.clearings[:four].items).to eq([:sword])
+    end
+  end
+
   describe '.initialize' do
     it 'creates board with correct clearing state' do
       board = Root::Boards::Base.new

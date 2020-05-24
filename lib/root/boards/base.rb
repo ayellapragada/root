@@ -8,6 +8,23 @@ module Root
     class Base
       attr_reader :all_clearings, :items
 
+      # :nocov:
+      def self.from_db(record)
+        board = new(items: record[:items])
+        record.delete(:items)
+
+        record.each do |clearing, values|
+          cl = board.clearings[clearing.to_sym]
+          values.each do |piece|
+            fin = Pieces::Base.for(piece, suit: board.clearings[clearing].suit)
+            fin.class == Symbol ? cl.items << fin : cl.send(fin.piece_type.pluralize) << fin
+          end
+        end
+
+        board
+      end
+      # :nocov:
+
       DIAGANOLS = { 1 => :three, 2 => :four, 3 => :one, 4 => :two }.freeze
 
       def initialize(generator: WoodlandsGenerator, items: nil)
@@ -59,10 +76,6 @@ module Root
         clearings
           .select { |_, clearing| clearing.includes_building?(:ruin) }
           .values
-      end
-
-      def ruins
-        ruins_clearings.map(&:ruin)
       end
 
       def corner_with(type)

@@ -228,7 +228,7 @@ RSpec.describe Root::Grid::Clearing do
           slots: 1
         )
 
-        clearing.ruin.items << :sword
+        clearing.items << :sword
 
         expect(clearing.explore).to eq(:sword)
         expect(clearing.buildings.count).to eq(0)
@@ -245,8 +245,8 @@ RSpec.describe Root::Grid::Clearing do
           slots: 1
         )
 
-        clearing.ruin.items << :sword
-        clearing.ruin.items << :hammer
+        clearing.items << :sword
+        clearing.items << :hammer
 
         expect(clearing.explore).to eq(:hammer)
         expect(clearing.buildings.count).to eq(1)

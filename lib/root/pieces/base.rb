@@ -4,8 +4,36 @@ module Root
   module Pieces
     # Handles base logic for the square pieces.
     class Base
+      def self.descendants
+        ObjectSpace.each_object(Class).select { |klass| klass < self }
+      end
+
+      def self.type
+        name.split('::').last.downcase.to_sym
+      end
+
+      WARRIORS = %i[cats birds mice racoon].freeze
+      NEEDS_SUIT = %i[base].freeze
+      ITEMS = %i[satchel boots hammer sword].freeze
+
+      def self.for(type, suit:)
+        if WARRIORS.include?(type)
+          Pieces::Meeple.new(type)
+        elsif NEEDS_SUIT.include?(type)
+          piece_list[type].new(suit: suit)
+        elsif ITEMS.include?(type)
+          type
+        else
+          piece_list[type].new
+        end
+      end
+
+      def self.piece_list
+        descendants.map { |kl| [kl.type, kl] }.to_h
+      end
+
       def type
-        self.class.name.split('::').last.downcase.to_sym
+        self.class.type
       end
 
       def display_symbol

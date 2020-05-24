@@ -17,8 +17,8 @@ module Root
     # Safe spot for all centralized player logic
     # This should only be responsible for getting / displaying output.
     class Base
-      def self.for(name, faction)
-        new(name: name, faction: FACTION_MAPPING[faction])
+      def self.for(name, faction, display = nil)
+        new(name: name, faction: FACTION_MAPPING[faction], display: display)
       end
 
       attr_reader :name, :faction, :display

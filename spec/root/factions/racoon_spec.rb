@@ -79,7 +79,7 @@ RSpec.describe Root::Factions::Racoon do
 
       player.setup
 
-      expect(board.ruins.all?(&:contains_item?)).to be true
+      expect(board.ruins_clearings.none?(&:empty?)).to be true
     end
   end
 

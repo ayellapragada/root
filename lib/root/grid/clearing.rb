@@ -9,7 +9,7 @@ module Root
     class Clearing
       VALID_SUITS = %i[fox mice rabbit forest].freeze
 
-      attr_reader :priority, :suit, :slots, :ruin, :type,
+      attr_reader :priority, :suit, :slots, :type, :items,
                   :all_adjacents, :buildings, :tokens, :meeples
 
       def initialize(priority:, suit:, slots:, ruin: false, type: :clearing)
@@ -26,6 +26,7 @@ module Root
         @buildings = []
         @tokens = []
         @meeples = []
+        @items = []
       end
 
       # Not testing because it's just a debug method, nbd.
@@ -113,6 +114,10 @@ module Root
 
       def buildings_of_type(type)
         buildings.select { |building| building.type == type }
+      end
+
+      def tokens_of_type(type)
+        tokens.select { |token| token.type == type }
       end
 
       def buildings_of_faction(faction)
@@ -213,21 +218,27 @@ module Root
       end
 
       def explore
-        ruin.explore.tap do
-          clear_ruin if ruin.empty?
+        items.pop.tap do
+          clear_ruin if empty?
         end
+      end
+
+      def empty?
+        items.empty?
+      end
+
+      def ruin
+        buildings.find { |b| b.type == :ruin }
       end
 
       private
 
       def clear_ruin
         buildings.delete(ruin)
-        @ruin = nil
       end
 
       def create_ruin
-        @ruin = Ruin.new
-        @buildings << @ruin
+        @buildings << Ruin.new
       end
     end
   end

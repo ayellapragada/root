@@ -142,8 +142,9 @@ module Root
 
       def handle_ruins
         starting_items = %i[satchel boots hammer sword].shuffle
-        board.ruins.each do |ruin|
-          ruin.items << starting_items.pop
+
+        board.ruins_clearings.each do |cl|
+          cl.items << starting_items.pop
         end
       end
 
