@@ -12,6 +12,7 @@ PATH
   specs:
     root (0.1.0)
       rainbow
+      terminal-table
 
 GEM
   remote: https://rubygems.org/
