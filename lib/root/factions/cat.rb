@@ -20,6 +20,23 @@ module Root
         :cats
       end
 
+      def post_initialize_from_db(record)
+        super
+        @recruited = record[:info][:recruited]
+        @recruited = record[:info][:remaining_actions]
+      end
+
+      def format_for_db
+        super.merge(
+          {
+            info: {
+              recruited: @recruited,
+              remaining_actions: @remaining_actions
+            }
+          }
+        )
+      end
+
       def handle_faction_token_setup
         @meeples = Array.new(25) { Pieces::Meeple.new(faction_symbol) }
         @buildings = [
@@ -32,8 +49,7 @@ module Root
 
       def handle_faction_info_setup
         @remaining_actions = 0
-        @completed_quests = Racoons::CompletedQuests.new
-        @relationships = Racoons::Relationships.new([])
+        @recruited = false
       end
 
       def board_title

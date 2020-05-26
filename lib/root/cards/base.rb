@@ -10,11 +10,12 @@ module Root
     # We got passives
     # I ain't consolidating that heck no
     class Base
-      attr_accessor :suit, :name
+      attr_accessor :suit, :name, :id
 
-      def initialize(suit:, name: 'Untitled')
+      def initialize(suit:, name: 'Untitled', id: nil)
         @suit = suit
         @name = name
+        @id = id
       end
 
       def craft

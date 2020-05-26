@@ -18,25 +18,29 @@ module Root
     # This should only be responsible for getting / displaying output.
     class Base
       def self.from_db(record, display: MockDisplay.new, updater: MockPlayerUpdater.new)
-        faction = faction.from_db(record)
+        fac = FACTION_MAPPING[record[:code]].from_db(record)
         new(
           name: 'Yeet',
-          faction: faction,
+          faction: fac,
           display: display,
           updater: updater
         )
       end
 
-      def self.for(name, faction, display = nil)
-        new(
+      def self.for(name, faction, display: MockDisplay.new, updater: MockPlayerUpdater.new)
+        fac = FACTION_MAPPING[faction].new
+        player = new(
           name: name,
-          faction: FACTION_MAPPING[faction].new.post_initialize,
+          faction: fac,
           display: display,
-          updater: MockPlayerUpdater
+          updater: updater
         )
+
+        fac.post_initialize
+        player
       end
 
-      attr_reader :name, :faction, :display
+      attr_reader :name, :faction, :display, :updater
       attr_accessor :game
       attr_writer :board, :deck, :players
 
@@ -44,6 +48,7 @@ module Root
         @name = name
         @faction = faction
         @display = display
+        @updater = updater
 
         @faction.player = self
       end

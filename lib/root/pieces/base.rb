@@ -16,7 +16,9 @@ module Root
       NEEDS_SUIT = %i[base].freeze
       ITEMS = %i[satchel boots hammer sword].freeze
 
-      def self.for(type, suit:)
+      def self.for(type, suit: nil)
+        type = type.to_sym
+        suit = suit.to_sym if suit
         if WARRIORS.include?(type)
           Pieces::Meeple.new(type)
         elsif NEEDS_SUIT.include?(type)

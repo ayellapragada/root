@@ -332,7 +332,7 @@ module Root
       def post_battle(battle)
         return unless current_leader?(:despot)
 
-        if battle.removed_of_other_type(faction_symbol).any?(&:points_for_removing?)
+        if battle.type == :battle && battle.removed_of_other_type(faction_symbol).any?(&:points_for_removing?)
           gain_vps(1)
         end
       end

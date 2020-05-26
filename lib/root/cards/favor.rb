@@ -35,11 +35,7 @@ module Root
           .board
           .clearings_of_suit(suit)
           .each do |cl|
-          pieces_removed = fac.do_big_damage(cl)
-          pieces_removed.group_by(&:faction).each do |key, val|
-            other_fac = fac.players.fetch_player(key).faction
-            Actions::Battle.new(cl, fac, other_fac).use_for_post_battle(val)
-          end
+          fac.do_big_damage(cl)
         end
       end
 

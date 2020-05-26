@@ -8,6 +8,51 @@ RSpec.describe Root::Factions::Cat do
   let(:bird_player) { Root::Players::Computer.for('Sneak', :birds) }
   let(:bird_faction) { bird_player.faction }
 
+  describe '.from_db' do
+    it 'sets hand, victory_points, and pieces correctly' do
+      # Keep in mind these may actually be strings as keys
+      db_record = {
+        code: 'cats',
+        victory_points: 12,
+        hand: [
+          { name: 'Ambush', suit: :bird, id: 1, revealed: false },
+          { name: 'Anvil', suit: :fox, id: 2, revealed: false }
+        ],
+        improvements: [{ name: 'Cobbler', suit: :rabbit, id: 3, exhausted: true }],
+        items: %i[tea sword],
+        meeples: %i[cats cats cats cats cats cats],
+        buildings: [
+          { type: :sawmill },
+          { type: :sawmill },
+          { type: :sawmill },
+          { type: :recruiter },
+          { type: :workshop }
+        ],
+        tokens: [
+          { type: :wood },
+          { type: :wood },
+          { type: :wood },
+          { type: :wood },
+          { type: :wood },
+          { type: :keep }
+        ],
+        info: { recruited: true, remaining_actions: 0 }
+      }
+
+      faction = Root::Factions::Cat.from_db(db_record)
+      expect(faction.victory_points).to eq(12)
+      expect(faction.items.map(&:item)).to eq(%i[tea sword])
+      expect(faction.meeples.count).to eq(6)
+      expect(faction.sawmills.count).to eq(3)
+      expect(faction.recruiters.count).to eq(1)
+      expect(faction.workshops.count).to eq(1)
+      expect(faction.wood.count).to eq(5)
+      expect(faction.keep.count).to eq(1)
+      # expect(faction.hand_size).to eq(0)
+      # expect(faction.improvements.count).to eq(0)
+    end
+  end
+
   describe '#handle_faction_token_setup' do
     it 'gives faction 25 meeples, and then 6 buildings of each type' do
       expect(faction.meeples.count).to eq(25)

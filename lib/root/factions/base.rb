@@ -61,6 +61,7 @@ module Root
 
       def self.from_db(record)
         new.tap do |faction|
+          faction.post_initialize_from_db(record)
         end
       end
 
@@ -80,11 +81,39 @@ module Root
         set_base_pieces
         handle_faction_token_setup
         handle_faction_info_setup
+        updater.update(format_for_db)
         self
+      end
+
+      def format_for_db
+        {
+          victory_points: victory_points,
+          hand: [],
+          improvements: [],
+          items: items.map do |item|
+            { item: item, damaged: item.damaged, exhausted: item.exhausted }
+          end,
+          meeples: meeples.map(&:faction),
+          buildings: buildings.map { |piece| { type: piece.type } },
+          tokens: tokens.map { |piece| { type: piece.type } },
+          info: { recruited: @recruited, remaining_actions: @remaining_actions }
+        }
+      end
+
+      def post_initialize_from_db(record)
+        @victory_points = record[:victory_points]
+        record[:items].each { |type| make_item(type) } # TODO, ALSO EXHUAST / DAMAGE
+        @meeples = record[:meeples].map { |piece| Pieces::Base.for(piece) }
+        @buildings = record[:buildings].map { |piece| Pieces::Base.for(piece[:type]) }
+        @tokens = record[:tokens].map { |piece| Pieces::Base.for(piece[:type]) }
       end
 
       def board
         player.board
+      end
+
+      def updater
+        player.updater
       end
 
       def deck
@@ -496,12 +525,19 @@ module Root
         others = other_attackable_factions(clearing)
         pieces = []
         others.each do |sym|
-          pieces << players.fetch_player(sym).faction.take_big_damage(clearing)
-        end
+          other_faction = players.fetch_player(sym).faction
+          pieces_removed = other_faction.take_big_damage(clearing)
 
-        pieces.flatten.each do |piece|
-          type = piece.piece_type
-          gain_vps(1) if %i[building token].include?(type)
+          pieces_removed.each do |piece|
+            type = piece.piece_type
+            gain_vps(1) if %i[building token].include?(type)
+          end
+
+          pieces << pieces_removed
+
+          Actions::Battle
+            .new(clearing, self, other_faction)
+            .use_for_post_battle(pieces_removed)
         end
       end
 
