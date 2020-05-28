@@ -8,8 +8,8 @@ module Root
       class Quests
         attr_reader :deck, :active_quests
 
-        def initialize(active_quests: [])
-          @deck = Factions::Racoons::QuestDeck.new
+        def initialize(quests: nil, active_quests: [], skip_generate: false)
+          @deck = Factions::Racoons::QuestDeck.new(deck: quests, skip_generate: skip_generate)
           @active_quests = active_quests
           3.times { draw_new_card } if active_quests.empty?
         end

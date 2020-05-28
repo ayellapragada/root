@@ -9,7 +9,7 @@ module Root
         def initialize
           super(
             suit: :fox,
-            name: 'Stand And Deliver!',
+            name: 'Stand and Deliver!',
             craft: %i[mouse mouse mouse]
           )
         end

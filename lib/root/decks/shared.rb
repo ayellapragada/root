@@ -4,11 +4,17 @@ module Root
   module Decks
     # The idea here is just for for exiles and partisans or others later
     class Shared < Base
-      attr_reader :dominance
+      attr_reader :dominance, :discard, :lost_souls
+
+      def initialize(deck: [], discard: [], lost_souls: [], dominance: [], skip_generate: false)
+        super(deck: deck, skip_generate: skip_generate)
+        @discard = discard || []
+        @lost_souls = lost_souls || []
+        @dominance = Decks::Dominance.new(dominance: [])
+      end
 
       # both kinds of decks will have a discard to interact with
       def generate_deck
-        @dominance = Decks::Dominance.new
         list_of_cards!
         deck.shuffle!
       end

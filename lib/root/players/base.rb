@@ -17,10 +17,10 @@ module Root
     # Safe spot for all centralized player logic
     # This should only be responsible for getting / displaying output.
     class Base
-      def self.from_db(record, display: MockDisplay.new, updater: MockPlayerUpdater.new)
+      def self.from_db(name, record, display: MockDisplay.new, updater: MockPlayerUpdater.new)
         fac = FACTION_MAPPING[record[:code]].from_db(record)
         new(
-          name: 'Yeet',
+          name: name,
           faction: fac,
           display: display,
           updater: updater
