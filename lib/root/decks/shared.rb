@@ -4,13 +4,13 @@ module Root
   module Decks
     # The idea here is just for for exiles and partisans or others later
     class Shared < Base
-      attr_reader :dominance, :discard, :lost_souls
+      attr_reader :dominance, :lost_souls
 
       def initialize(deck: [], discard: [], lost_souls: [], dominance: [], skip_generate: false)
-        super(deck: deck, skip_generate: skip_generate)
-        @discard = discard || []
+        super(deck: deck, discard: discard, skip_generate: skip_generate)
         @lost_souls = lost_souls || []
-        @dominance = Decks::Dominance.new(dominance: [])
+        @dominance = Decks::Dominance.new
+        dominance.each { |dom_card| discard_to_dominance(dom_card) }
       end
 
       # both kinds of decks will have a discard to interact with
@@ -21,7 +21,7 @@ module Root
 
       def discard_card(card)
         if card.dominance?
-          @dominance[card.suit] = { card: card, status: 'free' }
+          discard_to_dominance(card)
         else
           discard << card
         end
@@ -33,6 +33,10 @@ module Root
 
       def change_dominance(suit, status)
         @dominance[suit] = { card: nil, status: status }
+      end
+
+      def discard_to_dominance(card)
+        @dominance[card.suit] = { card: card, status: 'free' }
       end
 
       def substitute_dominance

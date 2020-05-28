@@ -8,7 +8,7 @@ module Root
 
       attr_reader :dominance
 
-      def initialize(dominance: [])
+      def initialize
         @dominance = {
           bird: { card: nil, status: '-' },
           fox: { card: nil, status: '-' },

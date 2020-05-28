@@ -10,8 +10,8 @@ module Root
 
         def initialize(quests: nil, active_quests: [], skip_generate: false)
           @deck = Factions::Racoons::QuestDeck.new(deck: quests, skip_generate: skip_generate)
-          @active_quests = active_quests
-          3.times { draw_new_card } if active_quests.empty?
+          @active_quests = active_quests || []
+          3.times { draw_new_card } if @active_quests.empty?
         end
 
         def draw_new_card

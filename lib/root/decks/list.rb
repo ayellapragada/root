@@ -15,7 +15,7 @@ module Root
           shared: Decks::Starter.new(
             deck: record[:shared],
             discard: record[:discard],
-            dominance: record[:dominance],
+            dominance: record[:dominance] || [],
             lost_souls: record[:lost_souls],
             skip_generate: true
           ),
@@ -28,7 +28,8 @@ module Root
             deck: record[:characters],
             skip_generate: true
           ),
-          updater: updater
+          updater: updater,
+          skip_generate: true
         )
       end
 
@@ -36,14 +37,15 @@ module Root
         shared: Decks::Starter.new,
         quests: Factions::Racoons::Quests.new,
         characters: Factions::Racoons::CharacterDeck.new,
-        updater: MockDecksUpdater.new
+        updater: MockDecksUpdater.new,
+        skip_generate: false
       )
         @shared = shared
         @quests = quests
         @characters = characters
         @updater = updater
         @updater.decks = self
-        updater.full_update
+        updater.full_update unless skip_generate
       end
     end
   end

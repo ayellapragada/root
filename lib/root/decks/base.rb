@@ -7,10 +7,11 @@ module Root
     class Base
       include Enumerable
 
-      attr_reader :deck
+      attr_reader :deck, :discard
 
-      def initialize(deck: [], skip_generate: false)
+      def initialize(deck: [], discard: [], skip_generate: false)
         @deck = deck || []
+        @discard = discard || []
         generate_deck unless skip_generate
       end
 
