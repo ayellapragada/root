@@ -524,7 +524,7 @@ module Root
             gain_vps(points)
             value = "Gained #{points} victory points(s)"
           else
-            2.times { draw_card }
+            draw_card(2)
             value = 'Drew 2 cards'
           end
 

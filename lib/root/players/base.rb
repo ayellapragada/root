@@ -73,10 +73,6 @@ module Root
         faction.hand_size
       end
 
-      def draw_card
-        faction.draw_card.first
-      end
-
       def victory_points
         faction.victory_points
       end

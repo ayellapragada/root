@@ -4,6 +4,8 @@ module Root
     class MockPlayerUpdater
       # The client injects something here.
       def update(_data, *); end
+
+      def draw_cards(cards); end
     end
   end
 end

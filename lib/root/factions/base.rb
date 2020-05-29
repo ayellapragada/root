@@ -161,8 +161,10 @@ module Root
         @hand = []
       end
 
-      def draw_card
-        @hand.concat(deck.draw_from_top)
+      def draw_card(num = 1)
+        new_cards = deck.draw_from_top(num)
+        updater.draw_cards(new_cards)
+        @hand.concat(new_cards)
       end
 
       def discard_card(card)
@@ -461,7 +463,7 @@ module Root
 
       def draw_cards
         num = 1 + draw_bonuses
-        num.times { draw_card }
+        draw_card(num)
         player.add_to_history(:f_draw_cards, num: num)
         discard_card_with_suit(nil) until hand_size <= 5
       end
