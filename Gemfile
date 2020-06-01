@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in root.gemspec
 gemspec
 
+gem 'method_source'
+
 # DEV
 gem 'byebug', '~> 11.0'
 gem 'rake', '~> 12.0'

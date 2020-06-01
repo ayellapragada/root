@@ -100,5 +100,13 @@ module Root
       players.each { |player| player.render_game(self, clearings: clearings) }
       nil
     end
+
+    def get_current_actions(phase, faction)
+      Choices.new.() do
+        case phase
+        when 'SETUP' then faction.get_setup_actions
+        end
+      end
+    end
   end
 end

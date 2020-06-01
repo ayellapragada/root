@@ -135,6 +135,7 @@ DEPENDENCIES
   byebug (~> 11.0)
   guard (~> 2.0)
   guard-rspec (~> 4.0)
+  method_source
   pry!
   pry-byebug (~> 3.0)
   rake (~> 12.0)

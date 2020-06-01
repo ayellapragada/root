@@ -59,4 +59,13 @@ RSpec.describe Root::Game do
       expect { game.one_round }.to change(game, :state)
     end
   end
+
+  xdescribe '#get_current_actions' do
+    it 'do things' do
+      game = Root::Game.default_game(with_computers: true)
+      fac = game.players.fetch_player(:cats).faction
+
+      game.get_current_actions('SETUP', fac)
+    end
+  end
 end

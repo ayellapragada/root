@@ -76,8 +76,26 @@ module Root
 
       def setup
         build_keep
-        build_initial_buildings
+        build_initial_buildings while need_to_build_starting_buildings
         place_initial_warriors
+      end
+
+      def get_setup_actions
+        return build_keep unless keep.empty?
+        return build_initial_buildings unless need_to_build_starting_buildings?
+
+        place_initial_warriors
+        []
+      end
+
+      def need_to_build_starting_buildings
+        !initial_building_choice_opts.empty?
+      end
+
+      def initial_building_choice_opts
+        %i[recruiter sawmill workshop].select do |type|
+          current_number_out(type).zero?
+        end
       end
 
       def build_keep
@@ -88,9 +106,8 @@ module Root
       end
 
       def build_initial_buildings
-        [sawmills, recruiters, workshops].each do |buils|
-          building = buils.first
-          player_places_building(building)
+        player.choose(:c_initial_building_choice, initial_building_choice_opts) do |buils|
+          player_places_building(buils)
         end
       end
 
@@ -99,9 +116,10 @@ module Root
           :c_initial_building,
           initial_building_opts,
           required: true,
-          info: { building: building.type.capitalize }
+          info: { building: building.capitalize }
         ) do |clearing|
-          place_building(building, clearing)
+          piece = send(building.pluralize).first
+          place_building(piece, clearing)
         end
       end
 
