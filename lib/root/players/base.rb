@@ -111,12 +111,10 @@ module Root
       # give_val: sometimes we just want them to pick something,
       # nothing happens with it yet
       # info: optional info to be placed into the prompt
-      def choose(key, choices, required: false, yield_anyway: false, give_val: false, info: {}, &block)
+      def choose(key, choices, required: false, yield_anyway: false, info: {})
         return false if choices.empty?
 
-        if Choices.dry_run?
-          return
-        end
+        return if Choices.dry_run?
 
         extra_keys = required ? [] : [:none]
         total_options = choices + extra_keys
@@ -127,8 +125,11 @@ module Root
           return false if selected == :none
         end
 
-        res = yield(selected) if block_given?
-        give_val ? selected : res
+        if block_given?
+          yield(selected)
+        else
+          selected
+        end
       end
     end
   end
