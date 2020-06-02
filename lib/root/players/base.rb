@@ -89,15 +89,6 @@ module Root
         faction.take_turn
       end
 
-      def inspect
-        f = faction
-        symbol = f.faction_symbol[0].upcase
-        meeps = f.meeples.count.to_s.rjust(2, '0')
-        builds = f.buildings.count.to_s.rjust(2, '0')
-        toks = f.tokens.count.to_s.rjust(2, '0')
-        "#{symbol}:H#{current_hand_size}:M#{meeps}:B#{builds}:T#{toks}"
-      end
-
       def add_to_history(key, opts = {})
         return unless @game
 
@@ -107,7 +98,7 @@ module Root
 
       def format_for_history(key, opts)
         {
-          player: inspect,
+          player: self,
           color: faction.display_color,
           key: key,
           opts: opts

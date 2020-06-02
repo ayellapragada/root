@@ -14,20 +14,6 @@ module Root
         @craft = Array.new(3) { suit }
       end
 
-      # :nocov:
-      def inspect
-        "#{name_with_suit} | Craft: #{craft.join(', ')}"
-      end
-
-      def phase
-        'Crafting'
-      end
-
-      def body
-        "Remove in #{suit} clearing"
-      end
-      # :nocov:
-
       def faction_craft(fac)
         fac.discard_card(self)
         fac.player.add_to_history(:f_favor, suit: suit.capitalize)

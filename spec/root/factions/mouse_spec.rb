@@ -26,57 +26,6 @@ RSpec.describe Root::Factions::Mouse do
     end
   end
 
-  describe '#special_info' do
-    context 'when for current player' do
-      it 'shows the number and types of supporters' do
-        faction.place_base(clearings[:one])
-        faction.supporters << Root::Cards::Base.new(suit: :rabbit)
-        faction.supporters << Root::Cards::Base.new(suit: :mouse)
-        faction.supporters << Root::Cards::Base.new(suit: :mouse)
-        faction.supporters << Root::Cards::Base.new(suit: :bird)
-        faction.place_sympathy(clearings[:one])
-        faction.place_sympathy(clearings[:two])
-        faction.place_sympathy(clearings[:three])
-        faction.place_sympathy(clearings[:four])
-        faction.place_sympathy(clearings[:five])
-
-        expect(faction.special_info(true)).to eq(
-          {
-            board: {
-              title: "Outrage | Guerilla Warfare | Martial Law\n0 Officers \nNo Items",
-              rows: [
-                ['Bird (1)', 'Fox (0)', 'Rabbit (1)', 'Mouse (2)'],
-                ['Bases', '(+1)', 'Rabbit', 'Mouse'],
-                ['Sympathy', '(1) 0 1 1', '(2) 1 2 S', '(3) S S S S']
-              ]
-            }
-          }
-        )
-      end
-    end
-
-    context 'when for other players' do
-      it 'shows the number of supporters only' do
-        faction.supporters << Root::Cards::Base.new(suit: :rabbit)
-        faction.supporters << Root::Cards::Base.new(suit: :mouse)
-        faction.supporters << Root::Cards::Base.new(suit: :mouse)
-        faction.supporters << Root::Cards::Base.new(suit: :bird)
-
-        expect(faction.special_info(false)).to eq(
-          {
-            board: {
-              title: "Outrage | Guerilla Warfare | Martial Law\n4 Supporters | 0 Officers \nNo Items",
-              rows: [
-                ['Bases', 'Fox', 'Rabbit', 'Mouse'],
-                ['Sympathy', '(1) S S S', '(2) S S S', '(3) S S S S']
-              ]
-            }
-          }
-        )
-      end
-    end
-  end
-
   describe '#outrage' do
     context 'when other faction moves into clearing with sympathy token' do
       context 'with matching card in hand' do

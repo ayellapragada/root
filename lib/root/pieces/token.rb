@@ -13,10 +13,6 @@ module Root
       def points_for_removing?
         true
       end
-
-      def display_symbol
-        super.downcase
-      end
     end
   end
 end

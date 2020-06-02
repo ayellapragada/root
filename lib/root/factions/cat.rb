@@ -52,28 +52,6 @@ module Root
         @recruited = false
       end
 
-      def board_title
-        "The Keep | Field Hospital\n#{item_list_for_info}"
-      end
-
-      def special_info(_show_private)
-        {
-          board: {
-            title: board_title,
-            rows: board_special_info,
-            headings: %w[Wood 0 1 2 3 3 4]
-          }
-        }
-      end
-
-      def board_special_info
-        rows = []
-        rows << format_with_victory_ponts_and_draw_bonuses(:sawmill)
-        rows << format_with_victory_ponts_and_draw_bonuses(:workshop)
-        rows << format_with_victory_ponts_and_draw_bonuses(:recruiter)
-        rows
-      end
-
       def setup
         build_keep
         build_initial_buildings while need_to_build_starting_buildings

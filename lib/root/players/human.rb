@@ -7,14 +7,7 @@ module Root
     # Handles user logic for this.
     class Human < Base
       def pick_option(key, options, info: {})
-        # :nocov:
-        @game&.render(clearings: options)
-        # :nocov:
         display.pick_option(key, options, player: self, game: @game, info: info)
-      end
-
-      def render_game(game, clearings: nil)
-        display.render_game(game, self, clearings)
       end
 
       def be_shown_hand(hand)

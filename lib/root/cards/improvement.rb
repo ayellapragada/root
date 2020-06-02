@@ -14,23 +14,9 @@ module Root
         @exhausted = false
       end
 
-      # :nocov:
-      def inspect
-        "#{name_with_suit} | Craft: #{craft.join(', ')}, #{body}"
-      end
-
       def type
         :base
       end
-
-      def phase
-        'Craft, then Specific'
-      end
-
-      def body
-        'Improvement Info'
-      end
-      # :nocov:
 
       def improvement?
         true

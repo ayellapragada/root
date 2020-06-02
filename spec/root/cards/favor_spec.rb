@@ -32,7 +32,6 @@ RSpec.describe Root::Cards::Favor do
     it 'is hopefully helpful' do
       card = Root::Cards::Favor.new(suit: :fox)
       expect(card.name).to eq('Favor of the Foxes')
-      expect(card.body).to eq('Remove in fox clearing')
     end
   end
 

@@ -10,16 +10,6 @@ module Root
         super(suit: suit, name: 'Dominance')
       end
 
-      # :nocov:
-      def inspect
-        name_with_suit
-      end
-
-      def phase
-        'Daylight then Start of Birdsong'
-      end
-      # :nocov:
-
       def body
         if suit == :bird
           'Rule 2 opposite corners'

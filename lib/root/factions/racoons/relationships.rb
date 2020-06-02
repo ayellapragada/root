@@ -59,16 +59,6 @@ module Root
           @relationships.keys.count
         end
 
-        def formatted_display
-          return 'No Status' if relationships.empty?
-
-          res =
-            @relationships
-            .map { |k, v| "#{k.capitalize}: #{DISPLAY[v[:status]]}" }
-            .join(' | ')
-          "Status: #{res}"
-        end
-
         private
 
         def able_to_improve_status?(fac)

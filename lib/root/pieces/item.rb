@@ -55,20 +55,6 @@ module Root
       def points_for_removing?
         false
       end
-
-      def format_with_status
-        statuses = []
-        statuses << 'E' if exhausted?
-        statuses << 'D' if damaged?
-        status = statuses.empty? ? '' : " (#{statuses.join})"
-        "#{item.capitalize}#{status}"
-      end
-
-      # :nocov:
-      def inspect
-        format_with_status
-      end
-      # :nocov:
     end
   end
 end

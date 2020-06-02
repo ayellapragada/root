@@ -12,12 +12,6 @@ module Root
           super(suit: suit, name: name)
           @items = items
         end
-
-        # :nocov:
-        def inspect
-          "#{name}: #{items.map(&:capitalize).join(', ')}"
-        end
-        # :nocov:
       end
     end
   end

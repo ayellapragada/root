@@ -104,18 +104,6 @@ RSpec.describe Root::Factions::Cat do
     end
   end
 
-  describe '#take_turn' do
-    it 'goes through all phases of a turn' do
-      game = Root::Game.default_game(with_computers: true)
-      player = game.players.fetch_player(:cats)
-      allow(player).to receive(:pick_option).and_return(0)
-      game.setup
-
-      expect { player.faction.take_turn }
-        .to change(player, :inspect)
-    end
-  end
-
   describe '#birdsong' do
     it 'gives all sawmills wood' do
       faction.place_sawmill(clearings[:nine])
@@ -759,43 +747,8 @@ RSpec.describe Root::Factions::Cat do
         allow(player).to receive(:pick_option).and_return(0)
         5.times { faction.hand << Root::Cards::Base.new(suit: :bird) }
 
-        expect { faction.evening }.to change { faction.hand }
+        expect { faction.evening }.to change(faction, :hand)
       end
-    end
-  end
-
-  describe '#special_info' do
-    it 'returns number of VP and draw bonuses, or else building tyoe' do
-      faction.place_recruiter(clearings[:twelve])
-      faction.place_recruiter(clearings[:twelve])
-      faction.place_recruiter(clearings[:eight])
-
-      faction.place_workshop(clearings[:eight])
-      faction.place_workshop(clearings[:nine])
-      faction.place_workshop(clearings[:nine])
-      faction.place_workshop(clearings[:one])
-      faction.place_workshop(clearings[:five])
-      faction.place_workshop(clearings[:five])
-
-      faction.place_sawmill(clearings[:seven])
-      faction.place_sawmill(clearings[:seven])
-
-      faction.place_meeple(clearings[:seven])
-      faction.place_meeple(clearings[:seven])
-
-      expect(faction.special_info(true)).to eq(
-        {
-          board: {
-            title: "The Keep | Field Hospital\nNo Items",
-            rows: [
-              %w[Sawmills 0 1 S S S S],
-              %w[Workshops 0 2 2 3 4 5],
-              ['Recruiters', '0', '1', '2(+1)', 'R', 'R', 'R']
-            ],
-            headings: %w[Wood 0 1 2 3 3 4]
-          },
-        }
-      )
     end
   end
 
@@ -810,8 +763,8 @@ RSpec.describe Root::Factions::Cat do
       bird_faction.place_meeple(clearings[:five])
       bird_faction.place_meeple(clearings[:five])
 
-      allow_any_instance_of(Root::Actions::Battle).
-        to receive(:dice_roll).and_return(2, 1)
+      allow_any_instance_of(Root::Actions::Battle)
+        .to receive(:dice_roll).and_return(2, 1)
 
       faction.hand << Root::Cards::Base.new(suit: :rabbit)
       faction.initiate_battle_with_faction(clearings[:five], bird_faction)
@@ -829,8 +782,8 @@ RSpec.describe Root::Factions::Cat do
       bird_faction.place_meeple(clearings[:five])
       bird_faction.place_meeple(clearings[:five])
 
-      allow_any_instance_of(Root::Actions::Battle).
-        to receive(:dice_roll).and_return(2, 1)
+      allow_any_instance_of(Root::Actions::Battle)
+        .to receive(:dice_roll).and_return(2, 1)
 
       faction.hand << Root::Cards::Base.new(suit: :rabbit)
       faction.initiate_battle_with_faction(clearings[:five], bird_faction)
@@ -846,8 +799,8 @@ RSpec.describe Root::Factions::Cat do
       bird_faction.place_meeple(clearings[:five])
       bird_faction.place_meeple(clearings[:five])
 
-      allow_any_instance_of(Root::Actions::Battle).
-        to receive(:dice_roll).and_return(2, 1)
+      allow_any_instance_of(Root::Actions::Battle)
+        .to receive(:dice_roll).and_return(2, 1)
 
       faction.initiate_battle_with_faction(clearings[:five], bird_faction)
 

@@ -25,14 +25,6 @@ module Root
           def torch?
             f.available_items_include?(:torch)
           end
-
-          # :nocov:
-          def inspect
-            starting_items = self.class::STARTING_ITEMS.join(', ')
-            power = self.class::POWER
-            "#{name}: Power: #{power} | Start: #{starting_items}"
-          end
-          # :nocov:
         end
       end
     end

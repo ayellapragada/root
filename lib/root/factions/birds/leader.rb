@@ -31,6 +31,7 @@ module Root
             )
           ]
         end
+
         include Birdable
 
         attr_accessor :leader, :decree, :ability
@@ -41,12 +42,6 @@ module Root
           @decree = decree
           @ability = ability
         end
-
-        # :nocov:
-        def inspect
-          "#{leader.capitalize}: #{ability} (Viziers: #{decree.map(&:capitalize).join(' + ')})"
-        end
-        # :nocov:
       end
     end
   end

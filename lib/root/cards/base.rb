@@ -50,24 +50,6 @@ module Root
       def royal_claim?
         false
       end
-
-      def name_with_suit
-        "#{name} (#{suit[0].upcase})"
-      end
-
-      # :nocov:
-      def inspect
-        name_with_suit
-      end
-
-      def phase
-        ' '
-      end
-
-      def body
-        ' '
-      end
-      # :nocov:
     end
   end
 end

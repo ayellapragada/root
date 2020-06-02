@@ -10,12 +10,9 @@ module Root
       # In the future we can try and get fancier with this though
       # choice = Computer::Intelligence.make_move(key, opts, @game)
       def pick_option(_key, choices, **)
-        @game&.render(clearings: choices)
         choice = choices.sample
         choices.find_index(choice)
       end
-
-      def render_game(*); end
 
       def be_shown_hand(*); end
     end

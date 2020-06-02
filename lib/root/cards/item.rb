@@ -17,20 +17,6 @@ module Root
         @vp = vp
       end
 
-      # :nocov:
-      def inspect
-        "#{name_with_suit} - #{item.capitalize} | Craft: #{craft.join(', ')}, Victory Points: #{vp}"
-      end
-
-      def phase
-        'Crafting'
-      end
-
-      def body
-        "#{item.capitalize}, +#{vp} VPs"
-      end
-      # :nocov:
-
       def faction_craft(fac)
         fac.board.items.delete_first(item)
         fac.board.updater.update_items

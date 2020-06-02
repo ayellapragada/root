@@ -64,42 +64,6 @@ module Root
         items.select(&:exhausted?)
       end
 
-      def formatted_character
-        character&.name || 'None'
-      end
-
-      def formatted_relationships
-        relationships.formatted_display
-      end
-
-      def board_title
-        "#{formatted_character} | Nimble | Lone Wanderer\n#{teas.count} tea(s) | #{coins.count} coin(s) | #{satchels.count} satchel(s)\n#{formatted_relationships}"
-      end
-
-      def special_info(_show_private)
-        {
-          board: {
-            title: board_title,
-            rows: [formatted_items]
-          }
-        }
-      end
-
-      def formatted_items
-        return ['No Items'] if items.empty?
-
-        [
-          word_wrap_string(format_items(items_in_knapsack))
-        ]
-      end
-
-      def format_items(items_to_format)
-        items_to_format
-          .sort_by { |item| [item.damaged? ? 1 : 0, item.exhausted? ? 1 : 0, item.item] }
-          .map(&:format_with_status)
-          .join(', ')
-      end
-
       def setup
         handle_character_select
         handle_forest_select

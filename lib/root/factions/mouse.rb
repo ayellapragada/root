@@ -35,11 +35,6 @@ module Root
         @remaining_actions = 0
       end
 
-      def board_title(show_private)
-        supporters_text = show_private ? '' : "#{supporters.count} Supporters | "
-        "Outrage | Guerilla Warfare | Martial Law\n#{supporters_text}#{officers.count} Officers \n#{item_list_for_info}"
-      end
-
       def special_info(show_private)
         {
           board: {
@@ -69,45 +64,8 @@ module Root
         end
       end
 
-      def sympathy_tracker_info
-        cur = VICTORY_POINTS[:sympathy][0...current_number_out(:sympathy)]
-        symp = cur.fill('S', cur.length, TOKENS - cur.length)
-        [
-          'Sympathy',
-          "(1) #{symp[0]} #{symp[1]} #{symp[2]}",
-          "(2) #{symp[3]} #{symp[4]} #{symp[5]}",
-          "(3) #{symp[6]} #{symp[7]} #{symp[8]} #{symp[9]}"
-        ]
-      end
-
-      def formatted_bases
-        [
-          'Bases',
-          display_for_base(:fox),
-          display_for_base(:rabbit),
-          display_for_base(:mouse)
-        ]
-      end
-
       def display_for_base(suit)
         bases.map(&:suit).include?(suit) ? suit.to_s.capitalize : '(+1)'
-      end
-
-      def formatted_supporters
-        [
-          "Bird (#{supporters_for(:bird).count})",
-          "Fox (#{supporters_for(:fox).count})",
-          "Rabbit (#{supporters_for(:rabbit).count})",
-          "Mouse (#{supporters_for(:mouse).count})"
-        ]
-      end
-
-      def board_special_info(show_private)
-        rows = []
-        rows << formatted_supporters if show_private
-        rows << formatted_bases
-        rows << sympathy_tracker_info
-        rows
       end
 
       def setup

@@ -184,56 +184,8 @@ module Root
         evening
       end
 
-      def item_list_for_info
-        return 'No Items' if items.empty?
-
-        names = items.map(&:item)
-        count = names.tally
-
-        res =
-          names
-          .uniq
-          .map { |item| count[item] > 1 ? "#{item.capitalize} (#{count[item]})" : item.capitalize }
-          .join(', ')
-        word_wrap_string(res)
-      end
-
-      # WOWOWOWOWOW yikers this is a comma based word wrap lets go
-      def word_wrap_string(string, _el = ', ')
-        return string if string.length < 50
-
-        res = [[]]
-        counter = 0
-        words = string.split(', ')
-        words.each do |word|
-          if (res[counter] + [word]).join(', ').length < 50
-            res[counter] << word
-          else
-            counter += 1
-            res[counter] = [word]
-          end
-        end
-
-        # add a comma at the end
-        res.map.with_index do |arr, idx|
-          str = (idx != res.length - 1 ? ',' : '')
-          arr.join(', ') + str
-        end.join("\n")
-      end
-
       def current_number_out(type)
         self.class::BUILDINGS - send(type.pluralize).count
-      end
-
-      def format_with_victory_ponts_and_draw_bonuses(type)
-        current_points = self.class::VICTORY_POINTS[type][0...current_number_out(type)]
-        bonuses = self.class::DRAW_BONUSES[type][0...current_number_out(type)]
-        piece_symbol = send(type.pluralize).first&.display_symbol
-        res = current_points.map.with_index do |val, idx|
-          bonuses[idx].zero? ? val.to_s : "#{val}(+#{bonuses[idx]})"
-        end
-        [type.pluralize.to_s.capitalize] +
-          res.fill(piece_symbol, res.length, self.class::BUILDINGS - res.length)
       end
 
       def place_meeple(clearing)
@@ -411,8 +363,8 @@ module Root
 
         clearings.select! { |cl| suits.include? cl.suit } unless suits.empty?
 
-        clearings.select do |clearing|
-          !other_attackable_factions(clearing).empty?
+        clearings.reject do |clearing|
+          other_attackable_factions(clearing).empty?
         end
       end
 

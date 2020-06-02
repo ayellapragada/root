@@ -16,7 +16,6 @@ RSpec.describe Root::Cards::Ambush do
       card = Root::Cards::Ambush.new(suit: :fox)
 
       expect(card.name).to eq('Ambush')
-      expect(card.body).to eq('Deal 2 hits on Defense')
     end
   end
 

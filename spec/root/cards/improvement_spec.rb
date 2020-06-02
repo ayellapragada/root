@@ -6,14 +6,6 @@ RSpec.describe Root::Cards::Improvement do
   let(:board) { cat_player.board }
   let(:clearings) { board.clearings }
 
-  describe '#inspect' do
-    it 'Displays information about the improvement' do
-      card = Root::Cards::Improvement.new(suit: :bird, craft: [:fox])
-      expect(card.inspect)
-        .to eq('Improvement (B) | Craft: fox, Improvement Info')
-    end
-  end
-
   describe '#faction_craft' do
     it 'puts into factions crafted improvements section' do
       allow(cat_player).to receive(:pick_option).and_return(0)
