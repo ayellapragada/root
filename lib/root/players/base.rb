@@ -114,14 +114,14 @@ module Root
       def choose(key, choices, required: false, yield_anyway: false, give_val: false, info: {}, &block)
         return false if choices.empty?
 
+        if Choices.dry_run?
+          return
+        end
+
         extra_keys = required ? [] : [:none]
         total_options = choices + extra_keys
         choice = pick_option(key, total_options, info: info)
         selected = total_options[choice]
-
-        # if $CHOICES
-        #   block.source.split("\n").map(&:strip)
-        # end
 
         unless yield_anyway
           return false if selected == :none
