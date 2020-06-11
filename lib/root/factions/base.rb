@@ -75,7 +75,7 @@ module Root
                   :improvements, :victory_points
       attr_writer :board
       attr_accessor :player
-      def_delegators :@player, :board, :updater, :deck, :players, :dry_run?
+      def_delegators :@player, :board, :deck, :players, :dry_run?, :updater
       def_delegators :deck, :dominance
 
       def initialize
@@ -89,7 +89,6 @@ module Root
         set_base_pieces
         handle_faction_token_setup
         handle_faction_info_setup
-        updater.update(format_for_db)
         self
       end
 
@@ -151,7 +150,6 @@ module Root
 
       def draw_card(num = 1)
         new_cards = deck.draw_from_top(num)
-        updater.draw_cards(new_cards)
         @hand.concat(new_cards)
       end
 
@@ -413,6 +411,7 @@ module Root
 
         buildings.delete(building)
         board.create_building(building, clearing)
+
         player.add_to_history(
           :f_build_options,
           type: building.type,
@@ -449,7 +448,6 @@ module Root
             plural_form = token.piece_type.pluralize
             send(plural_form) << token
             clearing.send(plural_form).delete(token)
-            board.updater.remove(clearing, token.updater_type)
             piece = token
           end
         end
@@ -459,7 +457,6 @@ module Root
       def remove_meeple(clearing)
         cl_meeples = clearing.meeples_of_type(faction_symbol)
         piece = cl_meeples.first
-        board.updater.remove(clearing, piece.updater_type)
         clearing.meeples.delete(piece)
         meeples << piece
         piece
@@ -491,7 +488,6 @@ module Root
           plural_form = type.pluralize
           send(plural_form) << piece
           clearing.send(plural_form).delete(piece)
-          board.updater.remove(clearing, piece.updater_type)
           piece
         end
       end

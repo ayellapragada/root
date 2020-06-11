@@ -7,10 +7,10 @@ module Root
     # but do not go into the discard, so they belong here.
     # decks that interact with discard go into shared
     class List
-      attr_reader :shared, :characters, :dominance, :updater
+      attr_reader :shared, :characters, :dominance
       attr_accessor :quests
 
-      def self.from_db(record, updater: MockDecksUpdater.new)
+      def self.from_db(record, updater: MockGameUpdater.new)
         cards_list = Root::Decks::Starter.new.deck
         quests_list = Root::Factions::Racoons::QuestDeck.new.deck
         character_list = Root::Factions::Racoons::CharacterDeck.new.deck
@@ -62,15 +62,13 @@ module Root
         shared: Decks::Starter.new,
         quests: Factions::Racoons::Quests.new,
         characters: Factions::Racoons::CharacterDeck.new,
-        updater: MockDecksUpdater.new,
+        updater: MockGameUpdater.new,
         skip_generate: false
       )
         @shared = shared
         @quests = quests
         @characters = characters
-        @updater = updater
-        @updater.decks = self
-        updater.full_update unless skip_generate
+        updater.initial_deck_update(self) unless skip_generate
       end
     end
   end

@@ -6,11 +6,11 @@ module Root
     # This is currently only for the woodland normie one,
     # But ideally to do another map it wouldn't be that bad.
     class Base
-      attr_reader :all_clearings, :items, :updater
+      attr_reader :all_clearings, :items
 
       # :nocov:
-      def self.from_db(record, updater: MockBoardUpdater.new)
-        board = new(items: record[:items], updater: updater)
+      def self.from_db(record)
+        board = new(items: record[:items])
         record.delete(:items)
 
         record.each do |clearing, values|
@@ -27,11 +27,9 @@ module Root
 
       DIAGANOLS = { 1 => :three, 2 => :four, 3 => :one, 4 => :two }.freeze
 
-      def initialize(generator: WoodlandsGenerator, items: nil, updater: MockBoardUpdater.new)
+      def initialize(generator: WoodlandsGenerator, items: nil)
         @all_clearings = generator.generate
         @items = items || ItemsGenerator.generate
-        @updater = updater
-        updater.board = self
       end
 
       def available_corners
@@ -55,17 +53,14 @@ module Root
       end
 
       def place_token(token, clearing)
-        updater.add(clearing, token.updater_type)
         clearing.place_token(token)
       end
 
       def create_building(building, clearing)
-        updater.add(clearing, building.updater_type)
         clearing.create_building(building)
       end
 
       def place_meeple(meeple, clearing)
-        updater.add(clearing, meeple.updater_type)
         clearing.place_meeple(meeple)
       end
 

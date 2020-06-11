@@ -25,7 +25,7 @@ module Root
         {
           key: key,
           val: val.inspect,
-          info: info,
+          info: info || {},
           children: children.map(&:as_json)
         }
       end

@@ -17,38 +17,26 @@ module Root
     # Safe spot for all centralized player logic
     # This should only be responsible for getting / displaying output.
     class Base
-      def self.from_db(name, record, display: MockDisplay.new, updater: MockPlayerUpdater.new)
+      def self.from_db(name, record)
         fac = FACTION_MAPPING[record[:code]].from_db(record)
-        new(
-          name: name,
-          faction: fac,
-          display: display,
-          updater: updater
-        )
+        new(name: name, faction: fac)
       end
 
-      def self.for(name, faction, display: MockDisplay.new, updater: MockPlayerUpdater.new)
+      def self.for(name, faction)
         fac = FACTION_MAPPING[faction].new
-        player = new(
-          name: name,
-          faction: fac,
-          display: display,
-          updater: updater
-        )
+        player = new(name: name, faction: fac)
 
         fac.post_initialize
         player
       end
 
-      attr_reader :name, :faction, :display, :updater
+      attr_reader :name, :faction
       attr_accessor :game
       attr_writer :board, :deck, :players
 
-      def initialize(name:, faction:, display: MockDisplay.new, updater: MockPlayerUpdater.new)
+      def initialize(name:, faction:)
         @name = name
         @faction = faction
-        @display = display
-        @updater = updater
 
         @faction.player = self
       end
@@ -71,6 +59,18 @@ module Root
 
       def dry_run?
         @dry_run ||= game&.dry_run || false
+      end
+
+      def selected
+        @selected ||= game&.selected || []
+      end
+
+      def updater
+        @updater ||= game.updater || MockGameUpdater.new
+      end
+
+      def update_game
+        updater.full_game_update
       end
 
       def actions

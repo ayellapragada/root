@@ -38,15 +38,15 @@ RSpec.describe Root::Game do
 
       expect(res[:children][0][:key]).to eq(:c_initial_building)
       expect(res[:children][0][:children].count).to eq(4)
-      expect(res[:children][0][:val]).to eq(:recruiter)
+      expect(res[:children][0][:val]).to eq(':recruiter')
 
       expect(res[:children][1][:key]).to eq(:c_initial_building)
       expect(res[:children][1][:children].count).to eq(4)
-      expect(res[:children][1][:val]).to eq(:sawmill)
+      expect(res[:children][1][:val]).to eq(':sawmill')
 
       expect(res[:children][2][:key]).to eq(:c_initial_building)
       expect(res[:children][2][:children].count).to eq(4)
-      expect(res[:children][2][:val]).to eq(:workshop)
+      expect(res[:children][2][:val]).to eq(':workshop')
 
       expect(res[:children][0][:children][0][:children].count).to eq(0)
       expect(res[:children][0][:children][1][:children].count).to eq(0)
@@ -67,6 +67,17 @@ RSpec.describe Root::Game do
 
         expect(res[:children]).to be_empty
       end
+    end
+  end
+
+  describe '#make_choice_with' do
+    it 'works for a one off' do
+      game = Root::Game.default_game(with_computers: true)
+      cat_faction = game.players.fetch_player(:cats).faction
+
+      game.make_choice_with('SETUP', :cats, [0])
+      expect(cat_faction.keep.count).to eq(0)
+      expect(game.board.clearings[:one].includes_token?(:keep)).to be true
     end
   end
 end
