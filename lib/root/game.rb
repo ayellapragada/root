@@ -25,12 +25,13 @@ module Root
       @actions = nil
     end
 
-    def get_current_actions(phase, faction)
+    def get_current_actions(phase, faction_sym)
+      faction = players.fetch_player(faction_sym).faction
       @dry_run = true
       case phase
       when 'SETUP' then faction.get_setup_actions
       end
-      @actions
+      @actions || ActionTree::Choice.new
     end
   end
 end

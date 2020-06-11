@@ -7,11 +7,12 @@ module Root
     # For consolidating choices related code
     class Choice
       attr_reader :val
-      attr_accessor :parent, :key, :children
+      attr_accessor :parent, :key, :children, :info
 
-      def initialize(key: nil, val: nil, parent: nil, children: [])
+      def initialize(key: nil, val: nil, info: nil, parent: nil, children: [])
         @key = key
         @val = val
+        @info = info
         @parent = parent
         @children = children.map { |child| Choice.new(val: child, parent: self) }
       end
@@ -23,7 +24,8 @@ module Root
       def as_json
         {
           key: key,
-          val: val,
+          val: val.inspect,
+          info: info,
           children: children.map(&:as_json)
         }
       end

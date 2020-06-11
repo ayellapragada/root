@@ -20,12 +20,19 @@ RSpec.describe Root::Game do
   end
 
   describe '#get_current_actions' do
-    it 'do things' do
+    it 'works for a one off' do
+      game = Root::Game.default_game(with_computers: true)
+
+      res = game.get_current_actions('SETUP', :cats).as_json
+      expect(res[:children].count).to eq(4)
+    end
+
+    it 'gets nested options until it is finalized' do
       game = Root::Game.default_game(with_computers: true)
       cat_faction = game.players.fetch_player(:cats).faction
 
       cat_faction.place_keep(game.board.clearings[:one])
-      res = game.get_current_actions('SETUP', cat_faction).as_json
+      res = game.get_current_actions('SETUP', :cats).as_json
       expect(res[:key]).to eq(:c_initial_building_choice)
       expect(res[:children].count).to eq(3)
 
@@ -45,6 +52,21 @@ RSpec.describe Root::Game do
       expect(res[:children][0][:children][1][:children].count).to eq(0)
       expect(res[:children][0][:children][2][:children].count).to eq(0)
       expect(res[:children][0][:children][3][:children].count).to eq(0)
+    end
+
+    context 'when nothing to do' do
+      it 'is empty' do
+        game = Root::Game.default_game(with_computers: true)
+        cat_faction = game.players.fetch_player(:cats).faction
+
+        cat_faction.place_keep(game.board.clearings[:one])
+        cat_faction.place_workshop(game.board.clearings[:two])
+        cat_faction.place_recruiter(game.board.clearings[:three])
+        cat_faction.place_sawmill(game.board.clearings[:four])
+        res = game.get_current_actions('SETUP', :cats).as_json
+
+        expect(res[:children]).to be_empty
+      end
     end
   end
 end
