@@ -69,6 +69,18 @@ module Root
         @players ||= game&.players || Players::List.new(self)
       end
 
+      def dry_run?
+        @dry_run ||= game&.dry_run || false
+      end
+
+      def actions
+        game&.actions
+      end
+
+      def actions=(val)
+        game&.actions = val
+      end
+
       def current_hand_size
         faction.hand_size
       end
@@ -111,13 +123,17 @@ module Root
       # give_val: sometimes we just want them to pick something,
       # nothing happens with it yet
       # info: optional info to be placed into the prompt
-      def choose(key, choices, required: false, yield_anyway: false, info: {})
+      def choose(key, choices, required: false, yield_anyway: false, info: {}, &block)
         return false if choices.empty?
-
-        return if Choices.dry_run?
 
         extra_keys = required ? [] : [:none]
         total_options = choices + extra_keys
+
+        if dry_run?
+          get_all_choices(key, choices, &block)
+          return
+        end
+
         choice = pick_option(key, total_options, info: info)
         selected = total_options[choice]
 
@@ -129,6 +145,24 @@ module Root
           yield(selected)
         else
           selected
+        end
+      end
+
+      def get_all_choices(key, choices)
+        choice = ActionTree::Choice.new(key: key, children: choices)
+        if actions.nil?
+          self.actions = choice
+        else
+          actions.key = key
+          actions.children = choices.map do |child|
+            ActionTree::Choice.new(val: child, parent: actions)
+          end
+        end
+
+        choices.each do |selected|
+          self.actions = actions.find_child(selected)
+          yield(selected) if block_given?
+          self.actions = actions.parent
         end
       end
     end

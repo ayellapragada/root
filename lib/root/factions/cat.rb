@@ -54,19 +54,19 @@ module Root
 
       def setup
         build_keep
-        build_initial_buildings while need_to_build_starting_buildings
+        build_initial_buildings while need_to_build_starting_buildings?
         place_initial_warriors
       end
 
       def get_setup_actions
         return build_keep unless keep.empty?
-        return build_initial_buildings unless need_to_build_starting_buildings?
+        return build_initial_buildings if need_to_build_starting_buildings?
 
         place_initial_warriors
         []
       end
 
-      def need_to_build_starting_buildings
+      def need_to_build_starting_buildings?
         !initial_building_choice_opts.empty?
       end
 

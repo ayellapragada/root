@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 require_relative '../core_extensions/symbol/pluralize'
 require_relative '../core_extensions/array/better_deletes'
 
@@ -7,6 +9,8 @@ module Root
   module Factions
     # Interface for basic faction logic
     class Base
+      extend Forwardable
+
       Symbol.include CoreExtensions::Symbol::Pluralize
       Array.include CoreExtensions::Array::BetterDeletes
 
@@ -39,6 +43,8 @@ module Root
 
         define_method(plural_name) { send(type).select { |b| b.type == name } }
         define_method("place_#{name}") do |clearing|
+          return if dry_run?
+
           piece = send(plural_name).first
 
           if type == :tokens
@@ -69,6 +75,8 @@ module Root
                   :improvements, :victory_points
       attr_writer :board
       attr_accessor :player
+      def_delegators :@player, :board, :updater, :deck, :players, :dry_run?
+      def_delegators :deck, :dominance
 
       def initialize
         @hand = []
@@ -108,26 +116,6 @@ module Root
         @tokens = record[:tokens].map { |piece| Pieces::Base.for(piece[:type]) }
       end
 
-      def board
-        player.board
-      end
-
-      def updater
-        player.updater
-      end
-
-      def deck
-        player.deck
-      end
-
-      def dominance
-        deck.dominance
-      end
-
-      def players
-        player.players
-      end
-
       def gain_vps(value)
         return if win_via_dominance?
 
@@ -158,7 +146,7 @@ module Root
       end
 
       def discard_hand
-        @hand = []
+        hand.each { |card| discard_card(card) }
       end
 
       def draw_card(num = 1)
@@ -421,6 +409,8 @@ module Root
       end
 
       def place_building(building, clearing)
+        return if dry_run?
+
         buildings.delete(building)
         board.create_building(building, clearing)
         player.add_to_history(

@@ -9,7 +9,7 @@ module Root
       )
     end
 
-    attr_accessor :players, :board, :decks, :history
+    attr_accessor :players, :board, :decks, :history, :dry_run, :actions
 
     def initialize(
       players:,
@@ -21,14 +21,16 @@ module Root
       @decks = decks
       @players.each { |p| p.game = self }
       @history = []
+      @dry_run = false
+      @actions = nil
     end
 
     def get_current_actions(phase, faction)
-      Choices.new.() do
-        case phase
-        when 'SETUP' then faction.get_setup_actions
-        end
+      @dry_run = true
+      case phase
+      when 'SETUP' then faction.get_setup_actions
       end
+      @actions
     end
   end
 end
