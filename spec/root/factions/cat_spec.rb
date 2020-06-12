@@ -19,7 +19,10 @@ RSpec.describe Root::Factions::Cat do
           { name: 'Anvil', suit: :fox, id: 2, revealed: false }
         ],
         improvements: [{ name: 'Cobbler', suit: :rabbit, id: 3, exhausted: true }],
-        items: %i[tea sword],
+        items: [
+          { item: 'tea', exhausted: false, damaged: false },
+          { item: 'sword', exhausted: true, damaged: true }
+        ],
         meeples: %i[cats cats cats cats cats cats],
         buildings: [
           { type: :sawmill },

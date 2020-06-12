@@ -113,7 +113,7 @@ module Root
             }
           end,
           items: items.map do |item|
-            { item: item, damaged: item.damaged, exhausted: item.exhausted }
+            { item: item.item, damaged: item.damaged, exhausted: item.exhausted }
           end,
           meeples: meeples.map(&:faction),
           buildings: buildings.map { |piece| { type: piece.type } },
@@ -122,9 +122,37 @@ module Root
         }
       end
 
+      def stockpile
+        @stockpile ||= {
+          shared: Root::Decks::Starter.new.deck,
+          quests_list: Root::Factions::Racoons::QuestDeck.new.deck,
+          character_list: Root::Factions::Racoons::CharacterDeck.new.deck
+        }
+      end
+
+      def take_card_from_stockpile(list_from_db, cards_list)
+        return [] unless list_from_db
+
+        list_from_db.map do |db_card|
+          cards_list.find do |card|
+            card.name == db_card['name'] && card.suit == db_card['suit'].to_sym
+          end.tap do |card|
+            card.exhaust if db_card['exhausted']
+            # card.reveal if db_card['revealed']
+          end
+        end
+      end
+
       def post_initialize_from_db(record)
         @victory_points = record[:victory_points]
-        record[:items].each { |type| make_item(type) } # TODO, ALSO EXHUAST / DAMAGE
+        record[:items].map do |item_db|
+          item = make_item(item_db[:item].to_sym)
+          item.exhaust if item_db[:exhausted]
+          item.damage if item_db[:damaged]
+          item
+        end
+        @hand = take_card_from_stockpile(record[:hand], stockpile[:shared])
+        @improvements = take_card_from_stockpile(record[:improvements], stockpile[:shared])
         @meeples = record[:meeples].map { |piece| Pieces::Base.for(piece) }
         @buildings = record[:buildings].map { |piece| Pieces::Base.for(piece[:type]) }
         @tokens = record[:tokens].map { |piece| Pieces::Base.for(piece[:type]) }
@@ -258,7 +286,9 @@ module Root
       end
 
       def make_item(type)
-        @items << Pieces::Item.new(type)
+        item = Pieces::Item.new(type)
+        @items << item
+        item
       end
 
       def handle_item_vp(item)

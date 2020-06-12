@@ -23,7 +23,7 @@ module Root
       def post_initialize_from_db(record)
         super
         @recruited = record[:info][:recruited]
-        @recruited = record[:info][:remaining_actions]
+        @remaining_actions = record[:info][:remaining_actions]
       end
 
       def format_for_db
