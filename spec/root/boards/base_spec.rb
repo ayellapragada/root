@@ -4,11 +4,11 @@ RSpec.describe Root::Boards::Base do
   describe '.from_db' do
     it 'sets the values and pieces correctly' do
       db_record = {
-        items: %i[tea tea sword],
-        one: %i[cats cats birds mice],
-        two: %i[sawmill wood cats],
-        three: %i[base sympathy],
-        four: %i[ruin sword]
+        'items' => %i[tea tea sword],
+        'one' => %i[cats cats birds mice],
+        'two' => %i[sawmill wood cats],
+        'three' => %i[base sympathy],
+        'four' => %i[ruin sword]
       }
 
       board = Root::Boards::Base.from_db(db_record)

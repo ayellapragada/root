@@ -117,6 +117,17 @@ module Root
         }
       end
 
+      # def take_card_from_stockpile(list_from_db, cards_list)
+      #   return [] unless list_from_db
+      #   list_from_db.map do |db_card|
+      #     cards_list.find do |card|
+      #       card.name == db_card[:name] && card.suit == db_card[:suit].to_sym
+      #     end.tap do |card|
+      #       card.exhaust if db_card[:exhausted]
+      #     end
+      #   end
+      # end
+
       # required: self explanatory, user can not cancel
       # yield_anyway: sometimes the app needs to know if user picked none
       # i.e., picking none cancels the turn

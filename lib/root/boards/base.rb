@@ -10,13 +10,13 @@ module Root
 
       # :nocov:
       def self.from_db(record)
-        board = new(items: record[:items])
-        record.delete(:items)
+        board = new(items: record['items'])
+        record.delete('items')
 
         record.each do |clearing, values|
           cl = board.clearings[clearing.to_sym]
           values.each do |piece|
-            fin = Pieces::Base.for(piece, suit: board.clearings[clearing].suit)
+            fin = Pieces::Base.for(piece, suit: cl.suit)
             fin.class == Symbol ? cl.items << fin : cl.send(fin.piece_type.pluralize) << fin
           end
         end

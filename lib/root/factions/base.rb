@@ -75,6 +75,7 @@ module Root
                   :improvements, :victory_points
       attr_writer :board
       attr_accessor :player
+
       def_delegators :@player, :board, :deck, :players, :dry_run?, :updater
       def_delegators :deck, :dominance
 
@@ -95,8 +96,22 @@ module Root
       def format_for_db
         {
           victory_points: victory_points,
-          hand: [],
-          improvements: [],
+          hand: hand.map do |card|
+            {
+              id: card.id,
+              name: card.name,
+              suit: card.suit,
+              revealed: card.revealed
+            }
+          end,
+          improvements: improvements.map do |imp|
+            {
+              id: imp.id,
+              name: imp.name,
+              suit: imp.suit,
+              exhausted: imp.exhausted
+            }
+          end,
           items: items.map do |item|
             { item: item, damaged: item.damaged, exhausted: item.exhausted }
           end,
