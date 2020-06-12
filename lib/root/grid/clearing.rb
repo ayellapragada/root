@@ -231,6 +231,10 @@ module Root
         buildings.find { |b| b.type == :ruin }
       end
 
+      def everything
+        buildings + tokens + meeples + items
+      end
+
       private
 
       def clear_ruin

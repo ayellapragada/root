@@ -14,6 +14,7 @@ module Root
         cards_list = Root::Decks::Starter.new.deck
         quests_list = Root::Factions::Racoons::QuestDeck.new.deck
         character_list = Root::Factions::Racoons::CharacterDeck.new.deck
+
         new(
           shared: Decks::Starter.new(
             deck: take_card_from_deck(record[:shared], cards_list),
