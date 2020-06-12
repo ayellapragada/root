@@ -61,6 +61,7 @@ module Root
             type: piece.type,
             clearing: clearing.priority
           )
+          update_game
           piece
         end
       end
@@ -76,7 +77,8 @@ module Root
       attr_writer :board
       attr_accessor :player
 
-      def_delegators :@player, :board, :deck, :players, :dry_run?, :updater
+      def_delegators :@player, :board, :deck, :players, :dry_run?, :updater,
+                     :update_game
       def_delegators :deck, :dominance
 
       def initialize
@@ -137,6 +139,7 @@ module Root
           cards_list.find do |card|
             card.name == db_card['name'] && card.suit == db_card['suit'].to_sym
           end.tap do |card|
+            card.id = db_card['id']
             card.exhaust if db_card['exhausted']
             # card.reveal if db_card['revealed']
           end
@@ -462,6 +465,7 @@ module Root
           type: building.type,
           clearing: clearing.priority
         )
+        update_game
       end
 
       def with_action

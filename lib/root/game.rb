@@ -40,7 +40,7 @@ module Root
     end
 
     def make_choice_with(phase, faction_sym, selected)
-      @selected = selected
+      @selected = selected.map(&:to_i)
       faction = players.fetch_player(faction_sym).faction
       case phase
       when 'SETUP' then faction.get_setup_actions

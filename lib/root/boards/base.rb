@@ -11,6 +11,8 @@ module Root
       # :nocov:
       def self.from_db(record)
         board = new(items: record['items'])
+        board.ruins_clearings.each(&:clear_ruin)
+
         record.delete('items')
 
         record.each do |clearing, values|

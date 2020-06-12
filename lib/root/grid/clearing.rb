@@ -235,11 +235,11 @@ module Root
         buildings + tokens + meeples + items
       end
 
-      private
-
       def clear_ruin
         buildings.delete(ruin)
       end
+
+      private
 
       def create_ruin
         @buildings << Ruin.new

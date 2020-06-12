@@ -71,6 +71,7 @@ module Root
 
       def update_game
         updater.full_game_update
+        true
       end
 
       def actions
