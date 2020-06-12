@@ -14,7 +14,7 @@ module Root
           choice = choices.sample
           choices.find_index(choice)
         else
-          selected.pop
+          selected.shift
         end
       end
 

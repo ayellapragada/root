@@ -137,11 +137,11 @@ module Root
 
         list_from_db.map do |db_card|
           cards_list.find do |card|
-            card.name == db_card['name'] && card.suit == db_card['suit'].to_sym
+            card.name == db_card[:name] && card.suit == db_card[:suit].to_sym
           end.tap do |card|
-            card.id = db_card['id']
-            card.exhaust if db_card['exhausted']
-            # card.reveal if db_card['revealed']
+            card.id = db_card[:id]
+            card.exhaust if db_card[:exhausted]
+            # card.reveal if db_card[:revealed]
           end
         end
       end

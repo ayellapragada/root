@@ -63,7 +63,7 @@ module Root
         return build_initial_buildings if need_to_build_starting_buildings?
 
         place_initial_warriors
-        []
+        {}
       end
 
       def need_to_build_starting_buildings?
@@ -109,6 +109,7 @@ module Root
       def place_initial_warriors
         clearing = board.clearing_across_from_keep
         board.clearings_other_than(clearing).each { |cl| place_meeple(cl) }
+        update_game
       end
 
       # Same issue as recruit. If there isn't enough,

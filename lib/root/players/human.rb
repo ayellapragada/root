@@ -7,7 +7,7 @@ module Root
     # Handles user logic for this.
     class Human < Base
       def pick_option(*)
-        selected.pop
+        selected.shift
       end
 
       def be_shown_hand(hand)

@@ -66,7 +66,7 @@ module Root
       end
 
       def updater
-        @updater ||= game.updater || MockGameUpdater.new
+        @updater ||= game&.updater || MockGameUpdater.new
       end
 
       def update_game
