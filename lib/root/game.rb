@@ -46,5 +46,17 @@ module Root
       when 'SETUP' then faction.get_setup_actions
       end
     end
+
+    def factions
+      players.map(&:faction)
+    end
+
+    def setup
+      factions.each do |fac|
+        fac.post_initialize
+        fac.draw_card(3)
+      end
+      updater.full_game_update
+    end
   end
 end
