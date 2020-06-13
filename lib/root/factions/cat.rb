@@ -269,9 +269,9 @@ module Root
           piece = send(building_type.pluralize).first
 
           remove_wood(accessible_wood, wood_to_remove)
-          gain_vps(vp_for_next(building_type))
           return false if dry_run?
 
+          gain_vps(vp_for_next(building_type))
           place_building(piece, clearing)
         end
       end
@@ -285,8 +285,6 @@ module Root
       def remove_wood(accessible_wood, num_wood_to_remove)
         until num_wood_to_remove.zero?
           player.choose(:c_wood_removal, accessible_wood, required: true) do |clearing|
-            return false if dry_run?
-
             accessible_wood.delete_first(clearing)
             tokens << clearing.remove_wood
             num_wood_to_remove -= 1
