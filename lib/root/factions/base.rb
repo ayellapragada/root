@@ -54,7 +54,7 @@ module Root
           end
           send(type).delete(piece)
 
-          return if HISTORY_EXCLUSION.include?(piece.type)
+          return piece if HISTORY_EXCLUSION.include?(piece.type)
 
           player.add_to_history(
             :f_build_options,
@@ -115,12 +115,15 @@ module Root
             }
           end,
           items: items.map do |item|
-            { item: item.item, damaged: item.damaged, exhausted: item.exhausted }
+            {
+              item: item.item,
+              damaged: item.damaged?,
+              exhausted: item.exhausted?
+            }
           end,
           meeples: meeples.map(&:faction),
           buildings: buildings.map { |piece| { type: piece.type } },
           tokens: tokens.map { |piece| { type: piece.type } },
-          info: { recruited: @recruited, remaining_actions: @remaining_actions }
         }
       end
 
@@ -159,6 +162,7 @@ module Root
         @meeples = record[:meeples].map { |piece| Pieces::Base.for(piece) }
         @buildings = record[:buildings].map { |piece| Pieces::Base.for(piece[:type]) }
         @tokens = record[:tokens].map { |piece| Pieces::Base.for(piece[:type]) }
+        @crafted = record[:info][:crafted]
       end
 
       def gain_vps(value)
@@ -246,11 +250,15 @@ module Root
             case action
             when :craft then craft_items
             when ->(n) { DAYLIGHT_OPTIONS.include?(n) } then do_daylight_option(action)
-            when :none then return false
+            when :none
+              @crafted = true
+              return false
             end
             # :nocov:
           end
         end
+        @crafted = true
+        update_game
       end
 
       def craft_with_specific_timing_options
@@ -385,6 +393,8 @@ module Root
       end
 
       def move_meeples(from, to, num)
+        return if dry_run?
+
         Actions::Move.new(from, to, num, self).()
       end
 
@@ -417,6 +427,8 @@ module Root
       end
 
       def initiate_battle_with_faction(clearing, other_faction)
+        return if dry_run?
+
         Actions::Battle.new(clearing, self, other_faction).()
       end
 
@@ -612,6 +624,8 @@ module Root
       end
 
       def do_daylight_option(action)
+        return if dry_run?
+
         send(action)
       end
 

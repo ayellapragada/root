@@ -9,8 +9,8 @@ module Root
       )
     end
 
-    attr_accessor :players, :board, :decks, :history, :dry_run, :actions,
-                  :selected, :updater
+    attr_accessor :players, :board, :decks, :history, :actions, :selected,
+                  :updater, :dry_run
 
     def initialize(
       players:,
@@ -31,19 +31,23 @@ module Root
     end
 
     def get_current_actions(phase, faction_sym)
-      faction = players.fetch_player(faction_sym).faction
       @dry_run = true
-      case phase
-      when 'SETUP' then faction.get_setup_actions
-      end
-      @actions || ActionTree::Choice.new
+      @actions = ActionTree::Choice.new
+      do_actions_for_phase(phase, faction_sym)
+      @actions
     end
 
     def make_choice_with(phase, faction_sym, selected)
       @selected = selected.map(&:to_i)
+      do_actions_for_phase(phase, faction_sym)
+    end
+
+    def do_actions_for_phase(phase, faction_sym)
       faction = players.fetch_player(faction_sym).faction
       case phase
       when 'SETUP' then faction.get_setup_actions
+      when 'BIRDSONG' then faction.get_birdsong_options
+      when 'DAYLIGHT' then faction.get_daylight_options
       end
     end
 

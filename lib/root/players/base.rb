@@ -131,7 +131,7 @@ module Root
         total_options = choices + extra_keys
 
         if dry_run?
-          get_all_choices(key, choices, info, &block)
+          get_all_choices(key, total_options, yield_anyway, info, &block)
           return
         end
 
@@ -149,22 +149,25 @@ module Root
         end
       end
 
-      def get_all_choices(key, choices, info)
-        if actions.nil?
-          self.actions =
-            ActionTree::Choice.new(key: key, info: info, children: choices)
-        else
-          actions.key = key
-          actions.info = info
-          actions.children = choices.map do |child|
-            ActionTree::Choice.new(val: child, parent: actions)
-          end
+      def get_all_choices(key, choices, yield_anyway, info)
+        actions.key = key
+        actions.info = info
+        actions.children = choices.map do |child|
+          ActionTree::Choice.new(val: child, parent: actions)
         end
 
         choices.each do |selected|
-          self.actions = actions.find_child(selected)
+          unless yield_anyway
+            next if selected == :none
+          end
+
+          new_action = actions.find_child(selected)
+          self.actions = new_action
           yield(selected) if block_given?
-          self.actions = actions.parent
+
+          until actions.children.map(&:val) == choices
+            self.actions = actions.parent
+          end
         end
       end
     end

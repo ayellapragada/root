@@ -9,12 +9,12 @@ module Root
       attr_reader :val
       attr_accessor :parent, :key, :children, :info
 
-      def initialize(key: nil, val: nil, info: nil, parent: nil, children: [])
+      def initialize(key: nil, val: nil, info: nil, parent: nil)
         @key = key
         @val = val
         @info = info
         @parent = parent
-        @children = children.map { |child| Choice.new(val: child, parent: self) }
+        @children = []
       end
 
       def find_child(val)
@@ -24,7 +24,7 @@ module Root
       def as_json
         {
           key: key,
-          val: val.inspect,
+          val: val&.inspect,
           info: info || {},
           children: children.map(&:as_json)
         }

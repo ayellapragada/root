@@ -34,7 +34,7 @@ RSpec.describe Root::Game do
       cat_faction.place_keep(game.board.clearings[:one])
       res = game.get_current_actions('SETUP', :cats).as_json
       expect(res[:key]).to eq(:c_initial_building_choice)
-      expect(res[:children].count).to eq(3)
+      expect(res[:children].count).to eq(4)
 
       expect(res[:children][0][:key]).to eq(:c_initial_building)
       expect(res[:children][0][:children].count).to eq(4)
@@ -66,6 +66,20 @@ RSpec.describe Root::Game do
         res = game.get_current_actions('SETUP', :cats).as_json
 
         expect(res[:children]).to be_empty
+      end
+    end
+
+    context 'when deeply nested' do
+      it 'works :D because currently it does not' do
+        game = Root::Game.default_game(with_computers: true)
+        cat_faction = game.players.fetch_player(:cats).faction
+
+        cat_faction.place_keep(game.board.clearings[:one])
+        cat_faction.place_wood(game.board.clearings[:one])
+        cat_faction.place_meeple(game.board.clearings[:one])
+        cat_faction.get_birdsong_options
+
+        res = game.get_current_actions('DAYLIGHT', :cats).as_json
       end
     end
   end

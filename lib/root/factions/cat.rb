@@ -31,7 +31,8 @@ module Root
           {
             info: {
               recruited: @recruited,
-              remaining_actions: @remaining_actions
+              remaining_actions: @remaining_actions,
+              crafted: @crafted
             }
           }
         )
@@ -84,7 +85,7 @@ module Root
       end
 
       def build_initial_buildings
-        player.choose(:c_initial_building_choice, initial_building_choice_opts) do |buils|
+        player.choose(:c_initial_building_choice, initial_building_choice_opts, required: true) do |buils|
           player_places_building(buils)
         end
       end
@@ -93,7 +94,6 @@ module Root
         player.choose(
           :c_initial_building,
           initial_building_opts,
-          required: true,
           info: { building: building.capitalize }
         ) do |clearing|
           piece = send(building.pluralize).first
@@ -112,11 +112,19 @@ module Root
         update_game
       end
 
-      # Same issue as recruit. If there isn't enough,
-      # the player should be on prompted where to place it.
       def birdsong
         super
         @recruited = false
+
+        do_with_birdsong_options(:place_wood) { place_wood_in_all_sawmills }
+      end
+
+      # a very very minimal version for now
+      # without improvements
+      def get_birdsong_options
+        @recruited = false
+        @remaining_actions = 3
+        @crafted = false
 
         do_with_birdsong_options(:place_wood) { place_wood_in_all_sawmills }
       end
@@ -140,6 +148,33 @@ module Root
               place_wood(cl)
             end
           end
+        end
+        update_game
+      end
+
+      def get_daylight_options
+        @crafted = true if craft_with_specific_timing_options.empty?
+        return craft_with_specific_timing unless @crafted
+        return if daylight_options.empty? || remaining_actions.zero?
+
+        player.choose(
+          :f_pick_action,
+          daylight_options,
+          yield_anyway: true,
+          info: { actions: "(#{@remaining_actions} actions remaining) " }
+        ) do |action|
+          # :nocov:
+          case action
+          when :battle then with_action { battle }
+          when :march then with_action { march }
+          when :build then with_action { build }
+          when :recruit then with_action { recruit }
+          when :overwork then with_action { overwork }
+          when :discard_bird then discard_bird
+          when ->(n) { DAYLIGHT_OPTIONS.include?(n) } then do_daylight_option(action)
+          when :none then @remaining_actions = 0
+          end
+          # :nocov:
         end
       end
 
@@ -233,8 +268,10 @@ module Root
           wood_to_remove = cost_for_next_building(building_type)
           piece = send(building_type.pluralize).first
 
-          gain_vps(vp_for_next(building_type))
           remove_wood(accessible_wood, wood_to_remove)
+          gain_vps(vp_for_next(building_type))
+          return false if dry_run?
+
           place_building(piece, clearing)
         end
       end
@@ -248,6 +285,8 @@ module Root
       def remove_wood(accessible_wood, num_wood_to_remove)
         until num_wood_to_remove.zero?
           player.choose(:c_wood_removal, accessible_wood, required: true) do |clearing|
+            return false if dry_run?
+
             accessible_wood.delete_first(clearing)
             tokens << clearing.remove_wood
             num_wood_to_remove -= 1
@@ -286,9 +325,9 @@ module Root
         recruiter: [0, 1, 2, 3, 3, 4]
       }.freeze
 
-      # Same issue as birdsong. If there isn't enough,
-      # the player should be prompted on where to place it.
       def recruit
+        return if dry_run?
+
         @recruited = true
         recuitable_clearings = board.clearings_with(:recruiter)
         clearings_recruited_in = []
@@ -329,15 +368,21 @@ module Root
       def overwork
         player.choose(:c_overwork, overwork_options, required: false) do |cl|
           discard_card_with_suit(cl.suit, required: false) do
+            return if dry_run?
+
             place_wood(cl)
             player.add_to_history(:c_overwork, clearing: cl.priority)
+            update_game
           end
         end
       end
 
       def discard_bird
         discard_card_with_suit(:bird, required: false) do
+          return if dry_run?
+
           @remaining_actions += 1
+          update_game
         end
       end
 
