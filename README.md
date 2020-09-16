@@ -4,7 +4,7 @@ This is my (first) take on a digital version of Root.
 
 This version is complete, except, I guess the AI isn't very good ;)
 
-It works, I'm happy with it as a learning exercise, but it's being deprecated while I work on the full version.
+It works, I'm happy with it as a learning exercise, but it's not supported/ nor was it ever supported.
 
 ## Gameplay
 
