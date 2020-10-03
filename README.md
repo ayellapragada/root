@@ -1,35 +1,54 @@
-# root
+# Root
 
 This is my take on a digital version of Root.
-This gives me a very fun chance to work on a pure ruby project, and object oriented programming.
+
+This version is relatively complete, but the AI isn't that great.
+
+It works, I'm happy with it as a learning exercise, but it's not supported / nor was it ever really supported.
+
+Stay tuned for more info on my next related project!
+
+## Gameplay
+
+![Full Game Screen](./screenshots/full.png)
+
+It's a full game run through, you start the game, it'll show you relevant information on each of the factions.
+
+Whatever their game boards would normally display.
+
+The Cats for example, show how many more buildings they have on their track, the Birds have their decree.
+
+After that it'll take you through a guided through version of the game, you'll see all your available actions, can cancel actions, use cards, the whole jingle jangle.
+
+## The Why
+
+![Look at all that code coverage](./screenshots/test_cov.png)
+
+This was honestly just me wanting to build out a slightly more complex project that was in a different vein than a normal web app.
+
+It was really fun building something that was more of a long runnng process, and building out a complicated system.
+
+All while keeping the entire thing at 100% code coverage, and 100% branch coverage.
+
+A commit never went below 99% code coverage. Or you know, rarely did. Don't hold me to this.
+
+Does that mean the tests are good and cover everything? No :)
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Master has been reverted :) so this should work as is now.
 
-Install it yourself as:
-
-    $ gem install root
+Git clone the repo, go into the repo. You'll need Ruby.
 
 ## Usage
 
-We'll see how it actually "handles"
+Run `./bin/play FACTION_CODE`
 
-## Development
+Where the FACTION_CODE is `cats`, `birds`, `mice`, or `racooon`.
 
-After checking out the repo, run `bin/setup` to install dependencies.
+## Contact Me
 
-Then, run `bundle exec rspec` to run the tests. Run with `COVERAGE=true` to get simplecov going.
-
-You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`.
-To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/root. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/root/blob/master/CODE_OF_CONDUCT.md).
-
+Feel free to open an issue!
 
 ## License
 
@@ -38,9 +57,3 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the root project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/root/blob/master/CODE_OF_CONDUCT.md).
-
-## Useful Links!
-[Final PnP of Root](https://drive.google.com/drive/folders/1i9-iCUDzfGMs7HjFHhahwMS6efvvfX5w) - This is the final one pre release, not 4th printing., useful to reference. Not perfect.
-
-
-[Components List](https://geekdad.com/2018/11/reaping-the-rewards-geekdad-digs-root/) - It's a review but it also has a list of components.
