@@ -2,9 +2,9 @@
 
 This is my take on a digital version of Root.
 
-This version is relatively complete, but the AI isn't that great.
+This version is complete in terms of all base game mechanics, but the AI could be improved.
 
-It works, I'm happy with it as a learning exercise, but it's not supported / nor was it ever really supported.
+It works, I'm happy with it as a learning exercise, but it's no longer supported.
 
 Stay tuned for more info on my next related project!
 
@@ -30,15 +30,14 @@ It was really fun building something that was more of a long runnng process, and
 
 All while keeping the entire thing at 100% code coverage, and 100% branch coverage.
 
-A commit never went below 99% code coverage. Or you know, rarely did. Don't hold me to this.
-
-Does that mean the tests are good and cover everything? No :)
+A commit never went below 99% code coverage. Or you know, rarely did. Don't hold me to this please.
 
 ## Installation
 
-Master has been reverted :) so this should work as is now.
-
 Git clone the repo, go into the repo. You'll need Ruby.
+
+For people who looked at this repo earlier, master has been reverted so this should just work as is, you don't need to clone a specific branch.
+
 
 ## Usage
 
