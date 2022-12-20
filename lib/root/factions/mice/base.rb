@@ -5,7 +5,7 @@ module Root
     module Mice
       # Bases for cats, they get 3 bases and this handles their operations
       class Base < Pieces::Building
-        include Miceable
+        include ::Root::Factions::Mice::Miceable
 
         attr_reader :suit
 

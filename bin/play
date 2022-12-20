@@ -5,7 +5,60 @@ require 'bundler/setup'
 require 'root'
 require 'pry'
 
+require 'benchmark'
+require 'msgpack'
+require 'oj'
+
 system('clear') || system('cls')
-faction = (ARGV[0] || :racoon).to_sym
+faction = (ARGV[0] || :mice).to_sym
 ARGV.clear
-Root::Game.start_and_play_game(faction: faction)
+obj = Root::Game.start_and_play_game(faction: faction)
+
+SAMPLES = 5_000
+# SAMPLES = 1
+
+def encode(msg, format)
+  case format
+  when :binary
+    str = Marshal.dump(msg)
+  when :json
+    str = JSON.generate(msg)
+  when :msgpack
+    str = MessagePack.pack(msg)
+  end
+  str
+end
+
+def decode(str, format)
+  msg = nil
+  case format
+  when :binary
+    msg = Marshal.load(str)
+  when :json
+    msg = JSON.parse(str)
+  when :msgpack
+    msg = MessagePack.unpack(str)
+  end
+  msg
+end
+
+Benchmark.bmbm do |r|
+  r.report("Marshal") do
+    SAMPLES.times do
+      decode(encode(obj, :binary), :binary)
+    end
+  end
+
+  r.report("JSON (using OJ)") do
+    SAMPLES.times do
+      decode(encode(obj, :json), :json)
+    end
+  end
+
+  # r.report("MessagePack") do
+  #   SAMPLES.times do
+  #     msg = decode(encode(obj, :msgpack), :msgpack)
+  #   end
+  # end
+end
+

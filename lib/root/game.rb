@@ -16,7 +16,8 @@ module Root
       game = with_faction_for_play(faction)
       game.print_display = true
       game.setup
-      game.run_game
+      game
+      # game.run_game
     end
     # :nocov:
 

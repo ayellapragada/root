@@ -13,8 +13,12 @@ gem 'byebug', '~> 11.0'
 gem 'rake', '~> 12.0'
 gem 'sandi_meter', require: false
 
+gem 'benchmark'
+gem 'msgpack'
+gem 'oj'
+
 # TEST
-gem 'guard', '~> 2.0'
+gem 'guard'
 gem 'guard-rspec', '~> 4.0'
 gem 'rspec', '~> 3.0'
 gem 'rubocop', '~> 0.80.0', require: false
